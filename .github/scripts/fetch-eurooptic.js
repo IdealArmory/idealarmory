@@ -14,17 +14,12 @@ if (!ACCOUNT_SID || !AUTH_TOKEN || !CATALOG_ID) {
   process.exit(1);
 }
 
+const BASE_URL    = `https://api.impact.com/Mediapartners/${ACCOUNT_SID}/Catalogs/${CATALOG_ID}/Items`;
 const AUTH_HEADER = 'Basic ' + Buffer.from(`${ACCOUNT_SID}:${AUTH_TOKEN}`).toString('base64');
 
-// URL formats to try in order
-const CANDIDATE_URLS = [
-  `https://api.impact.com/Mediapartners/${ACCOUNT_SID}/Catalogs/${CATALOG_ID}/Items`,
-  `https://api.impact.com/Affiliates/${ACCOUNT_SID}/Catalogs/${CATALOG_ID}/Items`,
-  `https://api.impact.com/MediaPartners/${ACCOUNT_SID}/Catalogs/${CATALOG_ID}/Items`,
-  `https://api.impact.com/Affiliates/${ACCOUNT_SID}/Catalogs/${CATALOG_ID}/CatalogItems`,
-];
+// ── Helpers ───────────────────────────────────────────────────────────────────
+const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-// ── Category mapping ─────────────────────────────────────────────────────────
 function mapCategory(cat) {
   const c = (cat || '').toLowerCase();
   if (c.includes('rifle') || c.includes('shotgun'))                            return 'rifles';
@@ -39,105 +34,87 @@ function mapCategory(cat) {
   return 'other';
 }
 
-// ── Transform Impact.com item → Ideal Armory schema ─────────────────────────
 function transformProduct(item) {
   return {
-    id:            String(item.Id || item.CatalogItemId || ''),
+    id:            String(item.CatalogItemId || item.Id || ''),
     upc:           item.Upc || item.UPC || '',
-    brand:         item.BrandName || item.Brand || item.ManufacturerName || '',
-    name:          item.Name || item.ProductName || '',
+    brand:         item.Manufacturer || item.BrandName || item.Brand || '',
+    name:          item.Name || '',
     description:   item.Description || '',
-    price:         parseFloat(item.SalePrice || item.CurrentPrice || item.Price || 0),
-    originalPrice: parseFloat(item.CurrentPrice || item.RegularPrice || 0),
-    img:           item.ImageUrl || item.Image || '',
-    url:           item.TrackingLink || item.DeepLink || '',
+    price:         parseFloat(item.CurrentPrice || item.SalePrice || 0),
+    originalPrice: parseFloat(item.OriginalPrice || item.CurrentPrice || 0),
+    img:           item.ImageUrl || (item.AdditionalImageUrls && item.AdditionalImageUrls[0]) || '',
+    url:           item.Url || item.TrackingLink || '',
     category:      mapCategory(item.Category || item.ProductType || ''),
-    inStock:       (item.Availability || '').toString().toLowerCase().includes('in'),
+    inStock:       item.OutOfStock === false || item.OutOfStock === 'false' || item.Availability === 'In Stock',
     lastUpdated:   new Date().toISOString(),
     source:        'eurooptic'
   };
 }
 
-// ── Try each candidate URL until one works ───────────────────────────────────
-async function findWorkingUrl() {
-  for (const url of CANDIDATE_URLS) {
-    console.log(`Trying: ${url}`);
-    const response = await fetch(`${url}?PageSize=1&Page=1`, {
+// ── Fetch with retry ──────────────────────────────────────────────────────────
+async function fetchUrl(url, retries = 3) {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    const response = await fetch(url, {
       headers: { 'Authorization': AUTH_HEADER, 'Accept': 'application/json' }
     });
+
+    if (response.ok) return response.json();
+
     const body = await response.text();
-    console.log(`  Status: ${response.status}`);
-    console.log(`  Response: ${body.substring(0, 500)}`);
-    if (response.ok) {
-      console.log(`  ✓ Working URL found!`);
-      return url;
-    }
+    console.warn(`  Attempt ${attempt}/${retries} failed: ${response.status} — ${body.substring(0, 200)}`);
+
+    if (attempt < retries) await sleep(3000 * attempt); // 3s, 6s backoff
   }
-  return null;
+  throw new Error(`Failed after ${retries} attempts`);
 }
 
-// ── Fetch a single page ──────────────────────────────────────────────────────
-async function fetchPage(baseUrl, pageNumber) {
-  const url = `${baseUrl}?PageSize=500&Page=${pageNumber}`;
-  const response = await fetch(url, {
-    headers: { 'Authorization': AUTH_HEADER, 'Accept': 'application/json' }
-  });
-  if (!response.ok) {
-    const body = await response.text();
-    throw new Error(`API error on page ${pageNumber}: ${response.status} — ${body.substring(0, 300)}`);
-  }
-  return response.json();
-}
-
-// ── Main ─────────────────────────────────────────────────────────────────────
+// ── Main ──────────────────────────────────────────────────────────────────────
 async function main() {
   console.log('=== EuroOptic Catalog Fetch ===');
   console.log(`Catalog ID : ${CATALOG_ID}`);
   console.log(`Started    : ${new Date().toISOString()}`);
   console.log('');
 
-  // Step 1: Find the working endpoint URL
-  console.log('--- Step 1: Finding working API endpoint ---');
-  const workingUrl = await findWorkingUrl();
-
-  if (!workingUrl) {
-    console.error('');
-    console.error('ERROR: None of the candidate URLs returned a successful response.');
-    console.error('Check that your Account SID, Auth Token, and Catalog ID are correct.');
-    process.exit(1);
-  }
-
-  console.log('');
-  console.log(`--- Step 2: Fetching full catalog from ${workingUrl} ---`);
-
   let allProducts   = [];
-  let page          = 1;
+  let pageNum       = 1;
   let totalExpected = null;
+  let nextUrl       = `${BASE_URL}?PageSize=500`;
 
-  while (true) {
-    console.log(`Fetching page ${page}...`);
-    const data  = await fetchPage(workingUrl, page);
-    const items = data.Items || data.CatalogItems || data.items || (Array.isArray(data) ? data : []);
+  while (nextUrl) {
+    console.log(`Fetching page ${pageNum}... (${nextUrl.split('?')[1]})`);
+    const data = await fetchUrl(nextUrl);
 
-    if (!Array.isArray(items) || items.length === 0) {
-      console.log(`Page ${page} returned no items — done.`);
-      break;
-    }
-
-    if (page === 1) {
-      totalExpected = data.TotalCount || data.Total || data.totalCount || null;
+    // Capture total on first page
+    if (pageNum === 1) {
+      totalExpected = parseInt(data['@total'] || data.TotalCount || 0) || null;
       if (totalExpected) console.log(`Total products expected: ${totalExpected}`);
       console.log('Sample item:');
-      console.log(JSON.stringify(items[0], null, 2).substring(0, 800));
+      const sample = (data.Items || [])[0];
+      if (sample) console.log(JSON.stringify(sample, null, 2).substring(0, 600));
+    }
+
+    const items = data.Items || data.CatalogItems || [];
+    if (!items.length) {
+      console.log('No items returned — done.');
+      break;
     }
 
     allProducts = allProducts.concat(items.map(transformProduct));
     console.log(`  → ${items.length} items (total: ${allProducts.length})`);
-    if (items.length < 500) break;
-    page++;
+
+    // Follow cursor-based next page URI
+    const nextPageUri = data['@nextpageuri'] || data.NextPageUri || '';
+    if (nextPageUri) {
+      nextUrl = `https://api.impact.com${nextPageUri}`;
+      pageNum++;
+      await sleep(500); // small delay to avoid rate limiting
+    } else {
+      nextUrl = null;
+    }
   }
 
-  // ── Quality gate ───────────────────────────────────────────────────────────
+  // ── Quality gate ──────────────────────────────────────────────────────────
   if (allProducts.length === 0) {
     console.error('QUALITY GATE FAILED: Zero products returned.');
     process.exit(1);
@@ -147,14 +124,14 @@ async function main() {
     process.exit(1);
   }
 
-  // ── Write output ───────────────────────────────────────────────────────────
+  // ── Write output ──────────────────────────────────────────────────────────
   const dataDir = path.join(__dirname, '..', '..', 'data');
   if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
 
   fs.writeFileSync(path.join(dataDir, 'eurooptic-catalog.json'), JSON.stringify(allProducts, null, 2));
   fs.writeFileSync(path.join(dataDir, 'eurooptic-last-run.json'), JSON.stringify({
     lastRun: new Date().toISOString(), productCount: allProducts.length,
-    totalExpected, pagesProcessed: page, status: 'success'
+    totalExpected, pagesProcessed: pageNum, status: 'success'
   }, null, 2));
 
   console.log('');
