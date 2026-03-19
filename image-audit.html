@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Ideal Armory — Image Audit Tool</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#f4f4f4;color:#1b2a3b;padding:20px}
+h1{font-size:22px;margin-bottom:4px;color:#1b2a3b}
+.subtitle{font-size:13px;color:#666;margin-bottom:20px}
+.summary{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.sum-box{background:#fff;border:1px solid #ddd;border-radius:4px;padding:12px 20px;text-align:center}
+.sum-box .num{font-size:28px;font-weight:700}
+.sum-box .lbl{font-size:11px;color:#666;margin-top:2px}
+.sum-box.ok .num{color:#16a34a}
+.sum-box.warn .num{color:#b8311f}
+.controls{display:flex;gap:10px;margin-bottom:16px;align-items:center;flex-wrap:wrap}
+.controls select,.controls input{padding:7px 10px;border:1px solid #ccc;border-radius:3px;font-size:13px}
+.controls input{width:220px}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:4px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+thead th{background:#1b2a3b;color:#fff;padding:10px 12px;font-size:12px;text-align:left;position:sticky;top:0;z-index:2}
+tbody tr{border-bottom:1px solid #eee;transition:background .1s}
+tbody tr:hover{background:#fafafa}
+tbody tr.mismatch{background:#fff5f5}
+tbody tr.mismatch:hover{background:#ffeded}
+tbody tr.missing{background:#fffbeb}
+td{padding:10px 12px;vertical-align:middle;font-size:13px}
+td.id{width:40px;color:#999;font-size:11px}
+td.name{font-weight:600;max-width:200px}
+td.brand{color:#666;font-size:12px}
+td.img-cell{width:90px}
+td.img-cell img{width:72px;height:56px;object-fit:contain;border:1px solid #eee;border-radius:2px;background:#fafafa;display:block}
+td.img-cell .img-err{width:72px;height:56px;display:flex;align-items:center;justify-content:center;border:1px solid #fca5a5;border-radius:2px;background:#fff5f5;font-size:9px;color:#b8311f;text-align:center;padding:4px}
+td.filename{font-size:10px;color:#555;max-width:160px;word-break:break-all;line-height:1.4}
+td.filename.mismatch-txt{color:#b8311f;font-weight:600}
+td.status{width:80px;text-align:center}
+.badge{display:inline-block;padding:3px 8px;border-radius:2px;font-size:11px;font-weight:700;letter-spacing:.3px}
+.badge.match{background:#dcfce7;color:#166534}
+.badge.diff{background:#fee2e2;color:#991b1b}
+.badge.missing{background:#fef3c7;color:#92400e}
+.badge.na{background:#f3f4f6;color:#6b7280}
+.section-header{background:#e8ecf0;padding:8px 12px;font-size:11px;font-weight:700;letter-spacing:.8px;color:#1b2a3b;border-bottom:1px solid #ddd}
+.note{font-size:11px;color:#888;margin-top:16px}
+.filter-active{background:#1b2a3b;color:#fff}
+</style>
+</head>
+<body>
+
+<h1>Ideal Armory — Image Audit Tool</h1>
+<p class="subtitle">Compares card images (index.html) vs product page images (product.html) for every product. Open this file locally — it reads image data from the same arrays used on the live site.</p>
+
+<div class="summary" id="summary"></div>
+
+<div class="controls">
+  <input type="text" id="search" placeholder="Search product name or brand…" oninput="filterTable()">
+  <select id="filterStatus" onchange="filterTable()">
+    <option value="all">All Products</option>
+    <option value="match">✓ Matching</option>
+    <option value="diff">✗ Mismatched</option>
+    <option value="missing">⚠ Missing Image</option>
+  </select>
+  <select id="filterCat" onchange="filterTable()">
+    <option value="all">All Categories</option>
+  </select>
+  <span id="count" style="font-size:13px;color:#666;margin-left:auto"></span>
+</div>
+
+<table id="audit-table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Brand</th>
+      <th>Product Name</th>
+      <th>Card Image</th>
+      <th>Card Filename</th>
+      <th>Product Page Image</th>
+      <th>Product Page Filename</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody id="audit-body"></tbody>
+</table>
+
+<p class="note">💡 Tip: "Mismatch" rows (red) need attention. Click any image to open the full CDN URL in a new tab for visual verification.</p>
+
+<script>
+/* ── Pull PRODUCTS from index.html — paste the array inline for portability ── */
+
+/* Card images — from index.html PRODUCTS array */
+var CARD_PRODUCTS = [
+  {id:1,brand:'Beretta',name:'APX A1 Tactical 9mm',cat:'handgun',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/570865/images/535927/BRJAXA1F921TAC_1_HR__71404.1700068806.380.380.jpg?c=2'},
+  {id:2,brand:'Daniel Defense',name:'H9 Pistol',cat:'handgun',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629464/images/575386/Daniel-Defense-H9-Package-Deal__13011.1755277956.380.380.jpg?c=2'},
+  {id:3,brand:'Beretta',name:'92X Performance Competition',cat:'handgun',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/631516/images/578486/148604__66326.1772556492.380.380.png?c=2'},
+  {id:4,brand:'Smith & Wesson',name:'Bodyguard 2.0 .380',cat:'handgun',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632194/images/572572/236046__37602.1748531032.380.380.jpg?c=2'},
+  {id:5,brand:'Springfield Armory',name:'Echelon 9mm',cat:'handgun',img:'https://cdn11.bigcommerce.com/s-yqqkx/images/stencil/760x760/products/631418/568628/225303__05440.1741299289.jpg?c=2'},
+  {id:6,brand:'Springfield Armory',name:'1911 Ronin 10mm',cat:'handgun',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/510297/images/507353/SPX9121L_1_HR__56845.1700231839.380.380.jpg?c=2'},
+  {id:7,brand:'H&K',name:'CC9 9mm Compact',cat:'handgun',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/631844/images/570801/232334__53096.1745858255.380.380.jpg?c=2'},
+  {id:8,brand:'Sig Sauer',name:'P320 M18 Coyote',cat:'handgun',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/479393/images/487038/SG320CA-9-M18-MS_1_HR__81768.1650810223.380.380.jpg?c=2'},
+  {id:9,brand:'Walther',name:'PDP Full Size 9mm',cat:'handgun',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/448479/images/467671/WA2842475_1_HR__28900.1623788912.380.380.jpg?c=2'},
+  {id:10,brand:'Sig Sauer',name:'P320 M17 9mm',cat:'handgun',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/479394/images/487041/SG320F-9-M17-MS_1_HR__65355.1700069755.380.380.jpg?c=2'},
+  {id:11,brand:'IWI',name:'Tavor X95 16" Bullpup',cat:'rifle',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/478552/images/491964/fa_x16_main-e1576526186892__80812.1665674062.380.380.png?c=2'},
+  {id:12,brand:'Daniel Defense',name:'DDM4 V7 w/ Geissele Trigger',cat:'rifle',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/507840/images/554205/_d_d_ddm4_v7_gis_1__16549.1763151339.380.380.jpg?c=2'},
+  {id:13,brand:'IWI',name:'Tavor 7 .308 Blemished',cat:'rifle',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632714/images/575140/242912__22516.1753388856.380.380.jpg?c=2'},
+  {id:14,brand:'Springfield Armory',name:'Hellion 16" Bullpup',cat:'rifle',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629960/images/560198/204318__53616.1723059620.380.380.jpg?c=2'},
+  {id:15,brand:'IWI',name:'Galil ACE Gen II 5.45x39mm',cat:'rifle',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/633216/images/577813/254247__22340.1768423618.380.380.jpg?c=2'},
+  {id:16,brand:'Springfield Armory',name:'Saint Victor AR-15 5.56',cat:'rifle',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/495686/images/562521/208395__38182.1734010615.380.380.jpg?c=2'},
+  {id:17,brand:'Steyr',name:'Scout .308 Bolt Action',cat:'rifle',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/482786/images/536911/Screenshot_2023-07-26_at_10.00.26_PM__37835.1690423516.380.380.png?c=2'},
+  {id:18,brand:'Springfield Armory',name:'Saint Victor PCC 9mm',cat:'rifle',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629499/images/557784/197005__81572.1706719120.380.380.jpg?c=2'},
+  {id:19,brand:'Colt',name:'CR6920 M4 Carbine 5.56',cat:'rifle',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/404175/images/424980/LE6920-2__81114.1589919374.380.380.jpg?c=2'},
+  {id:20,brand:'Sig Sauer',name:'M400 SDI 5.56 Rifle',cat:'rifle',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/490497/images/497744/m400-xseries-sdi-3__92819.1700230343.380.380.jpg?c=2'},
+  {id:21,brand:'Beretta',name:'A300 Ultima Patrol 12ga',cat:'shotgun',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/497971/images/565098/BERETTA-A300__04884.1677166675__78170.1745965955.380.380.jpg?c=2'},
+  {id:22,brand:'Beretta',name:'1301 Tactical Mod 2',cat:'shotgun',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629742/images/558881/202530__73459.1715000970.380.380.jpg?c=2'},
+  {id:23,brand:'IWI',name:'Tavor TS12 Bullpup Shotgun',cat:'shotgun',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/402404/images/513529/Screenshot_2023-03-14_at_3.10.39_PM__65787.1678821071.380.380.png?c=2'},
+  {id:24,brand:'JTS',name:'M12AR Semi-Auto 12ga',cat:'shotgun',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/580720/images/539671/JTSM12AR_1_HR__63855.1701803068.380.380.jpg?c=2'},
+  {id:25,brand:'Benelli',name:'M4 Tactical 18.5"',cat:'shotgun',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629678/images/558591/198282__69968.1712234984.380.380.jpg?c=2'},
+  {id:26,brand:'Benelli',name:'Nova Tactical 12ga',cat:'shotgun',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/631422/images/568658/225621__49002.1741626260.380.380.png?c=2'},
+  {id:27,brand:'Benelli',name:'M4 EXT 7rd Telescoping',cat:'shotgun',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/633105/images/577216/250316__41877.1762792856.380.380.png?c=2'},
+  {id:28,brand:'Mossberg',name:'590 Shockwave 12ga',cat:'shotgun',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/483420/images/490276/MS50639_3_HR__03756.1700232864.380.380.jpg?c=2'},
+  {id:29,brand:'Benelli',name:'M4 Tactical Pistol Grip 12ga',cat:'shotgun',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629679/images/558584/198284__41231.1712234862.380.380.jpg?c=2'},
+  {id:30,brand:'Benelli',name:'SuperNova Tactical 12ga',cat:'shotgun',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632116/images/572203/233937__90939.1746207601.380.380.jpg?c=2'},
+  {id:31,brand:'CCI',name:'Blazer Brass 9mm 50rd',cat:'ammo',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/473842/images/479279/5200__07166.1636063819.380.380.jpg?c=2'},
+  {id:32,brand:'Winchester',name:'M193 5.56 NATO 20rd',cat:'ammo',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/631173/images/567325/221929__15628.1739972978.380.380.png?c=2'},
+  {id:33,brand:'Winchester',name:'Super Suppressed .300 BLK 20rd',cat:'ammo',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632693/images/575081/238695__82788.1753190996.380.380.png?c=2'},
+  {id:34,brand:'Federal',name:'HST .45 ACP 20rd LE',cat:'ammo',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/608322/images/558047/230_Grain_HST_Jacketed_Hollow_Point-Federal_Law_Enforcement_45_ACP_AUTO_Ammo-3548__43106.1708355134.380.380.jpg?c=2'},
+  {id:35,brand:'Winchester',name:'Ranger .40 S&W 20rd',cat:'ammo',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/494931/images/510877/Screenshot_2023-03-01_at_10.33.42_AM__97471.1677684848.380.380.png?c=2'},
+  {id:36,brand:'Federal',name:'LE 12ga 00 Buck 5rd',cat:'ammo',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/631419/images/568639/224978__64006.1741359402.380.380.jpg?c=2'},
+  {id:37,brand:'Winchester',name:'Defender 12ga 00 Buck 10rd',cat:'ammo',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/631042/images/566583/222044__27235.1739468304.380.380.jpg?c=2'},
+  {id:38,brand:'Winchester',name:'Super-X .22 LR 100rd',cat:'ammo',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/630751/images/565207/216260__44726.1737494105.380.380.jpg?c=2'},
+  {id:39,brand:'Federal',name:'Champion .22 LR 325rd',cat:'ammo',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/571929/images/536283/36_Grain_Lead_Hollow_Point-Federal_Champion_Training_22_Long_Rifle_Ammo-112993__79103.1689948309.380.380.jpg?c=2'},
+  {id:40,brand:'Browning',name:'X-Point .380 ACP 20rd',cat:'ammo',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629781/images/559161/202564__78481.1716240287.380.380.jpg?c=2'},
+  {id:41,brand:'Sig Sauer',name:'ROMEO5 Gen II Red Dot',cat:'optic',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629920/images/559970/203955__14848.1721751774.380.380.jpg?c=2'},
+  {id:42,brand:'Sig Sauer',name:'ROMEO5 + Juliet3 Combo',cat:'optic',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629933/images/560067/204053__20153.1722268289.380.380.jpg?c=2'},
+  {id:43,brand:'Sig Sauer',name:'Romeo MSR Gen II Red Dot',cat:'optic',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629754/images/559086/202676__38798.1715888884.380.380.jpg?c=2'},
+  {id:44,brand:'Magpul',name:'MBUS Flip-Up Backup Sights',cat:'optic',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629609/images/558281/_MAG248__98032.1710521883.380.380.jpg?c=2'},
+  {id:45,brand:'Riton Optics',name:'3 Primal 4-16x44 Scope',cat:'optic',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/633117/images/577277/250531__28698.1762970134.380.380.jpg?c=2'},
+  {id:46,brand:'Vortex',name:'AMG UH-1 Gen II Holographic',cat:'optic',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/633145/images/577412/251211__18722.1764101852.380.380.jpg?c=2'},
+  {id:47,brand:'EOTech',name:'G45 5x Magnifier',cat:'optic',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/631296/images/568101/223953__66504.1740674797.380.380.jpg?c=2'},
+  {id:48,brand:'EOTech',name:'EXPS3-2 Holographic Sight',cat:'optic',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629605/images/558184/197825__99925.1709308384.380.380.jpg?c=2'},
+  {id:49,brand:'Trijicon',name:'RMR HD 3.25 MOA Red Dot',cat:'optic',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/631445/images/575131/240073__29102.1753292135.380.380.jpg?c=2'},
+  {id:50,brand:'Sig Sauer',name:'ROMEO-X Enclosed Red Dot',cat:'optic',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632921/images/576098/244414__29160.1756932367.380.380.jpg?c=2'},
+  {id:51,brand:'Blackhawk',name:'T-Series L2D Glock 17/19',cat:'holster',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/439537/images/452364/apifbuiht__70463.1638491442.380.380.jpg?c=2'},
+  {id:52,brand:'Blackhawk',name:'T-Series L3D Glock + TRL',cat:'holster',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/439534/images/452352/apiwjyawa__43625.1638491392.380.380.jpg?c=2'},
+  {id:53,brand:'Blackhawk',name:'SERPA CQC Glock 19/23/32',cat:'holster',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/445592/images/466939/apirn1x1u__12755.1638491307.380.380.jpg?c=2'},
+  {id:54,brand:'Blackhawk',name:'Stache IWB Sig P365',cat:'holster',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/475799/images/480206/apifs8t7d__95333.1638491432.380.380.jpg?c=2'},
+  {id:55,brand:'Blackhawk',name:'A.R.C. IWB Glock 17 Urban Gray',cat:'holster',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/452520/images/475716/apitzifqx__31371.1638491338.380.380.jpg?c=2'},
+  {id:56,brand:'Blackhawk',name:'T-Series L3D Sig P320/M17/M18',cat:'holster',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/445621/images/466991/api5ydqs7__30816.1638491309.380.380.jpg?c=2'},
+  {id:57,brand:"Uncle Mike's",name:'CCW OWB Glock 17/19',cat:'holster',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/475700/images/480097/ccw__54533.1637277967.380.380.jpg?c=2'},
+  {id:58,brand:'Blackhawk',name:'T-Series L2C Glock 43/43X',cat:'holster',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/439535/images/452351/apirmnoco__44847.1638491445.380.380.jpg?c=2'},
+  {id:59,brand:'Blackhawk',name:'Stache IWB S&W M&P Shield',cat:'holster',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/475685/images/480071/apiedpadm__07451.1638491417.380.380.jpg?c=2'},
+  {id:60,brand:"Uncle Mike's",name:'Sidekick Hip Holster',cat:'holster',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/441443/images/456723/sams__76074.1613083766.380.380.jpg?c=2'},
+  {id:61,brand:'Ballistic Advantage',name:'9" .300 BLK Barrel',cat:'accessory',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632964/images/576546/9in_300_blk_modern__28182.1757107396.380.380.jpg?c=2'},
+  {id:62,brand:'Ballistic Advantage',name:'13.7" 5.56 Gov Profile Barrel',cat:'accessory',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632981/images/576580/elj_5224__89537.1757107405.380.380.jpg?c=2'},
+  {id:63,brand:'Ballistic Advantage',name:'8.3" 9mm Straight Barrel',cat:'accessory',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632979/images/576576/elj_4652__86258.1757107404.380.380.jpg?c=2'},
+  {id:64,brand:'Radian Weapons',name:'Talon Ambi Safety Selector',cat:'accessory',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629846/images/559534/203397__22910.1719261455.380.380.jpg?c=2'},
+  {id:65,brand:'Radian Weapons',name:'Raptor CH + Talon Safety Combo',cat:'accessory',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629845/images/559533/203391__51603.1719260263.380.380.jpg?c=2'},
+  {id:66,brand:'Radian Weapons',name:'Raptor SD Ambi Vented CH',cat:'accessory',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629843/images/559525/203388__07422.1719259677.380.380.jpg?c=2'},
+  {id:67,brand:'Ballistic Advantage',name:'Glock 19 FDE Threaded Barrel',cat:'accessory',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632949/images/576516/bapsg195t1f-1__62287.1757107380.380.380.jpg?c=2'},
+  {id:68,brand:'Rugged',name:'R3 Flash Mitigation System',cat:'accessory',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/630883/images/565858/219977__47919.1738277153.380.380.jpg?c=2'},
+  {id:69,brand:'Aero Precision',name:'.308 BREACH Ambi CH',cat:'accessory',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632908/images/576054/apra700330c-ar10-ch-ano-small-blk-odg-1_2__04532.1756909118.380.380.jpg?c=2'},
+  {id:70,brand:'Grip Pod',name:'Vertical Forward Grip Bipod',cat:'accessory',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/483105/images/490075/793573782908__72016__94540.1661291357.380.380.jpg?c=2'},
+  {id:71,brand:'Steyr',name:'A2 MF 9mm Magazine',cat:'magazine',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/582318/images/575324/Steyr__33210.1755020700.380.380.gif?c=2'},
+];
+
+/* Product page images — from product.html ALL_PRODUCTS array (imgs[0]) */
+var PAGE_PRODUCTS = [
+  {name:'APX A1 Tactical 9mm',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/570865/images/535927/BRJAXA1F921TAC_1_HR__71404.1700068806.380.380.jpg?c=2'},
+  {name:'H9 Pistol',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629464/images/575386/Daniel-Defense-H9-Package-Deal__13011.1755277956.380.380.jpg?c=2'},
+  {name:'92X Performance Competition',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/631516/images/578486/148604__66326.1772556492.380.380.png?c=2'},
+  {name:'Bodyguard 2.0 .380',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632194/images/572572/236046__37602.1748531032.380.380.jpg?c=2'},
+  {name:'Echelon 9mm',img:'https://cdn11.bigcommerce.com/s-yqqkx/images/stencil/760x760/products/631418/568628/225303__05440.1741299289.jpg?c=2'},
+  {name:'1911 Ronin 10mm',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/510297/images/507353/SPX9121L_1_HR__56845.1700231839.380.380.jpg?c=2'},
+  {name:'CC9 9mm Compact',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/631844/images/570801/232334__53096.1745858255.380.380.jpg?c=2'},
+  {name:'P320 M18 Coyote',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/479393/images/487038/SG320CA-9-M18-MS_1_HR__81768.1650810223.380.380.jpg?c=2'},
+  {name:'PDP Full Size 9mm',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/448479/images/467671/WA2842475_1_HR__28900.1623788912.380.380.jpg?c=2'},
+  {name:'P320 M17 9mm',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/479394/images/487041/SG320F-9-M17-MS_1_HR__65355.1700069755.380.380.jpg?c=2'},
+  {name:'Tavor X95 16" Bullpup',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/478552/images/491964/fa_x16_main-e1576526186892__80812.1665674062.380.380.png?c=2'},
+  {name:'DDM4 V7 w/ Geissele Trigger',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/507840/images/554205/_d_d_ddm4_v7_gis_1__16549.1763151339.380.380.jpg?c=2'},
+  {name:'Tavor 7 .308 Blemished',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632714/images/575140/242912__22516.1753388856.380.380.jpg?c=2'},
+  {name:'Hellion 16" Bullpup',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629960/images/560198/204318__53616.1723059620.380.380.jpg?c=2'},
+  {name:'Galil ACE Gen II 5.45x39mm',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/633216/images/577813/254247__22340.1768423618.380.380.jpg?c=2'},
+  {name:'Saint Victor AR-15 5.56',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/495686/images/562521/208395__38182.1734010615.380.380.jpg?c=2'},
+  {name:'Scout .308 Bolt Action',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/482786/images/536911/Screenshot_2023-07-26_at_10.00.26_PM__37835.1690423516.380.380.png?c=2'},
+  {name:'Saint Victor PCC 9mm',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629499/images/557784/197005__81572.1706719120.380.380.jpg?c=2'},
+  {name:'CR6920 M4 Carbine 5.56',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/404175/images/424980/LE6920-2__81114.1589919374.380.380.jpg?c=2'},
+  {name:'M400 SDI 5.56 Rifle',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/490497/images/497744/m400-xseries-sdi-3__92819.1700230343.380.380.jpg?c=2'},
+  {name:'A300 Ultima Patrol 12ga',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/497971/images/565098/BERETTA-A300__04884.1677166675__78170.1745965955.380.380.jpg?c=2'},
+  {name:'1301 Tactical Mod 2',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629742/images/558881/202530__73459.1715000970.380.380.jpg?c=2'},
+  {name:'Tavor TS12 Bullpup Shotgun',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/402404/images/513529/Screenshot_2023-03-14_at_3.10.39_PM__65787.1678821071.380.380.png?c=2'},
+  {name:'M12AR Semi-Auto 12ga',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/580720/images/539671/JTSM12AR_1_HR__63855.1701803068.380.380.jpg?c=2'},
+  {name:'M4 Tactical 18.5"',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629678/images/558591/198282__69968.1712234984.380.380.jpg?c=2'},
+  {name:'Nova Tactical 12ga',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/631422/images/568658/225621__49002.1741626260.380.380.png?c=2'},
+  {name:'M4 EXT 7rd Telescoping',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/633105/images/577216/250316__41877.1762792856.380.380.png?c=2'},
+  {name:'590 Shockwave 12ga',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/483420/images/490276/MS50639_3_HR__03756.1700232864.380.380.jpg?c=2'},
+  {name:'M4 Tactical Pistol Grip 12ga',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629679/images/558584/198284__41231.1712234862.380.380.jpg?c=2'},
+  {name:'SuperNova Tactical 12ga',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632116/images/572203/233937__90939.1746207601.380.380.jpg?c=2'},
+  {name:'Blazer Brass 9mm 50rd',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/473842/images/479279/5200__07166.1636063819.380.380.jpg?c=2'},
+  {name:'M193 5.56 NATO 20rd',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/631173/images/567325/221929__15628.1739972978.380.380.png?c=2'},
+  {name:'Super Suppressed .300 BLK 20rd',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632693/images/575081/238695__82788.1753190996.380.380.png?c=2'},
+  {name:'HST .45 ACP 20rd LE',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/608322/images/558047/230_Grain_HST_Jacketed_Hollow_Point-Federal_Law_Enforcement_45_ACP_AUTO_Ammo-3548__43106.1708355134.380.380.jpg?c=2'},
+  {name:'Ranger .40 S&W 20rd',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/494931/images/510877/Screenshot_2023-03-01_at_10.33.42_AM__97471.1677684848.380.380.png?c=2'},
+  {name:'LE 12ga 00 Buck 5rd',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/631419/images/568639/224978__64006.1741359402.380.380.jpg?c=2'},
+  {name:'Defender 12ga 00 Buck 10rd',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/631042/images/566583/222044__27235.1739468304.380.380.jpg?c=2'},
+  {name:'Super-X .22 LR 100rd',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/630751/images/565207/216260__44726.1737494105.380.380.jpg?c=2'},
+  {name:'Champion .22 LR 325rd',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/571929/images/536283/36_Grain_Lead_Hollow_Point-Federal_Champion_Training_22_Long_Rifle_Ammo-112993__79103.1689948309.380.380.jpg?c=2'},
+  {name:'X-Point .380 ACP 20rd',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629781/images/559161/202564__78481.1716240287.380.380.jpg?c=2'},
+  {name:'ROMEO5 Gen II Red Dot',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629920/images/559970/203955__14848.1721751774.380.380.jpg?c=2'},
+  {name:'ROMEO5 + Juliet3 Combo',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629933/images/560067/204053__20153.1722268289.380.380.jpg?c=2'},
+  {name:'Romeo MSR Gen II Red Dot',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629754/images/559086/202676__38798.1715888884.380.380.jpg?c=2'},
+  {name:'MBUS Flip-Up Backup Sights',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629609/images/558281/_MAG248__98032.1710521883.380.380.jpg?c=2'},
+  {name:'3 Primal 4-16x44 Scope',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/633117/images/577277/250531__28698.1762970134.380.380.jpg?c=2'},
+  {name:'AMG UH-1 Gen II Holographic',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/633145/images/577412/251211__18722.1764101852.380.380.jpg?c=2'},
+  {name:'G45 5x Magnifier',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/631296/images/568101/223953__66504.1740674797.380.380.jpg?c=2'},
+  {name:'EXPS3-2 Holographic Sight',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629605/images/558184/197825__99925.1709308384.380.380.jpg?c=2'},
+  {name:'RMR HD 3.25 MOA Red Dot',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/631445/images/575131/240073__29102.1753292135.380.380.jpg?c=2'},
+  {name:'ROMEO-X Enclosed Red Dot',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632921/images/576098/244414__29160.1756932367.380.380.jpg?c=2'},
+  {name:'T-Series L2D Glock 17/19',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/439537/images/452364/apifbuiht__70463.1638491442.380.380.jpg?c=2'},
+  {name:'T-Series L3D Glock + TRL',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/439534/images/452352/apiwjyawa__43625.1638491392.380.380.jpg?c=2'},
+  {name:'SERPA CQC Glock 19/23/32',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/445592/images/466939/apirn1x1u__12755.1638491307.380.380.jpg?c=2'},
+  {name:'Stache IWB Sig P365',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/475799/images/480206/apifs8t7d__95333.1638491432.380.380.jpg?c=2'},
+  {name:'A.R.C. IWB Glock 17 Urban Gray',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/452520/images/475716/apitzifqx__31371.1638491338.380.380.jpg?c=2'},
+  {name:'T-Series L3D Sig P320/M17/M18',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/445621/images/466991/api5ydqs7__30816.1638491309.380.380.jpg?c=2'},
+  {name:'CCW OWB Glock 17/19',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/475700/images/480097/ccw__54533.1637277967.380.380.jpg?c=2'},
+  {name:'T-Series L2C Glock 43/43X',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/439535/images/452351/apirmnoco__44847.1638491445.380.380.jpg?c=2'},
+  {name:'Stache IWB S&W M&P Shield',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/475685/images/480071/apiedpadm__07451.1638491417.380.380.jpg?c=2'},
+  {name:'Sidekick Hip Holster',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/441443/images/456723/sams__76074.1613083766.380.380.jpg?c=2'},
+  {name:'9" .300 BLK Barrel',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632964/images/576546/9in_300_blk_modern__28182.1757107396.380.380.jpg?c=2'},
+  {name:'13.7" 5.56 Gov Profile Barrel',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632981/images/576580/elj_5224__89537.1757107405.380.380.jpg?c=2'},
+  {name:'8.3" 9mm Straight Barrel',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632979/images/576576/elj_4652__86258.1757107404.380.380.jpg?c=2'},
+  {name:'Talon Ambi Safety Selector',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629846/images/559534/203397__22910.1719261455.380.380.jpg?c=2'},
+  {name:'Raptor CH + Talon Safety Combo',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629845/images/559533/203391__51603.1719260263.380.380.jpg?c=2'},
+  {name:'Raptor SD Ambi Vented CH',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629843/images/559525/203388__07422.1719259677.380.380.jpg?c=2'},
+  {name:'Glock 19 FDE Threaded Barrel',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632949/images/576516/bapsg195t1f-1__62287.1757107380.380.380.jpg?c=2'},
+  {name:'R3 Flash Mitigation System',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/630883/images/565858/219977__47919.1738277153.380.380.jpg?c=2'},
+  {name:'.308 BREACH Ambi CH',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632908/images/576054/apra700330c-ar10-ch-ano-small-blk-odg-1_2__04532.1756909118.380.380.jpg?c=2'},
+  {name:'Vertical Forward Grip Bipod',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/483105/images/490075/793573782908__72016__94540.1661291357.380.380.jpg?c=2'},
+  {name:'A2 MF 9mm Magazine',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/582318/images/575324/Steyr__33210.1755020700.380.380.gif?c=2'},
+];
+
+/* Build lookup: name -> product page img */
+var pageMap = {};
+PAGE_PRODUCTS.forEach(function(p){ pageMap[p.name] = p.img; });
+
+function fname(url){
+  if(!url) return '—';
+  var p = url.split('/').pop().split('?')[0];
+  return p.length > 40 ? p.slice(0,38)+'…' : p;
+}
+
+function status(cardImg, pageImg){
+  if(!cardImg && !pageImg) return 'missing';
+  if(!pageImg) return 'missing';
+  if(!cardImg) return 'missing';
+  return cardImg === pageImg ? 'match' : 'diff';
+}
+
+/* Populate category filter */
+var cats = [...new Set(CARD_PRODUCTS.map(function(p){ return p.cat; }))];
+var catSel = document.getElementById('filterCat');
+cats.forEach(function(c){
+  var o = document.createElement('option');
+  o.value = c; o.textContent = c.charAt(0).toUpperCase()+c.slice(1);
+  catSel.appendChild(o);
+});
+
+/* Build table */
+var rows = CARD_PRODUCTS.map(function(p){
+  var pageImg = pageMap[p.name] || null;
+  var st = status(p.img, pageImg);
+  return {card:p, pageImg:pageImg, st:st};
+});
+
+function renderRows(list){
+  var tbody = document.getElementById('audit-body');
+  tbody.innerHTML = '';
+  var lastCat = '';
+  list.forEach(function(r){
+    var p = r.card;
+    if(p.cat !== lastCat){
+      var sep = document.createElement('tr');
+      sep.innerHTML = '<td colspan="8" class="section-header">'+p.cat.toUpperCase()+'</td>';
+      tbody.appendChild(sep);
+      lastCat = p.cat;
+    }
+    var tr = document.createElement('tr');
+    if(r.st==='diff') tr.className='mismatch';
+    else if(r.st==='missing') tr.className='missing';
+
+    var cardFnClass = r.st==='diff' ? 'filename mismatch-txt' : 'filename';
+    var pageFnClass = r.st==='diff' ? 'filename mismatch-txt' : 'filename';
+
+    var badgeHtml = r.st==='match'
+      ? '<span class="badge match">✓ Match</span>'
+      : r.st==='diff'
+        ? '<span class="badge diff">✗ Mismatch</span>'
+        : '<span class="badge missing">⚠ Missing</span>';
+
+    var cardImgHtml = p.img
+      ? '<img src="'+p.img+'" alt="'+p.name+'" title="Click to open" style="cursor:pointer" onclick="window.open(\''+p.img+'\',\'_blank\')">'
+      : '<div class="img-err">No Image</div>';
+
+    var pageImgHtml = r.pageImg
+      ? '<img src="'+r.pageImg+'" alt="'+p.name+' page" title="Click to open" style="cursor:pointer" onclick="window.open(\''+r.pageImg+'\',\'_blank\')">'
+      : '<div class="img-err">Not in product.html</div>';
+
+    tr.setAttribute('data-st', r.st);
+    tr.setAttribute('data-cat', p.cat);
+    tr.setAttribute('data-name', (p.brand+' '+p.name).toLowerCase());
+
+    tr.innerHTML =
+      '<td class="id">'+p.id+'</td>'
+      +'<td class="brand">'+p.brand+'</td>'
+      +'<td class="name">'+p.name+'</td>'
+      +'<td class="img-cell">'+cardImgHtml+'</td>'
+      +'<td class="'+cardFnClass+'">'+fname(p.img)+'</td>'
+      +'<td class="img-cell">'+pageImgHtml+'</td>'
+      +'<td class="'+pageFnClass+'">'+fname(r.pageImg)+'</td>'
+      +'<td class="status">'+badgeHtml+'</td>';
+    tbody.appendChild(tr);
+  });
+  document.getElementById('count').textContent = list.length + ' products shown';
+}
+
+function filterTable(){
+  var q = document.getElementById('search').value.toLowerCase();
+  var st = document.getElementById('filterStatus').value;
+  var cat = document.getElementById('filterCat').value;
+  var filtered = rows.filter(function(r){
+    var p = r.card;
+    if(q && (p.brand+' '+p.name).toLowerCase().indexOf(q)===-1) return false;
+    if(st !== 'all' && r.st !== st) return false;
+    if(cat !== 'all' && p.cat !== cat) return false;
+    return true;
+  });
+  renderRows(filtered);
+}
+
+/* Summary */
+var total=rows.length, matches=0, diffs=0, missing=0;
+rows.forEach(function(r){
+  if(r.st==='match') matches++;
+  else if(r.st==='diff') diffs++;
+  else missing++;
+});
+document.getElementById('summary').innerHTML =
+  '<div class="sum-box"><div class="num">'+total+'</div><div class="lbl">Total Products</div></div>'
+  +'<div class="sum-box ok"><div class="num">'+matches+'</div><div class="lbl">Images Match</div></div>'
+  +'<div class="sum-box warn"><div class="num">'+diffs+'</div><div class="lbl">Mismatches</div></div>'
+  +'<div class="sum-box warn"><div class="num">'+missing+'</div><div class="lbl">Missing / Not Mapped</div></div>';
+
+renderRows(rows);
+</script>
+</body>
+</html>

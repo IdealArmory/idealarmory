@@ -1,0 +1,326 @@
+{
+  "version": "1.0",
+  "generated": "2026-03-11T14:00:00Z",
+  "source": "Ideal Armory Sample Feed — for development and retailer onboarding only",
+
+  "products": [
+
+    {
+      "id": "handguns-glock-19-gen5",
+      "category": "handguns",
+      "brand": "Glock",
+      "name": "Glock 19 Gen 5",
+      "sub": "9mm Compact Striker-Fired",
+      "description": "The Glock 19 Gen 5 sets the benchmark for compact polymer pistols. Equipped with the Marksman Barrel for improved accuracy, ambidextrous slide stop levers, and the nDLC finish for maximum corrosion resistance. No finger grooves for a universal grip fit.",
+      "img": "",
+      "stars": 4.8,
+      "reviews": 3241,
+      "badge": "best",
+      "sellers": [
+        { "name": "Kygunco",       "price": 499.99, "stock": "in",  "url": "https://www.kygunco.com/glock-19-gen5/?ref=ia",   "fflRequired": true,  "updatedAt": "2026-03-11T08:00:00Z" },
+        { "name": "GrabAGun",      "price": 519.00, "stock": "in",  "url": "https://www.grabagun.com/glock-19-gen5/?ref=ia", "fflRequired": true,  "updatedAt": "2026-03-11T08:00:00Z" },
+        { "name": "Bud's Gun Shop","price": 529.00, "stock": "in",  "url": "https://www.budsgunshop.com/glock19g5/?ref=ia",  "fflRequired": true,  "updatedAt": "2026-03-11T08:00:00Z" }
+      ],
+      "specs": {
+        "caliber":    "9mm",
+        "action":     "Striker-Fired",
+        "opticReady": true,
+        "hand":       "Ambidextrous",
+        "capacity":   15,
+        "barrelIn":   4.02,
+        "frameSize":  "Compact",
+        "safety":     "No Manual Safety",
+        "finish":     "Black"
+      }
+    },
+
+    {
+      "id": "handguns-sig-p365-xl",
+      "category": "handguns",
+      "brand": "Sig Sauer",
+      "name": "P365-XL",
+      "sub": "9mm Micro-Compact XRAY3 Sights",
+      "description": "The Sig Sauer P365-XL extends the barrel of the best-selling P365 to 3.7 inches while adding a 12-round flush magazine, XRAY3 day/night sights, and a flat-faced X-series trigger. Optics-ready with the ROMEO Zero footprint.",
+      "img": "",
+      "stars": 4.9,
+      "reviews": 2100,
+      "badge": "best",
+      "sellers": [
+        { "name": "Guns.com",       "price": 579.99, "stock": "in",  "url": "https://guns.com/sig-p365-xl/?ref=ia",            "fflRequired": true,  "updatedAt": "2026-03-11T08:00:00Z" },
+        { "name": "Primary Arms",   "price": 599.00, "stock": "in",  "url": "https://www.primaryarms.com/sig-p365xl/?ref=ia",  "fflRequired": true,  "updatedAt": "2026-03-11T08:00:00Z" }
+      ],
+      "specs": {
+        "caliber":    "9mm",
+        "action":     "Striker-Fired",
+        "opticReady": true,
+        "hand":       "Ambidextrous",
+        "capacity":   12,
+        "barrelIn":   3.7,
+        "frameSize":  "Subcompact",
+        "safety":     "No Manual Safety",
+        "finish":     "Black"
+      }
+    },
+
+    {
+      "id": "rifles-daniel-defense-ddm4v7",
+      "category": "rifles",
+      "brand": "Daniel Defense",
+      "name": "DDM4 V7",
+      "sub": "5.56mm Semi-Auto AR-15",
+      "description": "The DDM4 V7 features a cold-hammer-forged 16-inch barrel with a 1:7 twist, the Daniel Defense MFR 15.0 free-float handguard, and a Geissele SSA two-stage trigger. Mil-spec components throughout with a lifetime warranty.",
+      "img": "",
+      "stars": 4.9,
+      "reviews": 1850,
+      "badge": "best",
+      "sellers": [
+        { "name": "Kygunco",       "price": 1799.99, "stock": "in",  "url": "https://www.kygunco.com/dd-ddm4-v7/?ref=ia",  "fflRequired": true, "updatedAt": "2026-03-11T08:00:00Z" },
+        { "name": "Guns.com",      "price": 1849.00, "stock": "in",  "url": "https://guns.com/dd-ddm4v7/?ref=ia",          "fflRequired": true, "updatedAt": "2026-03-11T08:00:00Z" },
+        { "name": "Bud's Gun Shop","price": 1899.00, "stock": "low", "url": "https://www.budsgunshop.com/ddm4v7/?ref=ia",  "fflRequired": true, "updatedAt": "2026-03-11T08:00:00Z" }
+      ],
+      "specs": {
+        "caliber":    ".223/5.56",
+        "action":     "Semi-Auto",
+        "platform":   "AR-15",
+        "barrelIn":   16.0,
+        "features":   ["optic-ready", "free-float", "threaded"]
+      }
+    },
+
+    {
+      "id": "rifles-ruger-10-22",
+      "category": "rifles",
+      "brand": "Ruger",
+      "name": "10/22 Carbine",
+      "sub": ".22 LR Semi-Auto Rimfire",
+      "description": "The Ruger 10/22 is the best-selling rimfire rifle in American history. A 10-round rotary magazine, patented cross-bolt safety, and proven blow-back action make it ideal for training, plinking, and small-game hunting.",
+      "img": "",
+      "stars": 4.8,
+      "reviews": 5200,
+      "badge": "best",
+      "sellers": [
+        { "name": "Kygunco",   "price": 249.99, "stock": "in", "url": "https://www.kygunco.com/ruger-1022/?ref=ia",  "fflRequired": true, "updatedAt": "2026-03-11T08:00:00Z" },
+        { "name": "Cabela's",  "price": 269.99, "stock": "in", "url": "https://www.cabelas.com/ruger-1022/?ref=ia",  "fflRequired": true, "updatedAt": "2026-03-11T08:00:00Z" }
+      ],
+      "specs": {
+        "caliber":    ".22 LR",
+        "action":     "Semi-Auto",
+        "platform":   "Rimfire",
+        "barrelIn":   18.5,
+        "features":   ["optic-ready"]
+      }
+    },
+
+    {
+      "id": "shotguns-mossberg-500-tactical",
+      "category": "shotguns",
+      "brand": "Mossberg",
+      "name": "500 Tactical",
+      "sub": "12ga Pump-Action Home Defense",
+      "description": "The Mossberg 500 Tactical is America's best-selling pump-action shotgun. An 18.5-inch cylinder-bore barrel, dual extractors, positive steel-to-steel lockup, and an ambidextrous top-mounted safety make it a reliable home-defense platform.",
+      "img": "",
+      "stars": 4.7,
+      "reviews": 4100,
+      "badge": "best",
+      "sellers": [
+        { "name": "Kygunco",       "price": 379.99, "stock": "in", "url": "https://www.kygunco.com/mossberg-500-tactical/?ref=ia",  "fflRequired": true, "updatedAt": "2026-03-11T08:00:00Z" },
+        { "name": "Bud's Gun Shop","price": 399.00, "stock": "in", "url": "https://www.budsgunshop.com/mossberg-500/?ref=ia",        "fflRequired": true, "updatedAt": "2026-03-11T08:00:00Z" }
+      ],
+      "specs": {
+        "gauge":    "12ga",
+        "action":   "Pump-Action",
+        "use":      "Home Defense",
+        "barrelIn": 18.5,
+        "capacity": 6
+      }
+    },
+
+    {
+      "id": "ammo-federal-9mm-fmj-115gr-1000",
+      "category": "ammunition",
+      "brand": "Federal",
+      "name": "American Eagle 9mm FMJ 115gr",
+      "sub": "115gr FMJ — 1000-Round Case",
+      "description": "Federal American Eagle is the go-to bulk training ammunition for 9mm pistols. Consistent velocities, clean-burning powder, and brass cases make it a reliable choice for range sessions and high-volume training.",
+      "img": "",
+      "stars": 4.6,
+      "reviews": 8900,
+      "badge": "best",
+      "sellers": [
+        { "name": "Lucky Gunner",    "price": 219.99, "stock": "in",  "url": "https://www.luckygunner.com/federal-ae-9mm-1000/?ref=ia",  "fflRequired": false, "updatedAt": "2026-03-11T08:00:00Z" },
+        { "name": "Ammo.com",        "price": 224.00, "stock": "in",  "url": "https://ammo.com/federal-9mm-1000/?ref=ia",                "fflRequired": false, "updatedAt": "2026-03-11T08:00:00Z" },
+        { "name": "Target Sports USA","price": 229.95, "stock": "in", "url": "https://www.targetsportsusa.com/fed9mm/?ref=ia",            "fflRequired": false, "updatedAt": "2026-03-11T08:00:00Z" }
+      ],
+      "specs": {
+        "caliber":    "9mm",
+        "bulletType": "FMJ",
+        "qty":        1000,
+        "grains":     115,
+        "fps":        1150,
+        "use":        "Target"
+      }
+    },
+
+    {
+      "id": "ammo-hornady-critical-defense-9mm-115gr-25",
+      "category": "ammunition",
+      "brand": "Hornady",
+      "name": "Critical Defense 9mm FTX 115gr",
+      "sub": "115gr FTX JHP — 25-Round Box",
+      "description": "Hornady Critical Defense uses the patented FTX bullet with a red polymer tip that initiates expansion at low velocities through heavy clothing. Designed specifically for short-barreled defensive pistols with consistent, reliable expansion.",
+      "img": "",
+      "stars": 4.9,
+      "reviews": 3200,
+      "badge": "best",
+      "sellers": [
+        { "name": "Lucky Gunner","price": 24.99, "stock": "in", "url": "https://www.luckygunner.com/hornady-cd-9mm-25/?ref=ia",  "fflRequired": false, "updatedAt": "2026-03-11T08:00:00Z" },
+        { "name": "MidwayUSA",  "price": 26.49, "stock": "in", "url": "https://www.midwayusa.com/hornady-cd-9mm/?ref=ia",       "fflRequired": false, "updatedAt": "2026-03-11T08:00:00Z" }
+      ],
+      "specs": {
+        "caliber":    "9mm",
+        "bulletType": "JHP",
+        "qty":        25,
+        "grains":     115,
+        "fps":        1140,
+        "use":        "Self-Defense"
+      }
+    },
+
+    {
+      "id": "optics-vortex-strikefire-ii",
+      "category": "optics",
+      "brand": "Vortex Optics",
+      "name": "Strikefire II",
+      "sub": "Red/Green Dot 4 MOA 1x",
+      "description": "The Vortex Strikefire II is a full-size 1x red dot with a bright 4 MOA dot, 10 brightness settings (including two for night vision), and unlimited eye relief. Ships with a cantilever mount for AR-height co-witnessing.",
+      "img": "",
+      "stars": 4.7,
+      "reviews": 2900,
+      "badge": "best",
+      "sellers": [
+        { "name": "Primary Arms","price": 159.99, "stock": "in", "url": "https://www.primaryarms.com/vortex-strikefire-ii/?ref=ia", "fflRequired": false, "updatedAt": "2026-03-11T08:00:00Z" },
+        { "name": "OpticsPlanet","price": 169.00, "stock": "in", "url": "https://www.opticsplanet.com/vortex-sf-ii/?ref=ia",       "fflRequired": false, "updatedAt": "2026-03-11T08:00:00Z" }
+      ],
+      "specs": {
+        "opticType":    "Red Dot",
+        "magnification":"1x",
+        "mount":        "Picatinny",
+        "reticle":      "4 MOA Dot",
+        "platform":     "AR-15"
+      }
+    },
+
+    {
+      "id": "holsters-vedder-lighttuck-g19",
+      "category": "holsters",
+      "brand": "Vedder Holsters",
+      "name": "LightTuck IWB",
+      "sub": "Glock 19/23/32 Kydex IWB",
+      "description": "The Vedder LightTuck is a minimalist Kydex IWB holster with adjustable ride height and cant, a soft-loop clip, and an audible click on retention. Made in the USA and hand-fit to the specific firearm model.",
+      "img": "",
+      "stars": 4.8,
+      "reviews": 3400,
+      "badge": "best",
+      "sellers": [
+        { "name": "Vedder Holsters","price": 69.99, "stock": "in", "url": "https://vedderholsters.com/lighttuck-glock-19/?ref=ia", "fflRequired": false, "updatedAt": "2026-03-11T08:00:00Z" }
+      ],
+      "specs": {
+        "carryPos": "IWB",
+        "material": "Kydex",
+        "fits":     "Glock"
+      }
+    },
+
+    {
+      "id": "ar-parts-geissele-sd3g-trigger",
+      "category": "ar-parts",
+      "brand": "Geissele",
+      "name": "SD-3G Trigger",
+      "sub": "AR-15 Super Dynamic 3-Gun Trigger",
+      "description": "The Geissele SD-3G is a semi-automatic only trigger designed for 3-Gun competition. Features a short reset, positive reset tactile click, and a very light pull weight while maintaining safe, reliable ignition.",
+      "img": "",
+      "stars": 4.9,
+      "reviews": 1600,
+      "badge": "best",
+      "sellers": [
+        { "name": "Primary Arms","price": 229.99, "stock": "in",  "url": "https://www.primaryarms.com/geissele-sd3g/?ref=ia", "fflRequired": false, "updatedAt": "2026-03-11T08:00:00Z" },
+        { "name": "Brownells",  "price": 239.99, "stock": "in",  "url": "https://www.brownells.com/geissele-sd3g/?ref=ia",   "fflRequired": false, "updatedAt": "2026-03-11T08:00:00Z" }
+      ],
+      "specs": {
+        "partType": "Trigger",
+        "caliber":  ".223/5.56"
+      }
+    },
+
+    {
+      "id": "magazines-magpul-pmag30-ar15",
+      "category": "magazines",
+      "brand": "Magpul",
+      "name": "PMAG 30 AR/M4 GEN M3",
+      "sub": "30-Round .223/5.56 AR-15 Polymer Mag",
+      "description": "The PMAG 30 GEN M3 is the most widely used polymer AR-15 magazine in the world. Featuring an anti-tilt follower, textured gripping surfaces, and a flared floorplate for positive purchase during reloads.",
+      "img": "",
+      "stars": 4.9,
+      "reviews": 7800,
+      "badge": "best",
+      "sellers": [
+        { "name": "Primary Arms","price": 12.99, "stock": "in", "url": "https://www.primaryarms.com/magpul-pmag30/?ref=ia", "fflRequired": false, "updatedAt": "2026-03-11T08:00:00Z" },
+        { "name": "Brownells",  "price": 13.99, "stock": "in", "url": "https://www.brownells.com/magpul-pmag30/?ref=ia",   "fflRequired": false, "updatedAt": "2026-03-11T08:00:00Z" },
+        { "name": "MidwayUSA",  "price": 14.49, "stock": "in", "url": "https://www.midwayusa.com/magpul-pmag30/?ref=ia",  "fflRequired": false, "updatedAt": "2026-03-11T08:00:00Z" }
+      ],
+      "specs": {
+        "fits":     "AR-15",
+        "caliber":  ".223/5.56",
+        "capacity": 30,
+        "material": "Polymer"
+      }
+    },
+
+    {
+      "id": "cleaning-hoppe9-boresnake-556",
+      "category": "cleaning",
+      "brand": "Hoppe's",
+      "name": "BoreSnake Viper .223/5.56",
+      "sub": "One-Pass Bore Cleaner for .223/5.56",
+      "description": "The Hoppe's BoreSnake Viper cleans a rifle bore in a single pass using an integrated brass brush and thick floss tail to scrub, clean, and dry. Washable and reusable for hundreds of cleaning sessions.",
+      "img": "",
+      "stars": 4.7,
+      "reviews": 3100,
+      "badge": "",
+      "sellers": [
+        { "name": "MidwayUSA",  "price": 19.99, "stock": "in", "url": "https://www.midwayusa.com/hoppe9-boresnake-223/?ref=ia",   "fflRequired": false, "updatedAt": "2026-03-11T08:00:00Z" },
+        { "name": "Brownells",  "price": 21.99, "stock": "in", "url": "https://www.brownells.com/hoppe9-boresnake-556/?ref=ia",   "fflRequired": false, "updatedAt": "2026-03-11T08:00:00Z" }
+      ],
+      "specs": {
+        "productType": "Bore Snake",
+        "fitsCaliber": ".223/5.56"
+      }
+    },
+
+    {
+      "id": "gun-safes-vaultek-vt20i",
+      "category": "gun-safes",
+      "brand": "Vaultek",
+      "name": "VT20i Biometric Handgun Safe",
+      "sub": "Biometric 2-Pistol Bluetooth Smart Safe",
+      "description": "The Vaultek VT20i is a compact bedside handgun safe with a high-resolution biometric scanner that unlocks in under a second. Bluetooth app monitoring, anti-pry construction, and an interior LED make it a top choice for quick-access home storage.",
+      "img": "",
+      "stars": 4.6,
+      "reviews": 2400,
+      "badge": "best",
+      "sellers": [
+        { "name": "Vaultek",    "price": 219.99, "stock": "in", "url": "https://vaulteksafe.com/vt20i/?ref=ia",           "fflRequired": false, "updatedAt": "2026-03-11T08:00:00Z" },
+        { "name": "Cabela's",   "price": 229.99, "stock": "in", "url": "https://www.cabelas.com/vaultek-vt20i/?ref=ia",   "fflRequired": false, "updatedAt": "2026-03-11T08:00:00Z" },
+        { "name": "OpticsPlanet","price": 239.00, "stock": "in","url": "https://www.opticsplanet.com/vaultek-vt20i/?ref=ia","fflRequired": false,"updatedAt": "2026-03-11T08:00:00Z" }
+      ],
+      "specs": {
+        "safeType":    "Biometric Pistol Safe",
+        "gunCapacity": 2,
+        "lockType":    "Biometric",
+        "fireRating":  "None",
+        "weightLbs":   5.0
+      }
+    }
+
+  ]
+}

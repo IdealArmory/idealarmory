@@ -1,0 +1,1522 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Product | Ideal Armory</title>
+<meta name="description" id="page-desc" content="Compare prices from licensed retailers on Ideal Armory.">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-62EBWTERM3">/* ── UNIVERSAL NAV JS ── */
+function toggleDrawer(){
+  var d=document.getElementById('mobile-drawer');
+  var o=document.getElementById('drawer-overlay');
+  var h=document.getElementById('nav-hamburger');
+  var isOpen=d.classList.contains('open');
+  d.classList.toggle('open',!isOpen);
+  o.classList.toggle('open',!isOpen);
+  if(h)h.classList.toggle('open',!isOpen);
+  document.body.style.overflow=isOpen?'':'hidden';
+}
+(function updateNavKitCount(){
+  try{
+    var raw=localStorage.getItem('ia_kit_v1');
+    if(!raw)return;
+    var data=JSON.parse(raw);
+    var count=(data.kit||[]).length;
+    var el=document.getElementById('nav-kit-count');
+    if(el&&count>0){el.textContent=count;el.style.display='inline-flex';}
+  }catch(e){}
+})();
+
+</script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-62EBWTERM3');</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --navy:#1b2a3b;--navy-deep:#0f1c28;--navy-mid:#243650;--navy-pale:#eef2f7;
+  --gold:#d4a82e;--gold-light:#e8b83a;
+  --white:#fff;--off-white:#f7f6f3;
+  --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;
+  --gray-400:#9ca3af;--gray-500:#6b7280;--gray-600:#4b5563;--gray-700:#374151;--gray-800:#1f2937;
+  --green:#16a34a;--green-bg:#f0fdf4;
+  --red:#b8311f;--orange:#d97706;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.08);
+  --shadow-md:0 2px 8px rgba(0,0,0,.1);
+  --shadow-lg:0 4px 24px rgba(0,0,0,.12);
+  --r:3px
+}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--off-white);color:var(--gray-700);min-height:100vh;display:flex;flex-direction:column}
+
+/* ── NAV ───────────────────────────────────────────────────────────────────── */
+nav.site-nav{background:var(--navy-deep);position:sticky;top:0;z-index:200}
+.nav-top{display:flex;align-items:center;padding:0 24px;height:58px;gap:16px}
+a.nav-logo{display:flex;align-items:center;font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--white);letter-spacing:-.5px;white-space:nowrap;text-decoration:none;line-height:1;flex-shrink:0}
+a.nav-logo .nav-wm{color:var(--white);line-height:1}
+a.nav-logo .nav-wm span{color:var(--gold-light)}
+a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
+.nav-search{flex:1;max-width:400px;margin:0 12px;position:relative;display:flex;align-items:center}
+.nav-search svg{width:14px;height:14px;stroke:rgba(255,255,255,.4);fill:none;position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;z-index:1}
+.nav-search input{width:100%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:var(--white);padding:7px 12px 7px 34px;font-family:'Inter',sans-serif;font-size:13px;outline:none}
+.nav-search input::placeholder{color:rgba(255,255,255,.4)}
+.nav-srch-btn{background:var(--gold);color:var(--navy-deep);border:1px solid var(--gold);height:34px;padding:0 16px;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;letter-spacing:.2px;flex-shrink:0}
+.nav-actions{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.nav-btn{background:transparent;border:1px solid rgba(255,255,255,.16);color:rgba(255,255,255,.78);height:34px;padding:0 14px;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;letter-spacing:.2px;display:inline-flex;align-items:center;text-decoration:none;transition:all .15s}
+.nav-btn:hover{background:rgba(255,255,255,.09);color:var(--white);border-color:rgba(255,255,255,.3)}
+.nav-btn.accent{background:var(--gold);border-color:var(--gold);color:var(--navy-deep);font-weight:700}
+.nav-cats-bar{background:#152030;border-top:1px solid rgba(255,255,255,.05);overflow-x:auto;scrollbar-width:none}
+.nav-cats-bar::-webkit-scrollbar{display:none}
+.nav-cats-inner{display:flex;max-width:1360px;margin:0 auto;padding:0 24px}
+.nav-cat{color:rgba(255,255,255,.55);font-size:12px;font-weight:500;padding:10px 15px;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all .15s;user-select:none;letter-spacing:.3px;text-transform:uppercase;text-decoration:none;display:inline-block}
+.nav-cat:hover{color:var(--white)}
+.nav-cat.active{color:var(--gold-light);border-bottom-color:var(--gold-light);font-weight:600}
+
+/* ── BREADCRUMB ─────────────────────────────────────────────────────────────── */
+.breadcrumb-bar{background:var(--white);border-bottom:1px solid var(--gray-100);padding:11px 24px}
+.breadcrumb-inner{max-width:1360px;margin:0 auto;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--gray-400);flex-wrap:wrap}
+.breadcrumb-inner a{color:var(--gray-400);text-decoration:none}
+.breadcrumb-inner a:hover{color:var(--gold)}
+.breadcrumb-inner .bc-current{color:var(--gray-600);font-weight:500}
+
+/* ── PRODUCT PAGE ───────────────────────────────────────────────────────────── */
+.pd-page{flex:1;max-width:1360px;margin:0 auto;width:100%;padding:28px 24px 56px}
+
+/* ── MAIN GRID ──────────────────────────────────────────────────────────────── */
+.pd-main{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-bottom:52px;align-items:start}
+
+/* ── GALLERY ────────────────────────────────────────────────────────────────── */
+.pd-main-wrap{background:var(--white);border:1px solid var(--gray-200);padding:16px;margin-bottom:8px}
+.pd-main-wrap img{width:100%;height:360px;object-fit:contain;display:block}
+.pd-thumbs{display:flex;gap:6px}
+.pd-thumb{flex:1;height:76px;background:var(--white);border:2px solid var(--gray-200);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:6px;transition:border-color .15s}
+.pd-thumb img{max-width:100%;max-height:100%;object-fit:contain;display:block}
+.pd-thumb.active{border-color:var(--navy)}
+.pd-thumb:hover{border-color:var(--gold)}
+
+/* ── PRODUCT INFO ───────────────────────────────────────────────────────────── */
+.pd-info{}
+.pd-badges{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.pd-badge-best{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:#fff;background:#16a34a;padding:3px 10px}
+.pd-badge-cat{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--navy);background:var(--navy-pale);padding:3px 10px;text-decoration:none}
+.pd-badge-upc{font-size:10px;color:var(--gray-400);font-family:monospace;margin-left:auto}
+.pd-brand{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--gold);margin-bottom:6px}
+.pd-name{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;color:var(--navy);line-height:1.2;margin-bottom:8px}
+.pd-sub{font-size:13px;color:var(--gray-500);margin-bottom:16px;line-height:1.6}
+.pd-desc{font-size:13px;color:var(--gray-600);line-height:1.75;margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid var(--gray-100)}
+
+/* ── PRICE BLOCK ────────────────────────────────────────────────────────────── */
+.pd-price-block{margin-bottom:20px}
+.pd-from-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:var(--gray-400);margin-bottom:6px}
+.pd-price-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.pd-best-price{font-family:'Playfair Display',serif;font-size:34px;font-weight:700;color:var(--navy)}
+.pd-orig-price{font-size:15px;color:var(--gray-400);text-decoration:line-through}
+.pd-save-badge{background:var(--red);color:var(--white);font-size:11px;font-weight:700;padding:3px 9px;letter-spacing:.3px}
+.pd-save-text{font-size:12px;color:var(--green);font-weight:600;margin-top:5px}
+
+/* ── SELLERS TABLE ──────────────────────────────────────────────────────────── */
+.pd-sellers-wrap{border:1px solid var(--gray-200);margin-bottom:18px;background:var(--white)}
+.pd-sellers-hd{padding:11px 16px 10px;border-bottom:1px solid var(--gray-100);display:flex;align-items:center;justify-content:space-between}
+.pd-sellers-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--gray-700)}
+.pd-sellers-count{font-size:11px;color:var(--gray-400)}
+.pd-seller-row{display:grid;grid-template-columns:1fr auto auto auto;gap:12px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--gray-50)}
+.pd-seller-row:last-of-type{border-bottom:none}
+.pd-seller-row.best-row{background:#fafff9}
+.pd-seller-name{font-size:13px;font-weight:600;color:var(--gray-800)}
+.pd-seller-meta{font-size:10px;color:var(--gray-400);margin-top:2px}
+.pd-seller-price{font-size:15px;font-weight:700;color:var(--gray-800);white-space:nowrap}
+.pd-seller-price.lowest{color:var(--green)}
+.stk{font-size:10px;font-weight:700;padding:3px 8px;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
+.stk-in{color:var(--green);background:var(--green-bg)}
+.stk-low{color:var(--orange);background:#fffbeb}
+.stk-out{color:var(--gray-400);background:var(--gray-100)}
+.pd-goto-btn{background:var(--navy);color:var(--white);border:none;padding:8px 16px;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;text-decoration:none;display:inline-block}
+.pd-goto-btn:hover{background:var(--navy-mid)}
+.pd-ffl-note{font-size:11px;color:var(--gray-500);padding:9px 16px;background:var(--gray-50);border-top:1px solid var(--gray-100);line-height:1.5}
+
+/* ── ACTIONS ────────────────────────────────────────────────────────────────── */
+.pd-actions{display:flex;gap:10px}
+.pd-kit-btn{flex:1;background:var(--navy);color:var(--white);border:none;padding:13px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.5px}
+.pd-share-btn{background:var(--white);color:var(--navy);border:1px solid var(--gray-200);padding:13px 20px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer}
+.pd-share-btn:hover{border-color:var(--navy)}
+
+/* ── SECTION BLOCK ──────────────────────────────────────────────────────────── */
+.pd-section{margin-bottom:44px}
+.pd-section-title{font-family:'Playfair Display',serif;font-size:21px;font-weight:700;color:var(--navy);margin-bottom:18px;padding-bottom:10px;border-bottom:2px solid var(--gold)}
+
+/* ── SPECS ──────────────────────────────────────────────────────────────────── */
+.pd-spec-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--gray-200);border:1px solid var(--gray-200)}
+.pd-spec-cell{background:var(--white);padding:13px 16px}
+.pd-spec-key{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--gray-400);margin-bottom:4px}
+.pd-spec-val{font-size:13px;font-weight:600;color:var(--gray-800)}
+
+/* ── PRICE TREND ────────────────────────────────────────────────────────────── */
+.pd-trend-box{background:var(--white);border:1px solid var(--gray-200);padding:20px 24px}
+.pd-trend-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--gray-400);margin-bottom:6px}
+.pd-trend-svg{width:100%;height:110px;display:block}
+.pd-trend-meta{display:flex;justify-content:space-between;align-items:center;margin-top:10px;flex-wrap:wrap;gap:8px}
+.pd-trend-note{font-size:11px;color:var(--gray-400);font-style:italic}
+.pd-trend-range{font-size:11px;color:var(--gray-500)}
+
+/* ── RELATED ────────────────────────────────────────────────────────────────── */
+.pd-related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.pd-rel-card{background:var(--white);border:1px solid var(--gray-200);cursor:pointer;transition:box-shadow .15s,border-color .15s;text-decoration:none;display:block}
+.pd-rel-card:hover{box-shadow:var(--shadow-md);border-color:var(--navy)}
+.pd-rel-img{height:110px;background:var(--white);display:flex;align-items:center;justify-content:center;padding:10px;border-bottom:1px solid var(--gray-100)}
+.pd-rel-img img{max-width:100%;max-height:100%;object-fit:contain}
+.pd-rel-img .img-ph{font-size:10px;color:var(--gray-400);font-style:italic;text-align:center}
+.pd-rel-body{padding:12px}
+.pd-rel-brand{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.9px;color:var(--gold);margin-bottom:3px}
+.pd-rel-name{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:var(--gray-800);margin-bottom:6px;line-height:1.3}
+.pd-rel-price{font-size:14px;font-weight:700;color:var(--navy)}
+
+/* ── NOT FOUND ──────────────────────────────────────────────────────────────── */
+.pd-not-found{text-align:center;padding:80px 24px;flex:1}
+.pd-nf-icon{font-size:48px;margin-bottom:16px}
+.pd-nf-title{font-family:'Playfair Display',serif;font-size:28px;color:var(--navy);margin-bottom:10px}
+.pd-nf-sub{font-size:14px;color:var(--gray-500);margin-bottom:28px}
+.btn-p{background:var(--navy);color:var(--white);border:none;padding:12px 28px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.5px}
+
+/* ── FOOTER ─────────────────────────────────────────────────────────────────── */
+footer{background:var(--navy-deep);color:rgba(255,255,255,.5);padding:36px 24px 24px;margin-top:auto}
+.foot-inner{max-width:1360px;margin:0 auto;display:flex;gap:48px;flex-wrap:wrap;justify-content:space-between;margin-bottom:24px}
+.foot-logo{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--white);margin-bottom:8px}
+.foot-logo span{color:var(--gold-light)}
+.foot-p{max-width:300px;font-size:11px;line-height:1.8;opacity:.7}
+.foot-col h4{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:rgba(255,255,255,.35);margin-bottom:10px}
+.foot-col ul{list-style:none}
+.foot-col li{margin-bottom:6px}
+.foot-col a{color:rgba(255,255,255,.5);text-decoration:none;font-size:12px;cursor:pointer}
+.foot-col a:hover{color:var(--gold-light)}
+.foot-bottom{max-width:1360px;margin:0 auto;padding-top:16px;border-top:1px solid rgba(255,255,255,.07);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;font-size:11px}
+.foot-links{display:flex;gap:16px}
+.foot-links a{color:rgba(255,255,255,.35);text-decoration:none}
+.foot-links a:hover{color:var(--gold-light)}
+
+/* ── RESPONSIVE ──────────────────────────────────────────────────────────────── */
+@media(max-width:900px){
+  .pd-main{grid-template-columns:1fr;gap:24px}
+  .pd-main-wrap img{height:280px}
+  .pd-name{font-size:24px}
+  .pd-best-price{font-size:28px}
+  .pd-spec-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:600px){
+  .nav-search{display:none}
+  .nav-srch-btn{display:none}
+  .pd-page{padding:16px 14px 40px}
+  .pd-spec-grid{grid-template-columns:1fr 1fr}
+  .pd-seller-row{grid-template-columns:1fr auto;gap:8px}
+  .pd-seller-row .stk{display:none}
+  .pd-seller-name{font-size:12px}
+  .pd-badges{gap:6px}
+  .pd-badge-upc{display:none}
+}
+
+.nav-hamburger{display:none;background:none;border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.8);width:36px;height:36px;cursor:pointer;align-items:center;justify-content:center;flex-shrink:0;flex-direction:column;gap:5px;padding:8px;transition:all .15s}
+.nav-hamburger:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.3)}
+.ham-line{width:16px;height:1.5px;background:rgba(255,255,255,.8);transition:all .2s;display:block}
+.nav-hamburger.open .ham-line:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.nav-hamburger.open .ham-line:nth-child(2){opacity:0}
+.nav-hamburger.open .ham-line:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+.mobile-search-bar{display:none;background:var(--navy-deep);padding:10px 14px;border-top:1px solid rgba(255,255,255,.07)}
+.mobile-search-wrap{position:relative}
+.mobile-search-wrap svg{width:14px;height:14px;stroke:rgba(255,255,255,.4);fill:none;position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;z-index:1}
+.mobile-search-bar input{width:100%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);color:var(--white);padding:11px 14px 11px 36px;font-family:'Inter',sans-serif;font-size:16px;outline:none}
+.mobile-search-bar input::placeholder{color:rgba(255,255,255,.35)}
+.mobile-drawer{position:fixed;top:0;left:0;right:0;bottom:0;background:var(--navy-deep);z-index:500;transform:translateX(-100%);transition:transform .28s cubic-bezier(.25,.46,.45,.94);overflow-y:auto;padding-top:72px}
+.mobile-drawer.open{transform:translateX(0)}
+.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:499;display:none}
+.drawer-overlay.open{display:block}
+.mob-nav-item{display:block;padding:14px 24px;font-size:14px;font-weight:500;color:rgba(255,255,255,.75);text-decoration:none;border-bottom:1px solid rgba(255,255,255,.06);transition:all .15s}
+.mob-nav-item:hover{background:rgba(255,255,255,.06);color:var(--white)}
+.mob-drawer-close{position:absolute;top:18px;right:20px;background:none;border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.6);width:32px;height:32px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;line-height:1}
+@media(max-width:768px){
+  .nav-hamburger{display:flex}
+  .nav-btn.hide-mob{display:none}
+  .mobile-search-bar{display:block}
+  .nav-search{display:none}
+  .nav-top{height:52px;padding:0 14px;gap:10px}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<div class="drawer-overlay" id="drawer-overlay" onclick="toggleDrawer()"></div>
+<div class="mobile-drawer" id="mobile-drawer">
+  <button class="mob-drawer-close" onclick="toggleDrawer()" aria-label="Close menu">&times;</button>
+  <div>
+    <a class="mob-nav-item" href="/">Home</a>
+    <a class="mob-nav-item" href="/handguns.html">Handguns</a>
+    <a class="mob-nav-item" href="/rifles.html">Rifles</a>
+    <a class="mob-nav-item" href="/shotguns.html">Shotguns</a>
+    <a class="mob-nav-item" href="/ammunition.html">Ammunition</a>
+    <a class="mob-nav-item" href="/optics.html">Optics</a>
+    <a class="mob-nav-item" href="/holsters.html">Holsters</a>
+    <a class="mob-nav-item" href="/ar-parts.html">AR Parts</a>
+    <a class="mob-nav-item" href="/magazines.html">Magazines</a>
+    <a class="mob-nav-item" href="/cleaning.html">Cleaning & Accessories</a>
+    <a class="mob-nav-item" href="/gun-safes.html">Gun Safes</a>
+    <a class="mob-nav-item" href="/kit.html">My Kit</a>
+    <a class="mob-nav-item" href="/#ffl-sec">FFL Finder</a>
+  </div>
+</div>
+<nav class="site-nav">
+  <div class="nav-top">
+    <button class="nav-hamburger" id="nav-hamburger" onclick="toggleDrawer()" aria-label="Menu">
+      <span class="ham-line"></span>
+      <span class="ham-line"></span>
+      <span class="ham-line"></span>
+    </button>
+    <a class="nav-logo" href="/">
+      <svg width="34" height="34" viewBox="0 0 66 66" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="33" cy="33" r="29" fill="#ffffff" stroke="#1b2a3b" stroke-width="2"/><path d="M33 6 L37 21 L33 17 L29 21 Z" fill="#d4a82e"/><path d="M33 60 L37 45 L33 49 L29 45 Z" fill="#1b2a3b"/><path d="M60 33 L45 29 L49 33 L45 37 Z" fill="#1b2a3b"/><path d="M6 33 L21 29 L17 33 L21 37 Z" fill="#1b2a3b"/><circle cx="33" cy="33" r="6" fill="#1b2a3b"/><circle cx="33" cy="33" r="3" fill="#d4a82e"/></svg>
+      <span class="nav-wm">Ideal <span>Armory</span></span>
+    </a>
+    <div class="nav-search">
+      <svg viewBox="0 0 16 16"><circle cx="6.5" cy="6.5" r="5" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke-width="1.5" stroke-linecap="square"/></svg>
+      <input type="text" placeholder="Search firearms, ammo, optics, brands&hellip;" id="nav-srch" oninput="doSearch()" autocomplete="off">
+      <button class="nav-srch-btn" onclick="doSearch()">Find Best Price</button>
+    </div>
+    <div class="nav-actions">
+      <a class="nav-btn hide-mob" href="/#ffl-sec" style="text-decoration:none">FFL Finder</a>
+      <a class="nav-btn hide-mob" href="/kit.html" style="text-decoration:none">My Kit <span id="nav-kit-count" style="display:none;background:var(--gold-light);color:var(--navy-deep);font-size:10px;font-weight:700;padding:1px 5px;margin-left:4px;line-height:1;border-radius:2px"></span></a>
+      <a class="nav-btn accent" href="/" style="text-decoration:none">Sign In</a>
+    </div>
+  </div>
+  <div class="mobile-search-bar">
+    <div class="mobile-search-wrap">
+      <svg viewBox="0 0 16 16"><circle cx="6.5" cy="6.5" r="5" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke-width="1.5" stroke-linecap="square"/></svg>
+      <input type="text" placeholder="Search firearms, ammo, optics&hellip;" id="mob-srch" oninput="doSearch()">
+    </div>
+  </div>
+  <div class="nav-cats-bar">
+    <div class="nav-cats-inner">
+      <a class="nav-cat" href="/">All</a>
+      <a class="nav-cat" href="/handguns.html">Handguns</a>
+      <a class="nav-cat" href="/rifles.html">Rifles</a>
+      <a class="nav-cat" href="/shotguns.html">Shotguns</a>
+      <a class="nav-cat" href="/ammunition.html">Ammo</a>
+      <a class="nav-cat" href="/optics.html">Optics</a>
+      <a class="nav-cat" href="/holsters.html">Holsters</a>
+      <a class="nav-cat" href="/ar-parts.html">AR Parts</a>
+      <a class="nav-cat" href="/magazines.html">Magazines</a>
+      <a class="nav-cat" href="/cleaning.html">Accessories</a>
+      <a class="nav-cat" href="/gun-safes.html">Safes</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ BREADCRUMB ═══ -->
+<div class="breadcrumb-bar">
+  <div class="breadcrumb-inner" id="breadcrumb">
+    <a href="/">Home</a>
+    <span>›</span>
+    <a href="/" id="bc-cat-link">Products</a>
+    <span>›</span>
+    <span class="bc-current" id="bc-name">Loading…</span>
+  </div>
+</div>
+
+<!-- ═══ PAGE BODY ═══ -->
+<div class="pd-page" id="pd-page">
+  <div style="text-align:center;padding:80px 24px;color:var(--gray-400);font-size:14px">Loading product…</div>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="foot-inner">
+    <div>
+      <div class="foot-logo">Ideal <span>Armory</span></div>
+      <p class="foot-p">Ideal Armory is a firearm price discovery platform. We partner with licensed retailers nationwide. All purchases are completed directly with the retailer and are subject to applicable laws, background checks, and FFL transfer requirements.</p>
+    </div>
+    <div class="foot-col"><h4>Browse</h4><ul>
+      <li><a href="/handguns.html">Handguns</a></li>
+      <li><a href="/rifles.html">Rifles</a></li>
+      <li><a href="/shotguns.html">Shotguns</a></li>
+      <li><a href="/ammunition.html">Ammunition</a></li>
+      <li><a href="/optics.html">Optics</a></li>
+    </ul></div>
+    <div class="foot-col"><h4>More</h4><ul>
+      <li><a href="/holsters.html">Holsters</a></li>
+      <li><a href="/ar-parts.html">AR Parts</a></li>
+      <li><a href="/magazines.html">Magazines</a></li>
+      <li><a href="/cleaning.html">Cleaning</a></li>
+      <li><a href="/gun-safes.html">Gun Safes</a></li>
+    </ul></div>
+    <div class="foot-col"><h4>Company</h4><ul>
+      <li><a href="/about.html">About Us</a></li>
+      <li><a href="/contact.html">Contact</a></li>
+      <li><a href="/privacy.html">Privacy Policy</a></li>
+      <li><a href="/terms.html">Terms of Use</a></li>
+    </ul></div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2025 Ideal Armory. All rights reserved.</span>
+    <div class="foot-links">
+      <a href="/privacy.html">Privacy</a>
+      <a href="/terms.html">Terms</a>
+      <a href="/about.html">About</a>
+      <a href="/contact.html">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════════════
+   PRODUCT DATA
+   ─────────────────────────────────────────────────────────────────────────────
+   UPC is the primary deduplication key. When multiple retailer feeds carry the
+   same product, ia-adapter.js merges their seller entries onto one record keyed
+   by UPC. The slug (derived from product name) is used for the URL only.
+   Format: /product/springfield-echelon-4-0c
+══════════════════════════════════════════════════════════════════════════════ */
+var ALL_PRODUCTS = [
+
+  /* ── HANDGUNS ──────────────────────────────────────────────────── */
+  {upc:'196798002120',category:'handguns',brand:'Beretta',name:'APX A1 Tactical 9mm',
+   sub:'9mm \u00b7 21+1 \u00b7 4.8\u2033 Barrel \u00b7 Optic Ready \u00b7 OD Green',badge:'best',
+   description:'The Beretta APX A1 Tactical delivers outstanding versatility in a full-size striker-fired platform. Features a 4.8\u2033 barrel, optic-ready slide, 21-round capacity, and an aggressive OD Green frame with modular grip panels for a custom fit.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/570865/images/535927/BRJAXA1F921TAC_1_HR__71404.1700068806.380.380.jpg?c=2'],
+   specs:[{k:'Caliber',v:'9mm'},{k:'Capacity',v:'21+1'},{k:'Barrel Length',v:'4.8\u2033'},{k:'Action',v:'Striker-Fired'},{k:'Frame',v:'OD Green Polymer'},{k:'Optic Ready',v:'Yes'},{k:'Safety',v:'No Manual Safety'},{k:'Weight',v:'27.3 oz'}],
+   sellers:[{name:'Bereli',price:479.00,stock:'in',url:'https://bereli.com/beretta-apx-a1-tactical-9mm-4-8-barrel-21-round-optic-ready-od-green-pistol/?aff=10388',fflRequired:true}]},
+
+  {upc:'195106002344',category:'handguns',brand:'Daniel Defense',name:'H9 Pistol',
+   sub:'9mm \u00b7 4.28\u2033 Barrel \u00b7 15+1 \u00b7 RDS Ready',badge:'',
+   description:'The Daniel Defense H9 combines 1911 ergonomics with modern striker-fired reliability. Comes with five 15-round magazines, an RDS optic plate, and is precision-machined to exacting tolerances for competition-grade accuracy.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/629464/images/575386/Daniel-Defense-H9-Package-Deal__13011.1755277956.380.380.jpg?c=2'],
+   specs:[{k:'Caliber',v:'9mm'},{k:'Capacity',v:'15+1'},{k:'Barrel Length',v:'4.28\u2033'},{k:'Action',v:'Striker-Fired'},{k:'Frame',v:'Aluminum'},{k:'Optic Ready',v:'Yes'},{k:'Magazines',v:'5 included'},{k:'Weight',v:'30.8 oz'}],
+   sellers:[{name:'Bereli',price:799.00,stock:'in',url:'https://bereli.com/daniel-defense-h9-pistol-4-28-barrel-5-15rd-magazines-rds-optic-plate/?aff=10388',fflRequired:true}]},
+
+  {upc:'082442866820',category:'handguns',brand:'Beretta',name:'92X Performance Competition',
+   sub:'9mm \u00b7 4.9\u2033 Barrel \u00b7 15+1 \u00b7 Single/Double Action',badge:'',
+   description:'The Beretta 92X Performance is tuned for competition with an enhanced trigger, fiber-optic front sight, and full-length accessory rail. The iconic 92 platform refined for precision shooting.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/631516/images/578486/148604__66326.1772556492.380.380.png?c=2'],
+   specs:[{k:'Caliber',v:'9mm'},{k:'Capacity',v:'15+1'},{k:'Barrel Length',v:'4.9\u2033'},{k:'Action',v:'DA/SA'},{k:'Frame',v:'Aluminum'},{k:'Sights',v:'Fiber Optic Front'},{k:'Safety',v:'Decocker/Safety'},{k:'Weight',v:'34.4 oz'}],
+   sellers:[{name:'Bereli',price:999.00,stock:'in',url:'https://bereli.com/j92xpco21/?aff=10388',fflRequired:true}]},
+
+  {upc:'022188928037',category:'handguns',brand:'Smith & Wesson',name:'Bodyguard 2.0 .380',
+   sub:'.380 ACP \u00b7 6+1 \u00b7 2.75\u2033 Barrel \u00b7 Optic Ready',badge:'best',
+   description:'The S&W Bodyguard 2.0 is an ultra-compact .380 ACP designed for deep concealment. The updated platform includes an optic-ready slide, improved ergonomics, and a clean striker-fired trigger.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/632194/images/572572/236046__37602.1748531032.380.380.jpg?c=2'],
+   specs:[{k:'Caliber',v:'.380 ACP'},{k:'Capacity',v:'6+1'},{k:'Barrel Length',v:'2.75\u2033'},{k:'Action',v:'Striker-Fired'},{k:'Frame',v:'Polymer'},{k:'Optic Ready',v:'Yes'},{k:'Weight',v:'12.3 oz'}],
+   sellers:[{name:'Bereli',price:424.99,stock:'in',url:'https://bereli.com/14439/?aff=10388',fflRequired:true}]},
+
+  {upc:'706397947988',category:'handguns',brand:'Springfield Armory',name:'Echelon 9mm',
+   sub:'9mm \u00b7 17+1 \u00b7 4.5\u2033 Barrel \u00b7 Optic Ready',badge:'best',
+   description:'The Springfield Echelon features the Variable Interface System (VIS) for direct optic mounting without adapters. Ships with three magazines, a 4.5\u2033 Melonite barrel, and interchangeable backstraps for a custom fit.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/images/stencil/760x760/products/631418/568628/225303__05440.1741299289.jpg?c=2','https://cdn11.bigcommerce.com/s-yqqkx/images/stencil/760x760/products/631418/568629/225304__00819.1741299291.jpg?c=2','https://cdn11.bigcommerce.com/s-yqqkx/images/stencil/760x760/products/631418/568630/225305__34373.1741299292.jpg?c=2','https://cdn11.bigcommerce.com/s-yqqkx/images/stencil/760x760/products/631418/568631/225306__67126.1741299293.jpg?c=2'],
+   specs:[{k:'Caliber',v:'9mm'},{k:'Capacity',v:'17+1'},{k:'Barrel Length',v:'4.5\u2033'},{k:'Action',v:'Striker-Fired'},{k:'Optic Ready',v:'VIS Platform'},{k:'Safety',v:'No Manual Safety'},{k:'Magazines',v:'3 included'},{k:'Weight',v:'25.8 oz'}],
+   sellers:[{name:'Bereli',price:519.00,stock:'in',url:'https://bereli.com/springfield-firstline-echelon-9mm-luger-17-1-4-50/?aff=10388',fflRequired:true}]},
+
+  {upc:'706397928086',category:'handguns',brand:'Springfield Armory',name:'1911 Ronin 10mm',
+   sub:'10mm Auto \u00b7 8+1 \u00b7 5\u2033 Barrel \u00b7 Night Sights',badge:'',
+   description:'The Springfield 1911 Ronin in 10mm delivers classic 1911 craftsmanship with modern touches including a Melonite-finished slide, Satin Nickel barrel, and Trijicon Tritium night sights.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/510297/images/507353/SPX9121L_1_HR__56845.1700231839.380.380.jpg?c=2'],
+   specs:[{k:'Caliber',v:'10mm Auto'},{k:'Capacity',v:'8+1'},{k:'Barrel Length',v:'5\u2033'},{k:'Action',v:'Single Action'},{k:'Frame',v:'Forged Steel'},{k:'Sights',v:'Trijicon Tritium Night Sights'},{k:'Safety',v:'Grip + Thumb Safety'},{k:'Weight',v:'41 oz'}],
+   sellers:[{name:'Bereli',price:703.00,stock:'in',url:'https://bereli.com/springfield-armory-firstline-1911-ronin-10mm-5-pistol/?aff=10388',fflRequired:true}]},
+
+  {upc:'642230261618',category:'handguns',brand:'H&K',name:'CC9 9mm Compact',
+   sub:'9mm \u00b7 3.86\u2033 Barrel \u00b7 10+1 \u00b7 Safety Included',badge:'',
+   description:'The H&K CC9 is built for concealed carry with HK\u2019s legendary engineering. Features a cold hammer-forged barrel, polygonal rifling, and the iconic HK trigger system in a compact package.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/631844/images/570801/232334__53096.1745858255.380.380.jpg?c=2'],
+   specs:[{k:'Caliber',v:'9mm'},{k:'Capacity',v:'10+1'},{k:'Barrel Length',v:'3.86\u2033'},{k:'Action',v:'Striker-Fired'},{k:'Frame',v:'Polymer'},{k:'Safety',v:'Manual Safety'},{k:'Weight',v:'21.7 oz'}],
+   sellers:[{name:'Bereli',price:745.00,stock:'in',url:'https://bereli.com/81001131/?aff=10388',fflRequired:true}]},
+
+  {upc:'798681628438',category:'handguns',brand:'Sig Sauer',name:'P320 M18 Coyote',
+   sub:'9mm \u00b7 3.9\u2033 Barrel \u00b7 17+1 \u00b7 SIGLITE Night Sights',badge:'best',
+   description:'The Sig P320 M18 is the commercial version of the U.S. Military service pistol. Coyote Tan finish, three 17-round magazines, SIGLITE Night Sights, and optic-ready slide make it a complete package.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/479393/images/487038/SG320CA-9-M18-MS_1_HR__81768.1650810223.380.380.jpg?c=2'],
+   specs:[{k:'Caliber',v:'9mm'},{k:'Capacity',v:'17+1'},{k:'Barrel Length',v:'3.9\u2033'},{k:'Action',v:'Striker-Fired'},{k:'Finish',v:'Coyote Tan'},{k:'Sights',v:'SIGLITE Night Sights'},{k:'Magazines',v:'3 included'},{k:'Weight',v:'28.1 oz'}],
+   sellers:[{name:'Bereli',price:599.00,stock:'in',url:'https://bereli.com/sig-sauer-p320-m18-9mm-3-9-barrel-coyote-tan-pistol-3-magazines/?aff=10388',fflRequired:true}]},
+
+  {upc:'723364214189',category:'handguns',brand:'Walther',name:'PDP Full Size 9mm',
+   sub:'9mm \u00b7 18+1 \u00b7 4.5\u2033 Barrel \u00b7 Optic Ready',badge:'',
+   description:'The Walther PDP Full Size features the Performance Duty Trigger (PDT) for a consistent pull, optic-ready slide, and 18-round capacity. Designed for duty and competition use.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/448479/images/467671/WA2842475_1_HR__28900.1623788912.380.380.jpg?c=2'],
+   specs:[{k:'Caliber',v:'9mm'},{k:'Capacity',v:'18+1'},{k:'Barrel Length',v:'4.5\u2033'},{k:'Action',v:'Striker-Fired'},{k:'Optic Ready',v:'Yes'},{k:'Safety',v:'No Manual Safety'},{k:'Weight',v:'25.8 oz'}],
+   sellers:[{name:'Bereli',price:599.00,stock:'in',url:'https://bereli.com/walther-pdp-optics-ready-9mm-18-round-capacity-4-5-barrel-pistol/?aff=10388',fflRequired:true}]},
+
+  {upc:'798681628452',category:'handguns',brand:'Sig Sauer',name:'P320 M17 9mm',
+   sub:'9mm \u00b7 4.7\u2033 Barrel \u00b7 17+1 \u00b7 Manual Safety',badge:'',
+   description:'The P320 M17 is the full-size variant of the U.S. Army\u2019s adopted service pistol. Coyote tan finish, manual safety, SIGLITE night sights, and two 17-round magazines.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/479394/images/487041/SG320F-9-M17-MS_1_HR__65355.1700069755.380.380.jpg?c=2'],
+   specs:[{k:'Caliber',v:'9mm'},{k:'Capacity',v:'17+1'},{k:'Barrel Length',v:'4.7\u2033'},{k:'Action',v:'Striker-Fired'},{k:'Safety',v:'Manual Safety'},{k:'Sights',v:'SIGLITE Night Sights'},{k:'Magazines',v:'2 included'},{k:'Weight',v:'29.6 oz'}],
+   sellers:[{name:'Bereli',price:625.00,stock:'in',url:'https://bereli.com/sig-sauer-p320-m17-9mm-4-7-barrel-siglite-night-sights-manual-safety/?aff=10388',fflRequired:true}]},
+
+  {upc:'736676194445',category:'handguns',brand:'Ruger',name:'RXM 9mm 4.5" Black',
+   sub:'9mm \u00b7 4.5\u2033 Barrel \u00b7 17+1 \u00b7 Optic Ready \u00b7 Night Sight',badge:'',
+   description:'The Ruger RXM is a full-size polymer-frame striker-fired pistol with a 4.5\u2033 nitride barrel, Magpul EHG grip module, optics-ready slide, and a front night sight. Includes two 17-round Magpul PMAG GL9 magazines.',
+   imgs:['https://www.ruger.com/products/rxm/images/19444.jpg'],
+   specs:[{k:'Caliber',v:'9mm'},{k:'Capacity',v:'17+1'},{k:'Barrel Length',v:'4.5\u2033'},{k:'Action',v:'Striker-Fired'},{k:'Safety',v:'Internal Trigger Safety'},{k:'Sights',v:'Night Sight Front / Serrated Rear'},{k:'Frame',v:'Polymer w/ Magpul EHG'},{k:'Finish',v:'Nitride Black'}],
+   sellers:[{name:'Impact Guns',price:399.99,stock:'in',url:'https://www.impactguns.com/semi-auto-handguns/ruger-rxm-9mm-4-5-barrel-nitride-black-magpul-ehg-optics-ready-night-sight-2x17rd-magpul-pmag-17-gl9-mags-736676194445-19444#IdealArmory',fflRequired:true}]},
+
+  {upc:'022188904895',category:'handguns',brand:'Smith & Wesson',name:'M&P M2.0 Metal HD 9mm 5"',
+   sub:'9mm \u00b7 5\u2033 Barrel \u00b7 17+1 \u00b7 Metal Frame \u00b7 Night Sight',badge:'',
+   description:'The S&W M&P M2.0 Metal Heavy Duty is a full-size all-metal striker-fired pistol built for duty and competition. Features Armornite black finish, thumb safety, front night sight, optics-ready slide, and two 17-round magazines.',
+   imgs:['https://cdn11.bigcommerce.com/s-c7gr8wg3cg/products/1556/images/8634/14672-mp-pistol-OnWhite-3Q-Right__14237.1768237465.1280.1280.png?c=1'],
+   specs:[{k:'Caliber',v:'9mm'},{k:'Capacity',v:'17+1'},{k:'Barrel Length',v:'5\u2033'},{k:'Action',v:'Striker-Fired'},{k:'Frame',v:'Steel'},{k:'Safety',v:'Manual Thumb Safety'},{k:'Sights',v:'Night Sight Front / Black Rear'},{k:'Finish',v:'Armornite Black'}],
+   sellers:[{name:'Impact Guns',price:1049.00,stock:'in',url:'https://www.impactguns.com/semi-auto-handguns/smith-wesson-m-p-m2-0-metal-heavy-duty-9mm-5-barrel-armornite-black-front-night-sight-black-rear-sight-thumb-safety-optics-ready-2x17rd-mags-022188904895-14672#IdealArmory',fflRequired:true}]},
+
+  {upc:'736676194414',category:'handguns',brand:'Ruger',name:'RXM 9mm 4" Gray',
+   sub:'9mm \u00b7 4\u2033 Barrel \u00b7 17+1 \u00b7 Optic Ready \u00b7 Gray Frame',badge:'',
+   description:'The Ruger RXM Compact pairs a black nitride slide with a Magpul EHG gray polymer frame. Features a 4\u2033 barrel, front night sight, optics-ready slide, and two 17-round Magpul PMAG GL9 magazines.',
+   imgs:['https://www.ruger.com/products/rxm/images/19441.jpg'],
+   specs:[{k:'Caliber',v:'9mm'},{k:'Capacity',v:'17+1'},{k:'Barrel Length',v:'4\u2033'},{k:'Action',v:'Striker-Fired'},{k:'Safety',v:'Internal Trigger Safety'},{k:'Sights',v:'Night Sight Front / Serrated Rear'},{k:'Frame',v:'Polymer w/ Magpul EHG Gray'},{k:'Finish',v:'Nitride Black'}],
+   sellers:[{name:'Impact Guns',price:419.99,stock:'in',url:'https://www.impactguns.com/semi-auto-handguns/ruger-rxm-9mm-4-barrel-nitride-finish-black-slide-magpul-ehg-gray-frame-optics-ready-front-night-sight-2x17rd-magpul-pmag-17-gl9-mags-736676194414-19441#IdealArmory',fflRequired:true}]},
+
+  {upc:'022188901795',category:'handguns',brand:'Smith & Wesson',name:'M&P PC Carry Comp 10mm',
+   sub:'10mm \u00b7 4\u2033 Ported Barrel \u00b7 15+1 \u00b7 Compact \u00b7 Night Sight',badge:'',
+   description:'The S&W M&P 2.0 Performance Center Carry Comp is a compact 10mm with a ported 4\u2033 barrel for reduced muzzle rise. Features Armornite finish, optics-ready slide, front night sight, and two 15-round magazines.',
+   imgs:['https://cdn11.bigcommerce.com/s-c7gr8wg3cg/products/1562/images/8620/14413-pc-mp10mm-OnWhite-3Q-Right__62104.1767716327.1280.1280.png?c=1'],
+   specs:[{k:'Caliber',v:'10mm'},{k:'Capacity',v:'15+1'},{k:'Barrel Length',v:'4\u2033 Ported'},{k:'Action',v:'Striker-Fired'},{k:'Frame',v:'Polymer'},{k:'Safety',v:'Internal Trigger Safety'},{k:'Sights',v:'Night Sight Front / Optic Height Rear'},{k:'Finish',v:'Armornite Black'}],
+   sellers:[{name:'Impact Guns',price:749.00,stock:'in',url:'https://www.impactguns.com/semi-auto-handguns/smith-wesson-m-p-2-0-performance-center-carry-comp-10mm-4-ported-barrel-armornite-black-optics-ready-front-night-sight-2x15rd-mags-022188901795-14413#IdealArmory',fflRequired:true}]},
+
+  {upc:'022188900163',category:'handguns',brand:'Smith & Wesson',name:'M&P M2.0 PC 10mm 5.6"',
+   sub:'10mm \u00b7 5.6\u2033 Ported Barrel \u00b7 10+1 \u00b7 Night Sights \u00b7 Optic Ready',badge:'',
+   description:'The S&W M&P M2.0 Performance Center in 10mm Auto features a 5.6\u2033 ported barrel, optic-height night sights, optics-ready slide, and manual safety. Includes two 10-round magazines. Built for hunters and handgun hunters wanting maximum 10mm performance.',
+   imgs:['https://cdn11.bigcommerce.com/s-c7gr8wg3cg/products/956/images/3892/13915-mp-OnWhite-3Q-Right__75824.1741878750.1280.1280.png?c=1'],
+   specs:[{k:'Caliber',v:'10mm Auto'},{k:'Capacity',v:'10+1'},{k:'Barrel Length',v:'5.6\u2033 Ported'},{k:'Action',v:'Striker-Fired'},{k:'Frame',v:'Polymer'},{k:'Safety',v:'Manual Thumb Safety'},{k:'Sights',v:'Optic Height Night Sights'},{k:'Finish',v:'Armornite Black'}],
+   sellers:[{name:'Impact Guns',price:819.99,stock:'in',url:'https://www.impactguns.com/semi-auto-handguns/smith-wesson-m-p-m2-0-performance-center-10mm-5-6-ported-barrel-night-sights-optics-ready-2x10rd-mags-022188900163-13916#IdealArmory',fflRequired:true}]},
+
+  {upc:'706397982195',category:'handguns',brand:'Springfield Armory',name:'Echelon 9mm Manual Safety 20rd',
+   sub:'9mm \u00b7 4.5\u2033 Barrel \u00b7 20+1 \u00b7 Manual Safety \u00b7 Optic Ready',badge:'',
+   description:'The Springfield Echelon with manual safety ships with 1 × 17-round and 1 × 20-round magazine. Features tritium/luminescent front sight, tactical rack U-notch rear, Melonite-finished steel barrel and slide, and a Variable Interface System (VIS) optics platform.',
+   imgs:['https://springfieldarmory.b-cdn.net/wp-content/uploads/EC9459BMS-U.png'],
+   specs:[{k:'Caliber',v:'9mm'},{k:'Capacity',v:'20+1 (incl. 1×17rd + 1×20rd)'},{k:'Barrel Length',v:'4.5\u2033'},{k:'Action',v:'Striker-Fired'},{k:'Safety',v:'Manual Thumb Safety'},{k:'Sights',v:'Tritium/Luminescent Front, U-Notch Rear'},{k:'Slide Finish',v:'Black Melonite'},{k:'Weight',v:'23.9 oz'}],
+   sellers:[{name:'Impact Guns',price:709.99,stock:'in',url:'https://www.impactguns.com/semi-auto-handguns/springfield-echelon-9mm-4-5-barrel-black-manual-safety-optic-ready-20rd-706397982195-ec9459bmsu#IdealArmory',fflRequired:true}]},
+
+  /* ── RIFLES ─────────────────────────────────────────────────────── */
+  {upc:'856304005362',category:'rifles',brand:'IWI',name:'Tavor X95 16" Bullpup',
+   sub:'5.56 NATO \u00b7 30+1 \u00b7 16\u2033 Barrel \u00b7 Bullpup',badge:'best',
+   description:'The IWI Tavor X95 is a compact, reliable bullpup rifle with a 16\u2033 barrel in a 26\u2033 overall package. Features a cold hammer-forged barrel, ambidextrous controls, and a modular design that allows caliber conversions.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/478552/images/491964/fa_x16_main-e1576526186892__80812.1665674062.380.380.png?c=2'],
+   specs:[{k:'Caliber',v:'5.56 NATO'},{k:'Capacity',v:'30+1'},{k:'Barrel Length',v:'16\u2033'},{k:'OAL',v:'26.1\u2033'},{k:'Action',v:'Semi-Auto Bullpup'},{k:'Weight',v:'7.9 lbs'},{k:'Rail',v:'MIL-SPEC Picatinny'}],
+   sellers:[{name:'Bereli',price:1749.99,stock:'in',url:'https://bereli.com/shooting/firearms/rifles/iwi-tavor-x95-16-5-56-nato-rifle/?aff=10388',fflRequired:true}]},
+
+  {upc:'815835017082',category:'rifles',brand:'Daniel Defense',name:'DDM4 V7 w/ Geissele Trigger',
+   sub:'5.56 NATO \u00b7 16\u2033 \u00b7 30+1 \u00b7 Geissele Trigger',badge:'best',
+   description:'This special DDM4 V7 package includes a drop-in Geissele trigger group for a crisp, consistent pull. Features Daniel Defense\u2019s cold hammer-forged barrel, MFR 15.0 free-float rail, and a Mil-Spec anodized finish.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/507840/images/554205/_d_d_ddm4_v7_gis_1__16549.1763151339.380.380.jpg?c=2'],
+   specs:[{k:'Caliber',v:'5.56 NATO'},{k:'Capacity',v:'30+1'},{k:'Barrel Length',v:'16\u2033'},{k:'Trigger',v:'Geissele Drop-In'},{k:'Rail',v:'MFR 15.0 M-LOK'},{k:'Weight',v:'6.44 lbs'}],
+   sellers:[{name:'Bereli',price:1599.00,stock:'in',url:'https://bereli.com/daniel-defense-ddm4-v7-5-56-ar-15-black-custom-16-rifle-with-geissele-trigger/?aff=10388',fflRequired:true}]},
+
+  {upc:'856304005423',category:'rifles',brand:'IWI',name:'Tavor 7 .308 Blemished',
+   sub:'.308 Win \u00b7 16.5\u2033 \u00b7 20+1 \u00b7 Bullpup',badge:'',
+   description:'The IWI Tavor 7 brings the legendary bullpup platform to .308/7.62x51 NATO. This blemished unit offers the same performance and reliability at a reduced price point.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/632714/images/575140/242912__22516.1753388856.380.380.jpg?c=2'],
+   specs:[{k:'Caliber',v:'.308 Win / 7.62x51 NATO'},{k:'Capacity',v:'20+1'},{k:'Barrel Length',v:'16.5\u2033'},{k:'OAL',v:'28.3\u2033'},{k:'Action',v:'Semi-Auto Bullpup'},{k:'Weight',v:'10.8 lbs'}],
+   sellers:[{name:'Bereli',price:1599.00,stock:'low',url:'https://bereli.com/t7-blem/?aff=10388',fflRequired:true}]},
+
+  {upc:'706397945908',category:'rifles',brand:'Springfield Armory',name:'Hellion 16" Bullpup',
+   sub:'5.56 NATO \u00b7 30+1 \u00b7 16\u2033 \u00b7 Ambidextrous Bullpup',badge:'',
+   description:'The Springfield Hellion is a fully ambidextrous 5.56 bullpup with a 16\u2033 barrel, side-folding stock, and a quick-change barrel system. Compatible with standard STANAG magazines.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/629960/images/560198/204318__53616.1723059620.380.380.jpg?c=2'],
+   specs:[{k:'Caliber',v:'5.56 NATO'},{k:'Capacity',v:'30+1'},{k:'Barrel Length',v:'16\u2033'},{k:'Action',v:'Semi-Auto Bullpup'},{k:'Controls',v:'Fully Ambidextrous'},{k:'Weight',v:'8.4 lbs'}],
+   sellers:[{name:'Bereli',price:1649.00,stock:'in',url:'https://bereli.com/hl916556-fl/?aff=10388',fflRequired:true}]},
+
+  {upc:'856304005119',category:'rifles',brand:'IWI',name:'Galil ACE Gen II 5.45x39mm',
+   sub:'5.45x39mm \u00b7 16\u2033 \u00b7 30+1 \u00b7 Side-Folding Stock',badge:'',
+   description:'The IWI Galil ACE Gen II in 5.45x39mm brings legendary Galil reliability to a modern platform. Features a side-folding polymer stock, cold hammer-forged barrel, and AK-compatible magazine well.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/633216/images/577813/254247__22340.1768423618.380.380.jpg?c=2'],
+   specs:[{k:'Caliber',v:'5.45x39mm'},{k:'Capacity',v:'30+1'},{k:'Barrel Length',v:'16\u2033'},{k:'Action',v:'Semi-Auto'},{k:'Stock',v:'Side-Folding Polymer'},{k:'Weight',v:'7.9 lbs'}],
+   sellers:[{name:'Bereli',price:1199.00,stock:'in',url:'https://bereli.com/gar71/?aff=10388',fflRequired:true}]},
+
+  {upc:'706397946684',category:'rifles',brand:'Springfield Armory',name:'Saint Victor AR-15 5.56',
+   sub:'5.56 NATO \u00b7 16\u2033 \u00b7 30+1 \u00b7 B5 Stock',badge:'best',
+   description:'The Springfield Saint Victor is a mil-spec AR-15 with a free-float M-LOK handguard, Melonite QPQ barrel, and B5 Systems SOPMOD Stock. A complete, duty-ready rifle at an accessible price.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/495686/images/562521/208395__38182.1734010615.380.380.jpg?c=2'],
+   specs:[{k:'Caliber',v:'5.56 NATO'},{k:'Capacity',v:'30+1'},{k:'Barrel Length',v:'16\u2033'},{k:'Handguard',v:'Free-Float M-LOK'},{k:'Stock',v:'B5 Systems SOPMOD'},{k:'Weight',v:'6.8 lbs'}],
+   sellers:[{name:'Bereli',price:889.00,stock:'in',url:'https://bereli.com/springfield-firstline-saint-victor-ar-15-rifle-b5-5-56-black/?aff=10388',fflRequired:true}]},
+
+  {upc:'688218029211',category:'rifles',brand:'Steyr',name:'Scout .308 Bolt Action',
+   sub:'.308 Win \u00b7 19\u2033 Threaded \u00b7 10+1 \u00b7 Detachable Mag',badge:'',
+   description:'The Steyr Scout is a lightweight .308 bolt-action designed by Jeff Cooper. Features a 19\u2033 threaded barrel, detachable box magazine, and an integrated bipod in the stock.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/482786/images/536911/Screenshot_2023-07-26_at_10.00.26_PM__37835.1690423516.380.380.png?c=2'],
+   specs:[{k:'Caliber',v:'.308 Winchester'},{k:'Capacity',v:'10+1'},{k:'Barrel Length',v:'19\u2033 Threaded'},{k:'Action',v:'Bolt-Action'},{k:'Weight',v:'6.6 lbs'},{k:'Overall Length',v:'38.5\u2033'}],
+   sellers:[{name:'Bereli',price:1550.00,stock:'in',url:'https://bereli.com/steyr-arms-scout-bolt-action-rifle-308-winchester-19-threaded-barrel/?aff=10388',fflRequired:true}]},
+
+  {upc:'706397946967',category:'rifles',brand:'Springfield Armory',name:'Saint Victor PCC 9mm',
+   sub:'9mm \u00b7 16\u2033 \u00b7 33+1 \u00b7 Pistol Caliber Carbine',badge:'',
+   description:'The Springfield Saint Victor PCC fires 9mm from Glock-compatible magazines. Features a 16\u2033 M-LOK handguard, Melonite barrel, and Bravo Company Gunfighter stock for a complete pistol caliber package.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/629499/images/557784/197005__81572.1706719120.380.380.jpg?c=2'],
+   specs:[{k:'Caliber',v:'9mm'},{k:'Capacity',v:'33+1'},{k:'Barrel Length',v:'16\u2033'},{k:'Mag Compatibility',v:'Glock Pattern'},{k:'Handguard',v:'M-LOK'},{k:'Weight',v:'7.0 lbs'}],
+   sellers:[{name:'Bereli',price:999.00,stock:'in',url:'https://bereli.com/stv91609b-fl/?aff=10388',fflRequired:true}]},
+
+  {upc:'098289015631',category:'rifles',brand:'Colt',name:'CR6920 M4 Carbine 5.56',
+   sub:'5.56 NATO \u00b7 16.1\u2033 \u00b7 30+1 \u00b7 M4 Carbine',badge:'',
+   description:'The Colt CR6920 is the civilian version of the M4 carbine used by U.S. military forces. Mil-Spec components throughout, 16.1\u2033 chrome-lined barrel, and a 4-position telescoping stock.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/404175/images/424980/LE6920-2__81114.1589919374.380.380.jpg?c=2'],
+   specs:[{k:'Caliber',v:'5.56 NATO'},{k:'Capacity',v:'30+1'},{k:'Barrel Length',v:'16.1\u2033'},{k:'Barrel Lining',v:'Chrome-Lined'},{k:'Stock',v:'4-Position Telescoping'},{k:'Weight',v:'6.9 lbs'}],
+   sellers:[{name:'Bereli',price:1087.00,stock:'in',url:'https://bereli.com/colt-cr6920-m4-carbine-5-56-nato-ar-15-rifle/?aff=10388',fflRequired:true}]},
+
+  {upc:'798681624706',category:'rifles',brand:'Sig Sauer',name:'M400 SDI 5.56 Rifle',
+   sub:'5.56 NATO \u00b7 16\u2033 \u00b7 30+1 \u00b7 Free-Float MLOK',badge:'',
+   description:'The Sig M400 SDI features a free-float M-LOK handguard, mid-length gas system, and a Sig precision-button rifled barrel. A solid patrol rifle with modern furniture and Sig reliability.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/490497/images/497744/m400-xseries-sdi-3__92819.1700230343.380.380.jpg?c=2'],
+   specs:[{k:'Caliber',v:'5.56 NATO'},{k:'Capacity',v:'30+1'},{k:'Barrel Length',v:'16\u2033'},{k:'Gas System',v:'Mid-Length'},{k:'Handguard',v:'Free-Float M-LOK'},{k:'Weight',v:'6.7 lbs'}],
+   sellers:[{name:'Bereli',price:1175.00,stock:'in',url:'https://bereli.com/sig-sauer-m400-x-series-sdi-5-56-nato-16-30rd-rifle-rm400-sdi-16b-p/?aff=10388',fflRequired:true}]},
+
+  {upc:'619835200532',category:'rifles',brand:'Henry',name:'H12 Protector Carbine .357 Mag',
+   sub:'.357 Mag \u00b7 16.5\u2033 Threaded \u00b7 7+1 \u00b7 Lever-Action \u00b7 Walnut',badge:'',
+   description:'The Henry H12 Protector Carbine in .357 Mag/.38 Special features a 16.5\u2033 threaded barrel with blued finish, American walnut stock, and an adjustable semi-buckhorn rear sight with brass bead front. Holds 7 rounds and pairs naturally with revolvers of the same caliber.',
+   imgs:['https://www.henryusa.com/wp-content/uploads/2026/01/H012PGR-44M_Hero.webp'],
+   specs:[{k:'Caliber',v:'.357 Magnum / .38 Special'},{k:'Capacity',v:'7+1'},{k:'Barrel Length',v:'16.5\u2033 Threaded'},{k:'Action',v:'Lever-Action'},{k:'Stock',v:'American Walnut Checkered'},{k:'Sights',v:'Adj. Semi-Buckhorn Rear / Brass Bead Front'},{k:'Finish',v:'Blued'},{k:'Weight',v:'~6.5 lbs'}],
+   sellers:[{name:'Impact Guns',price:920.29,stock:'in',url:'https://www.impactguns.com/lever-action-rifles/henry-h12-provider-carbine-357-magnum-38-special-16-5-threaded-barrel-blued-american-walnut-checkered-adj-semi-buckhorn-diamond-insert-brass-bead-front-7rd-619835200532-h012pgr357#IdealArmory',fflRequired:true}]},
+
+  {upc:'043125016167',category:'rifles',brand:'Bergara',name:'B-14 HMR Carbon Wilderness 6.5 Creedmoor',
+   sub:'6.5 Creedmoor \u00b7 24\u2033 CF Barrel \u00b7 5+1 \u00b7 Bolt-Action',badge:'',
+   description:'The Bergara B-14 HMR Carbon Wilderness combines a 24\u2033 carbon fiber-wrapped barrel with the proven B-14 action and a Mini-Chassis molded stock. Topped with an Omni muzzle brake and finished for rough backcountry use — exceptional precision at long range.',
+   imgs:['https://www.bergara.online/us/wp-content/uploads/sites/6/2022/12/hmrcarbonlandingimage3.png'],
+   specs:[{k:'Caliber',v:'6.5 Creedmoor'},{k:'Capacity',v:'5+1'},{k:'Barrel Length',v:'24\u2033 Carbon Fiber'},{k:'Action',v:'Bolt-Action'},{k:'Stock',v:'Mini-Chassis Molded'},{k:'Safety',v:'Two-Position'},{k:'OAL',v:'44\u2033'},{k:'Muzzle',v:'Omni Muzzle Brake'}],
+   sellers:[{name:'Impact Guns',price:1699.99,stock:'in',url:'https://www.impactguns.com/bolt-action-rifles/bergara-b-14-hmr-carbon-wilderness-6-5-creedmoor-24-cf-barrel-omni-muzzle-brake-5rd-043125016167-b14s382cf#IdealArmory',fflRequired:true}]},
+
+  /* ── SHOTGUNS ────────────────────────────────────────────────────── */
+  {upc:'082442884381',category:'shotguns',brand:'Beretta',name:'A300 Ultima Patrol 12ga',
+   sub:'12 Gauge \u00b7 19.1\u2033 \u00b7 7+1 \u00b7 Semi-Auto Tactical',badge:'best',
+   description:'The Beretta A300 Ultima Patrol is a tactical semi-automatic shotgun built on the proven Mobilchoke system. Features a 7+1 magazine tube, ghost ring sights, and a pistol-grip stock.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/497971/images/565098/BERETTA-A300__04884.1677166675__78170.1745965955.380.380.jpg?c=2'],
+   specs:[{k:'Gauge',v:'12 Gauge'},{k:'Chamber',v:'3\u2033'},{k:'Capacity',v:'7+1'},{k:'Barrel Length',v:'19.1\u2033'},{k:'Action',v:'Gas-Operated Semi-Auto'},{k:'Sights',v:'Ghost Ring'},{k:'Weight',v:'7.7 lbs'}],
+   sellers:[{name:'Bereli',price:825.00,stock:'in',url:'https://bereli.com/beretta-a300-ultima-patrol-12-gauge-19-1-barrel-7-round-mag-tube-shotgun/?aff=10388',fflRequired:true}]},
+
+  {upc:'082442914576',category:'shotguns',brand:'Beretta',name:'1301 Tactical Mod 2',
+   sub:'12 Gauge \u00b7 18.5\u2033 \u00b7 7+1 \u00b7 Semi-Auto LE',badge:'',
+   description:'The Beretta 1301 Tactical Mod 2 is one of the fastest-cycling semi-auto shotguns on the market. The BLINK gas system cycles 36% faster than competing designs. LE-ready with ghost ring sights and extended magazine tube.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/629742/images/558881/202530__73459.1715000970.380.380.jpg?c=2'],
+   specs:[{k:'Gauge',v:'12 Gauge'},{k:'Chamber',v:'3\u2033'},{k:'Capacity',v:'7+1'},{k:'Barrel Length',v:'18.5\u2033'},{k:'Gas System',v:'Beretta BLINK'},{k:'Sights',v:'Ghost Ring'},{k:'Weight',v:'7.7 lbs'}],
+   sellers:[{name:'Bereli',price:1629.00,stock:'in',url:'https://bereli.com/j131m2tt18le/?aff=10388',fflRequired:true}]},
+
+  {upc:'856304005478',category:'shotguns',brand:'IWI',name:'Tavor TS12 Bullpup Shotgun',
+   sub:'12 Gauge \u00b7 18.5\u2033 \u00b7 15+1 \u00b7 Bullpup Tri-Tube',badge:'best',
+   description:'The IWI Tavor TS12 packs 15+1 rounds of 12 gauge into a bullpup design. Three rotating magazine tubes feed the chamber sequentially, offering industry-leading capacity in a compact package.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/402404/images/513529/Screenshot_2023-03-14_at_3.10.39_PM__65787.1678821071.380.380.png?c=2'],
+   specs:[{k:'Gauge',v:'12 Gauge'},{k:'Capacity',v:'15+1 (3 tubes x 5)'},{k:'Barrel Length',v:'18.5\u2033'},{k:'Action',v:'Gas-Operated Semi-Auto Bullpup'},{k:'OAL',v:'28.3\u2033'},{k:'Weight',v:'8.6 lbs'}],
+   sellers:[{name:'Bereli',price:1288.99,stock:'in',url:'https://bereli.com/iwi-tavor-ts12-bullpup-shotgun/?aff=10388',fflRequired:true}]},
+
+  {upc:'855585007046',category:'shotguns',brand:'JTS',name:'M12AR Semi-Auto 12ga',
+   sub:'12 Gauge \u00b7 18.5\u2033 \u00b7 5+1 \u00b7 AR-Style Semi-Auto',badge:'',
+   description:'The JTS M12AR is an AR-style semi-automatic 12 gauge with a detachable box magazine. Accepts standard 5-round box magazines and features a pistol grip, adjustable stock, and Picatinny top rail.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/580720/images/539671/JTSM12AR_1_HR__63855.1701803068.380.380.jpg?c=2'],
+   specs:[{k:'Gauge',v:'12 Gauge'},{k:'Chamber',v:'3\u2033'},{k:'Capacity',v:'5+1'},{k:'Barrel Length',v:'18.5\u2033'},{k:'Action',v:'Gas-Operated Semi-Auto'},{k:'Weight',v:'7.7 lbs'}],
+   sellers:[{name:'Bereli',price:349.99,stock:'in',url:'https://bereli.com/jts-m12ar-12ga-5rd-18-5-semi-auto-shotgun-black/?aff=10388',fflRequired:true}]},
+
+  {upc:'650350110130',category:'shotguns',brand:'Benelli',name:'M4 Tactical 18.5"',
+   sub:'12 Gauge \u00b7 18.5\u2033 \u00b7 5+1 \u00b7 ARGO Gas System',badge:'best',
+   description:'The Benelli M4 is the gold standard of tactical shotguns, adopted by the U.S. Marine Corps. The ARGO (Auto-Regulating Gas-Operated) system runs reliably with any 12-gauge load.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/629678/images/558591/198282__69968.1712234984.380.380.jpg?c=2'],
+   specs:[{k:'Gauge',v:'12 Gauge'},{k:'Chamber',v:'3\u2033'},{k:'Capacity',v:'5+1'},{k:'Barrel Length',v:'18.5\u2033'},{k:'Gas System',v:'ARGO'},{k:'Stock',v:'Pistol Grip Skeleton'},{k:'Weight',v:'7.8 lbs'}],
+   sellers:[{name:'Bereli',price:1875.00,stock:'in',url:'https://bereli.com/11710/?aff=10388',fflRequired:true}]},
+
+  {upc:'650350210151',category:'shotguns',brand:'Benelli',name:'Nova Tactical 12ga',
+   sub:'12 Gauge \u00b7 18.5\u2033 \u00b7 4+1 \u00b7 Pump Action',badge:'',
+   description:'The Benelli Nova Tactical is a rugged pump-action shotgun with a steel-reinforced polymer stock. Features a ComforTech recoil system, ghost ring sights, and a reliable pump action.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/631422/images/568658/225621__49002.1741626260.380.380.png?c=2'],
+   specs:[{k:'Gauge',v:'12 Gauge'},{k:'Chamber',v:'3\u2033'},{k:'Capacity',v:'4+1'},{k:'Barrel Length',v:'18.5\u2033'},{k:'Action',v:'Pump-Action'},{k:'Sights',v:'Ghost Ring'},{k:'Weight',v:'7.2 lbs'}],
+   sellers:[{name:'Bereli',price:749.00,stock:'in',url:'https://bereli.com/21501/?aff=10388',fflRequired:true}]},
+
+  {upc:'650350111787',category:'shotguns',brand:'Benelli',name:'M4 EXT 7rd Telescoping',
+   sub:'12 Gauge \u00b7 18.5\u2033 \u00b7 7+1 \u00b7 Telescoping Stock',badge:'',
+   description:'The Benelli M4 EXT adds an extended 7-round magazine tube and a 6-position telescoping stock to the legendary M4 platform. The ultimate tactical semi-auto shotgun configuration.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/633105/images/577216/250316__41877.1762792856.380.380.png?c=2'],
+   specs:[{k:'Gauge',v:'12 Gauge'},{k:'Chamber',v:'3\u2033'},{k:'Capacity',v:'7+1'},{k:'Barrel Length',v:'18.5\u2033'},{k:'Gas System',v:'ARGO'},{k:'Stock',v:'6-Position Telescoping'},{k:'Weight',v:'8.2 lbs'}],
+   sellers:[{name:'Bereli',price:2299.00,stock:'in',url:'https://bereli.com/1178/?aff=10388',fflRequired:true}]},
+
+  {upc:'015813030663',category:'shotguns',brand:'Mossberg',name:'590 Shockwave 12ga',
+   sub:'12 Gauge \u00b7 14.375\u2033 \u00b7 6+1 \u00b7 Non-NFA Shotgun',badge:'best',
+   description:'The Mossberg 590 Shockwave is a legally-classified firearm (not a shotgun or SBS) with a 14.375\u2033 barrel. The Raptor bird\u2019s-head grip and overall 26.37\u2033 length keep it non-NFA compliant.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/483420/images/490276/MS50639_3_HR__03756.1700232864.380.380.jpg?c=2'],
+   specs:[{k:'Gauge',v:'12 Gauge'},{k:'Chamber',v:'3\u2033'},{k:'Capacity',v:'6+1'},{k:'Barrel Length',v:'14.375\u2033'},{k:'OAL',v:'26.37\u2033'},{k:'Action',v:'Pump-Action'},{k:'Weight',v:'5.3 lbs'}],
+   sellers:[{name:'Bereli',price:415.00,stock:'in',url:'https://bereli.com/mossberg-590-shockwave-12-gauge-18-5-barrel-3-chamber-black-6rd-shotgun/?aff=10388',fflRequired:true}]},
+
+  {upc:'650350111312',category:'shotguns',brand:'Benelli',name:'M4 Tactical Pistol Grip 12ga',
+   sub:'12 Gauge \u00b7 18.5\u2033 \u00b7 5+1 \u00b7 Black Pistol Grip',badge:'',
+   description:'The Benelli M4 with fixed pistol grip stock delivers the same legendary ARGO reliability in a more compact configuration. Ready for duty and home defense right out of the box.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/629679/images/558584/198284__41231.1712234862.380.380.jpg?c=2'],
+   specs:[{k:'Gauge',v:'12 Gauge'},{k:'Chamber',v:'3\u2033'},{k:'Capacity',v:'5+1'},{k:'Barrel Length',v:'18.5\u2033'},{k:'Gas System',v:'ARGO'},{k:'Stock',v:'Fixed Pistol Grip'},{k:'Weight',v:'7.8 lbs'}],
+   sellers:[{name:'Bereli',price:1749.99,stock:'in',url:'https://bereli.com/11713/?aff=10388',fflRequired:true}]},
+
+  {upc:'650350201012',category:'shotguns',brand:'Benelli',name:'SuperNova Tactical 12ga',
+   sub:'12 Gauge \u00b7 18.5\u2033 \u00b7 4+1 \u00b7 ComforTech Stock',badge:'',
+   description:'The Benelli SuperNova Tactical features the innovative ComforTech stock system for dramatically reduced felt recoil. Synthetic stock, ghost ring sights, and a reliable rotating bolt design.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/632116/images/572203/233937__90939.1746207601.380.380.jpg?c=2'],
+   specs:[{k:'Gauge',v:'12 Gauge'},{k:'Chamber',v:'3.5\u2033'},{k:'Capacity',v:'4+1'},{k:'Barrel Length',v:'18.5\u2033'},{k:'Action',v:'Pump-Action'},{k:'Stock',v:'ComforTech'},{k:'Weight',v:'8.0 lbs'}],
+   sellers:[{name:'Bereli',price:725.00,stock:'in',url:'https://bereli.com/20151/?aff=10388',fflRequired:true}]},
+
+  /* ── AMMUNITION ──────────────────────────────────────────────────── */
+  {upc:'076683052001',category:'ammunition',brand:'CCI',name:'Blazer Brass 9mm 50rd',
+   sub:'9mm Luger \u00b7 115gr FMJ \u00b7 50 Round Box',badge:'best',
+   description:'CCI Blazer Brass is the go-to range ammunition for 9mm shooters. Brass-cased, reloadable, and loaded with a clean-burning powder charge for consistent velocity.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/473842/images/479279/5200__07166.1636063819.380.380.jpg?c=2'],
+   specs:[{k:'Caliber',v:'9mm Luger'},{k:'Bullet Weight',v:'115 Grains'},{k:'Bullet Type',v:'FMJ'},{k:'Muzzle Velocity',v:'1125 fps'},{k:'Count',v:'50 Rounds'},{k:'Casing',v:'Brass'}],
+   sellers:[{name:'Bereli',price:21.99,stock:'in',url:'https://bereli.com/5200/?aff=10388',fflRequired:false}]},
+
+  {upc:'020892215191',category:'ammunition',brand:'Winchester',name:'M193 5.56 NATO 20rd',
+   sub:'5.56 NATO \u00b7 55gr FMJ \u00b7 20 Round Box',badge:'best',
+   description:'Winchester M193 meets military specifications for 5.56 NATO ammunition. A 55-grain FMJ at 3,240 fps makes this a reliable choice for training and target shooting.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/631173/images/567325/221929__15628.1739972978.380.380.png?c=2'],
+   specs:[{k:'Caliber',v:'5.56 NATO'},{k:'Bullet Weight',v:'55 Grains'},{k:'Bullet Type',v:'FMJ'},{k:'Muzzle Velocity',v:'3240 fps'},{k:'Count',v:'20 Rounds'},{k:'Casing',v:'Brass'}],
+   sellers:[{name:'Bereli',price:24.99,stock:'in',url:'https://bereli.com/wm193k-v/?aff=10388',fflRequired:false}]},
+
+  {upc:'020892219373',category:'ammunition',brand:'Winchester',name:'Super Suppressed .300 BLK 20rd',
+   sub:'.300 BLK \u00b7 200gr Subsonic \u00b7 Suppressor Optimized',badge:'',
+   description:'Winchester Super Suppressed ammunition is engineered specifically for suppressed firearms. The 200-grain subsonic load stays below the speed of sound for maximum suppressor effectiveness.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/632693/images/575081/238695__82788.1753190996.380.380.png?c=2'],
+   specs:[{k:'Caliber',v:'.300 Blackout'},{k:'Bullet Weight',v:'200 Grains'},{k:'Type',v:'Subsonic Open Tip'},{k:'Muzzle Velocity',v:'1060 fps'},{k:'Count',v:'20 Rounds'}],
+   sellers:[{name:'Bereli',price:24.00,stock:'in',url:'https://bereli.com/sup300blk/?aff=10388',fflRequired:false}]},
+
+  {upc:'029465089238',category:'ammunition',brand:'Federal',name:'HST .45 ACP 20rd LE',
+   sub:'.45 ACP \u00b7 230gr HST JHP \u00b7 Law Enforcement Grade',badge:'best',
+   description:'Federal HST is the preferred duty ammunition for law enforcement agencies nationwide. The HST bullet delivers consistent, controlled expansion and deep penetration through FBI test protocols.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/608322/images/558047/230_Grain_HST_Jacketed_Hollow_Point-Federal_Law_Enforcement_45_ACP_AUTO_Ammo-3548__43106.1708355134.380.380.jpg?c=2'],
+   specs:[{k:'Caliber',v:'.45 ACP'},{k:'Bullet Weight',v:'230 Grains'},{k:'Bullet Type',v:'HST JHP'},{k:'Muzzle Velocity',v:'890 fps'},{k:'Count',v:'20 Rounds'},{k:'Casing',v:'Nickel-Plated Brass'}],
+   sellers:[{name:'Bereli',price:31.00,stock:'in',url:'https://bereli.com/federal-law-enforcement-45-acp-auto-ammo-230-grain-hst-jacketed-hollow-point/?aff=10388',fflRequired:false}]},
+
+  {upc:'020892216419',category:'ammunition',brand:'Winchester',name:'Ranger .40 S&W 20rd',
+   sub:'.40 S&W \u00b7 165gr Ranger HP \u00b7 Duty Ammo',badge:'',
+   description:'Winchester Ranger Series is law enforcement\u2019s most trusted duty ammunition. The 165-grain hollow point delivers reliable expansion and energy transfer for defensive applications.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/494931/images/510877/Screenshot_2023-03-01_at_10.33.42_AM__97471.1677684848.380.380.png?c=2'],
+   specs:[{k:'Caliber',v:'.40 S&W'},{k:'Bullet Weight',v:'165 Grains'},{k:'Bullet Type',v:'JHP'},{k:'Muzzle Velocity',v:'1140 fps'},{k:'Count',v:'20 Rounds'}],
+   sellers:[{name:'Bereli',price:40.00,stock:'in',url:'https://bereli.com/winchester-40-s-w-ammo-165-grain-ranger-series-hollow-point/?aff=10388',fflRequired:false}]},
+
+  {upc:'029465087983',category:'ammunition',brand:'Federal',name:'LE 12ga 00 Buck 5rd',
+   sub:'12 Gauge \u00b7 2.75\u2033 \u00b7 9-Pellet 00 Buckshot \u00b7 LE Grade',badge:'best',
+   description:'Federal LE 12 Gauge 00 Buck is the standard for law enforcement shotgun ammunition. Nine copper-plated pellets deliver devastating terminal performance for home and duty defense.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/631419/images/568639/224978__64006.1741359402.380.380.jpg?c=2'],
+   specs:[{k:'Gauge',v:'12 Gauge'},{k:'Shell Length',v:'2.75\u2033'},{k:'Payload',v:'9 Pellets 00 Buck'},{k:'Muzzle Velocity',v:'1325 fps'},{k:'Count',v:'5 Rounds'}],
+   sellers:[{name:'Bereli',price:14.99,stock:'in',url:'https://bereli.com/le13200/?aff=10388',fflRequired:false}]},
+
+  {upc:'020892014909',category:'ammunition',brand:'Winchester',name:'Defender 12ga 00 Buck 10rd',
+   sub:'12 Gauge \u00b7 2.75\u2033 \u00b7 9-Pellet 00 Buckshot \u00b7 10rd Box',badge:'',
+   description:'Winchester Defender 12 Gauge features copper-plated 00 buckshot for tight patterns and reliable terminal performance. Designed specifically for home defense applications.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/631042/images/566583/222044__27235.1739468304.380.380.jpg?c=2'],
+   specs:[{k:'Gauge',v:'12 Gauge'},{k:'Shell Length',v:'2.75\u2033'},{k:'Payload',v:'9 Copper-Plated 00 Buck'},{k:'Muzzle Velocity',v:'1145 fps'},{k:'Count',v:'10 Rounds'}],
+   sellers:[{name:'Bereli',price:22.99,stock:'in',url:'https://bereli.com/winchester-defender-copper-12-gauge-2-75-9-pellets-00-buckshot/?aff=10388',fflRequired:false}]},
+
+  {upc:'020892100368',category:'ammunition',brand:'Winchester',name:'Super-X .22 LR 100rd',
+   sub:'.22 LR \u00b7 40gr CPHP \u00b7 High Velocity \u00b7 100rd Box',badge:'',
+   description:'Winchester Super-X .22 LR delivers reliable high-velocity performance for plinking and small game. Copper-plated hollow point expands on impact for improved terminal performance.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/630751/images/565207/216260__44726.1737494105.380.380.jpg?c=2'],
+   specs:[{k:'Caliber',v:'.22 LR'},{k:'Bullet Weight',v:'40 Grains'},{k:'Bullet Type',v:'CPHP'},{k:'Muzzle Velocity',v:'1280 fps'},{k:'Count',v:'100 Rounds'}],
+   sellers:[{name:'Bereli',price:18.99,stock:'in',url:'https://bereli.com/winchester-super-x-22lr-40-grain-super-speed-round-nose-copper-plated-ammunition/?aff=10388',fflRequired:false}]},
+
+  {upc:'029465064380',category:'ammunition',brand:'Federal',name:'Champion .22 LR 325rd',
+   sub:'.22 LR \u00b7 36gr LHP \u00b7 325 Round Value Pack',badge:'best',
+   description:'Federal Champion .22 LR offers exceptional value for high-volume rimfire shooting. The 325-round bulk pack delivers consistent accuracy and reliable ignition for training and plinking.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/571929/images/536283/36_Grain_Lead_Hollow_Point-Federal_Champion_Training_22_Long_Rifle_Ammo-112993__79103.1689948309.380.380.jpg?c=2'],
+   specs:[{k:'Caliber',v:'.22 LR'},{k:'Bullet Weight',v:'36 Grains'},{k:'Bullet Type',v:'Lead Hollow Point'},{k:'Muzzle Velocity',v:'1260 fps'},{k:'Count',v:'325 Rounds'}],
+   sellers:[{name:'Bereli',price:29.99,stock:'in',url:'https://bereli.com/federal-champion-training-22-long-rifle-ammo-36-grain-lead-hollow-point/?aff=10388',fflRequired:false}]},
+
+  {upc:'023614963004',category:'ammunition',brand:'Browning',name:'X-Point .380 ACP 20rd',
+   sub:'.380 ACP \u00b7 95gr JHP \u00b7 Performance Defense',badge:'',
+   description:'Browning X-Point .380 ACP defense ammunition features a polymer tip that initiates reliable expansion even through heavy clothing. Bonded construction retains weight for deep penetration.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/629781/images/559161/202564__78481.1716240287.380.380.jpg?c=2'],
+   specs:[{k:'Caliber',v:'.380 ACP'},{k:'Bullet Weight',v:'95 Grains'},{k:'Bullet Type',v:'X-Point JHP'},{k:'Muzzle Velocity',v:'1000 fps'},{k:'Count',v:'20 Rounds'}],
+   sellers:[{name:'Bereli',price:29.99,stock:'in',url:'https://bereli.com/browning-performance-defense-380-auto-95-grain-x-point/?aff=10388',fflRequired:false}]},
+
+  /* ── OPTICS ──────────────────────────────────────────────────────── */
+  {upc:'798681624515',category:'optics',brand:'Sig Sauer',name:'ROMEO5 Gen II Red Dot',
+   sub:'1x20mm \u00b7 2 MOA \u00b7 MOTAC \u00b7 CR2032',badge:'best',
+   description:'The Sig ROMEO5 Gen II is one of the best-value red dot sights available. MOTAC (Motion Activated Illumination) conserves battery life by automatically activating on movement and shutting off when stationary.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/629920/images/559970/203955__14848.1721751774.380.380.jpg?c=2'],
+   specs:[{k:'Magnification',v:'1x'},{k:'Objective',v:'20mm'},{k:'Reticle',v:'2 MOA Red Dot'},{k:'Battery',v:'CR2032'},{k:'Battery Life',v:'40,000 hrs (MOTAC)'},{k:'Waterproof',v:'IPX-7'},{k:'Weight',v:'5.1 oz'}],
+   sellers:[{name:'Bereli',price:124.99,stock:'in',url:'https://bereli.com/sig-romeo5-gen-ii/?aff=10388',fflRequired:false}]},
+
+  {upc:'798681624522',category:'optics',brand:'Sig Sauer',name:'ROMEO5 + Juliet3 Combo',
+   sub:'1-3x Combo \u00b7 Red Dot + Magnifier Bundle',badge:'best',
+   description:'The Sig ROMEO5 Gen II paired with the Juliet3 3x magnifier provides the ultimate red dot + magnifier combination. Flip-to-side mount allows instant magnifier deployment.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/629933/images/560067/204053__20153.1722268289.380.380.jpg?c=2'],
+   specs:[{k:'Red Dot',v:'ROMEO5 Gen II 2 MOA'},{k:'Magnifier',v:'Juliet3 3x'},{k:'Mount',v:'Flip-to-Side'},{k:'Combined Weight',v:'12.8 oz'},{k:'Waterproof',v:'IPX-7'}],
+   sellers:[{name:'Bereli',price:265.00,stock:'in',url:'https://bereli.com/sorj5101/?aff=10388',fflRequired:false}]},
+
+  {upc:'798681602741',category:'optics',brand:'Sig Sauer',name:'Romeo MSR Gen II Red Dot',
+   sub:'1x20mm \u00b7 2 MOA \u00b7 Waterproof \u00b7 AR-Optimized',badge:'',
+   description:'The Sig Romeo MSR Gen II is optimized for AR-platform rifles with a co-witness height mount. MOTAC activation and 1/2 MOA adjustments make it a precise, convenient aiming solution.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/629754/images/559086/202676__38798.1715888884.380.380.jpg?c=2'],
+   specs:[{k:'Magnification',v:'1x'},{k:'Reticle',v:'2 MOA Red Dot'},{k:'Mount Height',v:'Co-Witness'},{k:'Battery',v:'CR2032'},{k:'Waterproof',v:'IPX-7'},{k:'Weight',v:'4.9 oz'}],
+   sellers:[{name:'Bereli',price:105.00,stock:'in',url:'https://bereli.com/sormsr/?aff=10388',fflRequired:false}]},
+
+  {upc:'840815112483',category:'optics',brand:'Magpul',name:'MBUS Flip-Up Backup Sights',
+   sub:'AR-15 \u00b7 Front & Rear Set \u00b7 Polymer \u00b7 Black',badge:'best',
+   description:'Magpul MBUS (Magpul Back-Up Sight) flip-up iron sights are the industry standard for backup sighting systems. Spring-loaded deployment, durable polymer construction, and M1913 Picatinny rail compatible.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/629609/images/558281/_MAG248__98032.1710521883.380.380.jpg?c=2'],
+   specs:[{k:'Compatible',v:'M1913 Picatinny Rail'},{k:'Material',v:'Polymer'},{k:'Includes',v:'Front + Rear Set'},{k:'Deployment',v:'Spring-Loaded Flip-Up'},{k:'Adjustment',v:'Tool-Free Windage'},{k:'Weight',v:'1.6 oz (set)'}],
+   sellers:[{name:'Bereli',price:39.99,stock:'in',url:'https://bereli.com/mag248/?aff=10388',fflRequired:false}]},
+
+  {upc:'810008780008',category:'optics',brand:'Riton Optics',name:'3 Primal 4-16x44 Scope',
+   sub:'4-16x44mm \u00b7 SFP \u00b7 BDC Reticle \u00b7 Lifetime Warranty',badge:'',
+   description:'The Riton 3 Primal 4-16x44 delivers exceptional optical clarity at a budget-friendly price point. Second focal plane BDC reticle, finger-adjustable turrets, and a lifetime Riton warranty.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/633117/images/577277/250531__28698.1762970134.380.380.jpg?c=2'],
+   specs:[{k:'Magnification',v:'4-16x'},{k:'Objective',v:'44mm'},{k:'Focal Plane',v:'Second Focal Plane'},{k:'Reticle',v:'BDC'},{k:'Tube Diameter',v:'1\u2033'},{k:'Adjustment',v:'1/4 MOA per click'},{k:'Weight',v:'18.2 oz'}],
+   sellers:[{name:'Bereli',price:149.00,stock:'in',url:'https://bereli.com/3p416as23/?aff=10388',fflRequired:false}]},
+
+  {upc:'875874007501',category:'optics',brand:'Vortex',name:'AMG UH-1 Gen II Holographic',
+   sub:'1x \u00b7 65 MOA Circle + 1 MOA Dot \u00b7 NV Compatible',badge:'best',
+   description:'The Vortex AMG UH-1 Gen II is a holographic sight with a 65 MOA ring + 1 MOA center dot reticle. NV-compatible with 15 brightness settings, and runs on AA batteries for extended field use.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/633145/images/577412/251211__18722.1764101852.380.380.jpg?c=2'],
+   specs:[{k:'Magnification',v:'1x'},{k:'Reticle',v:'65 MOA Ring + 1 MOA Dot'},{k:'Battery',v:'AA'},{k:'Battery Life',v:'1500 hrs'},{k:'NV Compatible',v:'Yes'},{k:'Waterproof',v:'IPX-7'},{k:'Weight',v:'11.2 oz'}],
+   sellers:[{name:'Bereli',price:599.00,stock:'in',url:'https://bereli.com/amg-hs02-parent/?aff=10388',fflRequired:false}]},
+
+  {upc:'672294007124',category:'optics',brand:'EOTech',name:'G45 5x Magnifier',
+   sub:'5x Magnification \u00b7 Flip-to-Side \u00b7 STS Mount',badge:'',
+   description:'The EOTech G45 5x magnifier is the perfect companion for EXPS and HWS holographic sights. The STS (Short-to-Shore) mount enables fast transition between magnified and unmagnified use.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/631296/images/568101/223953__66504.1740674797.380.380.jpg?c=2'],
+   specs:[{k:'Magnification',v:'5x'},{k:'Field of View',v:'8.5\u00b0'},{k:'Eye Relief',v:'2.2\u2033'},{k:'Mount',v:'Flip-to-Side STS'},{k:'Waterproof',v:'Yes'},{k:'Weight',v:'11.0 oz'}],
+   sellers:[{name:'Bereli',price:669.00,stock:'in',url:'https://bereli.com/g45/?aff=10388',fflRequired:false}]},
+
+  {upc:'672294008015',category:'optics',brand:'EOTech',name:'EXPS3-2 Holographic Sight',
+   sub:'1x \u00b7 65 MOA Ring + 2 Dot \u00b7 NV Compatible \u00b7 QD',badge:'best',
+   description:'The EOTech EXPS3-2 is the standard-issue holographic weapon sight for U.S. Special Operations Forces. Two-dot reticle for accurate ballistic compensation, quick-detach lever, and NV-compatible.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/629605/images/558184/197825__99925.1709308384.380.380.jpg?c=2'],
+   specs:[{k:'Magnification',v:'1x'},{k:'Reticle',v:'65 MOA Ring + 2 MOA Dot x2'},{k:'Battery',v:'CR123A'},{k:'Battery Life',v:'600 hrs'},{k:'Mount',v:'QD Lever'},{k:'NV Compatible',v:'Yes'},{k:'Weight',v:'11.2 oz'}],
+   sellers:[{name:'Bereli',price:815.00,stock:'in',url:'https://bereli.com/exps3-2/?aff=10388',fflRequired:false}]},
+
+  {upc:'719307619487',category:'optics',brand:'Trijicon',name:'RMR HD 3.25 MOA Red Dot',
+   sub:'3.25 MOA Dot \u00b7 Adjustable LED \u00b7 Ruggedized',badge:'',
+   description:'The Trijicon RMR HD (Ruggedized Miniature Reflex) is the toughest micro red dot on the market. The HD version features a brighter LED, improved auto-brightness, and a larger 3.25 MOA dot.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/631445/images/575131/240073__29102.1753292135.380.380.jpg?c=2'],
+   specs:[{k:'Reticle',v:'3.25 MOA Red Dot'},{k:'LED',v:'Auto-Adjusting + Manual'},{k:'Battery',v:'CR2032'},{k:'Battery Life',v:'4 years'},{k:'Housing',v:'Forged Aluminum'},{k:'Weight',v:'1.2 oz'}],
+   sellers:[{name:'Bereli',price:774.00,stock:'in',url:'https://bereli.com/rmhd2-c-3200002/?aff=10388',fflRequired:false}]},
+
+  {upc:'798681631544',category:'optics',brand:'Sig Sauer',name:'ROMEO-X Enclosed Red Dot',
+   sub:'1x30mm \u00b7 3 MOA Dot \u00b7 Enclosed Emitter \u00b7 MOTAC',badge:'',
+   description:'The Sig ROMEO-X features an enclosed emitter design for superior durability and reliability. The 30mm objective provides a larger field of view, and MOTAC ensures the battery is never wasted.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/632921/images/576098/244414__29160.1756932367.380.380.jpg?c=2'],
+   specs:[{k:'Magnification',v:'1x'},{k:'Objective',v:'30mm'},{k:'Reticle',v:'3 MOA Red Dot'},{k:'Emitter',v:'Enclosed'},{k:'Battery',v:'CR2032'},{k:'MOTAC',v:'Yes'},{k:'Weight',v:'2.0 oz'}],
+   sellers:[{name:'Bereli',price:449.99,stock:'in',url:'https://bereli.com/sorx1400/?aff=10388',fflRequired:false}]},
+
+  /* ── HOLSTERS ────────────────────────────────────────────────────── */
+  {upc:'648018135804',category:'holsters',brand:'Blackhawk',name:'T-Series L2D Glock 17/19',
+   sub:'Glock 17/19/22/23/31 \u00b7 RH \u00b7 Level 2 Duty',badge:'best',
+   description:'The Blackhawk T-Series L2D provides Level 2 retention for duty carry of the Glock 17/19 family. The TecGrip lining creates a firm hold without abrasion, and the thumb-activated SERPA-style release enables a clean, consistent draw.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/439537/images/452364/apifbuiht__70463.1638491442.380.380.jpg?c=2'],
+   specs:[{k:'Retention',v:'Level 2'},{k:'Carry',v:'OWB Duty'},{k:'Fit',v:'Glock 17/19/22/23/31/32/45/47'},{k:'Hand',v:'Right Hand'},{k:'Mount',v:'Belt Loop'},{k:'Material',v:'Polymer'}],
+   sellers:[{name:'Bereli',price:79.95,stock:'in',url:'https://bereli.com/blackhawk-t-series-holster-l2d-glock-right-17-19-22-23-31-32-45-47-44n100bkr/?aff=10388',fflRequired:false}]},
+
+  {upc:'648018135880',category:'holsters',brand:'Blackhawk',name:'T-Series L3D Glock + TRL',
+   sub:'Glock 17/19/22 + TRL-1/2 \u00b7 RH \u00b7 Level 3',badge:'',
+   description:'The T-Series L3D adds a Level 3 hood guard for maximum retention with weapon lights attached. Specifically fitted for Glock 17/19/22 with Streamlight TRL-1 or TRL-2 weapon lights.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/439534/images/452352/apiwjyawa__43625.1638491392.380.380.jpg?c=2'],
+   specs:[{k:'Retention',v:'Level 3'},{k:'Fit',v:'Glock 17/19/22 + TRL-1/TRL-2'},{k:'Hand',v:'Right Hand'},{k:'Mount',v:'Belt Loop'},{k:'Light Compatible',v:'Yes'}],
+   sellers:[{name:'Bereli',price:95.00,stock:'in',url:'https://bereli.com/blackhawk-t-series-holster-l3d-lb-glock-rh-17-19-22-31-45-w-trl-1-2-44n600bwr/?aff=10388',fflRequired:false}]},
+
+  {upc:'648018052125',category:'holsters',brand:'Blackhawk',name:'SERPA CQC Glock 19/23/32',
+   sub:'Glock 19/23/32 \u00b7 RH \u00b7 Belt + Paddle Mount',badge:'best',
+   description:'The Blackhawk SERPA CQC holster features the patented SERPA Auto Lock that releases with a natural trigger-finger movement. Includes both belt loop and paddle mounts.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/445592/images/466939/apirn1x1u__12755.1638491307.380.380.jpg?c=2'],
+   specs:[{k:'Retention',v:'SERPA Auto Lock'},{k:'Fit',v:'Glock 19/23/32'},{k:'Hand',v:'Right Hand'},{k:'Includes',v:'Belt Loop + Paddle Mount'},{k:'Material',v:'Polymer'}],
+   sellers:[{name:'Bereli',price:29.95,stock:'in',url:'https://bereli.com/blackhawk-serpa-cqc-holster-w-belt-loop-paddle-glock-19-23-32-410502ct-r/?aff=10388',fflRequired:false}]},
+
+  {upc:'648018170016',category:'holsters',brand:'Blackhawk',name:'Stache IWB Sig P365',
+   sub:'Sig P365 \u00b7 IWB \u00b7 Premium Kit \u00b7 Black',badge:'',
+   description:'The Blackhawk Stache IWB Premium Kit is a modular IWB holster system for the Sig P365. Includes a comfort carrier, dual magazine carrier, and adjustable cant and ride height.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/475799/images/480206/apifs8t7d__95333.1638491432.380.380.jpg?c=2'],
+   specs:[{k:'Carry',v:'IWB Appendix'},{k:'Fit',v:'Sig P365'},{k:'Includes',v:'Holster + Mag Carrier + Carrier'},{k:'Adjustable',v:'Cant + Ride Height'},{k:'Material',v:'Kydex'}],
+   sellers:[{name:'Bereli',price:39.95,stock:'in',url:'https://bereli.com/blackhawk-stache-iwb-holster-premium-kit-for-sig-sauer-p365-416170bk/?aff=10388',fflRequired:false}]},
+
+  {upc:'648018175000',category:'holsters',brand:'Blackhawk',name:'A.R.C. IWB Glock 17 Urban Gray',
+   sub:'Glock 17/22/31 \u00b7 IWB \u00b7 Urban Gray \u00b7 Appendix',badge:'',
+   description:'The Blackhawk A.R.C. IWB holster provides a lightweight, minimalist solution for concealed carry of the Glock 17. Urban Gray finish and adjustable ride height suit everyday carry.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/452520/images/475716/apitzifqx__31371.1638491338.380.380.jpg?c=2'],
+   specs:[{k:'Carry',v:'IWB'},{k:'Fit',v:'Glock 17/22/31'},{k:'Color',v:'Urban Gray'},{k:'Adjustable',v:'Ride Height'},{k:'Material',v:'Polymer'}],
+   sellers:[{name:'Bereli',price:19.95,stock:'in',url:'https://bereli.com/blackhawk-a-r-c-iwb-holster-urban-gray-glock-17-22-31-417500ug/?aff=10388',fflRequired:false}]},
+
+  {upc:'648018136108',category:'holsters',brand:'Blackhawk',name:'T-Series L3D Sig P320/M17/M18',
+   sub:'Sig P320/M17/M18 + TRL-1/2 \u00b7 RH \u00b7 Level 3',badge:'',
+   description:'Level 3 retention holster specifically designed for the Sig P320, M17, and M18 with attached Streamlight TRL-1 or TRL-2 weapon lights. The ultimate duty holster for Sig platform users.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/445621/images/466991/api5ydqs7__30816.1638491309.380.380.jpg?c=2'],
+   specs:[{k:'Retention',v:'Level 3'},{k:'Fit',v:'Sig P320/P250/M17/M18 + TRL-1/TRL-2'},{k:'Hand',v:'Right Hand'},{k:'Mount',v:'Belt Loop'},{k:'Light Compatible',v:'Yes'}],
+   sellers:[{name:'Bereli',price:99.00,stock:'in',url:'https://bereli.com/blachawk-t-series-l3d-lb-holster-sig-p320-p250-m17-18-w-tlr-1-2-rh-44n661bwr/?aff=10388',fflRequired:false}]},
+
+  {upc:'035442541002',category:'holsters',brand:"Uncle Mike's",name:'CCW OWB Glock 17/19',
+   sub:'Glock 17/19/22/23 \u00b7 OWB \u00b7 RH \u00b7 Nylon',badge:'',
+   description:'Uncle Mike\u2019s CCW OWB holster offers a budget-friendly option for open carry of the Glock 17/19 family. Nylon construction with a thumb break retention strap.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/475700/images/480097/ccw__54533.1637277967.380.380.jpg?c=2'],
+   specs:[{k:'Carry',v:'OWB'},{k:'Fit',v:'Glock 17/19/22/23'},{k:'Hand',v:'Right Hand'},{k:'Retention',v:'Thumb Break'},{k:'Material',v:'Nylon'}],
+   sellers:[{name:'Bereli',price:29.95,stock:'in',url:'https://bereli.com/uncle-mikes-54ccw00bgr-ccw-owb-holster-for-glock-17-19-22-23-rh/?aff=10388',fflRequired:false}]},
+
+  {upc:'648018176800',category:'holsters',brand:'Blackhawk',name:'T-Series L2C Glock 43/43X',
+   sub:'Glock 43/43X \u00b7 RH \u00b7 Level 2 Compact',badge:'',
+   description:'The Blackhawk T-Series L2C is the compact version of the T-Series line, sized specifically for the Glock 43 and 43X. Level 2 retention and TecGrip lining in a low-profile OWB design.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/439535/images/452351/apirmnoco__44847.1638491445.380.380.jpg?c=2'],
+   specs:[{k:'Retention',v:'Level 2'},{k:'Fit',v:'Glock 43/43X, Kahr PM9/PM40'},{k:'Hand',v:'Right Hand'},{k:'Mount',v:'Belt Loop'},{k:'Material',v:'Polymer'}],
+   sellers:[{name:'Bereli',price:44.95,stock:'in',url:'https://bereli.com/blackhawk-t-series-holster-l2c-glock-rh-43-43x-kahr-pm9-pm40-410768bkr/?aff=10388',fflRequired:false}]},
+
+  {upc:'648018163001',category:'holsters',brand:'Blackhawk',name:'Stache IWB S&W M&P Shield',
+   sub:'S&W M&P Shield 9/.40 \u00b7 IWB Premium Kit',badge:'',
+   description:'The Blackhawk Stache IWB Premium Kit fitted for the S&W M&P Shield includes a modular holster body, comfort carrier, and magazine pouch for a complete concealed carry solution.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/475685/images/480071/apiedpadm__07451.1638491417.380.380.jpg?c=2'],
+   specs:[{k:'Carry',v:'IWB'},{k:'Fit',v:'S&W M&P Shield 9mm/.40'},{k:'Includes',v:'Holster + Comfort Carrier + Mag Pouch'},{k:'Adjustable',v:'Cant + Ride Height'}],
+   sellers:[{name:'Bereli',price:44.95,stock:'in',url:'https://bereli.com/blackhawk-416163bk-stache-iwb-holster-premium-kit-for-s-w-m-p-shield-9-40/?aff=10388',fflRequired:false}]},
+
+  {upc:'035442810310',category:'holsters',brand:"Uncle Mike's",name:'Sidekick Hip Holster',
+   sub:'Medium-Large Frame \u00b7 5-6.5\u2033 Barrel \u00b7 RH',badge:'',
+   description:'Uncle Mike\u2019s Sidekick Hip Holster is a universal OWB design that fits most medium to large-frame revolvers and semi-automatics with 5\u2033 to 6.5\u2033 barrels.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/441443/images/456723/sams__76074.1613083766.380.380.jpg?c=2'],
+   specs:[{k:'Carry',v:'OWB Hip'},{k:'Fit',v:'Medium-Large Frame, 5\u2033-6.5\u2033 Barrel'},{k:'Hand',v:'Right Hand'},{k:'Material',v:'Nylon'},{k:'Retention',v:'Thumb Break'}],
+   sellers:[{name:'Bereli',price:12.95,stock:'in',url:'https://bereli.com/uncle-mikes-sidekick-hip-holster-5-6-5-barrel-med-large-right-hand-81031/?aff=10388',fflRequired:false}]},
+
+  {upc:'GALCO-MC-AUTOS',category:'holsters',brand:'Galco',name:'Miami Classic Shoulder System',
+   sub:'Shoulder \u00b7 Leather \u00b7 Autos \u00b7 Full Grain Steerhide Harness',badge:'',
+   description:'The Galco Miami Classic is the iconic premium steerhide shoulder holster system made famous by Miami Vice. Features a silhouetted design accommodating multiple barrel and slide lengths, a vertical double magazine carrier with secure flaps, 1\u2033 wide harness straps, and a Flexalon swivel back plate. Accepts modular accessories and fits chests up to 56\u2033. Handcrafted in the USA.',
+   imgs:[
+     'https://www.galcogunleather.com/uimages/2021_image_project/shoulder/Leather_holster_Shoulder_Miami_Classic_1_black.jpg',
+     'https://www.galcogunleather.com/uimages/2021_image_project/shoulder/Leather_holster_Shoulder_Miami_Classic_3_black.jpg',
+     'https://www.galcogunleather.com/uimages/2021_image_project/shoulder/Leather_holster_Shoulder_Miami_Classic_2_black.jpg',
+     'https://www.galcogunleather.com/uimages/2021_image_project/shoulder/Leather_holster_Shoulder_Miami_Classic_4_black.jpg',
+     'https://www.galcogunleather.com/uimages/2021_image_project/shoulder/Leather_holster_Shoulder_Miami_Classic_5_black.jpg',
+     'https://www.galcogunleather.com/uimages/2021_image_project/shoulder/Leather_holster_Shoulder_Miami_Classic_6_black.jpg',
+     'https://www.galcogunleather.com/uimages/2021_image_project/shoulder/Leather_holster_Shoulder_Miami_Classic_7_black.jpg'
+   ],
+   specs:[{k:'Carry Style',v:'Shoulder'},{k:'Material',v:'Full Grain Steerhide'},{k:'Harness Width',v:'1\u2033'},{k:'Retention',v:'Thumb Break'},{k:'Handedness',v:'Right or Left Hand'},{k:'Chest Fit',v:'Up to 56\u2033'},{k:'Accessories',v:'Modular Compatible'},{k:'Made In',v:'USA'}],
+   sellers:[{name:'Galco',price:329.00,stock:'in',url:'https://www.galcogunleather.com/miami-classic-shoulder-system-autos-_8_1232_1211.html#IdealArmory',fflRequired:false}]},
+
+  {upc:'GALCO-VHS4-AUTOS',category:'holsters',brand:'Galco',name:'VHS 4.0 Vertical Holster System',
+   sub:'Shoulder \u00b7 Leather \u00b7 Autos \u00b7 Converts Right or Left Hand',badge:'',
+   description:'The Galco VHS 4.0 is a premium steerhide shoulder holster system built for vertical carry. Features a vertical double magazine carrier with secure flaps, a comfortable 2.5\u2033 wide harness, Flexalon swivel back plate, and converts for both right and left hand use. Includes tie-downs for holster and ammo carrier. Fits chests up to 56\u2033. Handcrafted in the USA.',
+   imgs:[
+     'https://www.galcogunleather.com/uimages/product_images/holsters/shoulder/vhs4/VHS4_5in_Wilson_01.jpg',
+     'https://www.galcogunleather.com/uimages/2021_image_project/shoulder/Leather_holster_Shoulder_VHS4_7_black.jpg',
+     'https://www.galcogunleather.com/uimages/2021_image_project/shoulder/Leather_holster_Shoulder_VHS4_8_black.jpg',
+     'https://www.galcogunleather.com/uimages/product_images/holsters/shoulder/Leather_Shoulder-Holster_Vertical-Holster-System-4-back_2.jpg',
+     'https://www.galcogunleather.com/uimages/product_images/holsters/shoulder/Leather_Shoulder_Holster_Vertical_Holster_System_4_3.jpg',
+     'https://www.galcogunleather.com/uimages/product_images/holsters/shoulder/vhs4/VHS4-212B.jpg',
+     'https://www.galcogunleather.com/uimages/product_images/holsters/shoulder/vhs4/VHS4-212.jpg'
+   ],
+   specs:[{k:'Carry Style',v:'Shoulder \u2013 Vertical'},{k:'Material',v:'Premium Steerhide'},{k:'Harness Width',v:'2.5\u2033'},{k:'Retention',v:'Thumb Break'},{k:'Handedness',v:'Converts RH/LH'},{k:'Chest Fit',v:'Up to 56\u2033'},{k:'Tie-Downs',v:'Included'},{k:'Made In',v:'USA'}],
+   sellers:[{name:'Galco',price:336.00,stock:'in',url:'https://www.galcogunleather.com/vhs-4-0-vertical-holster-system-autos-_8_1232_1526.html#IdealArmory',fflRequired:false}]},
+
+  {upc:'GALCO-GA-AUTOS',category:'holsters',brand:'Galco',name:'Great Alaskan Chest Holster (Autos)',
+   sub:'Chest \u00b7 Leather \u00b7 Autos \u00b7 Crossdraw \u00b7 Outdoor/Hunting',badge:'',
+   description:'Galco\u2019s Great Alaskan is a premium steerhide chest holster designed for outdoor and hunting use. Features smooth saddle leather lining, chest-style crossdraw carry, a 2\u2033 shoulder strap, adjustable torso strap with Fastex-type buckle, and a retention strap with glove-friendly polymer release tab. Compatible with the optional Great Alaskan Ammo Carrier. Handcrafted in the USA.',
+   imgs:[
+     'https://www.galcogunleather.com/uimages/product_images/holsters/hunting/GA_auto_sil.jpg',
+     'https://www.galcogunleather.com/uimages/product_images/holsters/hunting/GA_in_use_rifle.jpg',
+     'https://www.galcogunleather.com/uimages/product_images/holsters/hunting/GA_auto_back.jpg'
+   ],
+   specs:[{k:'Carry Style',v:'Chest \u2013 Crossdraw'},{k:'Material',v:'Premium Steerhide'},{k:'Lining',v:'Smooth Saddle Leather'},{k:'Shoulder Strap',v:'2\u2033'},{k:'Retention',v:'Polymer Release Tab'},{k:'Torso Strap',v:'Adjustable Fastex Buckle'},{k:'Ammo Carrier',v:'Optional Add-On'},{k:'Made In',v:'USA'}],
+   sellers:[{name:'Galco',price:309.00,stock:'in',url:'https://www.galcogunleather.com/great-alaskan-chest-holster-autos-_8_1232_1596.html#IdealArmory',fflRequired:false}]},
+
+  {upc:'GALCO-GA-REVOLVERS',category:'holsters',brand:'Galco',name:'Great Alaskan Chest Holster (Revolvers)',
+   sub:'Chest \u00b7 Leather \u00b7 Revolvers \u00b7 Crossdraw \u00b7 Outdoor/Hunting',badge:'best',
+   description:'Galco\u2019s Great Alaskan chest holster for revolvers is built for backcountry carry. Premium steerhide construction with smooth saddle leather lining, chest-style crossdraw carry, a 2\u2033 shoulder strap, adjustable torso strap with Fastex-type buckle, and a glove-friendly polymer retention tab. Pairs with the optional Great Alaskan Ammo Carrier for six spare cartridges. Handcrafted in the USA.',
+   imgs:[
+     'https://www.galcogunleather.com/uimages/2021_image_project/shoulder/Leather_holster_Shoulder_Alaskan_4_black.jpg',
+     'https://www.galcogunleather.com/uimages/2021_image_project/shoulder/Leather_holster_Shoulder_Alaskan_1_black.jpg',
+     'https://www.galcogunleather.com/uimages/2021_image_project/shoulder/Leather_holster_Shoulder_Alaskan_7_black.jpg',
+     'https://www.galcogunleather.com/uimages/2021_image_project/shoulder/Leather_holster_Shoulder_Alaskan_5_black.jpg',
+     'https://www.galcogunleather.com/uimages/2021_image_project/shoulder/Leather_holster_Shoulder_Alaskan_6_black.jpg',
+     'https://www.galcogunleather.com/uimages/2021_image_project/shoulder/Leather_holster_Shoulder_Alaskan_2_black.jpg'
+   ],
+   specs:[{k:'Carry Style',v:'Chest \u2013 Crossdraw'},{k:'Material',v:'Premium Steerhide'},{k:'Lining',v:'Smooth Saddle Leather'},{k:'Shoulder Strap',v:'2\u2033'},{k:'Retention',v:'Polymer Release Tab'},{k:'Torso Strap',v:'Adjustable Fastex Buckle'},{k:'Ammo Carrier',v:'Optional (6 Cartridges)'},{k:'Made In',v:'USA'}],
+   sellers:[{name:'Galco',price:309.00,stock:'in',url:'https://www.galcogunleather.com/great-alaskan-chest-holster-revolvers-_8_1232_1353.html#IdealArmory',fflRequired:false}]},
+
+  {upc:'GALCO-CM-BELT',category:'holsters',brand:'Galco',name:'Combat Master Belt Holster',
+   sub:'OWB \u00b7 Leather \u00b7 Autos & Revolvers \u00b7 Pancake Design',badge:'best',
+   description:'The Galco Combat Master is a professional-grade OWB pancake belt holster hand-molded to fit specific firearms. Premium steerhide construction provides full slide and barrel coverage with a butt-forward cant for concealment. Traditional pancake design with a double-stitched reinforced mouth fits belts up to 1\u00be\u2033. Not compatible with red dot optics. Handcrafted in the USA.',
+   imgs:[
+     'https://www.galcogunleather.com/uimages/2021_image_project/owb/Leather_holster_OWB_Combat_Master_3_black.jpg',
+     'https://www.galcogunleather.com/uimages/product_images/holsters/belt/Leather_Holster_OWB_Combat_Master_3.jpg',
+     'https://www.galcogunleather.com/uimages/2021_image_project/owb/Leather_holster_OWB_Combat_Master_4_black.jpg',
+     'https://www.galcogunleather.com/uimages/2021_image_project/owb/Leather_holster_OWB_Combat_Master_6_black.jpg',
+     'https://www.galcogunleather.com/uimages/2021_image_project/owb/Leather_holster_OWB_Combat_Master_7_black.jpg',
+     'https://www.galcogunleather.com/uimages/2021_image_project/owb/Leather_holster_OWB_Combat_Master_9_black.jpg'
+   ],
+   specs:[{k:'Carry Style',v:'OWB Belt'},{k:'Material',v:'Premium Steerhide'},{k:'Design',v:'Pancake'},{k:'Cant',v:'Butt-Forward'},{k:'Belt Width',v:'Up to 1\u00be\u2033'},{k:'Coverage',v:'Full Slide/Barrel'},{k:'Optic Compatible',v:'No'},{k:'Made In',v:'USA'}],
+   sellers:[{name:'Galco',price:132.00,stock:'in',url:'https://www.galcogunleather.com/combat-master-belt-holster_8_1232_1063.html#IdealArmory',fflRequired:false}]},
+
+  {upc:'GALCO-AG-ANKLE',category:'holsters',brand:'Galco',name:'Ankle Glove Holster',
+   sub:'Ankle \u00b7 Leather \u00b7 Autos & Revolvers \u00b7 Sheepskin Lined',badge:'',
+   description:'The Galco Ankle Glove is a premium steerhide ankle holster with a comfortable neoprene ankle band and hook-and-loop fastener. Genuine sheepskin padding ensures all-day comfort. Features a reinforced thumb break retention strap on most models and fits ankles up to 13\u2033 in circumference. Optional calf strap sold separately. Handcrafted in the USA.',
+   imgs:[
+     'https://www.galcogunleather.com/uimages/2021_image_project/ankle/Leather_holster_Ankle_Glove_1_black.jpg',
+     'https://www.galcogunleather.com/uimages/2021_image_project/ankle/Leather_holster_Ankle_Glove_5_black.jpg',
+     'https://www.galcogunleather.com/uimages/2021_image_project/ankle/Leather_Holster_Ankle_Glove_8_black.jpg',
+     'https://www.galcogunleather.com/uimages/2021_image_project/ankle/Leather_holster_Ankle_Glove_3_black.jpg',
+     'https://www.galcogunleather.com/uimages/2021_image_project/ankle/Leather_holster_Ankle_Glove_6_black.jpg',
+     'https://www.galcogunleather.com/uimages/product_images/holsters/ankle/Leather_Holster_Ankle_Glove_AG436B_2.jpg',
+     'https://www.galcogunleather.com/uimages/product_images/holsters/ankle/Ankle_Glove_Retention_Strap_and_No_Retention_Strap_Comparison.jpg'
+   ],
+   specs:[{k:'Carry Style',v:'Ankle'},{k:'Material',v:'Premium Steerhide'},{k:'Ankle Band',v:'Neoprene w/ Hook-and-Loop'},{k:'Lining',v:'Genuine Sheepskin'},{k:'Retention',v:'Thumb Break (most models)'},{k:'Ankle Circumference',v:'Up to 13\u2033'},{k:'Calf Strap',v:'Optional Add-On'},{k:'Made In',v:'USA'}],
+   sellers:[{name:'Galco',price:182.00,stock:'in',url:'https://www.galcogunleather.com/ankle-glove-holster_8_1232_1019.html#IdealArmory',fflRequired:false}]},
+
+  /* ── AR PARTS ────────────────────────────────────────────────────── */
+  {upc:'814950023040',category:'ar-parts',brand:'Ballistic Advantage',name:'9" .300 BLK Barrel',
+   sub:'.300 BLK \u00b7 9\u2033 \u00b7 Carbine Length \u00b7 Modern Series',badge:'best',
+   description:'Ballistic Advantage Modern Series 9\u2033 .300 Blackout barrel is precision-machined from 4150 CMV steel with a QPQ Nitride finish. The carbine-length gas system optimizes cycling with both supersonic and subsonic ammunition.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/632964/images/576546/9in_300_blk_modern__28182.1757107396.380.380.jpg?c=2'],
+   specs:[{k:'Caliber',v:'.300 BLK'},{k:'Length',v:'9\u2033'},{k:'Gas System',v:'Carbine Length'},{k:'Material',v:'4150 CMV'},{k:'Finish',v:'QPQ Nitride'},{k:'Twist',v:'1:8'},{k:'Profile',v:'SOCOM'}],
+   sellers:[{name:'Bereli',price:64.00,stock:'in',url:'https://bereli.com/BABL300004M/?aff=10388',fflRequired:false}]},
+
+  {upc:'814950026040',category:'ar-parts',brand:'Ballistic Advantage',name:'13.7" 5.56 Gov Profile Barrel',
+   sub:'5.56 NATO \u00b7 13.7\u2033 \u00b7 Government Profile \u00b7 Modern Series',badge:'',
+   description:'Ballistic Advantage 13.7\u2033 Government Profile barrel in 5.56 NATO. The Government profile provides balance between weight and stiffness, and the 13.7\u2033 length accepts pinned and welded muzzle devices for a 16\u2033 legal length.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/632981/images/576580/elj_5224__89537.1757107405.380.380.jpg?c=2'],
+   specs:[{k:'Caliber',v:'5.56 NATO'},{k:'Length',v:'13.7\u2033'},{k:'Profile',v:'Government'},{k:'Material',v:'4150 CMV'},{k:'Finish',v:'QPQ Nitride'},{k:'Twist',v:'1:8'}],
+   sellers:[{name:'Bereli',price:68.00,stock:'in',url:'https://bereli.com/BABL556033M/?aff=10388',fflRequired:false}]},
+
+  {upc:'814950029018',category:'ar-parts',brand:'Ballistic Advantage',name:'8.3" 9mm Straight Barrel',
+   sub:'9mm \u00b7 8.3\u2033 \u00b7 Glock Compatible \u00b7 Modern Series',badge:'',
+   description:'BA 8.3\u2033 9mm barrel with straight profile for Glock-compatible PCC builds. Threaded 1/2x28 for muzzle devices, and the QPQ Nitride finish provides superior corrosion resistance.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/632979/images/576576/elj_4652__86258.1757107404.380.380.jpg?c=2'],
+   specs:[{k:'Caliber',v:'9mm'},{k:'Length',v:'8.3\u2033'},{k:'Compatibility',v:'Glock-Pattern Lowers'},{k:'Thread',v:'1/2x28'},{k:'Finish',v:'QPQ Nitride'},{k:'Twist',v:'1:10'}],
+   sellers:[{name:'Bereli',price:46.00,stock:'in',url:'https://bereli.com/BABL9MM018M/?aff=10388',fflRequired:false}]},
+
+  {upc:'854002004018',category:'ar-parts',brand:'Radian Weapons',name:'Talon Ambi Safety Selector',
+   sub:'AR-15 \u00b7 Ambidextrous \u00b7 45/90\u00b0 \u00b7 Anodized',badge:'best',
+   description:'The Radian Talon is the gold standard of ambidextrous AR-15 safety selectors. Available in 45\u00b0/90\u00b0 configurations with paddle-style levers for positive, intuitive engagement from either side.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/629846/images/559534/203397__22910.1719261455.380.380.jpg?c=2'],
+   specs:[{k:'Compatibility',v:'AR-15 / M16'},{k:'Positions',v:'45\u00b0/90\u00b0'},{k:'Control',v:'Ambidextrous'},{k:'Material',v:'Aluminum'},{k:'Finish',v:'Type III Hard Coat Anodized'}],
+   sellers:[{name:'Bereli',price:64.95,stock:'in',url:'https://bereli.com/r0018/?aff=10388',fflRequired:false}]},
+
+  {upc:'854002007500',category:'ar-parts',brand:'Radian Weapons',name:'Raptor CH + Talon Safety Combo',
+   sub:'AR-15 \u00b7 Ambi CH + Safety \u00b7 Bundle',badge:'',
+   description:'The Radian Raptor ambidextrous charging handle + Talon safety selector combo. Get both of Radian\u2019s most popular upgrades at a bundle price. Works flawlessly together as a matched set.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/629845/images/559533/203391__51603.1719260263.380.380.jpg?c=2'],
+   specs:[{k:'Includes',v:'Raptor CH + Talon Safety'},{k:'Compatibility',v:'AR-15'},{k:'CH Control',v:'Ambidextrous'},{k:'Safety',v:'Ambidextrous 45/90\u00b0'}],
+   sellers:[{name:'Bereli',price:144.95,stock:'in',url:'https://bereli.com/r0275/?aff=10388',fflRequired:false}]},
+
+  {upc:'854002006000',category:'ar-parts',brand:'Radian Weapons',name:'Raptor SD Ambi Vented CH',
+   sub:'AR-15 \u00b7 Ambidextrous \u00b7 Suppressor-Ready \u00b7 Vented',badge:'',
+   description:'The Radian Raptor SD is a vented ambidextrous charging handle designed for use with suppressors. Venting diverts hot gases away from the shooter\u2019s face during suppressed fire.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/629843/images/559525/203388__07422.1719259677.380.380.jpg?c=2'],
+   specs:[{k:'Compatibility',v:'AR-15'},{k:'Control',v:'Ambidextrous'},{k:'Feature',v:'Vented for Suppressor Use'},{k:'Material',v:'Aluminum'},{k:'Finish',v:'Type III Hard Coat Anodized'}],
+   sellers:[{name:'Bereli',price:134.95,stock:'in',url:'https://bereli.com/r0006/?aff=10388',fflRequired:false}]},
+
+  {upc:'814950029513',category:'ar-parts',brand:'Ballistic Advantage',name:'Glock 19 FDE Threaded Barrel',
+   sub:'9mm \u00b7 Glock 19 Gen3-5 \u00b7 Threaded \u00b7 FDE',badge:'',
+   description:'BA threaded barrel for Glock 19 Gen 3-5 in FDE. Drop-in compatible with a match-grade chamber and 1/2x28 threads for suppressors or compensators. QPQ Nitride finish inside and out.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/632949/images/576516/bapsg195t1f-1__62287.1757107380.380.380.jpg?c=2'],
+   specs:[{k:'Caliber',v:'9mm'},{k:'Fit',v:'Glock 19 Gen 3/4/5'},{k:'Thread',v:'1/2x28'},{k:'Finish',v:'FDE QPQ Nitride'},{k:'Material',v:'416R Stainless'}],
+   sellers:[{name:'Bereli',price:66.00,stock:'in',url:'https://bereli.com/BAPSG195T1F/?aff=10388',fflRequired:false}]},
+
+  {upc:'854013003010',category:'ar-parts',brand:'Rugged',name:'R3 Flash Mitigation System',
+   sub:'AR-15 \u00b7 1/2x28 \u00b7 Suppressor Compatible',badge:'',
+   description:'The Rugged R3 Flash Mitigation System reduces muzzle flash and can be used as a booster for some suppressor configurations. Precision-machined from 17-4 stainless steel with a black Cerakote finish.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/630883/images/565858/219977__47919.1738277153.380.380.jpg?c=2'],
+   specs:[{k:'Thread',v:'1/2x28'},{k:'Caliber',v:'5.56/.223'},{k:'Material',v:'17-4 Stainless Steel'},{k:'Finish',v:'Black Cerakote'},{k:'Suppressor Compatible',v:'Yes'}],
+   sellers:[{name:'Bereli',price:72.99,stock:'in',url:'https://bereli.com/fh001/?aff=10388',fflRequired:false}]},
+
+  {upc:'815421023003',category:'ar-parts',brand:'Aero Precision',name:'.308 BREACH Ambi CH',
+   sub:'.308/LR-308 \u00b7 Ambidextrous \u00b7 Black Anodized',badge:'',
+   description:'The Aero Precision BREACH ambidextrous charging handle is optimized for .308/7.62 AR platforms. Extended latches on both sides provide positive control for suppressed or optic-equipped rifles.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/632908/images/576054/apra700330c-ar10-ch-ano-small-blk-odg-1_2__04532.1756909118.380.380.jpg?c=2'],
+   specs:[{k:'Compatibility',v:'.308/LR-308/SR-25'},{k:'Control',v:'Ambidextrous'},{k:'Material',v:'7075 T6 Aluminum'},{k:'Finish',v:'Type III Hard Coat Anodized'}],
+   sellers:[{name:'Bereli',price:77.35,stock:'in',url:'https://bereli.com/APRA700330C/?aff=10388',fflRequired:false}]},
+
+  {upc:'096281114100',category:'ar-parts',brand:'Grip Pod',name:'Vertical Forward Grip Bipod',
+   sub:'AR-15 \u00b7 Vertical Grip + Bipod \u00b7 Polymer',badge:'',
+   description:'The Grip Pod combines a vertical foregrip with a built-in spring-loaded bipod. One button deploys sturdy steel legs for a solid shooting platform. Fits any Picatinny or MIL-STD-1913 rail.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/483105/images/490075/793573782908__72016__94540.1661291357.380.380.jpg?c=2'],
+   specs:[{k:'Type',v:'Vertical Grip + Bipod'},{k:'Compatible',v:'Picatinny/MIL-STD-1913'},{k:'Legs',v:'Spring-Loaded Steel'},{k:'Material',v:'Polymer Body'},{k:'Weight',v:'8.5 oz'}],
+   sellers:[{name:'Bereli',price:99.99,stock:'in',url:'https://bereli.com/grip-pod-systems-vertical-forward-grip-bi-pod/?aff=10388',fflRequired:false}]},
+
+  /* ── MAGAZINES ───────────────────────────────────────────────────── */
+  {upc:'764503017867',category:'magazines',brand:'Glock',name:'Glock 17/34 9mm 33rd Factory',
+   sub:'9mm \u00b7 33rd \u00b7 Glock 17/19/26/34 \u00b7 OEM',badge:'best',
+   description:'Factory Glock 33-round 9mm magazine fits all Glock 9mm pistols. OEM quality, steel spring, and Glock\u2019s signature follower design provide flawless feeding. The ultimate high-capacity Glock magazine.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/480973/images/575326/Screenshot_2025-08-12_at_1.47.15PM__74721.1755020879.380.380.png?c=2'],
+   specs:[{k:'Caliber',v:'9mm'},{k:'Capacity',v:'33 Rounds'},{k:'Fit',v:'Glock 17/19/26/34 (all 9mm Glocks)'},{k:'Type',v:'Factory OEM'},{k:'Material',v:'Polymer/Steel'}],
+   sellers:[{name:'Bereli',price:35.99,stock:'in',url:'https://bereli.com/shooting/gun-magazines/glock-17-19-26-34-9mm-33-round-factory-magazine/?aff=10388',fflRequired:false}]},
+
+  {upc:'840815119994',category:'magazines',brand:'Magpul',name:'PMAG GEN M3 5.56 30rd',
+   sub:'AR-15 \u00b7 .223/5.56 \u00b7 30rd \u00b7 Window \u00b7 MCT',badge:'best',
+   description:'The Magpul PMAG GEN M3 is the world\u2019s best-selling AR-15 magazine. Improved feed lips, enhanced follower, and an optional storage cap make it the definitive AR-15 magazine.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/629614/images/575336/Screenshot_2025-08-12_at_2.32.01PM__68355.1755023916.380.380.png?c=2'],
+   specs:[{k:'Caliber',v:'.223/5.56 NATO'},{k:'Capacity',v:'30 Rounds'},{k:'Fit',v:'AR-15/M4/M16'},{k:'Window',v:'Yes'},{k:'Material',v:'Reinforced Polymer'}],
+   sellers:[{name:'Bereli',price:20.00,stock:'in',url:'https://bereli.com/mag556-mct/?aff=10388',fflRequired:false}]},
+
+  {upc:'840815107533',category:'magazines',brand:'Magpul',name:'PMAG Gen M3 5.56 40rd',
+   sub:'AR-15 \u00b7 .223/5.56 \u00b7 40rd \u00b7 Extended',badge:'',
+   description:'The Magpul PMAG 40 Gen M3 extends standard AR-15 capacity to 40 rounds in a slightly elongated body. Ideal for competitive shooting or high-volume training sessions.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/480711/images/575338/Screenshot_2025-08-12_at_3.55.40PM__93674.1755028577.380.380.png?c=2'],
+   specs:[{k:'Caliber',v:'.223/5.56 NATO'},{k:'Capacity',v:'40 Rounds'},{k:'Fit',v:'AR-15/M4/M16'},{k:'Material',v:'Reinforced Polymer'},{k:'Weight',v:'4.9 oz empty'}],
+   sellers:[{name:'Bereli',price:25.00,stock:'in',url:'https://bereli.com/mag233-blk/?aff=10388',fflRequired:false}]},
+
+  {upc:'840815101517',category:'magazines',brand:'Magpul',name:'PMAG20 Gen M3 .308 20rd',
+   sub:'.308 Win/7.62x51 \u00b7 20rd \u00b7 SR-25/AR-10',badge:'',
+   description:'The Magpul PMAG 20 LR Gen M3 is a 20-round .308 magazine for SR-25/M110/AR-10 platforms. The same PMAG quality and reliability in the larger LR format.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/482262/images/575334/Screenshot_2025-08-12_at_2.23.54PM__93135.1755023110.380.380.png?c=2'],
+   specs:[{k:'Caliber',v:'.308 Win / 7.62x51 NATO'},{k:'Capacity',v:'20 Rounds'},{k:'Fit',v:'SR-25/M110/AR-10 compatible'},{k:'Material',v:'Reinforced Polymer'}],
+   sellers:[{name:'Bereli',price:22.99,stock:'in',url:'https://bereli.com/shooting/gun-magazines/magpul-pmag20-rifle-magazine-7-62x51-nato-308-win-20-round/?aff=10388',fflRequired:false}]},
+
+  {upc:'798681617029',category:'magazines',brand:'Sig Sauer',name:'P365-XMACRO 9mm 17rd',
+   sub:'Sig P365-XMACRO \u00b7 9mm \u00b7 17rd Factory',badge:'',
+   description:'Factory Sig Sauer 17-round flush magazine for the P365-XMACRO. The extended capacity in a flush-fit profile is what makes the XMACRO the premier micro-compact pistol.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/629858/images/575321/Screenshot_2025-08-12_at_1.39.32PM__81720.1755020395.380.380.png?c=2'],
+   specs:[{k:'Caliber',v:'9mm'},{k:'Capacity',v:'17 Rounds'},{k:'Fit',v:'Sig P365-XMACRO'},{k:'Type',v:'Factory OEM'},{k:'Material',v:'Stainless Steel/Polymer'}],
+   sellers:[{name:'Bereli',price:55.00,stock:'in',url:'https://bereli.com/8901206/?aff=10388',fflRequired:false}]},
+
+  {upc:'798681621858',category:'magazines',brand:'Sig Sauer',name:'P365 9mm 12rd Coyote',
+   sub:'Sig P365 \u00b7 9mm \u00b7 12rd \u00b7 Coyote Tan',badge:'',
+   description:'Factory Sig P365 12-round extended magazine in Coyote Tan. The extended baseplate adds one round of capacity over the flush 10-round magazine while improving grip.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/479663/images/487286/image-full-18719-99b20a0f1f2e085199787d377be340ce__22827.1651761773.380.380.jpg?c=2'],
+   specs:[{k:'Caliber',v:'9mm'},{k:'Capacity',v:'12 Rounds'},{k:'Fit',v:'Sig P365'},{k:'Color',v:'Coyote Tan'},{k:'Type',v:'Factory OEM'}],
+   sellers:[{name:'Bereli',price:45.00,stock:'in',url:'https://bereli.com/shooting/gun-magazines/sig-sauer-p365-9mm-magazine-12rds-coyote-tan/?aff=10388',fflRequired:false}]},
+
+  {upc:'798681614387',category:'magazines',brand:'Sig Sauer',name:'P320 9mm 17rd Coyote',
+   sub:'Sig P320/M17/M18 \u00b7 9mm \u00b7 17rd \u00b7 Coyote',badge:'',
+   description:'Factory Sig P320/M17/M18 17-round magazine in Coyote Tan. Compatible with the full P320 family and the civilian M17/M18 variants.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/481595/images/575348/Screenshot_2025-08-12_at_6.27.34PM__63777.1755037679.380.380.png?c=2'],
+   specs:[{k:'Caliber',v:'9mm'},{k:'Capacity',v:'17 Rounds'},{k:'Fit',v:'Sig P320/M17/M18'},{k:'Color',v:'Coyote Tan'},{k:'Type',v:'Factory OEM'}],
+   sellers:[{name:'Bereli',price:44.99,stock:'in',url:'https://bereli.com/shooting/sig-sauer-magazine-p320-m17-m18-9mm-17rd-coyote/?aff=10388',fflRequired:false}]},
+
+  {upc:'706397957321',category:'magazines',brand:'Springfield Armory',name:'KUNA 9mm 30rd Magazine',
+   sub:'Springfield KUNA \u00b7 9mm \u00b7 30rd',badge:'',
+   description:'Factory 30-round 9mm magazine for the Springfield KUNA pistol. Extended capacity for competitive shooting and training applications.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/632207/images/572624/237805__42074.1749137156.380.380.jpg?c=2'],
+   specs:[{k:'Caliber',v:'9mm'},{k:'Capacity',v:'30 Rounds'},{k:'Fit',v:'Springfield KUNA'},{k:'Type',v:'Factory OEM'}],
+   sellers:[{name:'Bereli',price:29.00,stock:'in',url:'https://bereli.com/kn6030/?aff=10388',fflRequired:false}]},
+
+  {upc:'706397935152',category:'magazines',brand:'Springfield Armory',name:'Hellcat 9mm 15rd Magazine',
+   sub:'Springfield Hellcat \u00b7 9mm \u00b7 15rd Extended',badge:'',
+   description:'Factory Springfield Hellcat 15-round extended magazine. The flush-fit profile maintains the Hellcat\u2019s compact dimensions while extending capacity for home defense or competition.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/629925/images/559965/203916__05957.1721746275.380.380.jpg?c=2'],
+   specs:[{k:'Caliber',v:'9mm'},{k:'Capacity',v:'15 Rounds'},{k:'Fit',v:'Springfield Hellcat'},{k:'Type',v:'Factory OEM Extended'}],
+   sellers:[{name:'Bereli',price:36.50,stock:'in',url:'https://bereli.com/hcp5915/?aff=10388',fflRequired:false}]},
+
+  {upc:'688218026388',category:'magazines',brand:'Steyr',name:'A2 MF 9mm Magazine',
+   sub:'Steyr A2 MF \u00b7 9mm \u00b7 17rd Factory',badge:'',
+   description:'Factory Steyr A2 MF 17-round 9mm magazine. OEM quality with Steyr\u2019s signature feed geometry for reliable function in the A2 MF platform.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/582318/images/575324/Steyr__33210.1755020700.380.380.gif?c=2'],
+   specs:[{k:'Caliber',v:'9mm'},{k:'Capacity',v:'17 Rounds'},{k:'Fit',v:'Steyr A2 MF'},{k:'Type',v:'Factory OEM'}],
+   sellers:[{name:'Bereli',price:20.00,stock:'in',url:'https://bereli.com/steyr-a2-mf-9mm-luger-magazine/?aff=10388',fflRequired:false}]},
+
+  /* ── ACCESSORIES ─────────────────────────────────────────────────── */
+  {upc:'080926880598',category:'accessories',brand:'Streamlight',name:'ProTac Rail Mount 2 625 Lumen',
+   sub:'625 Lumens \u00b7 Rail Mount \u00b7 Long Gun Light',badge:'best',
+   description:'The Streamlight ProTac Rail Mount 2 delivers 625 lumens of white light for long gun applications. Ten-Tap programmable switch and dual remote switch ready.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/630677/images/564866/216816__19572.1736886232.380.380.jpg?c=2'],
+   specs:[{k:'Output',v:'625 Lumens'},{k:'Beam Distance',v:'217 meters'},{k:'Battery',v:'CR123A x2'},{k:'Runtime',v:'2 hours (high)'},{k:'Mount',v:'MIL-STD-1913 Rail'},{k:'IPX',v:'IPX4'}],
+   sellers:[{name:'Bereli',price:129.99,stock:'in',url:'https://bereli.com/88059/?aff=10388',fflRequired:false}]},
+
+  {upc:'648018710902',category:'accessories',brand:'Blackhawk',name:'Sportster TraverseTrack Bipod 6-9"',
+   sub:'6\u2033-9\u2033 Notched Legs \u00b7 TraverseTrack Rail',badge:'',
+   description:'The Blackhawk Sportster TraverseTrack bipod mounts to any Picatinny rail and features notched legs for positive height locking from 6\u2033 to 9\u2033.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/629850/images/559542/193559__39343.1719334957.380.380.jpg?c=2'],
+   specs:[{k:'Height Range',v:'6\u2033-9\u2033'},{k:'Mount',v:'Picatinny Rail'},{k:'Track',v:'TraverseTrack'},{k:'Material',v:'Aluminum/Polymer'}],
+   sellers:[{name:'Bereli',price:25.00,stock:'in',url:'https://bereli.com/71bp09bk/?aff=10388',fflRequired:false}]},
+
+  {upc:'648018710704',category:'accessories',brand:'Blackhawk',name:'Pivot Bipod 13.5-23"',
+   sub:'13.5\u2033-23\u2033 Adjustable \u00b7 Rail Mount \u00b7 Pivot',badge:'',
+   description:'The Blackhawk Pivot Bipod extends from 13.5\u2033 to 23\u2033 for long-range shooting positions. Pivot head allows canting the rifle while legs remain level.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/629851/images/559543/192042__84232.1719334964.380.380.jpg?c=2'],
+   specs:[{k:'Height Range',v:'13.5\u2033-23\u2033'},{k:'Mount',v:'Picatinny Rail'},{k:'Feature',v:'Pivot Head'},{k:'Material',v:'Aluminum'}],
+   sellers:[{name:'Bereli',price:25.00,stock:'in',url:'https://bereli.com/71bp07bk/?aff=10388',fflRequired:false}]},
+
+  {upc:'648018710308',category:'accessories',brand:'Blackhawk',name:'Sportster Adjustable Bipod 6-9"',
+   sub:'6\u2033-9\u2033 \u00b7 Swivel Stud Mount \u00b7 45\u00b0 Cant',badge:'',
+   description:'Blackhawk Sportster Adjustable Bipod mounts via swivel stud and provides 45\u00b0 cant adjustment for uneven terrain. Notched legs lock from 6\u2033 to 9\u2033.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/629848/images/559540/196187__06293.1719334930.380.380.jpg?c=2'],
+   specs:[{k:'Height Range',v:'6\u2033-9\u2033'},{k:'Mount',v:'Swivel Stud'},{k:'Cant',v:'45\u00b0'},{k:'Material',v:'Aluminum/Polymer'}],
+   sellers:[{name:'Bereli',price:25.00,stock:'in',url:'https://bereli.com/71bp03bk/?aff=10388',fflRequired:false}]},
+
+  {upc:'648018711108',category:'accessories',brand:'Blackhawk',name:'Traverse Track Bipod 13.5-23"',
+   sub:'13.5\u2033-23\u2033 \u00b7 TraverseTrack Rail \u00b7 Black',badge:'',
+   description:'Extended-height Blackhawk TraverseTrack bipod for use from field or kneeling positions. Ranges from 13.5\u2033 to 23\u2033 with positive notch locking.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/629849/images/559541/191864__67993.1719334946.380.380.jpg?c=2'],
+   specs:[{k:'Height Range',v:'13.5\u2033-23\u2033'},{k:'Mount',v:'Picatinny Rail'},{k:'Track',v:'TraverseTrack'},{k:'Material',v:'Aluminum'}],
+   sellers:[{name:'Bereli',price:25.00,stock:'in',url:'https://bereli.com/71bp11bk/?aff=10388',fflRequired:false}]},
+
+  {upc:'627679200000',category:'accessories',brand:'DURAMAG',name:'Speed 30rd M81 5.56 Special Edition',
+   sub:'.223/5.56 \u00b7 30rd \u00b7 M81 Woodland \u00b7 Special Edition',badge:'',
+   description:'DURAMAG Speed aluminum AR-15 magazines in M81 Woodland camouflage. Manufactured to military specifications with a self-lubricating follower and stainless steel spring.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/630416/images/563114/209845__57250.1734642089.380.380.jpg?c=2'],
+   specs:[{k:'Caliber',v:'.223/5.56 NATO'},{k:'Capacity',v:'30 Rounds'},{k:'Finish',v:'M81 Woodland'},{k:'Material',v:'Aluminum'},{k:'Follower',v:'Self-Lubricating'}],
+   sellers:[{name:'Bereli',price:32.99,stock:'in',url:'https://bereli.com/302300m81178cpd/?aff=10388',fflRequired:false}]},
+
+  {upc:'648018600500',category:'accessories',brand:'Blackhawk',name:'Urban Carry Fanny Pack Holster',
+   sub:'Concealed Carry \u00b7 Fanny Pack \u00b7 Universal',badge:'',
+   description:'The Blackhawk Urban Carry Fanny Pack Holster provides concealed carry in a discreet fanny pack design. Universal fit accommodates most compact and full-size pistols.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/632470/images/573913/218015__02070.1752585151.380.380.jpg?c=2'],
+   specs:[{k:'Type',v:'Concealed Carry Fanny Pack'},{k:'Fit',v:'Universal (most compact/full-size)'},{k:'Material',v:'Nylon'},{k:'Access',v:'Hook-and-Loop Holster Retention'}],
+   sellers:[{name:'Bereli',price:46.99,stock:'in',url:'https://bereli.com/60wf05bk/?aff=10388',fflRequired:false}]},
+
+  {upc:'648018712014',category:'accessories',brand:'Blackhawk',name:'CQD Mark II Weapons Catch',
+   sub:'Sling Attachment \u00b7 QD \u00b7 AR-15/M4',badge:'',
+   description:'The Blackhawk CQD Mark II Weapons Catch is a QD sling attachment point for AR-15/M4 platforms. Attaches to the stock or buffer tube for reliable single-point sling use.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/475691/images/480081/apifyvzbb__31204.1638491404.380.380.jpg?c=2'],
+   specs:[{k:'Type',v:'QD Sling Attachment'},{k:'Fit',v:'AR-15/M4/M16'},{k:'Material',v:'Steel'},{k:'Sling Type',v:'Single-Point Compatible'}],
+   sellers:[{name:'Bereli',price:29.95,stock:'in',url:'https://bereli.com/blackhawk-cqd-mark-ii-and-mark-ii-weapons-catch-71cqd2bk/?aff=10388',fflRequired:false}]},
+
+  {upc:'854002002400',category:'accessories',brand:'Radian Weapons',name:'AFTERBURNER + RAMJET Sig P365 Combo',
+   sub:'Sig P365 \u00b7 Comp + Barrel Combo \u00b7 Black',badge:'',
+   description:'The Radian AFTERBURNER compensator + RAMJET barrel combo for Sig P365 dramatically reduces muzzle rise. The RAMJET barrel provides the correct thread pitch and dimensions for the AFTERBURNER to seat properly.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/630041/images/560761/204837__31867.1726601975.380.380.jpg?c=2'],
+   specs:[{k:'Fit',v:'Sig P365'},{k:'Includes',v:'RAMJET Barrel + AFTERBURNER Comp'},{k:'Material',v:'Stainless Steel'},{k:'Effect',v:'Muzzle Rise Reduction'}],
+   sellers:[{name:'Bereli',price:389.95,stock:'in',url:'https://bereli.com/h0024/?aff=10388',fflRequired:false}]},
+
+  {upc:'814950021009',category:'accessories',brand:'Ballistic Advantage',name:'5.5" 9mm Pistol Barrel',
+   sub:'9mm \u00b7 5.5\u2033 \u00b7 Glock Compatible \u00b7 Modern Series',badge:'',
+   description:'BA 5.5\u2033 9mm bull barrel for Glock-compatible pistols and PCC builds. Threaded 1/2x28 for compensators and suppressors, QPQ Nitride finish for corrosion resistance.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/632990/images/576598/5_9mm__09975.1757107414.380.380.jpg?c=2'],
+   specs:[{k:'Caliber',v:'9mm'},{k:'Length',v:'5.5\u2033'},{k:'Compatibility',v:'Glock Pattern'},{k:'Thread',v:'1/2x28'},{k:'Finish',v:'QPQ Nitride'}],
+   sellers:[{name:'Bereli',price:42.00,stock:'in',url:'https://bereli.com/BABL9MM001M/?aff=10388',fflRequired:false}]},
+
+  /* ── GUN SAFES ───────────────────────────────────────────────────── */
+  {upc:'028278024015',category:'gun-safes',brand:'Hornady',name:'SnapSafe Gun Keypad Vault',
+   sub:'Keypad \u00b7 Quick Access \u00b7 Handgun \u00b7 Steel',badge:'',
+   description:'The Hornady SnapSafe Gun Keypad Vault provides quick-access handgun storage with a 4-digit keypad. Heavy-duty 16-gauge steel construction with a foam-lined interior.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/554049/images/529343/61P2FWoNOTL._AC_SL1500___62409.1685644135.380.380.jpg?c=2'],
+   specs:[{k:'Lock Type',v:'Electronic Keypad'},{k:'Capacity',v:'1-2 Handguns'},{k:'Construction',v:'16-Gauge Steel'},{k:'Interior',v:'Foam-Lined'},{k:'Power',v:'9V Battery'}],
+   sellers:[{name:'Bereli',price:62.99,stock:'in',url:'https://bereli.com/hornady-snapsafe-gun-keypad-vault/?aff=10388',fflRequired:false}]},
+
+  {upc:'811745026002',category:'gun-safes',brand:'Vaultek',name:'Series 20 Biometric Smart Safe',
+   sub:'Biometric + Bluetooth \u00b7 Backlit Keypad \u00b7 Black',badge:'best',
+   description:'The Vaultek VS20i Smart Safe offers biometric, Bluetooth, and keypad access in a compact steel safe. The Vaultek app provides remote monitoring and multiple user fingerprint enrollment.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/630472/images/564139/212024__97157.1736282468.380.380.jpg?c=2'],
+   specs:[{k:'Lock Types',v:'Biometric + Keypad + Bluetooth'},{k:'Capacity',v:'1-2 Handguns + Accessories'},{k:'Steel Thickness',v:'16-Gauge'},{k:'Battery',v:'Rechargeable Lithium'},{k:'App',v:'iOS/Android'}],
+   sellers:[{name:'Bereli',price:319.49,stock:'in',url:'https://bereli.com/vs20i-bk/?aff=10388',fflRequired:false}]},
+
+  {upc:'811745027009',category:'gun-safes',brand:'Vaultek',name:'LifePod 2.0 Biometric Safe',
+   sub:'Biometric \u00b7 Waterproof \u00b7 Portable \u00b7 Black',badge:'',
+   description:'The Vaultek LifePod 2.0 is a lightweight, waterproof portable safe with biometric access. Tested to TSA firearm transport standards and lockable to fixed objects via the included cable.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/630666/images/564776/212849__64399.1736801436.380.380.jpg?c=2'],
+   specs:[{k:'Lock Type',v:'Biometric'},{k:'Waterproof',v:'IP65'},{k:'Cable',v:'Security Cable Included'},{k:'TSA',v:'Compliant'},{k:'Weight',v:'1.9 lbs'}],
+   sellers:[{name:'Bereli',price:212.99,stock:'in',url:'https://bereli.com/blp20-bk/?aff=10388',fflRequired:false}]},
+
+  {upc:'811745025006',category:'gun-safes',brand:'Vaultek',name:'LifePod 1.0 Electronic Safe',
+   sub:'Electronic Keypad \u00b7 Portable \u00b7 Lightweight',badge:'',
+   description:'The Vaultek LifePod 1.0 is the entry-level portable safe with electronic keypad access. Lightweight and TSA-compliant for travel with a firearm.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/630611/images/564380/212527__87498.1736437162.380.380.jpg?c=2'],
+   specs:[{k:'Lock Type',v:'Electronic Keypad'},{k:'Capacity',v:'1 Handgun'},{k:'TSA',v:'Compliant'},{k:'Cable',v:'Security Cable Included'},{k:'Weight',v:'1.3 lbs'}],
+   sellers:[{name:'Bereli',price:117.14,stock:'in',url:'https://bereli.com/vlp10-bk/?aff=10388',fflRequired:false}]},
+
+  {upc:'811745028006',category:'gun-safes',brand:'Vaultek',name:'Barikade Series 1 Non-Biometric',
+   sub:'Electronic Keypad \u00b7 Single Handgun \u00b7 Black',badge:'',
+   description:'The Vaultek Barikade Series 1 is a bedside handgun safe with a responsive electronic keypad. Anti-pry design and 16-gauge carbon steel construction resist unauthorized access.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/630562/images/564080/211995__52324.1736263774.380.380.jpg?c=2'],
+   specs:[{k:'Lock Type',v:'Electronic Keypad'},{k:'Capacity',v:'1 Handgun'},{k:'Steel',v:'16-Gauge Carbon Steel'},{k:'Battery',v:'9V'},{k:'Anti-Pry',v:'Yes'}],
+   sellers:[{name:'Bereli',price:121.41,stock:'in',url:'https://bereli.com/bkd1d-sb/?aff=10388',fflRequired:false}]},
+
+  {upc:'811745024009',category:'gun-safes',brand:'Vaultek',name:'LifePod 2.0 Waterproof Lock Case',
+   sub:'Waterproof \u00b7 TSA Approved \u00b7 Travel Safe',badge:'',
+   description:'The Vaultek LifePod 2.0 Lock Case (non-electronic) provides a rugged waterproof shell with a keyed lock for TSA-compliant firearm transport. IP65 rated against dust and water.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/630654/images/564680/212690__54751.1736800075.380.380.jpg?c=2'],
+   specs:[{k:'Lock Type',v:'Keyed Lock'},{k:'Waterproof',v:'IP65'},{k:'TSA',v:'Compliant'},{k:'Cable',v:'Security Cable Included'},{k:'Weight',v:'1.6 lbs'}],
+   sellers:[{name:'Bereli',price:170.39,stock:'in',url:'https://bereli.com/vlp20-bk/?aff=10388',fflRequired:false}]},
+
+  {upc:'811745020001',category:'gun-safes',brand:'Vaultek',name:'Essential Series 20 Compact Safe',
+   sub:'Electronic \u00b7 Compact \u00b7 1-2 Handguns \u00b7 Black',badge:'',
+   description:'The Vaultek Essential Series VE20 is a responsive, compact pistol safe with backlit keypad access. Includes mounting hardware for nightstand, drawer, or vehicle installation.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/630568/images/564124/212005__13833.1736281652.380.380.jpg?c=2'],
+   specs:[{k:'Lock Type',v:'Electronic Keypad'},{k:'Capacity',v:'1-2 Handguns'},{k:'Steel',v:'18-Gauge'},{k:'Battery',v:'9V'},{k:'Mounting',v:'Hardware Included'}],
+   sellers:[{name:'Bereli',price:202.34,stock:'in',url:'https://bereli.com/ve20-bk/?aff=10388',fflRequired:false}]},
+
+  {upc:'811745029003',category:'gun-safes',brand:'Vaultek',name:'Barikade Series 2 Biometric Safe',
+   sub:'Biometric + Keypad \u00b7 Single Handgun \u00b7 Black',badge:'',
+   description:'The Vaultek Barikade Series 2 upgrades the Series 1 with biometric fingerprint access alongside the keypad. Stores up to 20 fingerprints for quick access in the dark.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/630567/images/564116/212073__78057.1736281510.380.380.jpg?c=2'],
+   specs:[{k:'Lock Types',v:'Biometric + Electronic Keypad'},{k:'Fingerprints',v:'Up to 20'},{k:'Capacity',v:'1 Handgun'},{k:'Steel',v:'16-Gauge Carbon Steel'},{k:'Anti-Pry',v:'Yes'}],
+   sellers:[{name:'Bereli',price:212.99,stock:'in',url:'https://bereli.com/bkd2b-sb/?aff=10388',fflRequired:false}]},
+
+  {upc:'811745031006',category:'gun-safes',brand:'Vaultek',name:'DS2i Bluetooth Smart Station',
+   sub:'Bluetooth \u00b7 Biometric \u00b7 Dual-Layer Storage',badge:'best',
+   description:'The Vaultek DS2i Smart Station offers dual-layer storage for multiple handguns and accessories. Bluetooth app control, biometric, and keypad access with a rechargeable battery system.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/630606/images/564351/212164__66180.1736436383.380.380.jpg?c=2'],
+   specs:[{k:'Lock Types',v:'Biometric + Keypad + Bluetooth'},{k:'Capacity',v:'Multiple Handguns + Accessories'},{k:'Layers',v:'Dual Storage'},{k:'Battery',v:'Rechargeable'},{k:'App',v:'iOS/Android'}],
+   sellers:[{name:'Bereli',price:425.99,stock:'in',url:'https://bereli.com/ds2i-bk/?aff=10388',fflRequired:false}]},
+
+  {upc:'811745022005',category:'gun-safes',brand:'Vaultek',name:'Essential Series PRO VE Auto-Lid',
+   sub:'Auto-Opening Lid \u00b7 Backlit Keypad \u00b7 Black',badge:'',
+   description:'The Vaultek Essential Series PRO VE features an auto-opening lid for one-handed access. The lid springs open on code entry for the fastest possible access to your firearm.',
+   imgs:['https://cdn11.bigcommerce.com/s-yqqkx/products/630573/images/564165/212089__93685.1736284203.380.380.png?c=2'],
+   specs:[{k:'Lock Type',v:'Electronic Keypad'},{k:'Lid',v:'Auto-Opening Spring Lid'},{k:'Capacity',v:'1-2 Handguns'},{k:'Steel',v:'18-Gauge'},{k:'Battery',v:'9V'}],
+   sellers:[{name:'Bereli',price:319.49,stock:'in',url:'https://bereli.com/pro-ve-bk/?aff=10388',fflRequired:false}]},
+
+]
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   NAV CATEGORIES
+══════════════════════════════════════════════════════════════════════════════ */
+var NAV_CATS = [
+  {label:'All',href:'/'},
+  {label:'Handguns',href:'/handguns.html'},
+  {label:'Rifles',href:'/rifles.html'},
+  {label:'Shotguns',href:'/shotguns.html'},
+  {label:'Ammo',href:'/ammunition.html'},
+  {label:'Optics',href:'/optics.html'},
+  {label:'Holsters',href:'/holsters.html'},
+  {label:'AR Parts',href:'/ar-parts.html'},
+  {label:'Magazines',href:'/magazines.html'},
+  {label:'Cleaning',href:'/cleaning.html'},
+  {label:'Safes',href:'/gun-safes.html'}
+];
+(function(){
+  var nc = document.getElementById('nav-cats');
+  if (!nc) return;
+  NAV_CATS.forEach(function(c){
+    var a = document.createElement('a');
+    a.href = c.href; a.textContent = c.label; a.className = 'nav-cat';
+    nc.appendChild(a);
+  });
+})();
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   UTILITIES
+══════════════════════════════════════════════════════════════════════════════ */
+function slugify(s){
+  return (s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+}
+function getSlug(){
+  var parts = window.location.pathname.split('/').filter(Boolean);
+  // Support ?p=slug query param (local dev) and /product/slug (Cloudflare)
+  var qp = new URLSearchParams(location.search).get('p');
+  if (qp) return qp;
+  return parts[parts.length-1] || '';
+}
+function getLowest(p){
+  if (!p||!p.sellers||!p.sellers.length) return 0;
+  return Math.min.apply(null, p.sellers.map(function(s){return s.price;}));
+}
+function stockBadge(s){
+  if (s==='in')  return '<span class="stk stk-in">In Stock</span>';
+  if (s==='low') return '<span class="stk stk-low">Low Stock</span>';
+  return '<span class="stk stk-out">Out of Stock</span>';
+}
+var CAT_PAGES = {
+  handguns:'/handguns.html', rifles:'/rifles.html', shotguns:'/shotguns.html',
+  ammunition:'/ammunition.html', optics:'/optics.html', holsters:'/holsters.html',
+  'ar-parts':'/ar-parts.html', magazines:'/magazines.html',
+  cleaning:'/cleaning.html', 'gun-safes':'/gun-safes.html'
+};
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   GALLERY
+══════════════════════════════════════════════════════════════════════════════ */
+function switchImg(el){
+  var src = el.getAttribute('data-src');
+  var mainImg = document.getElementById('main-product-img');
+  if (mainImg) mainImg.src = src;
+  document.querySelectorAll('.pd-thumb').forEach(function(t){t.classList.remove('active');});
+  el.classList.add('active');
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   PRICE TREND SVG
+   Generates a simulated 30-day price history around the current best price.
+   Clearly labelled as illustrative until live price-history data is connected.
+══════════════════════════════════════════════════════════════════════════════ */
+function trendSVG(basePrice){
+  var pts = [];
+  var s = Math.floor(basePrice * 100);
+  function lcg(n){ return (n * 9301 + 49297) % 233280; }
+  var v = basePrice;
+  for (var i=0; i<30; i++){
+    s = lcg(s + i * 7);
+    var delta = ((s / 233280) - 0.5) * 0.05 * basePrice;
+    v = Math.max(basePrice * 0.91, Math.min(basePrice * 1.09, v + delta));
+    pts.push(v);
+  }
+  var min = Math.min.apply(null,pts);
+  var max = Math.max.apply(null,pts);
+  var pad = { x:2, y:8 };
+  var W = 800, H = 110;
+  function px(i){ return pad.x + i * (W - 2*pad.x) / 29; }
+  function py(val){ return pad.y + (1-(val-min)/(max-min||1)) * (H - 2*pad.y); }
+  var path = 'M' + pts.map(function(val,i){ return px(i).toFixed(1)+','+py(val).toFixed(1); }).join(' L');
+  var area = path + ' L'+px(29).toFixed(1)+','+H+' L'+px(0).toFixed(1)+','+H+' Z';
+  return '<svg viewBox="0 0 '+W+' '+H+'" class="pd-trend-svg" preserveAspectRatio="none">'
+    +'<defs><linearGradient id="tg" x1="0" y1="0" x2="0" y2="1">'
+    +'<stop offset="0%" stop-color="#d4a82e" stop-opacity=".2"/>'
+    +'<stop offset="100%" stop-color="#d4a82e" stop-opacity="0"/>'
+    +'</linearGradient></defs>'
+    +'<path d="'+area+'" fill="url(#tg)"/>'
+    +'<path d="'+path+'" fill="none" stroke="#d4a82e" stroke-width="2.5" stroke-linejoin="round"/>'
+    +'<circle cx="'+px(29).toFixed(1)+'" cy="'+py(pts[29]).toFixed(1)+'" r="5" fill="#d4a82e"/>'
+    +'</svg>';
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   RENDER PRODUCT
+══════════════════════════════════════════════════════════════════════════════ */
+function renderProduct(p){
+  var low    = getLowest(p);
+  var imgs   = (p.imgs && p.imgs.length) ? p.imgs : (p.img ? [p.img] : []);
+  var mainSrc = imgs[0] || '';
+  var catLabel = (p.category||'').charAt(0).toUpperCase() + (p.category||'').slice(1).replace(/-/g,' ');
+  var catHref  = CAT_PAGES[p.category] || '/';
+
+  // Update page title + meta
+  document.title = p.name + ' — Compare Prices | Ideal Armory';
+  var metaDesc = document.getElementById('page-desc');
+  if (metaDesc) metaDesc.content = 'Compare prices on the '+p.name+' from licensed retailers on Ideal Armory. Best price: $'+low.toFixed(2)+'.';
+
+  // Breadcrumb
+  document.getElementById('bc-cat-link').textContent = catLabel;
+  document.getElementById('bc-cat-link').href = catHref;
+  document.getElementById('bc-name').textContent = p.name;
+
+  // Sale / savings
+  var hasSale  = p.sellers && p.sellers[0] && p.sellers[0].orig;
+  var origPrice = hasSale ? p.sellers[0].orig : null;
+  var savePct   = origPrice ? Math.round((1 - low / origPrice) * 100) : 0;
+
+  // Gallery
+  var galleryHTML;
+  if (mainSrc) {
+    var thumbs = imgs.map(function(src,i){
+      return '<div class="pd-thumb'+(i===0?' active':'')+'" data-src="'+src+'" onclick="switchImg(this)">'
+        +'<img src="'+src+'" alt="'+p.name+' view '+(i+1)+'" loading="lazy">'
+        +'</div>';
+    }).join('');
+    galleryHTML = '<div class="pd-main-wrap"><img id="main-product-img" src="'+mainSrc+'" alt="'+p.name+'"></div>'
+      +(thumbs ? '<div class="pd-thumbs">'+thumbs+'</div>' : '');
+  } else {
+    galleryHTML = '<div class="pd-main-wrap" style="display:flex;align-items:center;justify-content:center;height:280px;color:var(--gray-400);font-style:italic;font-size:13px">Image from retailer feed</div>';
+  }
+
+  // Sellers
+  var sellerRows = p.sellers.map(function(s,i){
+    return '<div class="pd-seller-row'+(i===0?' best-row':'')+'">'
+      +'<div><div class="pd-seller-name">'+s.name+'</div>'
+      +'<div class="pd-seller-meta">'+(s.fflRequired ? '&#9737; FFL Transfer Required' : '&#10003; Ships Direct')+'</div></div>'
+      +'<span class="pd-seller-price'+(i===0?' lowest':'')+'">$'+s.price.toFixed(2)+'</span>'
+      +stockBadge(s.stock)
+      +'<a class="pd-goto-btn" href="'+(s.url||'#')+'" target="_blank" rel="nofollow sponsored">Go to Retailer &rarr;</a>'
+      +'</div>';
+  }).join('');
+
+  // Specs
+  var specsHTML = (p.specs||[]).map(function(s){
+    return '<div class="pd-spec-cell"><div class="pd-spec-key">'+s.k+'</div><div class="pd-spec-val">'+s.v+'</div></div>';
+  }).join('');
+
+  // Related (same category, exclude self, max 4)
+  var slug = slugify(p.name);
+  var related = ALL_PRODUCTS.filter(function(r){
+    return r.category === p.category && slugify(r.name) !== slug;
+  }).slice(0,4);
+  var relHTML = related.map(function(r){
+    var rLow = getLowest(r);
+    var rImg = (r.imgs && r.imgs[0]) ? r.imgs[0] : '';
+    var rSlug = slugify(r.name);
+    return '<a class="pd-rel-card" href="/product.html?p='+rSlug+'" onclick="storeProduct('+JSON.stringify(rSlug)+',this)">'
+      +'<div class="pd-rel-img">'+(rImg ? '<img src="'+rImg+'" alt="'+r.name+'" loading="lazy">' : '<span class="img-ph">Image from retailer feed</span>')+'</div>'
+      +'<div class="pd-rel-body">'
+      +'<div class="pd-rel-brand">'+r.brand+'</div>'
+      +'<div class="pd-rel-name">'+r.name+'</div>'
+      +(rLow ? '<div class="pd-rel-price">From $'+rLow.toFixed(2)+'</div>' : '')
+      +'</div></a>';
+  }).join('');
+
+  // Build page
+  document.getElementById('pd-page').innerHTML =
+    '<div class="pd-main">'
+      // Gallery column
+      +'<div>'+galleryHTML+'</div>'
+      // Info column
+      +'<div class="pd-info">'
+        +'<div class="pd-badges">'
+          +(p.badge==='best' ? '<span class="pd-badge-best">Best Seller</span>' : '')
+          +'<a class="pd-badge-cat" href="'+catHref+'">'+catLabel+'</a>'
+          +(p.upc ? '<span class="pd-badge-upc">UPC: '+p.upc+'</span>' : '')
+        +'</div>'
+        +'<div class="pd-brand">'+p.brand+'</div>'
+        +'<h1 class="pd-name">'+p.name+'</h1>'
+        +'<div class="pd-sub">'+p.sub+'</div>'
+        +(p.description ? '<div class="pd-desc">'+p.description+'</div>' : '')
+        // Price
+        +'<div class="pd-price-block">'
+          +'<div class="pd-from-lbl">Best Price — '+p.sellers.length+' Retailer'+(p.sellers.length!==1?'s':'')+'</div>'
+          +'<div class="pd-price-row">'
+            +'<span class="pd-best-price">$'+low.toFixed(2)+'</span>'
+            +(origPrice ? '<span class="pd-orig-price">$'+origPrice.toFixed(2)+'</span><span class="pd-save-badge">'+savePct+'% OFF</span>' : '')
+          +'</div>'
+          +(hasSale ? '<div class="pd-save-text">You save $'+(origPrice-low).toFixed(2)+'</div>' : '')
+        +'</div>'
+        // Sellers
+        +'<div class="pd-sellers-wrap">'
+          +'<div class="pd-sellers-hd"><span class="pd-sellers-title">Compare Prices</span><span class="pd-sellers-count">'+p.sellers.length+' retailer'+(p.sellers.length!==1?'s':'')+'</span></div>'
+          +sellerRows
+          +'<div class="pd-ffl-note">&#9432;&nbsp; Firearms require an FFL dealer transfer. Verify shipping eligibility and applicable state laws with the retailer before ordering.</div>'
+        +'</div>'
+        // Actions
+        +'<div class="pd-actions">'
+          +'<button class="pd-kit-btn" onclick="addToKit()">+ Add to Kit</button>'
+          +'<button class="pd-share-btn" onclick="shareProduct()">&#8679; Share</button>'
+        +'</div>'
+      +'</div>'
+    +'</div>'
+    // Specs section
+    +(specsHTML ? '<div class="pd-section"><div class="pd-section-title">Specifications</div><div class="pd-spec-grid">'+specsHTML+'</div></div>' : '')
+    // Price trend
+    +'<div class="pd-section"><div class="pd-section-title">30-Day Price Trend</div>'
+      +'<div class="pd-trend-box">'
+        +'<div class="pd-trend-labels"><span>30 days ago</span><span>Today — $'+low.toFixed(2)+'</span></div>'
+        +trendSVG(low)
+        +'<div class="pd-trend-meta">'
+          +'<span class="pd-trend-note">&#9432; Price history tracking begins once connected to a live retailer feed. Chart above is illustrative.</span>'
+          +'<span class="pd-trend-range">Range: $'+(low*0.91).toFixed(2)+' – $'+(low*1.09).toFixed(2)+'</span>'
+        +'</div>'
+      +'</div>'
+    +'</div>'
+    // Related
+    +(relHTML ? '<div class="pd-section"><div class="pd-section-title">You May Also Like</div><div class="pd-related-grid">'+relHTML+'</div></div>' : '');
+}
+
+/* ── Helpers ──────────────────────────────────────────────────────────────── */
+function renderNotFound(){
+  document.getElementById('bc-name').textContent = 'Not Found';
+  document.getElementById('pd-page').innerHTML =
+    '<div class="pd-not-found">'
+      +'<div class="pd-nf-icon">&#9651;</div>'
+      +'<div class="pd-nf-title">Product Not Found</div>'
+      +'<div class="pd-nf-sub">This product may not yet be in our database, or the URL may be incorrect. Browse a category to find what you\'re looking for.</div>'
+      +'<button class="btn-p" onclick="window.location.href=\'/\'">Browse All Products</button>'
+    +'</div>';
+}
+
+function addToKit(){
+  try {
+    var raw = sessionStorage.getItem('ia_pv');
+    if (raw){ var p = JSON.parse(raw); alert('Kit Builder: '+p.name+' added!\n(Full kit integration available on the main site.)'); }
+    else { alert('Kit Builder is available on the main site.'); }
+  } catch(e){ alert('Kit Builder is available on the main site.'); }
+}
+
+function shareProduct(){
+  if (navigator.share){ navigator.share({title:document.title, url:window.location.href}); }
+  else {
+    try { navigator.clipboard.writeText(window.location.href); alert('Link copied to clipboard!'); }
+    catch(e){ prompt('Copy this link:', window.location.href); }
+  }
+}
+
+function storeProduct(slug, el){
+  // Store the product object so product.html can render it without a feed lookup
+  var p = ALL_PRODUCTS.find(function(x){ return slugify(x.name)===slug; });
+  if (p) { try{ sessionStorage.setItem('ia_pv', JSON.stringify(p)); }catch(e){} }
+}
+
+function doSearch(){
+  var q = (document.getElementById('nav-srch')||document.getElementById('mob-srch')||{}).value||'';
+  window.location.href = '/?q=' + encodeURIComponent(q);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   INIT — load product from URL slug (primary) or sessionStorage (fallback)
+══════════════════════════════════════════════════════════════════════════════ */
+(function(){
+  var product = null;
+
+  // 1. URL slug match — most reliable, works for direct links, bookmarks, shares
+  var slug = getSlug();
+  if (slug && slug !== 'product' && slug !== 'product.html') {
+    product = ALL_PRODUCTS.find(function(p){
+      return slugify(p.name) === slug || p.upc === slug;
+    });
+  }
+
+  // 2. sessionStorage fallback — for cases where slug is missing
+  if (!product) {
+    try {
+      var raw = sessionStorage.getItem('ia_pv');
+      if (raw) product = JSON.parse(raw);
+    } catch(e){}
+  }
+
+  if (product){ renderProduct(product); }
+  else { renderNotFound(); }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Kit — Ideal Armory</title>
+<meta name="description" content="Review and shop your saved kit on Ideal Armory. See full product cards, prices, and links to buy direct from retailers.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" media="print" onload="this.media='all'">
+<style>
+:root{
+  --navy:#1b2a3b;--navy-mid:#243649;--navy-deep:#111e2b;
+  --gold:#c49a2a;--gold-light:#e8c96a;
+  --green:#16a34a;--red:#b8311f;
+  --white:#fff;--off-white:#f7f6f3;
+  --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;
+  --gray-400:#9ca3af;--gray-500:#6b7280;--gray-600:#4b5563;--gray-700:#374151;--gray-800:#1f2937;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.08);
+  --r:3px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;font-size:14px;color:var(--gray-800);background:var(--off-white);min-height:100vh;display:flex;flex-direction:column}
+a{color:inherit;text-decoration:none}
+
+/* ── NAV ── */
+nav.site-nav{background:var(--navy-deep);position:sticky;top:0;z-index:200;box-shadow:0 2px 12px rgba(0,0,0,.35)}
+.nav-top{display:flex;align-items:center;max-width:1360px;margin:0 auto;padding:0 24px;height:58px;gap:18px}
+a.nav-logo{display:flex;align-items:center;gap:0;font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--white);letter-spacing:-.5px;white-space:nowrap;flex-shrink:0;cursor:pointer;line-height:1;text-decoration:none}
+a.nav-logo .nav-wm{color:var(--white);line-height:1}
+a.nav-logo .nav-wm span{color:var(--gold-light)}
+a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
+.nav-search{flex:1;position:relative;max-width:520px;display:flex;align-items:center}
+.nav-search input{flex:1;min-width:0;height:34px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.14);border-right:none;color:var(--white);padding:0 14px 0 38px;font-family:'Inter',sans-serif;font-size:13px;outline:none}
+.nav-search input::placeholder{color:rgba(255,255,255,.35)}
+.nav-search svg{width:14px;height:14px;stroke:rgba(255,255,255,.4);fill:none;position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;z-index:1}
+.nav-srch-btn{background:var(--gold);color:var(--navy-deep);border:1px solid var(--gold);height:34px;padding:0 16px;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;letter-spacing:.2px;flex-shrink:0}
+.nav-actions{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.nav-btn{background:transparent;border:1px solid rgba(255,255,255,.16);color:rgba(255,255,255,.78);height:34px;padding:0 14px;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap;letter-spacing:.2px;text-decoration:none;display:inline-flex;align-items:center}
+.nav-btn:hover{background:rgba(255,255,255,.09);color:var(--white);border-color:rgba(255,255,255,.3)}
+.nav-btn.accent{background:var(--gold);border-color:var(--gold);color:var(--navy-deep);font-weight:700}
+.nav-cats-bar{background:#152030;border-top:1px solid rgba(255,255,255,.05);overflow-x:auto;scrollbar-width:none}
+.nav-cats-bar::-webkit-scrollbar{display:none}
+.nav-cats-inner{display:flex;max-width:1360px;margin:0 auto;padding:0 24px}
+.nav-cat{color:rgba(255,255,255,.55);font-size:12px;font-weight:500;padding:10px 15px;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all .15s;user-select:none;letter-spacing:.3px;text-transform:uppercase;text-decoration:none;display:inline-block}
+.nav-cat:hover{color:var(--white)}
+.nav-cat.active{color:var(--gold-light);border-bottom-color:var(--gold-light);font-weight:600}
+.nav-hamburger{display:none;background:none;border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.8);width:36px;height:36px;cursor:pointer;align-items:center;justify-content:center;flex-shrink:0;flex-direction:column;gap:5px;padding:8px;transition:all .15s}
+.nav-hamburger:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.3)}
+.ham-line{width:16px;height:1.5px;background:rgba(255,255,255,.8);transition:all .2s;display:block}
+.nav-hamburger.open .ham-line:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.nav-hamburger.open .ham-line:nth-child(2){opacity:0}
+.nav-hamburger.open .ham-line:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+.mobile-search-bar{display:none;background:var(--navy-deep);padding:10px 14px;border-top:1px solid rgba(255,255,255,.07)}
+.mobile-search-wrap{position:relative}
+.mobile-search-wrap svg{width:14px;height:14px;stroke:rgba(255,255,255,.4);fill:none;position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;z-index:1}
+.mobile-search-bar input{width:100%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);color:var(--white);padding:11px 14px 11px 36px;font-family:'Inter',sans-serif;font-size:16px;outline:none}
+.mobile-search-bar input::placeholder{color:rgba(255,255,255,.35)}
+.mobile-drawer{position:fixed;top:0;left:0;right:0;bottom:0;background:var(--navy-deep);z-index:500;transform:translateX(-100%);transition:transform .28s cubic-bezier(.25,.46,.45,.94);overflow-y:auto;padding-top:72px}
+.mobile-drawer.open{transform:translateX(0)}
+.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:499;display:none}
+.drawer-overlay.open{display:block}
+.mob-nav-item{display:block;padding:14px 24px;font-size:14px;font-weight:500;color:rgba(255,255,255,.75);text-decoration:none;border-bottom:1px solid rgba(255,255,255,.06);transition:all .15s}
+.mob-nav-item:hover{background:rgba(255,255,255,.06);color:var(--white)}
+.mob-nav-item.active{color:var(--gold-light);font-weight:600}
+.mob-drawer-close{position:absolute;top:18px;right:20px;background:none;border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.6);width:32px;height:32px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;line-height:1}
+@media(max-width:768px){
+  .nav-hamburger{display:flex}
+  .nav-btn.hide-mob{display:none}
+  .mobile-search-bar{display:block}
+  .nav-search{display:none}
+  .nav-top{height:52px;padding:0 14px;gap:10px}
+  a.nav-logo{font-size:19px}
+  a.nav-logo svg{width:28px;height:28px;margin-right:6px}
+  .nav-cat{padding:12px 14px;font-size:12px}
+}
+
+/* ── PAGE HEADER ── */
+.page-header{background:var(--navy);padding:28px 24px 24px;border-bottom:1px solid rgba(255,255,255,.07)}
+.page-header-inner{max-width:1400px;margin:0 auto}
+.breadcrumb{font-size:11px;color:rgba(255,255,255,.4);margin-bottom:8px;letter-spacing:.3px}
+.breadcrumb a{color:rgba(255,255,255,.5)}
+.breadcrumb a:hover{color:#fff}
+.page-header h1{font-family:'Playfair Display',serif;font-size:26px;color:#fff;font-weight:900;margin-bottom:4px}
+.page-header h1 span{color:var(--gold-light)}
+.page-header-sub{font-size:13px;color:rgba(255,255,255,.5);line-height:1.5}
+
+/* ── KIT SUMMARY BAR ── */
+.kit-summary-bar{background:var(--white);border-bottom:1px solid var(--gray-200);padding:12px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.kit-summary-bar-inner{max-width:1400px;margin:0 auto;width:100%;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.kit-total-display{font-size:13px;color:var(--gray-600)}
+.kit-total-display strong{color:var(--navy);font-size:16px}
+.kit-count-display{font-size:12px;color:var(--gray-400);background:var(--gray-100);padding:3px 10px;border-radius:20px}
+.kit-bar-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.btn-sm{padding:7px 14px;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;border:none;cursor:pointer;transition:background .15s}
+.btn-sm-navy{background:var(--navy);color:#fff}
+.btn-sm-navy:hover{background:var(--navy-mid)}
+.btn-sm-outline{background:none;color:var(--navy);border:1px solid var(--navy)}
+.btn-sm-outline:hover{background:var(--navy);color:#fff}
+.btn-sm-red{background:var(--red);color:#fff}
+.btn-sm-red:hover{background:#8f2517}
+
+/* ── MAIN BODY ── */
+.page-body{flex:1;max-width:1400px;margin:0 auto;width:100%;padding:28px 20px 48px}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:80px 24px;background:var(--white);border:1px solid var(--gray-200)}
+.empty-icon{font-size:52px;margin-bottom:16px;opacity:.2}
+.empty-title{font-family:'Playfair Display',serif;font-size:22px;color:var(--gray-800);margin-bottom:10px}
+.empty-sub{font-size:13px;color:var(--gray-500);max-width:400px;margin:0 auto 22px;line-height:1.7}
+.btn-p{display:inline-block;background:var(--navy);color:#fff;border:none;padding:11px 24px;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;transition:background .15s;text-decoration:none}
+.btn-p:hover{background:var(--navy-mid)}
+
+/* ── PRODUCT GRID ── */
+.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+
+/* ── PRODUCT CARD ── */
+.prod-card{background:var(--white);border:1px solid var(--gray-200);transition:box-shadow .15s,border-color .15s;position:relative;display:flex;flex-direction:column}
+.prod-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.1);border-color:var(--navy)}
+.prod-img{height:155px;background:var(--gray-50);display:flex;align-items:center;justify-content:center;overflow:hidden;border-bottom:1px solid var(--gray-100)}
+.prod-img img{max-width:88%;max-height:135px;object-fit:contain}
+.prod-img .img-ph{font-size:11px;color:var(--gray-400);font-style:italic;text-align:center;padding:0 12px}
+.prod-body{padding:12px;flex:1;display:flex;flex-direction:column}
+.prod-brand{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.9px;color:var(--gold);margin-bottom:2px}
+.prod-name{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:var(--gray-800);margin-bottom:3px;line-height:1.3}
+.prod-sub{font-size:11px;color:var(--gray-500);margin-bottom:8px;line-height:1.4}
+.prod-cat-tag{display:inline-block;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;background:var(--gray-100);color:var(--gray-500);padding:2px 7px;margin-bottom:8px}
+.prod-price{font-size:17px;font-weight:700;color:var(--navy);margin-bottom:2px}
+.prod-retailer{font-size:10px;color:var(--gray-400);margin-bottom:10px}
+.badge-best{position:absolute;top:8px;left:8px;background:#16a34a;color:#fff;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;padding:3px 7px;z-index:1}
+.prod-cta{margin-top:auto;display:flex;flex-direction:column;gap:6px}
+.btn-retailer{display:block;width:100%;padding:9px;background:var(--navy);color:#fff;border:none;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;text-align:center;text-decoration:none;transition:background .15s}
+.btn-retailer:hover{background:var(--navy-mid)}
+.btn-remove{display:block;width:100%;padding:7px;background:none;color:var(--gray-400);border:1px solid var(--gray-200);font-family:'Inter',sans-serif;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;cursor:pointer;transition:all .15s}
+.btn-remove:hover{background:var(--red);color:#fff;border-color:var(--red)}
+
+/* ── FOOTER ── */
+footer{background:var(--navy-deep);color:rgba(255,255,255,.6);padding:40px 24px 0;margin-top:auto}
+.foot-grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:32px;padding-bottom:32px}
+.foot-logo{display:flex;align-items:center;gap:8px;font-family:'Playfair Display',serif;font-size:18px;font-weight:900;color:#fff;margin-bottom:10px}
+.foot-logo span{color:var(--gold-light)}
+.foot-p{font-size:12px;line-height:1.7;color:rgba(255,255,255,.4)}
+.foot-col h4{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:rgba(255,255,255,.3);margin-bottom:12px}
+.foot-col ul{list-style:none}
+.foot-col ul li{margin-bottom:8px}
+.foot-col ul li a{font-size:12px;color:rgba(255,255,255,.5);transition:color .15s}
+.foot-col ul li a:hover{color:#fff}
+.foot-bottom{border-top:1px solid rgba(255,255,255,.07);padding:16px 0;max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.foot-bottom p{font-size:11px;color:rgba(255,255,255,.25)}
+.foot-badges{display:flex;gap:8px;flex-wrap:wrap}
+.fbadge{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);color:rgba(255,255,255,.35);font-size:9px;font-weight:700;padding:3px 8px;letter-spacing:1px;text-transform:uppercase}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .foot-grid{grid-template-columns:1fr 1fr;gap:24px}
+}
+@media(max-width:600px){
+  .page-body{padding:20px 14px 60px}
+  .product-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .kit-summary-bar-inner{flex-wrap:wrap;gap:10px}
+  .kit-bar-actions{margin-left:0;width:100%}
+  .btn-sm{flex:1}
+  .foot-grid{grid-template-columns:1fr 1fr}
+  .foot-logo{font-size:16px}
+}
+@media(max-width:400px){
+  .product-grid{grid-template-columns:1fr}
+}
+
+.nav-logo{display:flex;align-items:center;gap:9px;font-family:'Playfair Display',serif;font-size:21px;font-weight:900;color:var(--white);text-decoration:none;cursor:pointer;flex-shrink:0}
+.nav-logo svg{flex-shrink:0}
+.nav-wm{display:block}
+.nav-wm span{color:var(--gold-light)}
+
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<div class="drawer-overlay" id="drawer-overlay" onclick="toggleDrawer()"></div>
+<div class="mobile-drawer" id="mobile-drawer">
+  <button class="mob-drawer-close" onclick="toggleDrawer()" aria-label="Close menu">&times;</button>
+  <div>
+    <a class="mob-nav-item" href="/">Home</a>
+    <a class="mob-nav-item" href="/handguns.html">Handguns</a>
+    <a class="mob-nav-item" href="/rifles.html">Rifles</a>
+    <a class="mob-nav-item" href="/shotguns.html">Shotguns</a>
+    <a class="mob-nav-item" href="/ammunition.html">Ammunition</a>
+    <a class="mob-nav-item" href="/optics.html">Optics</a>
+    <a class="mob-nav-item" href="/holsters.html">Holsters</a>
+    <a class="mob-nav-item" href="/ar-parts.html">AR Parts</a>
+    <a class="mob-nav-item" href="/magazines.html">Magazines</a>
+    <a class="mob-nav-item" href="/cleaning.html">Cleaning &amp; Accessories</a>
+    <a class="mob-nav-item" href="/gun-safes.html">Gun Safes</a>
+    <a class="mob-nav-item active" href="/kit.html">My Kit</a>
+    <a class="mob-nav-item" href="/#ffl-sec">FFL Finder</a>
+  </div>
+</div>
+<nav class="site-nav">
+  <div class="nav-top">
+    <button class="nav-hamburger" id="nav-hamburger" onclick="toggleDrawer()" aria-label="Menu">
+      <span class="ham-line"></span>
+      <span class="ham-line"></span>
+      <span class="ham-line"></span>
+    </button>
+    <a class="nav-logo" href="/">
+      <svg width="34" height="34" viewBox="0 0 66 66" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="33" cy="33" r="29" fill="#ffffff" stroke="#1b2a3b" stroke-width="2"/><path d="M33 6 L37 21 L33 17 L29 21 Z" fill="#d4a82e"/><path d="M33 60 L37 45 L33 49 L29 45 Z" fill="#1b2a3b"/><path d="M60 33 L45 29 L49 33 L45 37 Z" fill="#1b2a3b"/><path d="M6 33 L21 29 L17 33 L21 37 Z" fill="#1b2a3b"/><circle cx="33" cy="33" r="6" fill="#1b2a3b"/><circle cx="33" cy="33" r="3" fill="#d4a82e"/></svg>
+      <span class="nav-wm">Ideal <span>Armory</span></span>
+    </a>
+    <div class="nav-search">
+      <svg viewBox="0 0 16 16"><circle cx="6.5" cy="6.5" r="5" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke-width="1.5" stroke-linecap="square"/></svg>
+      <input type="text" placeholder="Search firearms, ammo, optics, brands&hellip;" id="nav-srch" onkeydown="if(event.key==='Enter')kitSearch(this.value)" autocomplete="off">
+      <button class="nav-srch-btn" onclick="kitSearch(document.getElementById('nav-srch').value)">Find Best Price</button>
+    </div>
+    <div class="nav-actions">
+      <a class="nav-btn hide-mob" href="/#ffl-sec" style="text-decoration:none">FFL Finder</a>
+      <a class="nav-btn hide-mob" href="/kit.html" style="text-decoration:none;color:var(--gold-light);border-color:var(--gold-light)">My Kit <span id="nav-kit-count" style="display:none;background:var(--gold-light);color:var(--navy-deep);font-size:10px;font-weight:700;padding:1px 5px;margin-left:4px;line-height:1;border-radius:2px"></span></a>
+      <a class="nav-btn accent" href="/" style="text-decoration:none">Sign In</a>
+    </div>
+  </div>
+  <div class="mobile-search-bar">
+    <div class="mobile-search-wrap">
+      <svg viewBox="0 0 16 16"><circle cx="6.5" cy="6.5" r="5" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke-width="1.5" stroke-linecap="square"/></svg>
+      <input type="text" placeholder="Search firearms, ammo, optics&hellip;" id="mob-srch" onkeydown="if(event.key==='Enter')kitSearch(this.value)">
+    </div>
+  </div>
+  <div class="nav-cats-bar">
+    <div class="nav-cats-inner">
+      <a class="nav-cat" href="/">All</a>
+      <a class="nav-cat" href="/handguns.html">Handguns</a>
+      <a class="nav-cat" href="/rifles.html">Rifles</a>
+      <a class="nav-cat" href="/shotguns.html">Shotguns</a>
+      <a class="nav-cat" href="/ammunition.html">Ammo</a>
+      <a class="nav-cat" href="/optics.html">Optics</a>
+      <a class="nav-cat" href="/holsters.html">Holsters</a>
+      <a class="nav-cat" href="/ar-parts.html">AR Parts</a>
+      <a class="nav-cat" href="/magazines.html">Magazines</a>
+      <a class="nav-cat" href="/cleaning.html">Accessories</a>
+      <a class="nav-cat" href="/gun-safes.html">Safes</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="breadcrumb"><a href="/">Home</a> &rsaquo; <span>My Kit</span></div>
+    <h1>My <span>Kit</span></h1>
+    <div class="page-header-sub" id="kit-header-sub">Loading your kit&hellip;</div>
+  </div>
+</div>
+
+<div class="kit-summary-bar" id="kit-summary-bar" style="display:none">
+  <div class="kit-summary-bar-inner">
+    <div>
+      <div class="kit-total-display">Est. Total: <strong id="kit-total-display">$0.00</strong></div>
+      <div class="kit-count-display" id="kit-count-display">0 items</div>
+    </div>
+    <div class="kit-bar-actions">
+      <button class="btn-sm btn-sm-outline" onclick="clearKit()">Clear Kit</button>
+      <a class="btn-sm btn-sm-navy" href="/" style="text-decoration:none">+ Add More Items</a>
+    </div>
+  </div>
+</div>
+
+<div class="page-body">
+  <div id="kit-grid-wrap">
+    <!-- populated by JS -->
+  </div>
+</div>
+
+<footer>
+  <div class="foot-grid">
+    <div>
+      <div class="foot-logo"><svg width="28" height="28" viewBox="0 0 66 66" fill="none"><circle cx="33" cy="33" r="29" fill="#fff" stroke="#1b2a3b" stroke-width="2"/><path d="M33 6 L37 21 L33 17 L29 21 Z" fill="#c49a2a"/><rect x="18" y="24" width="30" height="5" rx="1" fill="#1b2a3b"/><rect x="18" y="33" width="30" height="5" rx="1" fill="#1b2a3b"/><rect x="18" y="42" width="30" height="5" rx="1" fill="#1b2a3b"/></svg> Ideal <span>Armory</span></div>
+      <p class="foot-p">Ideal Armory is a firearm price discovery platform. We do not sell firearms. All purchases made directly with licensed retailers.</p>
+    </div>
+    <div class="foot-col"><h4>Categories</h4><ul>
+      <li><a href="handguns.html">Handguns</a></li>
+      <li><a href="rifles.html">Rifles</a></li>
+      <li><a href="shotguns.html">Shotguns</a></li>
+      <li><a href="ammunition.html">Ammunition</a></li>
+      <li><a href="optics.html">Optics</a></li>
+    </ul></div>
+    <div class="foot-col"><h4>More</h4><ul>
+      <li><a href="holsters.html">Holsters</a></li>
+      <li><a href="ar-parts.html">AR Parts</a></li>
+      <li><a href="magazines.html">Magazines</a></li>
+      <li><a href="cleaning.html">Accessories</a></li>
+      <li><a href="gun-safes.html">Gun Safes</a></li>
+    </ul></div>
+    <div class="foot-col"><h4>Company</h4><ul>
+      <li><a href="about.html">About Us</a></li>
+      <li><a href="privacy.html">Privacy Policy</a></li>
+      <li><a href="terms.html">Terms of Service</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul></div>
+  </div>
+  <div class="foot-bottom">
+    <p>&copy; 2025 Ideal Armory LLC. We do not sell firearms. Prices from third-party retailers. All purchases subject to applicable federal/state law and retailer terms.</p>
+    <div class="foot-badges"><span class="fbadge">No Sales</span><span class="fbadge">Price Comparison Only</span><span class="fbadge">SSL Secure</span></div>
+  </div>
+</footer>
+
+<script>
+/* ── UNIVERSAL NAV JS ── */
+function toggleDrawer(){
+  var d=document.getElementById('mobile-drawer');
+  var o=document.getElementById('drawer-overlay');
+  var h=document.getElementById('nav-hamburger');
+  var isOpen=d.classList.contains('open');
+  d.classList.toggle('open',!isOpen);
+  o.classList.toggle('open',!isOpen);
+  if(h)h.classList.toggle('open',!isOpen);
+  document.body.style.overflow=isOpen?'':'hidden';
+}
+function kitSearch(q){
+  if(q&&q.trim())window.location.href='/?q='+encodeURIComponent(q.trim());
+}
+(function updateNavKitCount(){
+  try{
+    var raw=localStorage.getItem('ia_kit_v1');
+    if(!raw)return;
+    var data=JSON.parse(raw);
+    var count=(data.kit||[]).length;
+    var el=document.getElementById('nav-kit-count');
+    if(el&&count>0){el.textContent=count;el.style.display='inline-flex';}
+  }catch(e){}
+})();
+
+const PRODUCT_LOOKUP = {
+  1:{brand:"Beretta",sub:"9mm \\u00b7 21+1 \\u00b7 4.8\\u2033 Barrel \\u00b7 Optic Ready \\u00b7 OD Green",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/570865/images/535927/BRJAXA1F921TAC_1_HR__71404.1700068806.380.380.jpg?c=2"},
+  2:{brand:"Daniel Defense",sub:"9mm \\u00b7 4.28\\u2033 Barrel \\u00b7 15+1 \\u00b7 RDS Ready",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/629464/images/575386/Daniel-Defense-H9-Package-Deal__13011.1755277956.380.380.jpg?c=2"},
+  3:{brand:"Beretta",sub:"9mm \\u00b7 4.9\\u2033 Barrel \\u00b7 15+1 \\u00b7 Single/Double Action",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/631516/images/578486/148604__66326.1772556492.380.380.png?c=2"},
+  4:{brand:"Smith & Wesson",sub:".380 ACP \\u00b7 6+1 \\u00b7 2.75\\u2033 Barrel \\u00b7 Optic Ready",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/632194/images/572572/236046__37602.1748531032.380.380.jpg?c=2"},
+  5:{brand:"Springfield Armory",sub:"9mm \\u00b7 17+1 \\u00b7 4.5\\u2033 Barrel \\u00b7 Optic Ready",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/573416/images/536971/157498__59191.1690470267.380.380.jpg?c=2"},
+  6:{brand:"Springfield Armory",sub:"10mm Auto \\u00b7 8+1 \\u00b7 5\\u2033 Barrel \\u00b7 Night Sights",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/510297/images/507353/SPX9121L_1_HR__56845.1700231839.380.380.jpg?c=2"},
+  7:{brand:"H&K",sub:"9mm \\u00b7 3.86\\u2033 Barrel \\u00b7 10+1 \\u00b7 Safety Included",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/631844/images/570801/232334__53096.1745858255.380.380.jpg?c=2"},
+  8:{brand:"Sig Sauer",sub:"9mm \\u00b7 3.9\\u2033 Barrel \\u00b7 17+1 \\u00b7 SIGLITE Night Sights",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/479393/images/487038/SG320CA-9-M18-MS_1_HR__81768.1650810223.380.380.jpg?c=2"},
+  9:{brand:"Walther",sub:"9mm \\u00b7 18+1 \\u00b7 4.5\\u2033 Barrel \\u00b7 Optic Ready",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/448479/images/467671/WA2842475_1_HR__28900.1623788912.380.380.jpg?c=2"},
+  10:{brand:"Sig Sauer",sub:"9mm \\u00b7 4.7\\u2033 Barrel \\u00b7 17+1 \\u00b7 Manual Safety",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/479394/images/487041/SG320F-9-M17-MS_1_HR__65355.1700069755.380.380.jpg?c=2"},
+  12:{brand:"Daniel Defense",sub:"5.56 NATO \\u00b7 16\\u2033 \\u00b7 30+1 \\u00b7 Geissele Trigger",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/507840/images/554205/_d_d_ddm4_v7_gis_1__16549.1763151339.380.380.jpg?c=2"},
+  13:{brand:"IWI",sub:".308 Win \\u00b7 16.5\\u2033 \\u00b7 20+1 \\u00b7 Bullpup",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/632714/images/575140/242912__22516.1753388856.380.380.jpg?c=2"},
+  14:{brand:"Springfield Armory",sub:"5.56 NATO \\u00b7 30+1 \\u00b7 16\\u2033 \\u00b7 Ambidextrous Bullpup",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/629960/images/560198/204318__53616.1723059620.380.380.jpg?c=2"},
+  15:{brand:"IWI",sub:"5.45x39mm \\u00b7 16\\u2033 \\u00b7 30+1 \\u00b7 Side-Folding Stock",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/633216/images/577813/254247__22340.1768423618.380.380.jpg?c=2"},
+  16:{brand:"Springfield Armory",sub:"5.56 NATO \\u00b7 16\\u2033 \\u00b7 30+1 \\u00b7 B5 Stock",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/495686/images/562521/208395__38182.1734010615.380.380.jpg?c=2"},
+  17:{brand:"Steyr",sub:".308 Win \\u00b7 19\\u2033 Threaded \\u00b7 10+1 \\u00b7 Detachable Mag",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/482786/images/536911/Screenshot_2023-07-26_at_10.00.26_PM__37835.1690423516.380.380.png?c=2"},
+  18:{brand:"Springfield Armory",sub:"9mm \\u00b7 16\\u2033 \\u00b7 33+1 \\u00b7 Pistol Caliber Carbine",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/629499/images/557784/197005__81572.1706719120.380.380.jpg?c=2"},
+  19:{brand:"Colt",sub:"5.56 NATO \\u00b7 16.1\\u2033 \\u00b7 30+1 \\u00b7 M4 Carbine",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/404175/images/424980/LE6920-2__81114.1589919374.380.380.jpg?c=2"},
+  20:{brand:"Sig Sauer",sub:"5.56 NATO \\u00b7 16\\u2033 \\u00b7 30+1 \\u00b7 Free-Float MLOK",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/490497/images/497744/m400-xseries-sdi-3__92819.1700230343.380.380.jpg?c=2"},
+  22:{brand:"Beretta",sub:"12 Gauge \\u00b7 18.5\\u2033 \\u00b7 7+1 \\u00b7 Semi-Auto LE",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/629742/images/558881/202530__73459.1715000970.380.380.jpg?c=2"},
+  23:{brand:"IWI",sub:"12 Gauge \\u00b7 18.5\\u2033 \\u00b7 15+1 \\u00b7 Bullpup Tri-Tube",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/402404/images/513529/Screenshot_2023-03-14_at_3.10.39_PM__65787.1678821071.380.380.png?c=2"},
+  24:{brand:"JTS",sub:"12 Gauge \\u00b7 18.5\\u2033 \\u00b7 5+1 \\u00b7 AR-Style Semi-Auto",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/580720/images/539671/JTSM12AR_1_HR__63855.1701803068.380.380.jpg?c=2"},
+  25:{brand:"Benelli",sub:"12 Gauge \\u00b7 18.5\\u2033 \\u00b7 5+1 \\u00b7 ARGO Gas System",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/629678/images/558591/198282__69968.1712234984.380.380.jpg?c=2"},
+  26:{brand:"Benelli",sub:"12 Gauge \\u00b7 18.5\\u2033 \\u00b7 4+1 \\u00b7 Pump Action",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/631422/images/568658/225621__49002.1741626260.380.380.png?c=2"},
+  27:{brand:"Benelli",sub:"12 Gauge \\u00b7 18.5\\u2033 \\u00b7 7+1 \\u00b7 Telescoping Stock",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/633105/images/577216/250316__41877.1762792856.380.380.png?c=2"},
+  28:{brand:"Mossberg",sub:"12 Gauge \\u00b7 14.375\\u2033 \\u00b7 6+1 \\u00b7 Non-NFA Shotgun",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/483420/images/490276/MS50639_3_HR__03756.1700232864.380.380.jpg?c=2"},
+  29:{brand:"Benelli",sub:"12 Gauge \\u00b7 18.5\\u2033 \\u00b7 5+1 \\u00b7 Black Pistol Grip",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/629679/images/558584/198284__41231.1712234862.380.380.jpg?c=2"},
+  30:{brand:"Benelli",sub:"12 Gauge \\u00b7 18.5\\u2033 \\u00b7 4+1 \\u00b7 ComforTech Stock",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/632116/images/572203/233937__90939.1746207601.380.380.jpg?c=2"},
+  32:{brand:"Winchester",sub:"5.56 NATO \\u00b7 55gr FMJ \\u00b7 20 Round Box",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/631173/images/567325/221929__15628.1739972978.380.380.png?c=2"},
+  33:{brand:"Winchester",sub:".300 BLK \\u00b7 200gr Subsonic \\u00b7 Suppressor Optimized",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/632693/images/575081/238695__82788.1753190996.380.380.png?c=2"},
+  34:{brand:"Federal",sub:".45 ACP \\u00b7 230gr HST JHP \\u00b7 Law Enforcement Grade",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/608322/images/558047/230_Grain_HST_Jacketed_Hollow_Point-Federal_Law_Enforcement_45_ACP_AUTO_Ammo-3548__43106.1708355134.380.380.jpg?c=2"},
+  35:{brand:"Winchester",sub:".40 S&W \\u00b7 165gr Ranger HP \\u00b7 Duty Ammo",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/494931/images/510877/Screenshot_2023-03-01_at_10.33.42_AM__97471.1677684848.380.380.png?c=2"},
+  36:{brand:"Federal",sub:"12 Gauge \\u00b7 2.75\\u2033 \\u00b7 9-Pellet 00 Buckshot \\u00b7 LE Grade",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/631419/images/568639/224978__64006.1741359402.380.380.jpg?c=2"},
+  37:{brand:"Winchester",sub:"12 Gauge \\u00b7 2.75\\u2033 \\u00b7 9-Pellet 00 Buckshot \\u00b7 10rd Box",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/631042/images/566583/222044__27235.1739468304.380.380.jpg?c=2"},
+  38:{brand:"Winchester",sub:".22 LR \\u00b7 40gr CPHP \\u00b7 High Velocity \\u00b7 100rd Box",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/630751/images/565207/216260__44726.1737494105.380.380.jpg?c=2"},
+  39:{brand:"Federal",sub:".22 LR \\u00b7 36gr LHP \\u00b7 325 Round Value Pack",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/571929/images/536283/36_Grain_Lead_Hollow_Point-Federal_Champion_Training_22_Long_Rifle_Ammo-112993__79103.1689948309.380.380.jpg?c=2"},
+  40:{brand:"Browning",sub:".380 ACP \\u00b7 95gr JHP \\u00b7 Performance Defense",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/629781/images/559161/202564__78481.1716240287.380.380.jpg?c=2"},
+  42:{brand:"Sig Sauer",sub:"1-3x Combo \\u00b7 Red Dot + Magnifier Bundle",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/629933/images/560067/204053__20153.1722268289.380.380.jpg?c=2"},
+  43:{brand:"Sig Sauer",sub:"1x20mm \\u00b7 2 MOA \\u00b7 Waterproof \\u00b7 AR-Optimized",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/629754/images/559086/202676__38798.1715888884.380.380.jpg?c=2"},
+  44:{brand:"Magpul",sub:"AR-15 \\u00b7 Front & Rear Set \\u00b7 Polymer \\u00b7 Black",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/629609/images/558281/_MAG248__98032.1710521883.380.380.jpg?c=2"},
+  45:{brand:"Riton Optics",sub:"4-16x44mm \\u00b7 SFP \\u00b7 BDC Reticle \\u00b7 Lifetime Warranty",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/633117/images/577277/250531__28698.1762970134.380.380.jpg?c=2"},
+  46:{brand:"Vortex",sub:"1x \\u00b7 65 MOA Circle + 1 MOA Dot \\u00b7 NV Compatible",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/633145/images/577412/251211__18722.1764101852.380.380.jpg?c=2"},
+  47:{brand:"EOTech",sub:"5x Magnification \\u00b7 Flip-to-Side \\u00b7 STS Mount",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/631296/images/568101/223953__66504.1740674797.380.380.jpg?c=2"},
+  48:{brand:"EOTech",sub:"1x \\u00b7 65 MOA Ring + 2 Dot \\u00b7 NV Compatible \\u00b7 QD",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/629605/images/558184/197825__99925.1709308384.380.380.jpg?c=2"},
+  49:{brand:"Trijicon",sub:"3.25 MOA Dot \\u00b7 Adjustable LED \\u00b7 Ruggedized",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/631445/images/575131/240073__29102.1753292135.380.380.jpg?c=2"},
+  50:{brand:"Sig Sauer",sub:"1x30mm \\u00b7 3 MOA Dot \\u00b7 Enclosed Emitter \\u00b7 MOTAC",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/632921/images/576098/244414__29160.1756932367.380.380.jpg?c=2"},
+  52:{brand:"Blackhawk",sub:"Glock 17/19/22 + TRL-1/2 \\u00b7 RH \\u00b7 Level 3",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/439534/images/452352/apiwjyawa__43625.1638491392.380.380.jpg?c=2"},
+  53:{brand:"Blackhawk",sub:"Glock 19/23/32 \\u00b7 RH \\u00b7 Belt + Paddle Mount",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/445592/images/466939/apirn1x1u__12755.1638491307.380.380.jpg?c=2"},
+  54:{brand:"Blackhawk",sub:"Sig P365 \\u00b7 IWB \\u00b7 Premium Kit \\u00b7 Black",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/475799/images/480206/apifs8t7d__95333.1638491432.380.380.jpg?c=2"},
+  55:{brand:"Blackhawk",sub:"Glock 17/22/31 \\u00b7 IWB \\u00b7 Urban Gray \\u00b7 Appendix",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/452520/images/475716/apitzifqx__31371.1638491338.380.380.jpg?c=2"},
+  56:{brand:"Blackhawk",sub:"Sig P320/M17/M18 + TRL-1/2 \\u00b7 RH \\u00b7 Level 3",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/445621/images/466991/api5ydqs7__30816.1638491309.380.380.jpg?c=2"},
+  57:{brand:"",sub:"Glock 17/19/22/23 \\u00b7 OWB \\u00b7 RH \\u00b7 Nylon",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/475700/images/480097/ccw__54533.1637277967.380.380.jpg?c=2"},
+  58:{brand:"Blackhawk",sub:"Glock 43/43X \\u00b7 RH \\u00b7 Level 2 Compact",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/439535/images/452351/apirmnoco__44847.1638491445.380.380.jpg?c=2"},
+  59:{brand:"Blackhawk",sub:"S&W M&P Shield 9/.40 \\u00b7 IWB Premium Kit",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/475685/images/480071/apiedpadm__07451.1638491417.380.380.jpg?c=2"},
+  60:{brand:"Ballistic Advantage",sub:"Medium-Large Frame \\u00b7 5-6.5\\u2033 Barrel \\u00b7 RH",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/441443/images/456723/sams__76074.1613083766.380.380.jpg?c=2"},
+  62:{brand:"Ballistic Advantage",sub:"5.56 NATO \\u00b7 13.7\\u2033 \\u00b7 Government Profile \\u00b7 Modern Series",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/632981/images/576580/elj_5224__89537.1757107405.380.380.jpg?c=2"},
+  63:{brand:"Ballistic Advantage",sub:"9mm \\u00b7 8.3\\u2033 \\u00b7 Glock Compatible \\u00b7 Modern Series",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/632979/images/576576/elj_4652__86258.1757107404.380.380.jpg?c=2"},
+  64:{brand:"Radian Weapons",sub:"AR-15 \\u00b7 Ambidextrous \\u00b7 45/90\\u00b0 \\u00b7 Anodized",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/629846/images/559534/203397__22910.1719261455.380.380.jpg?c=2"},
+  65:{brand:"Radian Weapons",sub:"AR-15 \\u00b7 Ambi CH + Safety \\u00b7 Bundle",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/629845/images/559533/203391__51603.1719260263.380.380.jpg?c=2"},
+  66:{brand:"Radian Weapons",sub:"AR-15 \\u00b7 Ambidextrous \\u00b7 Suppressor-Ready \\u00b7 Vented",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/629843/images/559525/203388__07422.1719259677.380.380.jpg?c=2"},
+  67:{brand:"Ballistic Advantage",sub:"9mm \\u00b7 Glock 19 Gen3-5 \\u00b7 Threaded \\u00b7 FDE",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/632949/images/576516/bapsg195t1f-1__62287.1757107380.380.380.jpg?c=2"},
+  68:{brand:"Rugged",sub:"AR-15 \\u00b7 1/2x28 \\u00b7 Suppressor Compatible",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/630883/images/565858/219977__47919.1738277153.380.380.jpg?c=2"},
+  69:{brand:"Aero Precision",sub:".308/LR-308 \\u00b7 Ambidextrous \\u00b7 Black Anodized",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/632908/images/576054/apra700330c-ar10-ch-ano-small-blk-odg-1_2__04532.1756909118.380.380.jpg?c=2"},
+  70:{brand:"Grip Pod",sub:"AR-15 \\u00b7 Vertical Grip + Bipod \\u00b7 Polymer",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/483105/images/490075/793573782908__72016__94540.1661291357.380.380.jpg?c=2"},
+  72:{brand:"Glock",sub:"9mm \\u00b7 33rd \\u00b7 Glock 17/19/26/34 \\u00b7 OEM",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/480973/images/575326/Screenshot_2025-08-12_at_1.47.15PM__74721.1755020879.380.380.png?c=2"},
+  73:{brand:"Magpul",sub:"AR-15 \\u00b7 .223/5.56 \\u00b7 30rd \\u00b7 Window \\u00b7 MCT",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/629614/images/575336/Screenshot_2025-08-12_at_2.32.01PM__68355.1755023916.380.380.png?c=2"},
+  74:{brand:"Magpul",sub:"AR-15 \\u00b7 .223/5.56 \\u00b7 40rd \\u00b7 Extended",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/480711/images/575338/Screenshot_2025-08-12_at_3.55.40PM__93674.1755028577.380.380.png?c=2"},
+  75:{brand:"Magpul",sub:".308 Win/7.62x51 \\u00b7 20rd \\u00b7 SR-25/AR-10",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/482262/images/575334/Screenshot_2025-08-12_at_2.23.54PM__93135.1755023110.380.380.png?c=2"},
+  76:{brand:"Sig Sauer",sub:"Sig P365-XMACRO \\u00b7 9mm \\u00b7 17rd Factory",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/629858/images/575321/Screenshot_2025-08-12_at_1.39.32PM__81720.1755020395.380.380.png?c=2"},
+  77:{brand:"Sig Sauer",sub:"Sig P365 \\u00b7 9mm \\u00b7 12rd \\u00b7 Coyote Tan",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/479663/images/487286/image-full-18719-99b20a0f1f2e085199787d377be340ce__22827.1651761773.380.380.jpg?c=2"},
+  78:{brand:"Sig Sauer",sub:"Sig P320/M17/M18 \\u00b7 9mm \\u00b7 17rd \\u00b7 Coyote",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/481595/images/575348/Screenshot_2025-08-12_at_6.27.34PM__63777.1755037679.380.380.png?c=2"},
+  79:{brand:"Springfield Armory",sub:"Springfield KUNA \\u00b7 9mm \\u00b7 30rd",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/632207/images/572624/237805__42074.1749137156.380.380.jpg?c=2"},
+  80:{brand:"Springfield Armory",sub:"Springfield Hellcat \\u00b7 9mm \\u00b7 15rd Extended",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/630677/images/564866/216816__19572.1736886232.380.380.jpg?c=2"},
+  82:{brand:"Blackhawk",sub:"6\\u2033-9\\u2033 Notched Legs \\u00b7 TraverseTrack Rail",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/629850/images/559542/193559__39343.1719334957.380.380.jpg?c=2"},
+  83:{brand:"Blackhawk",sub:"13.5\\u2033-23\\u2033 Adjustable \\u00b7 Rail Mount \\u00b7 Pivot",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/629851/images/559543/192042__84232.1719334964.380.380.jpg?c=2"},
+  84:{brand:"Blackhawk",sub:"6\\u2033-9\\u2033 \\u00b7 Swivel Stud Mount \\u00b7 45\\u00b0 Cant",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/629848/images/559540/196187__06293.1719334930.380.380.jpg?c=2"},
+  85:{brand:"Blackhawk",sub:"13.5\\u2033-23\\u2033 \\u00b7 TraverseTrack Rail \\u00b7 Black",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/629849/images/559541/191864__67993.1719334946.380.380.jpg?c=2"},
+  86:{brand:"DURAMAG",sub:".223/5.56 \\u00b7 30rd \\u00b7 M81 Woodland \\u00b7 Special Edition",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/630416/images/563114/209845__57250.1734642089.380.380.jpg?c=2"},
+  87:{brand:"Blackhawk",sub:"Concealed Carry \\u00b7 Fanny Pack \\u00b7 Universal",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/632470/images/573913/218015__02070.1752585151.380.380.jpg?c=2"},
+  88:{brand:"Blackhawk",sub:"Sling Attachment \\u00b7 QD \\u00b7 AR-15/M4",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/475691/images/480081/apifyvzbb__31204.1638491404.380.380.jpg?c=2"},
+  89:{brand:"Radian Weapons",sub:"Sig P365 \\u00b7 Comp + Barrel Combo \\u00b7 Black",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/630041/images/560761/204837__31867.1726601975.380.380.jpg?c=2"},
+  90:{brand:"Ballistic Advantage",sub:"9mm \\u00b7 5.5\\u2033 \\u00b7 Glock Compatible \\u00b7 Modern Series",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/554049/images/529343/61P2FWoNOTL._AC_SL1500___62409.1685644135.380.380.jpg?c=2"},
+  92:{brand:"Vaultek",sub:"Biometric + Bluetooth \\u00b7 Backlit Keypad \\u00b7 Black",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/630472/images/564139/212024__97157.1736282468.380.380.jpg?c=2"},
+  93:{brand:"Vaultek",sub:"Biometric \\u00b7 Waterproof \\u00b7 Portable \\u00b7 Black",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/630666/images/564776/212849__64399.1736801436.380.380.jpg?c=2"},
+  94:{brand:"Vaultek",sub:"Electronic Keypad \\u00b7 Portable \\u00b7 Lightweight",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/630611/images/564380/212527__87498.1736437162.380.380.jpg?c=2"},
+  95:{brand:"Vaultek",sub:"Electronic Keypad \\u00b7 Single Handgun \\u00b7 Black",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/630562/images/564080/211995__52324.1736263774.380.380.jpg?c=2"},
+  96:{brand:"Vaultek",sub:"Waterproof \\u00b7 TSA Approved \\u00b7 Travel Safe",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/630654/images/564680/212690__54751.1736800075.380.380.jpg?c=2"},
+  97:{brand:"Vaultek",sub:"Electronic \\u00b7 Compact \\u00b7 1-2 Handguns",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/630568/images/564124/212005__13833.1736281652.380.380.jpg?c=2"},
+  98:{brand:"Vaultek",sub:"Biometric + Keypad \\u00b7 Single Handgun \\u00b7 Black",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/630567/images/564116/212073__78057.1736281510.380.380.jpg?c=2"},
+  99:{brand:"Vaultek",sub:"Bluetooth \\u00b7 Biometric \\u00b7 Dual-Layer Storage",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/630606/images/564351/212164__66180.1736436383.380.380.jpg?c=2"},
+  100:{brand:"Vaultek",sub:"Auto-Opening Lid \\u00b7 Backlit Keypad \\u00b7 Black",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/630573/images/564165/212089__93685.1736284203.380.380.png?c=2"}
+};
+
+// ── KIT STORAGE ──
+const STORAGE_KEY   = 'ia_kit_v1';
+const STORAGE_EXPIRY = 30 * 24 * 60 * 60 * 1000; // 30 days
+
+function loadKit() {
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    var parsed = JSON.parse(raw);
+    if (parsed.expiry && Date.now() > parsed.expiry) {
+      localStorage.removeItem(STORAGE_KEY);
+      return [];
+    }
+    return parsed.kit || [];
+  } catch(e) { return []; }
+}
+
+function saveKit(kitData) {
+  try {
+    var data = {
+      kit: kitData,
+      expiry: Date.now() + STORAGE_EXPIRY,
+      saved: new Date().toISOString()
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  } catch(e) {}
+}
+
+// ── HELPERS ──
+function fmt(n) {
+  return '$' + Number(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+function removeItem(uid) {
+  kitData = kitData.filter(function(i){ return i.uid !== uid; });
+  saveKit(kitData);
+  render();
+}
+
+function clearKit() {
+  if (!confirm('Clear your entire kit?')) return;
+  kitData = [];
+  saveKit(kitData);
+  render();
+}
+
+// ── RENDER ──
+var kitData = loadKit();
+
+function render() {
+  var wrap  = document.getElementById('kit-grid-wrap');
+  var sub   = document.getElementById('kit-header-sub');
+  var bar   = document.getElementById('kit-summary-bar');
+  var total = document.getElementById('kit-total-display');
+  var count = document.getElementById('kit-count-display');
+
+  if (!kitData.length) {
+    bar.style.display = 'none';
+    sub.textContent   = 'Your kit is empty.';
+    wrap.innerHTML    =
+      '<div class="empty-state">' +
+        '<div class="empty-icon">&#9651;</div>' +
+        '<div class="empty-title">Your kit is empty</div>' +
+        '<div class="empty-sub">Browse products and click <strong>+ Add to Kit</strong> on anything you want to compare or buy.</div>' +
+        '<a class="btn-p" href="/">Browse Products</a>' +
+      '</div>';
+    return;
+  }
+
+  // Summary bar
+  bar.style.display = '';
+  var sum = kitData.reduce(function(s, i){ return s + (i.price || 0); }, 0);
+  total.textContent = fmt(sum);
+  count.textContent = kitData.length + ' item' + (kitData.length !== 1 ? 's' : '');
+  sub.textContent   = kitData.length + ' item' + (kitData.length !== 1 ? 's' : '') +
+                      ' \u00b7 Est. total: ' + fmt(sum);
+
+  // Cards
+  var cards = kitData.map(function(item) {
+    // Fallback to PRODUCT_LOOKUP for items saved before img was stored
+    var lookup = PRODUCT_LOOKUP[item.productId] || {};
+    var itemImg    = item.img    || lookup.img    || '';
+    var itemBrand  = item.brand  || lookup.brand  || '';
+    var itemSub    = item.sub    || lookup.sub    || '';
+
+    var imgHtml = itemImg
+      ? '<img src="' + itemImg + '" alt="' + escHtml(item.productName) + '" loading="lazy">'
+      : '<span class="img-ph">' + escHtml(itemBrand || item.label || 'Item') + '</span>';
+
+    var bestBadge = (item.badge === 'best')
+      ? '<span class="badge-best">Best Seller</span>' : '';
+
+    // Best retailer seller URL
+    var buyUrl = '';
+    if (item.sellers && item.sellers.length) {
+      var best = item.sellers.slice().sort(function(a,b){ return (a.price||0)-(b.price||0); })[0];
+      buyUrl = best.url || '';
+    }
+
+    var buyBtn = buyUrl
+      ? '<a class="btn-retailer" href="' + escAttr(buyUrl) + '" target="_blank" rel="noopener">Go to Retailer &#8594;</a>'
+      : '<span class="btn-retailer" style="opacity:.4;cursor:default">Retailer Unavailable</span>';
+
+    return '<div class="prod-card">' +
+      bestBadge +
+      '<div class="prod-img">' + imgHtml + '</div>' +
+      '<div class="prod-body">' +
+        '<div class="prod-brand">' + escHtml(itemBrand) + '</div>' +
+        '<div class="prod-name">' + escHtml(item.productName) + '</div>' +
+        (itemSub ? '<div class="prod-sub">' + escHtml(itemSub) + '</div>' : '') +
+        '<div class="prod-cat-tag">' + escHtml(item.label || item.cat || 'Item') + '</div>' +
+        '<div class="prod-price">' + fmt(item.price) + '</div>' +
+        '<div class="prod-retailer">Via ' + escHtml(item.retailer || 'Retailer') + '</div>' +
+        '<div class="prod-cta">' +
+          buyBtn +
+          '<button class="btn-remove" onclick="removeItem(' + JSON.stringify(item.uid) + ')">&#10005; Remove from Kit</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  });
+
+  wrap.innerHTML = '<div class="product-grid">' + cards.join('') + '</div>';
+}
+
+function escHtml(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function escAttr(s) {
+  return String(s || '').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+render();
+</script>
+</body>
+</html>

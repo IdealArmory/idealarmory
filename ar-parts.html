@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AR Parts & Accessories - Compare Prices | Ideal Armory</title>
+<meta name="description" content="Compare AR-15 parts prices from licensed retailers. Uppers, lowers, barrels, BCGs, triggers, and more.">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-62EBWTERM3"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-62EBWTERM3');</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--navy:#1b2a3b;--navy-deep:#0f1c28;--navy-mid:#243650;--gold:#d4a82e;--gold-light:#d4aa40;--white:#fff;--off-white:#f7f6f3;--gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;--gray-400:#9ca3af;--gray-500:#6b7280;--gray-700:#374151;--gray-800:#1f2937;--green:#16a34a;--r:3px}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--off-white);color:var(--gray-700);min-height:100vh;display:flex;flex-direction:column}
+.page-header{background:var(--navy);padding:28px 24px 24px}
+.page-header-inner{max-width:1400px;margin:0 auto}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:11px;color:rgba(255,255,255,.4);margin-bottom:8px}
+.breadcrumb a{color:rgba(255,255,255,.4);text-decoration:none}
+.page-header h1{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--white);margin-bottom:3px}
+.page-header p{font-size:13px;color:rgba(255,255,255,.5)}
+.page-body{display:flex;max-width:1400px;margin:0 auto;width:100%;flex:1;align-items:flex-start}
+.filter-sidebar{width:248px;flex-shrink:0;background:var(--white);border-right:1px solid var(--gray-200);position:sticky;top:90px;max-height:calc(100vh - 90px);overflow-y:auto}
+.filter-header{padding:14px 16px 10px;border-bottom:1px solid var(--gray-200);display:flex;align-items:center;justify-content:space-between}
+.filter-header span{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--gray-800)}
+.filter-clear{font-size:11px;color:var(--gold);font-weight:600;cursor:pointer;border:none;background:none;padding:0}
+.filter-sec{border-bottom:1px solid var(--gray-100)}
+.filter-sec-hd{padding:11px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
+.filter-sec-hd span{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--gray-700)}
+.ftog{font-size:14px;color:var(--gray-400);transition:transform .2s}
+.ftog.open{transform:rotate(180deg)}
+.filter-body{padding:4px 16px 12px;display:flex;flex-direction:column;gap:5px}
+.filter-body.collapsed{display:none}
+.fopt{display:flex;align-items:center;gap:8px;cursor:pointer;padding:2px 0}
+.fopt input[type=checkbox]{width:14px;height:14px;accent-color:var(--navy);flex-shrink:0;cursor:pointer}
+.fopt label{font-size:12px;color:var(--gray-700);cursor:pointer;line-height:1.3}
+.frange{display:flex;align-items:center;gap:6px;padding:4px 0}
+.frange input{width:76px;padding:4px 8px;border:1px solid var(--gray-200);font-size:12px;font-family:'Inter',sans-serif;color:var(--gray-700);outline:none}
+.frange span{font-size:11px;color:var(--gray-400)}
+.results-area{flex:1;min-width:0;padding:18px 20px}
+.results-toolbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.results-count{font-size:13px;color:var(--gray-500);flex:1}
+.results-count strong{color:var(--gray-800)}
+.sort-select{padding:6px 10px;border:1px solid var(--gray-200);background:var(--white);font-family:'Inter',sans-serif;font-size:12px;color:var(--gray-700);outline:none;cursor:pointer}
+.filter-mob-btn{display:none;align-items:center;gap:6px;padding:6px 14px;border:1px solid var(--gray-200);background:var(--white);font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:var(--gray-700);cursor:pointer}
+.active-filters{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+.fchip{display:flex;align-items:center;gap:4px;background:var(--navy);color:var(--white);font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px}
+.fchip button{background:none;border:none;color:rgba(255,255,255,.7);font-size:13px;line-height:1;cursor:pointer;padding:0 0 0 2px}
+.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.prod-card{background:var(--white);border:1px solid var(--gray-200);cursor:pointer;transition:box-shadow .15s,border-color .15s;position:relative;display:flex;flex-direction:column}
+.prod-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.1);border-color:var(--navy)}
+.prod-img{height:155px;background:var(--gray-50);display:flex;align-items:center;justify-content:center;overflow:hidden;border-bottom:1px solid var(--gray-100)}
+.prod-img .img-ph{font-size:11px;color:var(--gray-400);font-style:italic;text-align:center;padding:0 12px}
+.prod-body{padding:12px;flex:1;display:flex;flex-direction:column}
+.prod-brand{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.9px;color:var(--gold);margin-bottom:2px}
+.prod-name{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:var(--gray-800);margin-bottom:3px;line-height:1.3;text-decoration:none;display:block;cursor:pointer}
+.prod-name:hover{text-decoration:underline;color:var(--navy)}
+.prod-sub{font-size:11px;color:var(--gray-500);margin-bottom:8px;line-height:1.4}
+.prod-stars{display:flex;align-items:center;gap:3px;margin-bottom:6px}
+.star{color:var(--gold);font-size:11px}
+.prod-review{font-size:10px;color:var(--gray-400)}
+.prod-price{font-size:17px;font-weight:700;color:var(--navy);margin-bottom:1px}
+.prod-price-from{font-size:10px;color:var(--gray-400);margin-bottom:8px}
+.prod-sellers{display:flex;flex-direction:column;gap:3px;margin-bottom:10px}
+.psr{display:flex;justify-content:space-between;align-items:center;font-size:10px;padding:3px 7px;background:var(--gray-50);border:1px solid var(--gray-100)}
+.psr-n{color:var(--gray-600)}
+.psr-p{font-weight:700;color:var(--gray-800)}
+.psr-p.low{color:var(--green)}
+.prod-cta{margin-top:auto;display:flex;gap:6px}
+.btn-view{flex:1;padding:8px;background:var(--navy);color:var(--white);border:none;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;transition:background .15s}
+.btn-view:hover{background:var(--navy-mid)}
+.btn-save{padding:8px 10px;background:var(--navy);border:none;color:#fff;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:background .15s;text-transform:uppercase;letter-spacing:.5px}
+.btn-save:hover{background:#0f1e2d}
+.badge-best{position:absolute;top:8px;left:8px;background:#16a34a;color:#fff;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;padding:3px 7px;z-index:1}
+.empty-state{grid-column:1/-1;text-align:center;padding:72px 24px;background:var(--white);border:1px solid var(--gray-200)}
+.empty-title{font-family:'Playfair Display',serif;font-size:20px;color:var(--gray-800);margin-bottom:8px}
+.empty-sub{font-size:13px;color:var(--gray-500);max-width:380px;margin:0 auto 18px;line-height:1.7}
+.empty-badge{display:inline-block;background:var(--navy);color:var(--white);font-size:11px;font-weight:700;padding:8px 20px;letter-spacing:.5px;text-transform:uppercase;border:none;cursor:pointer}
+.suggested-wrap{background:var(--gray-50);border-top:1px solid var(--gray-200);padding:32px 24px 48px}
+.sugg-inner{max-width:1400px;margin:0 auto}
+.sugg-hd{font-family:'Playfair Display',serif;font-size:20px;color:var(--navy);margin-bottom:4px}
+.sugg-sub{font-size:12px;color:var(--gray-500);margin-bottom:18px}
+.sugg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:12px}
+.sugg-card{background:var(--white);border:1px solid var(--gray-200);padding:14px;cursor:pointer;transition:box-shadow .15s}
+.sugg-card:hover{box-shadow:0 2px 10px rgba(0,0,0,.08)}
+.sugg-brand{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--gold);margin-bottom:2px}
+.sugg-name{font-size:12px;font-weight:700;color:var(--gray-800);margin-bottom:3px;line-height:1.3}
+.sugg-price{font-size:14px;font-weight:700;color:var(--navy)}
+.sugg-reason{font-size:10px;color:var(--gray-400);margin-top:3px;font-style:italic}
+.filter-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300}
+.filter-overlay.open{display:block}
+.filter-drawer{position:fixed;left:0;top:0;bottom:0;width:280px;background:var(--white);z-index:301;transform:translateX(-100%);transition:transform .25s;overflow-y:auto}
+.filter-drawer.open{transform:translateX(0)}
+.fdrawer-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--navy);color:var(--white)}
+.fdrawer-head span{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.fdrawer-close{background:none;border:none;color:var(--white);font-size:22px;cursor:pointer;line-height:1;padding:0}
+footer{background:var(--navy-deep);color:rgba(255,255,255,.75);font-size:13px;margin-top:auto}
+.foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;padding:48px 40px 32px;max-width:1200px;margin:0 auto}
+.foot-logo{display:flex;align-items:center;font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--white);margin-bottom:10px}
+.foot-logo .fwm span{color:var(--gold-light)}
+.foot-logo svg{flex-shrink:0;margin-right:8px}
+.foot-p{color:rgba(255,255,255,.55);line-height:1.65;font-size:12px;margin-top:6px}
+.foot-col h4{color:var(--gold-light);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px}
+.foot-col ul{list-style:none}
+.foot-col ul li{margin-bottom:8px}
+.foot-col ul li a{color:rgba(255,255,255,.65);text-decoration:none;transition:color .15s}
+.foot-col ul li a:hover{color:var(--white)}
+.foot-bottom{border-top:1px solid rgba(255,255,255,.1);padding:16px 40px;max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.foot-bottom p{font-size:11px;color:rgba(255,255,255,.35);line-height:1.6}
+.foot-badges{display:flex;gap:8px;flex-wrap:wrap}
+.fbadge{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);padding:3px 10px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.5)}
+@media(max-width:960px){.filter-sidebar{display:none}.filter-mob-btn{display:flex}.results-area{padding:14px 16px}}
+@media(max-width:768px){.foot-grid{grid-template-columns:1fr 1fr;gap:28px;padding:36px 24px 24px}.page-header{padding:20px 16px}}
+@media(max-width:480px){.nav-top{padding:0 14px;height:52px}.product-grid{grid-template-columns:1fr 1fr;gap:8px}.prod-img{height:110px}.foot-grid{grid-template-columns:1fr;gap:24px}}
+
+/* ── UNIVERSAL NAV CSS ── */
+nav.site-nav{background:var(--navy-deep);position:sticky;top:0;z-index:200;box-shadow:0 2px 12px rgba(0,0,0,.35)}
+.nav-top{display:flex;align-items:center;max-width:1360px;margin:0 auto;padding:0 24px;height:58px;gap:18px}
+a.nav-logo{display:flex;align-items:center;gap:0;font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--white);letter-spacing:-.5px;white-space:nowrap;flex-shrink:0;cursor:pointer;line-height:1;text-decoration:none}
+a.nav-logo .nav-wm{color:var(--white);line-height:1}
+a.nav-logo .nav-wm span{color:var(--gold-light)}
+a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
+.nav-search{flex:1;position:relative;max-width:520px;display:flex;align-items:center}
+.nav-search input{flex:1;min-width:0;height:34px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.14);border-right:none;color:var(--white);padding:0 14px 0 38px;font-family:'Inter',sans-serif;font-size:13px;outline:none;transition:background .2s,border-color .2s}
+.nav-search input::placeholder{color:rgba(255,255,255,.35)}
+.nav-search input:focus{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.35)}
+.nav-search svg{width:14px;height:14px;stroke:rgba(255,255,255,.4);fill:none;position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;z-index:1}
+.nav-srch-btn{background:var(--gold);color:var(--navy-deep);border:1px solid var(--gold);height:34px;padding:0 16px;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;letter-spacing:.2px;flex-shrink:0}
+.nav-actions{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.nav-btn{background:transparent;border:1px solid rgba(255,255,255,.16);color:rgba(255,255,255,.78);height:34px;padding:0 14px;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap;letter-spacing:.2px;text-decoration:none;display:inline-flex;align-items:center}
+.nav-btn:hover{background:rgba(255,255,255,.09);color:var(--white);border-color:rgba(255,255,255,.3)}
+.nav-btn.accent{background:var(--gold);border-color:var(--gold);color:var(--navy-deep);font-weight:700}
+.nav-cats-bar{background:#152030;border-top:1px solid rgba(255,255,255,.05);overflow-x:auto;scrollbar-width:none}
+.nav-cats-bar::-webkit-scrollbar{display:none}
+.nav-cats-inner{display:flex;max-width:1360px;margin:0 auto;padding:0 24px}
+.nav-cat{color:rgba(255,255,255,.55);font-size:12px;font-weight:500;padding:10px 15px;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all .15s;user-select:none;letter-spacing:.3px;text-transform:uppercase;text-decoration:none;display:inline-block}
+.nav-cat:hover{color:var(--white)}
+.nav-cat.active{color:var(--gold-light);border-bottom-color:var(--gold-light);font-weight:600}
+.nav-hamburger{display:none;background:none;border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.8);width:36px;height:36px;cursor:pointer;align-items:center;justify-content:center;flex-shrink:0;flex-direction:column;gap:5px;padding:8px;transition:all .15s}
+.nav-hamburger:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.3)}
+.ham-line{width:16px;height:1.5px;background:rgba(255,255,255,.8);transition:all .2s;display:block}
+.nav-hamburger.open .ham-line:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.nav-hamburger.open .ham-line:nth-child(2){opacity:0}
+.nav-hamburger.open .ham-line:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+.mobile-search-bar{display:none;background:var(--navy-deep);padding:10px 14px;border-top:1px solid rgba(255,255,255,.07)}
+.mobile-search-wrap{position:relative}
+.mobile-search-wrap svg{width:14px;height:14px;stroke:rgba(255,255,255,.4);fill:none;position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;z-index:1}
+.mobile-search-bar input{width:100%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);color:var(--white);padding:11px 14px 11px 36px;font-family:'Inter',sans-serif;font-size:16px;outline:none}
+.mobile-search-bar input::placeholder{color:rgba(255,255,255,.35)}
+.mobile-drawer{position:fixed;top:0;left:0;right:0;bottom:0;background:var(--navy-deep);z-index:500;transform:translateX(-100%);transition:transform .28s cubic-bezier(.25,.46,.45,.94);overflow-y:auto;padding-top:72px}
+.mobile-drawer.open{transform:translateX(0)}
+.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:499;display:none}
+.drawer-overlay.open{display:block}
+.mob-nav-item{display:block;padding:14px 24px;font-size:14px;font-weight:500;color:rgba(255,255,255,.75);text-decoration:none;border-bottom:1px solid rgba(255,255,255,.06);transition:all .15s}
+.mob-nav-item:hover{background:rgba(255,255,255,.06);color:var(--white)}
+.mob-nav-item.active{color:var(--gold-light);font-weight:600}
+.mob-drawer-close{position:absolute;top:18px;right:20px;background:none;border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.6);width:32px;height:32px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;line-height:1}
+@media(max-width:768px){
+  .nav-hamburger{display:flex}
+  .nav-btn.hide-mob{display:none}
+  .mobile-search-bar{display:block}
+  .nav-search{display:none}
+  .nav-top{height:52px;padding:0 14px;gap:10px}
+  a.nav-logo{font-size:19px}
+  a.nav-logo svg{width:28px;height:28px;margin-right:6px}
+  .nav-cat{padding:12px 14px;font-size:12px}
+}
+</style>
+</head>
+<body>
+<!-- ═══ NAV ═══ -->
+<div class="drawer-overlay" id="drawer-overlay" onclick="toggleDrawer()"></div>
+<div class="mobile-drawer" id="mobile-drawer">
+  <button class="mob-drawer-close" onclick="toggleDrawer()" aria-label="Close menu">&times;</button>
+  <div>
+    <a class="mob-nav-item" href="/">Home</a>
+    <a class="mob-nav-item" href="/handguns.html">Handguns</a>
+    <a class="mob-nav-item" href="/rifles.html">Rifles</a>
+    <a class="mob-nav-item" href="/shotguns.html">Shotguns</a>
+    <a class="mob-nav-item" href="/ammunition.html">Ammunition</a>
+    <a class="mob-nav-item" href="/optics.html">Optics</a>
+    <a class="mob-nav-item" href="/holsters.html">Holsters</a>
+    <a class="mob-nav-item active" href="/ar-parts.html">AR Parts</a>
+    <a class="mob-nav-item" href="/magazines.html">Magazines</a>
+    <a class="mob-nav-item" href="/cleaning.html">Cleaning & Accessories</a>
+    <a class="mob-nav-item" href="/gun-safes.html">Gun Safes</a>
+    <a class="mob-nav-item" href="/kit.html">My Kit</a>
+    <a class="mob-nav-item" href="/#ffl-sec">FFL Finder</a>
+  </div>
+</div>
+<nav class="site-nav">
+  <div class="nav-top">
+    <button class="nav-hamburger" id="nav-hamburger" onclick="toggleDrawer()" aria-label="Menu">
+      <span class="ham-line"></span>
+      <span class="ham-line"></span>
+      <span class="ham-line"></span>
+    </button>
+    <a class="nav-logo" href="/">
+      <svg width="34" height="34" viewBox="0 0 66 66" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="33" cy="33" r="29" fill="#ffffff" stroke="#1b2a3b" stroke-width="2"/><path d="M33 6 L37 21 L33 17 L29 21 Z" fill="#d4a82e"/><path d="M33 60 L37 45 L33 49 L29 45 Z" fill="#1b2a3b"/><path d="M60 33 L45 29 L49 33 L45 37 Z" fill="#1b2a3b"/><path d="M6 33 L21 29 L17 33 L21 37 Z" fill="#1b2a3b"/><circle cx="33" cy="33" r="6" fill="#1b2a3b"/><circle cx="33" cy="33" r="3" fill="#d4a82e"/></svg>
+      <span class="nav-wm">Ideal <span>Armory</span></span>
+    </a>
+    <div class="nav-search">
+      <svg viewBox="0 0 16 16"><circle cx="6.5" cy="6.5" r="5" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke-width="1.5" stroke-linecap="square"/></svg>
+      <input type="text" placeholder="Search firearms, ammo, optics, brands&hellip;" id="nav-srch" oninput="liveSearch(this.value)" autocomplete="off">
+      <button class="nav-srch-btn" onclick="liveSearch(document.getElementById('nav-srch')||document.getElementById('mob-srch'))">Find Best Price</button>
+    </div>
+    <div class="nav-actions">
+      <a class="nav-btn hide-mob" href="/#ffl-sec" style="text-decoration:none">FFL Finder</a>
+      <a class="nav-btn hide-mob" href="/kit.html" style="text-decoration:none">My Kit <span id="nav-kit-count" style="display:none;background:var(--gold-light);color:var(--navy-deep);font-size:10px;font-weight:700;padding:1px 5px;margin-left:4px;line-height:1;border-radius:2px"></span></a>
+      <a class="nav-btn accent" href="/" style="text-decoration:none">Sign In</a>
+    </div>
+  </div>
+  <div class="mobile-search-bar">
+    <div class="mobile-search-wrap">
+      <svg viewBox="0 0 16 16"><circle cx="6.5" cy="6.5" r="5" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke-width="1.5" stroke-linecap="square"/></svg>
+      <input type="text" placeholder="Search firearms, ammo, optics&hellip;" id="mob-srch" oninput="liveSearch(this.value)">
+    </div>
+  </div>
+  <div class="nav-cats-bar">
+    <div class="nav-cats-inner">
+      <a class="nav-cat" href="/">All</a>
+      <a class="nav-cat" href="/handguns.html">Handguns</a>
+      <a class="nav-cat" href="/rifles.html">Rifles</a>
+      <a class="nav-cat" href="/shotguns.html">Shotguns</a>
+      <a class="nav-cat" href="/ammunition.html">Ammo</a>
+      <a class="nav-cat" href="/optics.html">Optics</a>
+      <a class="nav-cat" href="/holsters.html">Holsters</a>
+      <a class="nav-cat active" href="/ar-parts.html">AR Parts</a>
+      <a class="nav-cat" href="/magazines.html">Magazines</a>
+      <a class="nav-cat" href="/cleaning.html">Accessories</a>
+      <a class="nav-cat" href="/gun-safes.html">Safes</a>
+    </div>
+  </div>
+</nav>
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="breadcrumb"><a href="index.html">Home</a> &rsaquo; <span>AR Parts</span></div>
+    <h1>AR Parts &amp; Accessories</h1>
+    <p>Compare prices from licensed retailers &mdash; uppers, lowers, barrels, BCGs, triggers, handguards, and more</p>
+  </div>
+</div>
+<div class="page-body">
+  <aside class="filter-sidebar" id="filter-sidebar">
+    <div class="filter-header"><span>Filters</span><button class="filter-clear" onclick="clearAllFilters()">Clear All</button></div>
+    <div class="filter-sec">
+      <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Price Range</span><span class="ftog open">&#8964;</span></div>
+      <div class="filter-body"><div class="frange"><input type="number" id="price-min" placeholder="Min $" oninput="filterProducts()"><span>to</span><input type="number" id="price-max" placeholder="Max $" oninput="filterProducts()"></div></div>
+    </div>
+    <div class="filter-sec">
+      <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Part Type</span><span class="ftog open">&#8964;</span></div>
+      <div class="filter-body">
+        <div class="fopt"><input type="checkbox" value="Complete Upper" onchange="filterProducts()"><label>Complete Upper Receiver</label></div>
+        <div class="fopt"><input type="checkbox" value="Complete Lower" onchange="filterProducts()"><label>Complete Lower Receiver</label></div>
+        <div class="fopt"><input type="checkbox" value="Barrel" onchange="filterProducts()"><label>Barrel</label></div>
+        <div class="fopt"><input type="checkbox" value="BCG" onchange="filterProducts()"><label>Bolt Carrier Group (BCG)</label></div>
+        <div class="fopt"><input type="checkbox" value="Handguard" onchange="filterProducts()"><label>Handguard / Rail</label></div>
+        <div class="fopt"><input type="checkbox" value="Trigger" onchange="filterProducts()"><label>Trigger Group</label></div>
+        <div class="fopt"><input type="checkbox" value="Stock" onchange="filterProducts()"><label>Stock / Brace</label></div>
+        <div class="fopt"><input type="checkbox" value="Buffer" onchange="filterProducts()"><label>Buffer / Buffer Tube</label></div>
+        <div class="fopt"><input type="checkbox" value="Muzzle Device" onchange="filterProducts()"><label>Muzzle Device</label></div>
+        <div class="fopt"><input type="checkbox" value="Lower Parts Kit" onchange="filterProducts()"><label>Lower Parts Kit</label></div>
+      </div>
+    </div>
+    <div class="filter-sec">
+      <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Caliber</span><span class="ftog open">&#8964;</span></div>
+      <div class="filter-body">
+        <div class="fopt"><input type="checkbox" value=".223/5.56" onchange="filterProducts()"><label>.223 / 5.56 NATO</label></div>
+        <div class="fopt"><input type="checkbox" value=".300 BLK" onchange="filterProducts()"><label>.300 Blackout</label></div>
+        <div class="fopt"><input type="checkbox" value="6.5 Creedmoor" onchange="filterProducts()"><label>6.5 Creedmoor</label></div>
+        <div class="fopt"><input type="checkbox" value="Multi" onchange="filterProducts()"><label>Multi-Caliber</label></div>
+      </div>
+    </div>
+    <div class="filter-sec" style="border-bottom:none">
+      <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Manufacturer</span><span class="ftog open">&#8964;</span></div>
+      <div class="filter-body">
+        <div class="fopt"><input type="checkbox" value="Aero Precision" onchange="filterProducts()"><label>Aero Precision</label></div>
+        <div class="fopt"><input type="checkbox" value="BCM" onchange="filterProducts()"><label>Bravo Company (BCM)</label></div>
+        <div class="fopt"><input type="checkbox" value="PSA" onchange="filterProducts()"><label>Palmetto State (PSA)</label></div>
+        <div class="fopt"><input type="checkbox" value="Daniel Defense" onchange="filterProducts()"><label>Daniel Defense</label></div>
+        <div class="fopt"><input type="checkbox" value="Geissele" onchange="filterProducts()"><label>Geissele Automatics</label></div>
+        <div class="fopt"><input type="checkbox" value="LaRue" onchange="filterProducts()"><label>LaRue Tactical</label></div>
+        <div class="fopt"><input type="checkbox" value="Magpul" onchange="filterProducts()"><label>Magpul</label></div>
+        <div class="fopt"><input type="checkbox" value="Faxon" onchange="filterProducts()"><label>Faxon Firearms</label></div>
+      </div>
+    </div>
+  </aside>
+  <div class="results-area">
+    <div class="results-toolbar">
+      <button class="filter-mob-btn" onclick="openDrawer()">&#9776; Filters</button>
+      <div class="results-count" id="result-count">Loading...</div>
+      <select class="sort-select" id="sort-select" onchange="sortAndRender()">
+        <option value="price-asc">Price: Low to High</option>
+        <option value="price-desc">Price: High to Low</option>
+        <option value="rating">Top Rated</option>
+        <option value="reviews">Most Reviewed</option>
+        <option value="name-asc">Name: A&ndash;Z</option>
+      </select>
+    </div>
+    <div class="active-filters" id="active-filters-bar"></div>
+    <div class="product-grid" id="product-grid"></div>
+  </div>
+</div>
+<div class="filter-overlay" id="filter-overlay" onclick="closeDrawer()"></div>
+<div class="filter-drawer" id="filter-drawer">
+  <div class="fdrawer-head"><span>Filters</span><button class="fdrawer-close" onclick="closeDrawer()">&#10005;</button></div>
+  <div id="drawer-content"></div>
+</div>
+<div class="suggested-wrap">
+  <div class="sugg-inner">
+    <div class="sugg-hd">Frequently Paired Together</div>
+    <div class="sugg-sub">Popular AR parts frequently compared and purchased together</div>
+    <div class="sugg-grid" id="sugg-grid"></div>
+  </div>
+</div>
+<footer>
+  <div class="foot-grid">
+    <div><span class="foot-logo"><svg width="30" height="30" viewBox="0 0 66 66" fill="none"><circle cx="33" cy="33" r="29" fill="#fff" stroke="#1b2a3b" stroke-width="2"/><path d="M33 6 L37 21 L33 17 L29 21 Z" fill="#d4a82e"/><path d="M33 60 L37 45 L33 49 L29 45 Z" fill="#1b2a3b"/><path d="M60 33 L45 29 L49 33 L45 37 Z" fill="#1b2a3b"/><path d="M6 33 L21 29 L17 33 L21 37 Z" fill="#1b2a3b"/><circle cx="33" cy="33" r="6" fill="#1b2a3b"/><circle cx="33" cy="33" r="3" fill="#d4a82e"/></svg><span class="fwm">Ideal <span>Armory</span></span></span><p class="foot-p">Price comparison platform. We do not sell products directly.</p></div>
+    <div class="foot-col"><h4>Categories</h4><ul><li><a href="handguns.html">Handguns</a></li><li><a href="rifles.html">Rifles</a></li><li><a href="shotguns.html">Shotguns</a></li><li><a href="ammunition.html">Ammunition</a></li><li><a href="optics.html">Optics</a></li></ul></div>
+    <div class="foot-col"><h4>More</h4><ul><li><a href="holsters.html">Holsters</a></li><li><a href="ar-parts.html">AR Parts</a></li><li><a href="magazines.html">Magazines</a></li><li><a href="cleaning.html">Cleaning</a></li><li><a href="gun-safes.html">Gun Safes</a></li></ul></div>
+    <div class="foot-col"><h4>Company</h4><ul><li><a href="about.html">About Us</a></li><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Service</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+  </div>
+  <div class="foot-bottom"><p>&copy; 2025 Ideal Armory LLC. Price comparison only. All purchases subject to applicable law and retailer terms.</p><div class="foot-badges"><span class="fbadge">No Sales</span><span class="fbadge">Price Comparison Only</span><span class="fbadge">SSL Secure</span></div></div>
+</footer>
+<script>
+/* ── UNIVERSAL NAV JS ── */
+function toggleDrawer(){
+  var d=document.getElementById('mobile-drawer');
+  var o=document.getElementById('drawer-overlay');
+  var h=document.getElementById('nav-hamburger');
+  var isOpen=d.classList.contains('open');
+  d.classList.toggle('open',!isOpen);
+  o.classList.toggle('open',!isOpen);
+  if(h)h.classList.toggle('open',!isOpen);
+  document.body.style.overflow=isOpen?'':'hidden';
+}
+(function updateNavKitCount(){
+  try{
+    var raw=localStorage.getItem('ia_kit_v1');
+    if(!raw)return;
+    var data=JSON.parse(raw);
+    var count=(data.kit||[]).length;
+    var el=document.getElementById('nav-kit-count');
+    if(el&&count>0){el.textContent=count;el.style.display='inline-flex';}
+  }catch(e){}
+})();
+const PRODUCTS=[
+  {id:1,brand:'Ballistic Advantage',name:'9" .300 BLK Barrel',sub:'Complete Upper \u2022 .300 BLK \u2022 9" \u2022 Modern Series',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632964/images/576546/9in_300_blk_modern__28182.1757107396.380.380.jpg?c=2',ptype:'Barrel',caliber:'.300 BLK',stars:4.7,reviews:312,badge:'best',sellers:[{name:'Bereli',price:64.00,url:'https://bereli.com/BABL300004M/?aff=10388'}]},
+  {id:2,brand:'Ballistic Advantage',name:'13.7" 5.56 Gov Profile Barrel',sub:'Barrel \u2022 5.56 NATO \u2022 13.7" \u2022 Government Profile',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632981/images/576580/elj_5224__89537.1757107405.380.380.jpg?c=2',ptype:'Barrel',caliber:'5.56 NATO',stars:4.8,reviews:187,badge:'',sellers:[{name:'Bereli',price:68.00,url:'https://bereli.com/BABL556033M/?aff=10388'}]},
+  {id:3,brand:'Ballistic Advantage',name:'8.3" 9mm Straight Barrel',sub:'Barrel \u2022 9mm \u2022 8.3" \u2022 Glock Compatible',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632979/images/576576/elj_4652__86258.1757107404.380.380.jpg?c=2',ptype:'Barrel',caliber:'9mm',stars:4.6,reviews:143,badge:'',sellers:[{name:'Bereli',price:46.00,url:'https://bereli.com/BABL9MM018M/?aff=10388'}]},
+  {id:4,brand:'Radian Weapons',name:'Talon Ambi Safety Selector',sub:'Safety Selector \u2022 AR-15 \u2022 Ambidextrous \u2022 45/90\u00b0',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629846/images/559534/203397__22910.1719261455.380.380.jpg?c=2',ptype:'Safety Selector',caliber:'Multi',stars:4.9,reviews:876,badge:'best',sellers:[{name:'Bereli',price:64.95,url:'https://bereli.com/r0018/?aff=10388'}]},
+  {id:5,brand:'Radian Weapons',name:'Raptor CH + Talon Safety Combo',sub:'Bundle \u2022 Ambi CH + Safety \u2022 AR-15',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629845/images/559533/203391__51603.1719260263.380.380.jpg?c=2',ptype:'Bundle',caliber:'Multi',stars:4.9,reviews:234,badge:'',sellers:[{name:'Bereli',price:144.95,url:'https://bereli.com/r0275/?aff=10388'}]},
+  {id:6,brand:'Radian Weapons',name:'Raptor SD Ambi Vented CH',sub:'Charging Handle \u2022 AR-15 \u2022 Ambi \u2022 Suppressor-Ready',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629843/images/559525/203388__07422.1719259677.380.380.jpg?c=2',ptype:'Charging Handle',caliber:'Multi',stars:4.8,reviews:312,badge:'',sellers:[{name:'Bereli',price:134.95,url:'https://bereli.com/r0006/?aff=10388'}]},
+  {id:7,brand:'Ballistic Advantage',name:'Glock 19 FDE Threaded Barrel',sub:'Barrel \u2022 9mm \u2022 Glock 19 Gen3-5 \u2022 Threaded \u2022 FDE',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632949/images/576516/bapsg195t1f-1__62287.1757107380.380.380.jpg?c=2',ptype:'Pistol Barrel',caliber:'9mm',stars:4.7,reviews:198,badge:'',sellers:[{name:'Bereli',price:66.00,url:'https://bereli.com/BAPSG195T1F/?aff=10388'}]},
+  {id:8,brand:'Rugged',name:'R3 Flash Mitigation System',sub:'Muzzle Device \u2022 AR-15 \u2022 1/2x28 \u2022 Suppressor Compatible',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/630883/images/565858/219977__47919.1738277153.380.380.jpg?c=2',ptype:'Muzzle Device',caliber:'5.56/.223',stars:4.6,reviews:156,badge:'',sellers:[{name:'Bereli',price:72.99,url:'https://bereli.com/fh001/?aff=10388'}]},
+  {id:9,brand:'Aero Precision',name:'.308 BREACH Ambi CH',sub:'Charging Handle \u2022 .308/LR-308 \u2022 Ambidextrous',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632908/images/576054/apra700330c-ar10-ch-ano-small-blk-odg-1_2__04532.1756909118.380.380.jpg?c=2',ptype:'Charging Handle',caliber:'.308',stars:4.8,reviews:423,badge:'',sellers:[{name:'Bereli',price:77.35,url:'https://bereli.com/APRA700330C/?aff=10388'}]},
+  {id:10,brand:'Grip Pod',name:'Vertical Forward Grip Bipod',sub:'Accessory \u2022 AR-15 \u2022 Vertical Grip + Bipod \u2022 Polymer',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/483105/images/490075/793573782908__72016__94540.1661291357.380.380.jpg?c=2',ptype:'Grip/Bipod',caliber:'Multi',stars:4.4,reviews:1240,badge:'',sellers:[{name:'Bereli',price:99.99,url:'https://bereli.com/grip-pod-systems-vertical-forward-grip-bi-pod/?aff=10388'}]},
+]
+
+let filteredProducts=[...PRODUCTS];
+function getLowestPrice(p){return Math.min(...p.sellers.map(function(s){return s.price;}));}
+function renderStars(n){var s='';for(var i=0;i<5;i++)s+=i<Math.round(n)?'<span class="star">&#9733;</span>':'<span class="star" style="color:var(--gray-200)">&#9733;</span>';return s;}
+function renderGrid(){
+  var grid=document.getElementById('product-grid');
+  document.getElementById('result-count').innerHTML='<strong>'+filteredProducts.length+'</strong> AR parts found';
+  if(!filteredProducts.length){grid.innerHTML='<div class="empty-state"><div class="empty-title">No Parts Found</div><div class="empty-sub">Try adjusting your filters.</div><button class="empty-badge" onclick="clearAllFilters()">Clear All Filters</button></div>';return;}
+  grid.innerHTML=filteredProducts.map(function(p){
+    var low=getLowestPrice(p);
+    var sellers=p.sellers.slice(0,3).map(function(s,i){return '<div class="psr"><span class="psr-n">'+s.name+'</span><span class="psr-p'+(i===0?' low':'')+'">$'+s.price.toFixed(2)+'</span></div>';}).join('');
+    return '<div class="prod-card" onclick="viewProduct('+p.id+')">'+(p.badge==='best'?'<span class="badge-best">Best Seller</span>':'')+'<div class="prod-img">'+(p.img?'<img src="'+p.img+'" alt="'+p.name+'" loading="lazy" style="max-width:88%;max-height:135px;object-fit:contain">':'<span class="img-ph">Image from retailer feed</span>')+'</div>'+p.brand+'</div><a class="prod-name" href="/product.html?p='+slugify(p.name)+'" onclick="event.stopPropagation()">'+p.name+'</a><div class="prod-sub">'+p.sub+'</div><div class="prod-stars">'+renderStars(p.stars)+'<span class="prod-review">('+p.reviews.toLocaleString()+')</span></div><div class="prod-price">$'+low.toFixed(2)+'</div><div class="prod-price-from">Best price from '+p.sellers.length+' retailer'+(p.sellers.length>1?'s':'')+'</div><div class="prod-sellers">'+sellers+'</div><div class="prod-cta"><button class="btn-save" onclick="event.stopPropagation();saveItem('+p.id+')" title="Add to Kit">+Kit</button></div></div></div>';
+  }).join('');
+}
+function filterProducts(){
+  var priceMin=parseFloat(document.getElementById('price-min').value)||0;
+  var priceMax=parseFloat(document.getElementById('price-max').value)||Infinity;
+  var search=(document.getElementById('nav-srch').value||'').toLowerCase();
+  var checks={};document.querySelectorAll('.filter-body input[type=checkbox]:checked').forEach(function(cb){checks[cb.value]=true;});
+  var ptypes=Object.keys(checks).filter(function(v){return ['Complete Upper','Complete Lower','Barrel','BCG','Handguard','Trigger','Stock','Buffer','Muzzle Device','Lower Parts Kit'].indexOf(v)>=0;});
+  var calibers=Object.keys(checks).filter(function(v){return ['.223/5.56','.300 BLK','6.5 Creedmoor','Multi'].indexOf(v)>=0;});
+  var brands=Object.keys(checks).filter(function(v){return ['Aero Precision','BCM','PSA','Daniel Defense','Geissele','LaRue','Magpul','Faxon'].indexOf(v)>=0;});
+  filteredProducts=PRODUCTS.filter(function(p){
+    var low=getLowestPrice(p);
+    if(low<priceMin||low>priceMax)return false;
+    if(search&&(p.name+p.brand+p.sub+p.ptype).toLowerCase().indexOf(search)<0)return false;
+    if(ptypes.length&&ptypes.indexOf(p.ptype)<0)return false;
+    if(calibers.length&&calibers.indexOf(p.caliber)<0)return false;
+    if(brands.length&&brands.indexOf(p.brand)<0)return false;
+    return true;
+  });
+  sortAndRender();renderActiveFilters();
+}
+function liveSearch(v) {
+  var ns=document.getElementById('nav-srch');
+  var ms=document.getElementById('mob-srch');
+  if(v!==undefined){if(ns&&document.activeElement!==ns)ns.value=v;if(ms&&document.activeElement!==ms)ms.value=v;}
+  filterProducts();
+}
+function sortAndRender(){var s=document.getElementById('sort-select').value;filteredProducts.sort(function(a,b){if(s==='price-asc')return getLowestPrice(a)-getLowestPrice(b);if(s==='price-desc')return getLowestPrice(b)-getLowestPrice(a);if(s==='rating')return b.stars-a.stars;if(s==='reviews')return b.reviews-a.reviews;if(s==='name-asc')return a.name.localeCompare(b.name);return 0;});renderGrid();}
+function renderActiveFilters(){var bar=document.getElementById('active-filters-bar');var chips=[];document.querySelectorAll('.filter-body input[type=checkbox]:checked').forEach(function(cb){var lbl=cb.parentElement.querySelector('label');chips.push('<span class="fchip">'+(lbl?lbl.textContent.trim():cb.value)+'<button onclick="removeFilter(this)" data-val="'+cb.value+'">&#10005;</button></span>');});bar.innerHTML=chips.join('');}
+function removeFilter(btn){var cb=document.querySelector('.filter-body input[type=checkbox][value="'+btn.getAttribute('data-val')+'"]');if(cb){cb.checked=false;filterProducts();}}
+function clearAllFilters(){document.querySelectorAll('.filter-body input[type=checkbox]').forEach(function(cb){cb.checked=false;});document.getElementById('price-min').value='';document.getElementById('price-max').value='';document.getElementById('nav-srch').value='';filteredProducts=[...PRODUCTS];sortAndRender();renderActiveFilters();}
+function toggleSec(hd){var body=hd.nextElementSibling;var tog=hd.querySelector('.ftog');body.classList.toggle('collapsed');tog.classList.toggle('open');}
+function openDrawer(){var dc=document.getElementById('drawer-content');dc.innerHTML=document.getElementById('filter-sidebar').innerHTML;dc.querySelectorAll('input[type=checkbox]').forEach(function(cb){var orig=document.querySelector('#filter-sidebar input[value="'+cb.value+'"]');if(orig)cb.checked=orig.checked;cb.onchange=function(){filterProducts();};});document.getElementById('filter-drawer').classList.add('open');document.getElementById('filter-overlay').classList.add('open');document.body.style.overflow='hidden';}
+function closeDrawer(){document.getElementById('filter-drawer').classList.remove('open');document.getElementById('filter-overlay').classList.remove('open');document.body.style.overflow='';}
+function slugify(s){return(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');}
+function viewProduct(id){var p=PRODUCTS.find(function(x){return x.id===id;});if(!p)return;var pd=Object.assign({},p);if(!pd.imgs||!pd.imgs.length)pd.imgs=pd.img?[pd.img]:[];try{sessionStorage.setItem('ia_pv',JSON.stringify(pd));}catch(e){}window.location.href = '/product.html?p=' + slugify(p.name);}
+function saveItem(id){var p=PRODUCTS.find(function(x){return x.id===id;});if(p)alert('Added '+p.name+' to Kit');}
+function renderSuggested(){var pool=PRODUCTS.filter(function(p){return p.badge==='best';}).slice(0,6);document.getElementById('sugg-grid').innerHTML=pool.map(function(p){var low=getLowestPrice(p);return '<div class="sugg-card" onclick="viewProduct('+p.id+')">'+'<div class="sugg-brand">'+p.brand+'</div><div class="sugg-name">'+p.name+'</div><div class="sugg-price">$'+low.toFixed(2)+'</div><div class="sugg-reason">'+p.ptype+'</div></div>';}).join('');}
+filteredProducts=[...PRODUCTS];sortAndRender();renderSuggested();
+</script>
+</body>
+</html>

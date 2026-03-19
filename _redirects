@@ -1,0 +1,3 @@
+# Ideal Armory — Cloudflare Pages
+# No redirect rules needed — Cloudflare Pretty URLs handles product.html natively.
+# Links use /product.html?p=slug → CF redirects to /product?p=slug → serves product.html
