@@ -18,10 +18,10 @@ const AUTH_HEADER = 'Basic ' + Buffer.from(`${ACCOUNT_SID}:${AUTH_TOKEN}`).toStr
 
 // URL formats to try in order
 const CANDIDATE_URLS = [
+  `https://api.impact.com/Mediapartners/${ACCOUNT_SID}/Catalogs/${CATALOG_ID}/Items`,
   `https://api.impact.com/Affiliates/${ACCOUNT_SID}/Catalogs/${CATALOG_ID}/Items`,
   `https://api.impact.com/MediaPartners/${ACCOUNT_SID}/Catalogs/${CATALOG_ID}/Items`,
   `https://api.impact.com/Affiliates/${ACCOUNT_SID}/Catalogs/${CATALOG_ID}/CatalogItems`,
-  `https://api.impact.com/MediaPartners/${ACCOUNT_SID}/Catalogs/${CATALOG_ID}/CatalogItems`,
 ];
 
 // ── Category mapping ─────────────────────────────────────────────────────────
