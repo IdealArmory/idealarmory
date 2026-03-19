@@ -147,44 +147,60 @@ async function fetchViaFiles() {
   return rows;
 }
 
-// ── Strategy 2: Chunked pagination with re-auth between chunks ────────────────
+// ── Strategy 2: Paginated Items with aggressive rate-limit handling ───────────
 async function fetchViaItems() {
-  console.log('--- Strategy 2: Paginated Items (chunked) ---');
-  const CHUNK_SIZE   = 500;
-  const PAUSE_EVERY  = 50;   // re-pause every N pages
-  const PAUSE_MS     = 5000; // 5 s pause between chunks
+  console.log('--- Strategy 2: Paginated Items ---');
+  const PAGE_SIZE      = 500;
+  const DELAY_MS       = 4000;  // 4s between every page
+  const BATCH_SIZE     = 10;    // pause every 10 pages
+  const BATCH_PAUSE_MS = 20000; // 20s pause between batches
+  const MAX_401_WAITS  = 8;     // max times to wait-and-retry a 401
+  const WAIT_401_MS    = 90000; // 90s wait when 401 hits
 
-  let allItems  = [];
-  let pageNum   = 1;
-  let nextUrl   = `${ITEMS_URL}?PageSize=${CHUNK_SIZE}`;
+  let allItems   = [];
+  let pageNum    = 1;
+  let nextUrl    = `${ITEMS_URL}?PageSize=${PAGE_SIZE}`;
+  let wait401s   = 0;
 
   while (nextUrl) {
-    if (pageNum > 1 && (pageNum - 1) % PAUSE_EVERY === 0) {
-      console.log(`  Pausing ${PAUSE_MS / 1000}s to avoid rate limit...`);
-      await sleep(PAUSE_MS);
+    // Batch pause every BATCH_SIZE pages
+    if (pageNum > 1 && (pageNum - 1) % BATCH_SIZE === 0) {
+      console.log(`  [Batch pause] Waiting ${BATCH_PAUSE_MS / 1000}s...`);
+      await sleep(BATCH_PAUSE_MS);
     }
 
     console.log(`Fetching page ${pageNum}...`);
     let data;
-    try {
-      data = await apiFetch(nextUrl);
-    } catch (err) {
-      console.warn(`  Page ${pageNum} failed: ${err.message}`);
-      // Wait longer and retry once
-      await sleep(15000);
-      data = await apiFetch(nextUrl);
+    let retried = false;
+
+    while (true) {
+      try {
+        data = await apiFetch(nextUrl);
+        wait401s = 0; // reset on success
+        break;
+      } catch (err) {
+        const is401 = err.message.startsWith('401');
+        if (is401 && wait401s < MAX_401_WAITS) {
+          wait401s++;
+          console.warn(`  401 hit (${wait401s}/${MAX_401_WAITS}) — waiting ${WAIT_401_MS / 1000}s before retry...`);
+          await sleep(WAIT_401_MS);
+          retried = true;
+        } else {
+          throw err; // give up
+        }
+      }
     }
 
     const items = data.Items || data.CatalogItems || [];
     if (!items.length) { console.log('No more items.'); break; }
 
     allItems = allItems.concat(items);
-    console.log(`  → ${items.length} items (total raw: ${allItems.length})`);
+    console.log(`  → ${items.length} items (total raw: ${allItems.length})${retried ? ' [after retry]' : ''}`);
 
     const nextUri = data['@nextpageuri'] || '';
     nextUrl = nextUri ? `https://api.impact.com${nextUri}` : null;
     pageNum++;
-    await sleep(800);
+    await sleep(DELAY_MS);
   }
 
   return allItems;
