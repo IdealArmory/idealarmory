@@ -15,7 +15,6 @@ if (!ACCOUNT_SID || !AUTH_TOKEN || !CATALOG_ID) {
   process.exit(1);
 }
 
-const BASE_URL   = `https://api.impact.com/Affiliates/${ACCOUNT_SID}/Catalogs/${CATALOG_ID}/Items`;
 const AUTH_HEADER = 'Basic ' + Buffer.from(`${ACCOUNT_SID}:${AUTH_TOKEN}`).toString('base64');
 
 // ── Category mapping ─────────────────────────────────────────────────────────
@@ -52,9 +51,26 @@ function transformProduct(item) {
   };
 }
 
+// ── List all available catalogs (diagnostic step) ────────────────────────────
+async function listCatalogs() {
+  const url = `https://api.impact.com/Affiliates/${ACCOUNT_SID}/Catalogs`;
+  console.log(`Listing catalogs at: ${url}`);
+  const response = await fetch(url, {
+    headers: {
+      'Authorization': AUTH_HEADER,
+      'Accept':        'application/json'
+    }
+  });
+  console.log(`Catalogs endpoint status: ${response.status}`);
+  const text = await response.text();
+  console.log(`Catalogs response: ${text.substring(0, 2000)}`);
+  return response.ok ? JSON.parse(text) : null;
+}
+
 // ── Fetch a single page from the API ────────────────────────────────────────
-async function fetchPage(pageNumber) {
-  const url = `${BASE_URL}?PageSize=500&Page=${pageNumber}`;
+async function fetchPage(catalogId, pageNumber) {
+  const url = `https://api.impact.com/Affiliates/${ACCOUNT_SID}/Catalogs/${catalogId}/Items?PageSize=500&Page=${pageNumber}`;
+  console.log(`  GET ${url}`);
   const response = await fetch(url, {
     headers: {
       'Authorization': AUTH_HEADER,
@@ -63,7 +79,8 @@ async function fetchPage(pageNumber) {
   });
 
   if (!response.ok) {
-    throw new Error(`API error on page ${pageNumber}: ${response.status} ${response.statusText}`);
+    const body = await response.text();
+    throw new Error(`API error on page ${pageNumber}: ${response.status} ${response.statusText} — ${body.substring(0, 500)}`);
   }
 
   return response.json();
@@ -72,9 +89,18 @@ async function fetchPage(pageNumber) {
 // ── Main ─────────────────────────────────────────────────────────────────────
 async function main() {
   console.log('=== EuroOptic Catalog Fetch ===');
-  console.log(`Catalog ID : ${CATALOG_ID}`);
-  console.log(`Started    : ${new Date().toISOString()}`);
+  console.log(`Account SID : ${ACCOUNT_SID}`);
+  console.log(`Catalog ID  : ${CATALOG_ID}`);
+  console.log(`Started     : ${new Date().toISOString()}`);
   console.log('');
+
+  // Step 1: List all catalogs to confirm correct ID
+  console.log('--- Step 1: Listing available catalogs ---');
+  const catalogs = await listCatalogs();
+  console.log('');
+
+  // Step 2: Fetch items using configured catalog ID
+  console.log(`--- Step 2: Fetching items for Catalog ID ${CATALOG_ID} ---`);
 
   let allProducts  = [];
   let page         = 1;
@@ -82,7 +108,7 @@ async function main() {
 
   while (true) {
     console.log(`Fetching page ${page}...`);
-    const data  = await fetchPage(page);
+    const data  = await fetchPage(CATALOG_ID, page);
     const items = data.Items || data.CatalogItems || data.items || (Array.isArray(data) ? data : []);
 
     if (!Array.isArray(items) || items.length === 0) {
@@ -90,17 +116,18 @@ async function main() {
       break;
     }
 
-    // Capture total count from first page response
     if (page === 1) {
       totalExpected = data.TotalCount || data.Total || data.totalCount || null;
       if (totalExpected) console.log(`Total products advertised by API: ${totalExpected}`);
+      // Print first item as a sample to verify data shape
+      console.log('Sample item (first product):');
+      console.log(JSON.stringify(items[0], null, 2).substring(0, 1000));
     }
 
     const transformed = items.map(transformProduct);
     allProducts = allProducts.concat(transformed);
     console.log(`  → ${items.length} items (running total: ${allProducts.length})`);
 
-    // Fewer than 500 means this is the last page
     if (items.length < 500) break;
     page++;
   }
@@ -108,16 +135,15 @@ async function main() {
   console.log('');
 
   // ── Quality gate ───────────────────────────────────────────────────────────
+  if (allProducts.length === 0) {
+    console.error('QUALITY GATE FAILED: Zero products returned. Aborting.');
+    process.exit(1);
+  }
+
   if (totalExpected && allProducts.length < totalExpected * 0.95) {
     console.error(`QUALITY GATE FAILED`);
     console.error(`  Expected : ${totalExpected}`);
     console.error(`  Received : ${allProducts.length} (${Math.round(allProducts.length / totalExpected * 100)}%)`);
-    console.error(`  Threshold: 95%`);
-    process.exit(1);
-  }
-
-  if (allProducts.length === 0) {
-    console.error('QUALITY GATE FAILED: Zero products returned. Aborting.');
     process.exit(1);
   }
 
