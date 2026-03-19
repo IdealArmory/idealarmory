@@ -20,18 +20,30 @@ const AUTH_HEADER = 'Basic ' + Buffer.from(`${ACCOUNT_SID}:${AUTH_TOKEN}`).toStr
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
+const KNOWN_CATEGORIES = ['rifles','handguns','optics','ammunition','holsters','magazines','cleaning','gun-safes','ar-parts'];
+
+// Also filter by product name keywords to catch items EuroOptic miscategorizes
+const NAME_EXCLUDE_KEYWORDS = ['jacket','shirt','pants','boot','shoe','sock','hat','cap','glove','backpack','bag','vest','fleece','hoodie','sweater','pant','short','trouser','underwear','balaclava','buff','gaiter','beanie'];
+
 function mapCategory(cat) {
   const c = (cat || '').toLowerCase();
   if (c.includes('rifle') || c.includes('shotgun'))                            return 'rifles';
   if (c.includes('handgun') || c.includes('pistol') || c.includes('revolver')) return 'handguns';
-  if (c.includes('optic') || c.includes('scope') || c.includes('sight'))       return 'optics';
+  if (c.includes('optic') || c.includes('scope') || c.includes('sight') || c.includes('binocular') || c.includes('rangefinder')) return 'optics';
   if (c.includes('ammo') || c.includes('ammunition'))                          return 'ammunition';
   if (c.includes('holster'))                                                   return 'holsters';
   if (c.includes('magazine') || c.includes('mag'))                             return 'magazines';
   if (c.includes('cleaning') || c.includes('maintenance'))                     return 'cleaning';
   if (c.includes('safe') || c.includes('storage'))                             return 'gun-safes';
-  if (c.includes('ar') || c.includes('parts'))                                 return 'ar-parts';
+  if (c.includes('ar') || c.includes('parts') || c.includes('accessory') || c.includes('accessories')) return 'ar-parts';
   return 'other';
+}
+
+function isRelevant(item, category) {
+  if (category === 'other') return false;
+  const name = (item.Name || '').toLowerCase();
+  if (NAME_EXCLUDE_KEYWORDS.some(kw => name.includes(kw))) return false;
+  return true;
 }
 
 function transformProduct(item) {
@@ -100,8 +112,18 @@ async function main() {
       break;
     }
 
-    allProducts = allProducts.concat(items.map(transformProduct));
-    console.log(`  → ${items.length} items (total: ${allProducts.length})`);
+    let pageKept = 0;
+    let pageSkipped = 0;
+    for (const item of items) {
+      const transformed = transformProduct(item);
+      if (isRelevant(item, transformed.category)) {
+        allProducts.push(transformed);
+        pageKept++;
+      } else {
+        pageSkipped++;
+      }
+    }
+    console.log(`  → kept ${pageKept}, skipped ${pageSkipped} (total kept: ${allProducts.length})`);
 
     // Follow cursor-based next page URI
     const nextPageUri = data['@nextpageuri'] || data.NextPageUri || '';
@@ -119,8 +141,9 @@ async function main() {
     console.error('QUALITY GATE FAILED: Zero products returned.');
     process.exit(1);
   }
-  if (totalExpected && allProducts.length < totalExpected * 0.95) {
-    console.error(`QUALITY GATE FAILED: Got ${allProducts.length}/${totalExpected} products.`);
+  // Quality gate: expect at least 1,000 relevant products from EuroOptic's catalog
+  if (allProducts.length < 1000) {
+    console.error(`QUALITY GATE FAILED: Only ${allProducts.length} relevant products found — expected at least 1,000.`);
     process.exit(1);
   }
 
