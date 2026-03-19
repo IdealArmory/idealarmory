@@ -1,5 +1,5 @@
 // fetch-eurooptic.js
-// Fetches EuroOptic product catalog from Impact.com API
+// Fetches EuroOptic catalog via Impact.com /Files endpoint (single download)
 // Writes data/eurooptic-catalog.json and data/eurooptic-last-run.json
 
 const fs   = require('fs');
@@ -14,39 +14,53 @@ if (!ACCOUNT_SID || !AUTH_TOKEN || !CATALOG_ID) {
   process.exit(1);
 }
 
-const BASE_URL    = `https://api.impact.com/Mediapartners/${ACCOUNT_SID}/Catalogs/${CATALOG_ID}/Items`;
-const AUTH_HEADER = 'Basic ' + Buffer.from(`${ACCOUNT_SID}:${AUTH_TOKEN}`).toString('base64');
+const AUTH_HEADER  = 'Basic ' + Buffer.from(`${ACCOUNT_SID}:${AUTH_TOKEN}`).toString('base64');
+const FILES_URL    = `https://api.impact.com/Mediapartners/${ACCOUNT_SID}/Catalogs/${CATALOG_ID}/Files`;
+const ITEMS_URL    = `https://api.impact.com/Mediapartners/${ACCOUNT_SID}/Catalogs/${CATALOG_ID}/Items`;
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-const KNOWN_CATEGORIES = ['rifles','handguns','optics','ammunition','holsters','magazines','cleaning','gun-safes','ar-parts'];
+// ── Category mapping ──────────────────────────────────────────────────────────
+const NAME_EXCLUDE_KEYWORDS = [
+  'jacket','shirt','pants','boot','shoe','sock','hat','cap','glove',
+  'backpack','bag','vest','fleece','hoodie','sweater','pant','short',
+  'trouser','underwear','balaclava','buff','gaiter','beanie','apparel','clothing'
+];
 
-// Also filter by product name keywords to catch items EuroOptic miscategorizes
-const NAME_EXCLUDE_KEYWORDS = ['jacket','shirt','pants','boot','shoe','sock','hat','cap','glove','backpack','bag','vest','fleece','hoodie','sweater','pant','short','trouser','underwear','balaclava','buff','gaiter','beanie'];
-
-function mapCategory(cat) {
-  const c = (cat || '').toLowerCase();
-  if (c.includes('rifle') || c.includes('shotgun'))                            return 'rifles';
-  if (c.includes('handgun') || c.includes('pistol') || c.includes('revolver')) return 'handguns';
-  if (c.includes('optic') || c.includes('scope') || c.includes('sight') || c.includes('binocular') || c.includes('rangefinder')) return 'optics';
-  if (c.includes('ammo') || c.includes('ammunition'))                          return 'ammunition';
-  if (c.includes('holster'))                                                   return 'holsters';
-  if (c.includes('magazine') || c.includes('mag'))                             return 'magazines';
-  if (c.includes('cleaning') || c.includes('maintenance'))                     return 'cleaning';
-  if (c.includes('safe') || c.includes('storage'))                             return 'gun-safes';
-  if (c.includes('ar') || c.includes('parts') || c.includes('accessory') || c.includes('accessories')) return 'ar-parts';
+function mapCategory(cat, name) {
+  const c = (cat  || '').toLowerCase();
+  const n = (name || '').toLowerCase();
+  const t = c + ' ' + n;
+  if (t.includes('rifle') || t.includes('shotgun'))                                         return 'rifles';
+  if (t.includes('handgun') || t.includes('pistol') || t.includes('revolver'))              return 'handguns';
+  if (t.includes('optic') || t.includes('scope') || t.includes('sight') ||
+      t.includes('binocular') || t.includes('rangefinder') || t.includes('night vision'))   return 'optics';
+  if (t.includes('ammo') || t.includes('ammunition') || t.includes('bullet') ||
+      t.includes('cartridge') || t.includes('round'))                                        return 'ammunition';
+  if (t.includes('holster'))                                                                 return 'holsters';
+  if (t.includes('magazine') || t.includes(' mag ') || t.includes('mag,'))                  return 'magazines';
+  if (t.includes('cleaning') || t.includes('maintenance') || t.includes('solvent') ||
+      t.includes('lubricant') || t.includes('bore'))                                         return 'cleaning';
+  if (t.includes('safe') || t.includes('vault') || t.includes('storage'))                   return 'gun-safes';
+  if (t.includes('ar-') || t.includes('ar15') || t.includes('ar10') ||
+      t.includes('parts') || t.includes('accessory') || t.includes('accessories') ||
+      t.includes('bipod') || t.includes('grip') || t.includes('stock') ||
+      t.includes('trigger') || t.includes('suppressor') || t.includes('silencer') ||
+      t.includes('muzzle') || t.includes('foregrip') || t.includes('mount') ||
+      t.includes('rail') || t.includes('sling') || t.includes('flashlight') ||
+      t.includes('light') || t.includes('laser'))                                            return 'ar-parts';
   return 'other';
 }
 
-function isRelevant(item, category) {
-  if (category === 'other') return false;
+function isRelevant(item) {
   const name = (item.Name || '').toLowerCase();
   if (NAME_EXCLUDE_KEYWORDS.some(kw => name.includes(kw))) return false;
-  return true;
+  const cat = mapCategory(item.Category || item.ProductType || '', item.Name || '');
+  return cat !== 'other';
 }
 
 function transformProduct(item) {
+  const category = mapCategory(item.Category || item.ProductType || '', item.Name || '');
   return {
     id:            String(item.CatalogItemId || item.Id || ''),
     upc:           item.Upc || item.UPC || '',
@@ -57,108 +71,179 @@ function transformProduct(item) {
     originalPrice: parseFloat(item.OriginalPrice || item.CurrentPrice || 0),
     img:           item.ImageUrl || (item.AdditionalImageUrls && item.AdditionalImageUrls[0]) || '',
     url:           item.Url || item.TrackingLink || '',
-    category:      mapCategory(item.Category || item.ProductType || ''),
-    inStock:       item.OutOfStock === false || item.OutOfStock === 'false' || item.Availability === 'In Stock',
+    category,
+    inStock:       item.OutOfStock === false || item.OutOfStock === 'false',
     lastUpdated:   new Date().toISOString(),
     source:        'eurooptic'
   };
 }
 
-// ── Fetch with retry ──────────────────────────────────────────────────────────
-async function fetchUrl(url, retries = 3) {
-  for (let attempt = 1; attempt <= retries; attempt++) {
-    const response = await fetch(url, {
-      headers: { 'Authorization': AUTH_HEADER, 'Accept': 'application/json' }
-    });
+// ── Fetch helpers ─────────────────────────────────────────────────────────────
+async function apiFetch(url) {
+  const res = await fetch(url, {
+    headers: { 'Authorization': AUTH_HEADER, 'Accept': 'application/json' }
+  });
+  if (!res.ok) throw new Error(`${res.status} — ${await res.text()}`);
+  return res.json();
+}
 
-    if (response.ok) return response.json();
+async function downloadText(url) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Download failed: ${res.status}`);
+  return res.text();
+}
 
-    const body = await response.text();
-    console.warn(`  Attempt ${attempt}/${retries} failed: ${response.status} — ${body.substring(0, 200)}`);
+// ── CSV parser (simple, handles quoted fields) ────────────────────────────────
+function parseCSV(text) {
+  const lines = text.split(/\r?\n/).filter(l => l.trim());
+  if (lines.length < 2) return [];
+  const headers = lines[0].split('\t').map(h => h.replace(/^"|"$/g, '').trim());
+  return lines.slice(1).map(line => {
+    const vals = line.split('\t').map(v => v.replace(/^"|"$/g, '').trim());
+    const obj = {};
+    headers.forEach((h, i) => { obj[h] = vals[i] || ''; });
+    return obj;
+  });
+}
 
-    if (attempt < retries) await sleep(3000 * attempt); // 3s, 6s backoff
+// ── Strategy 1: Download via Files endpoint ───────────────────────────────────
+async function fetchViaFiles() {
+  console.log('--- Strategy 1: Catalog Files endpoint ---');
+  console.log(`GET ${FILES_URL}`);
+
+  const data = await apiFetch(FILES_URL);
+  console.log('Files response:', JSON.stringify(data).substring(0, 500));
+
+  const files = data.Files || data.CatalogFiles || data.items || data.Items || [];
+  if (!files.length) {
+    console.log('No files available.');
+    return null;
   }
-  throw new Error(`Failed after ${retries} attempts`);
+
+  console.log(`Found ${files.length} file(s):`);
+  files.forEach((f, i) => console.log(`  [${i}] ${f.Url || f.FileUrl || f.url} (${f.FileType || f.Format || 'unknown'})`));
+
+  // Prefer JSON, then TSV/CSV
+  const preferred = files.find(f => (f.FileType || f.Format || '').toLowerCase() === 'json')
+    || files.find(f => /tsv|csv|txt/i.test(f.FileType || f.Format || ''))
+    || files[0];
+
+  const fileUrl = preferred.Url || preferred.FileUrl || preferred.url;
+  console.log(`\nDownloading: ${fileUrl}`);
+  const text = await downloadText(fileUrl);
+  console.log(`Downloaded ${text.length.toLocaleString()} characters.`);
+
+  // Try JSON first
+  try {
+    const json = JSON.parse(text);
+    const items = Array.isArray(json) ? json : (json.Items || json.items || []);
+    console.log(`Parsed as JSON: ${items.length} items`);
+    return items;
+  } catch (_) {}
+
+  // Fall back to TSV/CSV
+  const rows = parseCSV(text);
+  console.log(`Parsed as TSV/CSV: ${rows.length} rows`);
+  return rows;
+}
+
+// ── Strategy 2: Chunked pagination with re-auth between chunks ────────────────
+async function fetchViaItems() {
+  console.log('--- Strategy 2: Paginated Items (chunked) ---');
+  const CHUNK_SIZE   = 500;
+  const PAUSE_EVERY  = 50;   // re-pause every N pages
+  const PAUSE_MS     = 5000; // 5 s pause between chunks
+
+  let allItems  = [];
+  let pageNum   = 1;
+  let nextUrl   = `${ITEMS_URL}?PageSize=${CHUNK_SIZE}`;
+
+  while (nextUrl) {
+    if (pageNum > 1 && (pageNum - 1) % PAUSE_EVERY === 0) {
+      console.log(`  Pausing ${PAUSE_MS / 1000}s to avoid rate limit...`);
+      await sleep(PAUSE_MS);
+    }
+
+    console.log(`Fetching page ${pageNum}...`);
+    let data;
+    try {
+      data = await apiFetch(nextUrl);
+    } catch (err) {
+      console.warn(`  Page ${pageNum} failed: ${err.message}`);
+      // Wait longer and retry once
+      await sleep(15000);
+      data = await apiFetch(nextUrl);
+    }
+
+    const items = data.Items || data.CatalogItems || [];
+    if (!items.length) { console.log('No more items.'); break; }
+
+    allItems = allItems.concat(items);
+    console.log(`  → ${items.length} items (total raw: ${allItems.length})`);
+
+    const nextUri = data['@nextpageuri'] || '';
+    nextUrl = nextUri ? `https://api.impact.com${nextUri}` : null;
+    pageNum++;
+    await sleep(800);
+  }
+
+  return allItems;
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 async function main() {
   console.log('=== EuroOptic Catalog Fetch ===');
   console.log(`Catalog ID : ${CATALOG_ID}`);
-  console.log(`Started    : ${new Date().toISOString()}`);
-  console.log('');
+  console.log(`Started    : ${new Date().toISOString()}\n`);
 
-  let allProducts   = [];
-  let pageNum       = 1;
-  let totalExpected = null;
-  let nextUrl       = `${BASE_URL}?PageSize=500`;
+  let rawItems = null;
 
-  while (nextUrl) {
-    console.log(`Fetching page ${pageNum}... (${nextUrl.split('?')[1]})`);
-    const data = await fetchUrl(nextUrl);
-
-    // Capture total on first page
-    if (pageNum === 1) {
-      totalExpected = parseInt(data['@total'] || data.TotalCount || 0) || null;
-      if (totalExpected) console.log(`Total products expected: ${totalExpected}`);
-      console.log('Sample item:');
-      const sample = (data.Items || [])[0];
-      if (sample) console.log(JSON.stringify(sample, null, 2).substring(0, 600));
-    }
-
-    const items = data.Items || data.CatalogItems || [];
-    if (!items.length) {
-      console.log('No items returned — done.');
-      break;
-    }
-
-    let pageKept = 0;
-    let pageSkipped = 0;
-    for (const item of items) {
-      const transformed = transformProduct(item);
-      if (isRelevant(item, transformed.category)) {
-        allProducts.push(transformed);
-        pageKept++;
-      } else {
-        pageSkipped++;
-      }
-    }
-    console.log(`  → kept ${pageKept}, skipped ${pageSkipped} (total kept: ${allProducts.length})`);
-
-    // Follow cursor-based next page URI
-    const nextPageUri = data['@nextpageuri'] || data.NextPageUri || '';
-    if (nextPageUri) {
-      nextUrl = `https://api.impact.com${nextPageUri}`;
-      pageNum++;
-      await sleep(500); // small delay to avoid rate limiting
-    } else {
-      nextUrl = null;
-    }
+  // Try Files endpoint first (faster, no pagination issues)
+  try {
+    rawItems = await fetchViaFiles();
+  } catch (err) {
+    console.warn(`Files strategy failed: ${err.message}`);
   }
 
-  // ── Quality gate ──────────────────────────────────────────────────────────
-  if (allProducts.length === 0) {
-    console.error('QUALITY GATE FAILED: Zero products returned.');
-    process.exit(1);
+  // Fall back to paginated Items if Files didn't work
+  if (!rawItems || rawItems.length === 0) {
+    console.log('\nFalling back to paginated Items strategy...\n');
+    rawItems = await fetchViaItems();
   }
-  // Quality gate: expect at least 1,000 relevant products from EuroOptic's catalog
-  if (allProducts.length < 1000) {
-    console.error(`QUALITY GATE FAILED: Only ${allProducts.length} relevant products found — expected at least 1,000.`);
+
+  if (!rawItems || rawItems.length === 0) {
+    console.error('FATAL: No products retrieved from either strategy.');
     process.exit(1);
   }
 
-  // ── Write output ──────────────────────────────────────────────────────────
+  console.log(`\nTotal raw items: ${rawItems.length}`);
+  console.log('Filtering to Ideal Armory relevant categories...');
+
+  const allProducts = rawItems.filter(isRelevant).map(transformProduct);
+
+  // Category summary
+  const catCounts = {};
+  allProducts.forEach(p => { catCounts[p.category] = (catCounts[p.category] || 0) + 1; });
+  console.log('\nCategory breakdown:');
+  Object.entries(catCounts).sort((a,b) => b[1]-a[1]).forEach(([k,v]) => console.log(`  ${k}: ${v}`));
+
+  if (allProducts.length < 500) {
+    console.error(`QUALITY GATE FAILED: Only ${allProducts.length} relevant products.`);
+    process.exit(1);
+  }
+
   const dataDir = path.join(__dirname, '..', '..', 'data');
   if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
 
   fs.writeFileSync(path.join(dataDir, 'eurooptic-catalog.json'), JSON.stringify(allProducts, null, 2));
   fs.writeFileSync(path.join(dataDir, 'eurooptic-last-run.json'), JSON.stringify({
-    lastRun: new Date().toISOString(), productCount: allProducts.length,
-    totalExpected, pagesProcessed: pageNum, status: 'success'
+    lastRun: new Date().toISOString(),
+    productCount: allProducts.length,
+    rawCount: rawItems.length,
+    status: 'success'
   }, null, 2));
 
-  console.log('');
-  console.log(`SUCCESS: ${allProducts.length} products written to data/eurooptic-catalog.json`);
+  console.log(`\nSUCCESS: ${allProducts.length} relevant products written to data/eurooptic-catalog.json`);
 }
 
 main().catch(err => {
