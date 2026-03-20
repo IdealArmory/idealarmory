@@ -812,6 +812,7 @@ footer{background:var(--navy-deep);border-top:1px solid rgba(255,255,255,.06)}
 </style>
 <!-- Avantlink site verification -->
 <script type="text/javascript" src="http://classic.avantlink.com/affiliate_app_confirm.php?mode=js&authResponse=6fffcdd23d1749fbc52dbd86d2d9c23c50dc9e5a"></script>
+<script src="https://www.google.com/recaptcha/enterprise.js?render=6LfmAIQsAAAAAKa0wtP56CPLObXiKGpqeP5DNV6P" async defer></script>
 </head>
 <body>
 
@@ -1562,6 +1563,13 @@ async function doSignUp(){
   if(pass.length<8){ showToast('Password must be at least 8 characters.'); return; }
   const btn=document.querySelector('#auth-form-wrap .btn-p');
   if(btn){ btn.textContent='Creating Account…'; btn.disabled=true; }
+  // reCAPTCHA verification
+  try {
+    const rcToken=await grecaptcha.enterprise.execute('6LfmAIQsAAAAAKa0wtP56CPLObXiKGpqeP5DNV6P',{action:'signup'});
+    const rcRes=await fetch('/api/verify-recaptcha',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:rcToken,action:'signup'})});
+    const rcData=await rcRes.json();
+    if(!rcData.success){ if(btn){btn.textContent='Create Free Account';btn.disabled=false;} showToast('Security check failed. Please try again.'); return; }
+  } catch(e){ console.warn('reCAPTCHA check skipped:',e.message); }
   const {data,error}=await sb.auth.signUp({
     email, password:pass,
     options:{emailRedirectTo:'https://idealarmory.com'}
@@ -2690,6 +2698,13 @@ async function submitNewsletter(){
   const emailEl=document.getElementById('nl-email');
   const email=(emailEl?.value||'').trim();
   if(!email||!email.includes('@')){showToast('Please enter a valid email address.');return;}
+  // reCAPTCHA verification
+  try {
+    const rcToken=await grecaptcha.enterprise.execute('6LfmAIQsAAAAAKa0wtP56CPLObXiKGpqeP5DNV6P',{action:'newsletter'});
+    const rcRes=await fetch('/api/verify-recaptcha',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:rcToken,action:'newsletter'})});
+    const rcData=await rcRes.json();
+    if(!rcData.success){showToast('Security check failed. Please try again.');return;}
+  } catch(e){ console.warn('reCAPTCHA check skipped:',e.message); }
   if(!sb){
     // Fallback if Supabase unavailable
     if(emailEl) emailEl.value='';
