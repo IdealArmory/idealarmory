@@ -157,23 +157,24 @@ async function fetchViaFiles() {
   return rows;
 }
 
-// ── Strategy 2: Paginated Items with aggressive rate-limit handling ───────────
+// ── Strategy 2: Paginated Items with robust retry handling ────────────────────
 async function fetchViaItems() {
   console.log('--- Strategy 2: Paginated Items ---');
-  const PAGE_SIZE      = 500;
-  const DELAY_MS       = 4000;  // 4s between every page
-  const BATCH_SIZE     = 10;    // pause every 10 pages
-  const BATCH_PAUSE_MS = 20000; // 20s pause between batches
-  const MAX_401_WAITS  = 8;     // max times to wait-and-retry a 401
-  const WAIT_401_MS    = 90000; // 90s wait when 401 hits
+  const PAGE_SIZE      = 1000;  // doubled from 500 → ~156 pages instead of ~312
+  const DELAY_MS       = 3000;  // 3s between pages
+  const BATCH_SIZE     = 15;    // pause every 15 pages
+  const BATCH_PAUSE_MS = 15000; // 15s batch pause
+  const MAX_RETRIES    = 8;
+  const WAIT_401_MS    = 60000; // 60s on 401
+  const WAIT_NET_MS    = 20000; // 20s on network/timeout error
+  const FETCH_TIMEOUT  = 45000; // abort individual fetch after 45s
 
-  let allItems   = [];
-  let pageNum    = 1;
-  let nextUrl    = `${ITEMS_URL}?PageSize=${PAGE_SIZE}`;
-  let wait401s   = 0;
+  let allItems = [];
+  let pageNum  = 1;
+  let nextUrl  = `${ITEMS_URL}?PageSize=${PAGE_SIZE}`;
+  let retries  = 0;
 
   while (nextUrl) {
-    // Batch pause every BATCH_SIZE pages
     if (pageNum > 1 && (pageNum - 1) % BATCH_SIZE === 0) {
       console.log(`  [Batch pause] Waiting ${BATCH_PAUSE_MS / 1000}s...`);
       await sleep(BATCH_PAUSE_MS);
@@ -184,19 +185,44 @@ async function fetchViaItems() {
     let retried = false;
 
     while (true) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
       try {
-        data = await apiFetch(nextUrl);
-        wait401s = 0; // reset on success
+        const res = await fetch(nextUrl, {
+          signal: controller.signal,
+          headers: { 'Authorization': AUTH_HEADER, 'Accept': 'application/json' }
+        });
+        clearTimeout(timer);
+        if (res.status === 401) {
+          const body = await res.text().catch(() => '');
+          throw new Error(`401 — ${body}`);
+        }
+        if (!res.ok) {
+          const body = await res.text().catch(() => '');
+          throw new Error(`${res.status} — ${body}`);
+        }
+        data = await res.json();
+        retries = 0;
         break;
       } catch (err) {
-        const is401 = err.message.startsWith('401');
-        if (is401 && wait401s < MAX_401_WAITS) {
-          wait401s++;
-          console.warn(`  401 hit (${wait401s}/${MAX_401_WAITS}) — waiting ${WAIT_401_MS / 1000}s before retry...`);
-          await sleep(WAIT_401_MS);
+        clearTimeout(timer);
+        const is401    = err.message.startsWith('401');
+        const isAbort  = err.name === 'AbortError';
+        const isNet    = isAbort ||
+                         err.message.includes('fetch failed') ||
+                         err.message.includes('ECONNRESET') ||
+                         err.message.includes('ETIMEDOUT') ||
+                         err.message.includes('ENOTFOUND');
+
+        if ((is401 || isNet) && retries < MAX_RETRIES) {
+          retries++;
+          const waitMs = is401 ? WAIT_401_MS : WAIT_NET_MS;
+          const reason = is401 ? '401' : (isAbort ? 'timeout' : 'network error');
+          console.warn(`  ${reason} (retry ${retries}/${MAX_RETRIES}) — waiting ${waitMs / 1000}s...`);
+          await sleep(waitMs);
           retried = true;
         } else {
-          throw err; // give up
+          throw err; // exhausted retries or unrecognised error
         }
       }
     }
