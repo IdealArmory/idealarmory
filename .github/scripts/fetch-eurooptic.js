@@ -42,15 +42,28 @@ const BRAND_WHITELIST = {
 
 // ── Price floors per category ─────────────────────────────────────────────────
 const PRICE_FLOORS = {
-  'handguns':   250,
+  'handguns':   400,
+  'rifles':     800,
+  'optics':     250,
+  'ammunition':  40,
+  'holsters':    50,
+  'ar-parts':   300,
+  'magazines':   40,
+  'cleaning':    30,
+  'gun-safes':  250
+};
+
+// ── Max products per category (sorted by price desc) ─────────────────────────
+const CAT_CAPS = {
+  'handguns':   500,
   'rifles':     400,
-  'optics':      75,
-  'ammunition':  15,
-  'holsters':    30,
-  'ar-parts':   150,
-  'magazines':   20,
-  'cleaning':    20,
-  'gun-safes':  100
+  'optics':     600,
+  'ammunition': 400,
+  'holsters':   200,
+  'ar-parts':   350,
+  'magazines':  250,
+  'cleaning':   100,
+  'gun-safes':  200
 };
 
 function isMajorBrand(brand, category) {
@@ -330,6 +343,16 @@ async function main() {
     if (!byCategory[p.category]) byCategory[p.category] = [];
     byCategory[p.category].push(p);
   });
+
+  // Apply per-category caps — keep highest-priced products
+  for (const cat of Object.keys(byCategory)) {
+    byCategory[cat].sort((a, b) => b.price - a.price);
+    const cap = CAT_CAPS[cat];
+    if (cap && byCategory[cat].length > cap) {
+      console.log(`  [cap] ${cat}: ${byCategory[cat].length} → ${cap}`);
+      byCategory[cat] = byCategory[cat].slice(0, cap);
+    }
+  }
 
   const filesWritten = [];
   for (const [cat, products] of Object.entries(byCategory)) {
