@@ -59,7 +59,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--off-white);color:
 .fchip{display:flex;align-items:center;gap:4px;background:var(--navy);color:var(--white);font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px}
 .fchip button{background:none;border:none;color:rgba(255,255,255,.7);font-size:13px;line-height:1;cursor:pointer;padding:0 0 0 2px}
 .fchip button:hover{color:var(--white)}
-.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.product-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 .prod-card{background:var(--white);border:1px solid var(--gray-200);cursor:pointer;transition:box-shadow .15s,border-color .15s;position:relative;display:flex;flex-direction:column}
 .prod-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.1);border-color:var(--navy)}
 .prod-img{height:155px;background:var(--gray-50);display:flex;align-items:center;justify-content:center;overflow:hidden;border-bottom:1px solid var(--gray-100)}
@@ -211,7 +211,7 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
     </a>
     <div class="nav-search">
       <svg viewBox="0 0 16 16"><circle cx="6.5" cy="6.5" r="5" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke-width="1.5" stroke-linecap="square"/></svg>
-      <input type="text" placeholder="Search firearms, ammo, optics, brands&hellip;" id="nav-srch" oninput="liveSearch(this.value)" autocomplete="off">
+      <input type="text" placeholder="Search firearms, ammo, optics, brands&hellip;" id="nav-srch" oninput="liveSearch(this.value)" onkeydown="if(event.key==='Enter')liveSearch(this.value)" autocomplete="off">
       <button class="nav-srch-btn" onclick="liveSearch(document.getElementById('nav-srch').value)">Find Best Price</button>
     </div>
     <div class="nav-actions">
@@ -223,7 +223,7 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
   <div class="mobile-search-bar">
     <div class="mobile-search-wrap">
       <svg viewBox="0 0 16 16"><circle cx="6.5" cy="6.5" r="5" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke-width="1.5" stroke-linecap="square"/></svg>
-      <input type="text" placeholder="Search firearms, ammo, optics&hellip;" id="mob-srch" oninput="liveSearch(this.value)">
+      <input type="text" placeholder="Search firearms, ammo, optics&hellip;" id="mob-srch" oninput="liveSearch(this.value)" onkeydown="if(event.key==='Enter')liveSearch(this.value)">
     </div>
   </div>
   <div class="nav-cats-bar">
@@ -442,7 +442,7 @@ function renderGrid() {
       return '<div class="psr"><span class="psr-n">'+s.name+'</span><span class="psr-p'+(i===0?' low':'')+'">$'+s.price.toFixed(2)+'</span></div>';
     }).join('');
     var img = p.img ? '<img src="'+p.img+'" alt="'+p.name+'" loading="lazy">' : '<span class="img-ph">Image from retailer feed</span>';
-    var href = p.src==='eurooptic' ? '/product.html?src=eurooptic&id='+p.id.replace('eo_','') : '/product.html?p='+slugify(p.name);
+    var href = p.src==='eurooptic' ? '/product.html?src=eurooptic&id='+p.id.replace('eo_','')+'&cat='+(p.category||'') : '/product.html?p='+slugify(p.name);
     var catTag = p.category ? '<span class="cat-tag">'+p.category.replace(/-/g,' ')+'</span>' : '';
     return '<div class="prod-card" onclick="viewProduct('+idStr+')">'
       +(p.badge==='best'?'<span class="badge-best">Best Seller</span>':'')
@@ -578,7 +578,8 @@ function viewProduct(id) {
       if (!pd.imgs || !pd.imgs.length) pd.imgs = pd.img ? [pd.img] : [];
       try{sessionStorage.setItem('ia_pv',JSON.stringify(pd));}catch(e){}
     }
-    window.location.href = '/product.html?src=eurooptic&id=' + encodeURIComponent(eoId);
+    var eoP2 = ALL_PRODUCTS.find(function(x){return x.id==='eo_'+eoId;});
+    window.location.href = '/product.html?src=eurooptic&id=' + encodeURIComponent(eoId) + '&cat=' + (eoP2 ? (eoP2.category||'') : '');
     return;
   }
   window.location.href = '/product.html?p=' + slugify(String(id));
@@ -590,6 +591,16 @@ function saveItem(id) {
 }
 
 /* ── INIT ── */
+(function(){
+  var sp = new URLSearchParams(location.search);
+  var q = sp.get('q') || '';
+  if (q) {
+    var ns = document.getElementById('nav-srch');
+    var ms = document.getElementById('mob-srch');
+    if (ns) ns.value = q;
+    if (ms) ms.value = q;
+  }
+})();
 loadAllEuroOptic();
 </script>
 </body>

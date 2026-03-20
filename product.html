@@ -1498,14 +1498,29 @@ function doSearch(){
 (function(){
   var product = null;
 
-  // 0. EuroOptic product — routed via ?src=eurooptic&id=xxx
+  // 0. EuroOptic product — routed via ?src=eurooptic&id=xxx&cat=CATEGORY
   var sp = new URLSearchParams(location.search);
   if (sp.get('src') === 'eurooptic') {
     try {
       var raw = sessionStorage.getItem('ia_pv');
       if (raw) { renderProduct(JSON.parse(raw)); return; }
     } catch(e){}
-    renderNotFound();
+    // Fallback: fetch directly from category JSON using &cat= param
+    var eoId = sp.get('id');
+    var eoCat = sp.get('cat') || 'handguns';
+    fetch('/data/eurooptic-' + eoCat + '.json')
+      .then(function(r){ return r.ok ? r.json() : []; })
+      .then(function(items){
+        var item = items.find(function(x){ return String(x.id) === String(eoId); });
+        if (item) {
+          var pd = Object.assign({}, item);
+          if (!pd.imgs || !pd.imgs.length) pd.imgs = pd.img ? [pd.img] : [];
+          pd.sellers = pd.sellers || [{name:'EuroOptic', price:pd.price, stock:pd.inStock?'in':'out', url:pd.url}];
+          try{ sessionStorage.setItem('ia_pv', JSON.stringify(pd)); }catch(e){}
+          renderProduct(pd);
+        } else { renderNotFound(); }
+      })
+      .catch(function(){ renderNotFound(); });
     return;
   }
 
