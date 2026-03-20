@@ -1566,7 +1566,7 @@ async function doSignUp(){
   // reCAPTCHA verification
   try {
     const rcToken=await grecaptcha.enterprise.execute('6LfmAIQsAAAAAKa0wtP56CPLObXiKGpqeP5DNV6P',{action:'signup'});
-    const rcRes=await fetch('/api/verify-recaptcha',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:rcToken,action:'signup'})});
+    const rcRes=await fetch('https://recaptcha-verify.idealarmory.workers.dev/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:rcToken,action:'signup'})});
     const rcData=await rcRes.json();
     if(!rcData.success){ if(btn){btn.textContent='Create Free Account';btn.disabled=false;} showToast('Security check failed. Please try again.'); return; }
   } catch(e){ console.warn('reCAPTCHA check skipped:',e.message); }
@@ -2701,7 +2701,7 @@ async function submitNewsletter(){
   // reCAPTCHA verification
   try {
     const rcToken=await grecaptcha.enterprise.execute('6LfmAIQsAAAAAKa0wtP56CPLObXiKGpqeP5DNV6P',{action:'newsletter'});
-    const rcRes=await fetch('/api/verify-recaptcha',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:rcToken,action:'newsletter'})});
+    const rcRes=await fetch('https://recaptcha-verify.idealarmory.workers.dev/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:rcToken,action:'newsletter'})});
     const rcData=await rcRes.json();
     if(!rcData.success){showToast('Security check failed. Please try again.');return;}
   } catch(e){ console.warn('reCAPTCHA check skipped:',e.message); }
