@@ -179,6 +179,7 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
   <button class="mob-drawer-close" onclick="toggleDrawer()" aria-label="Close menu">&times;</button>
   <div>
     <a class="mob-nav-item" href="/">Home</a>
+    <a class="mob-nav-item" href="/all-products.html">All Products</a>
     <a class="mob-nav-item" href="/handguns.html">Handguns</a>
     <a class="mob-nav-item" href="/rifles.html">Rifles</a>
     <a class="mob-nav-item" href="/shotguns.html">Shotguns</a>
@@ -223,7 +224,7 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
   </div>
   <div class="nav-cats-bar">
     <div class="nav-cats-inner">
-      <a class="nav-cat" href="/">All</a>
+      <a class="nav-cat" href="/all-products.html">All</a>
       <a class="nav-cat" href="/handguns.html">Handguns</a>
       <a class="nav-cat" href="/rifles.html">Rifles</a>
       <a class="nav-cat" href="/shotguns.html">Shotguns</a>
@@ -409,19 +410,33 @@ async function loadEuroOptic(){try{var res=await fetch('/data/eurooptic-optics.j
 function renderGrid(){
   var grid=document.getElementById('product-grid');
   var lmw=document.getElementById('load-more-wrap');
-  var visible=filteredProducts.slice(0,visibleCount);
-  document.getElementById('result-count').innerHTML='<strong>'+filteredProducts.length+'</strong> optics found';
-  if(!filteredProducts.length){grid.innerHTML='<div class="empty-state"><div class="empty-title">No Optics Found</div><div class="empty-sub">Try adjusting your filters.</div><button class="empty-badge" onclick="clearAllFilters()">Clear All Filters</button></div>';lmw.innerHTML='';return;}
-  grid.innerHTML=visible.map(function(p){
+  var total=filteredProducts.length;
+  document.getElementById('result-count').innerHTML='<strong>'+total+'</strong> optics found';
+  if(!total){grid.innerHTML='<div class="empty-state"><div class="empty-icon">&#127806;</div><div class="empty-title">No Optics Found</div><div class="empty-sub">Try adjusting your filters, or check back as we add more listings from our retailer network.</div><button class="empty-badge" onclick="clearAllFilters()">Clear All Filters</button></div>';lmw.innerHTML='';return;}
+  var showing=Math.min(visibleCount,total);
+  grid.innerHTML=filteredProducts.slice(0,showing).map(function(p){
+    var idStr=typeof p.id==='string'?'"'+p.id+'"':p.id;
     var low=getLowestPrice(p);
-    var isEo=p.src==='eurooptic';
-    var idAttr=isEo?("'"+p.id+"'"):p.id;
     var sellers=p.sellers.slice(0,3).map(function(s,i){return '<div class="psr"><span class="psr-n">'+s.name+'</span><span class="psr-p'+(i===0?' low':'')+'">$'+s.price.toFixed(2)+'</span></div>';}).join('');
-    return '<div class="prod-card" onclick="viewProduct('+idAttr+')">'+(p.badge==='best'?'<span class="badge-best">Best Seller</span>':'')+'<div class="prod-img">'+(p.img?'<img src="'+p.img+'" alt="'+p.name+'" loading="lazy" style="max-width:88%;max-height:135px;object-fit:contain">':'<span class="img-ph">Image from retailer feed</span>')+'</div><div class="prod-body"><div class="prod-brand">'+p.brand+'</div><a class="prod-name" href="/product.html?p='+slugify(p.name)+'" onclick="event.stopPropagation()">'+p.name+'</a>'+(p.sub?'<div class="prod-sub">'+p.sub+'</div>':'')+(p.reviews?'<div class="prod-stars">'+renderStars(p.stars)+'<span class="prod-review">('+p.reviews.toLocaleString()+')</span></div>':'')+'<div class="prod-price">$'+low.toFixed(2)+'</div><div class="prod-price-from">Best price from '+p.sellers.length+' retailer'+(p.sellers.length>1?'s':'')+'</div><div class="prod-sellers">'+sellers+'</div><div class="prod-cta"><button class="btn-save" onclick="event.stopPropagation();saveItem('+idAttr+')" title="Add to Kit">+Kit</button></div></div></div>';
+    var img=p.img?'<img src="'+p.img+'" alt="'+p.name+'" loading="lazy">':'<span class="img-ph">Image from retailer feed</span>';
+    var href=p.src==='eurooptic'?'/product.html?src=eurooptic&id='+p.id.replace('eo_',''):'/product.html?p='+slugify(p.name);
+    return '<div class="prod-card" onclick="viewProduct('+idStr+')">'
+      +(p.badge==='best'?'<span class="badge-best">Best Seller</span>':'')
+      +'<div class="prod-img">'+img+'</div>'
+      +'<div class="prod-body">'
+      +'<div class="prod-brand">'+p.brand+'</div>'
+      +'<a class="prod-name" href="'+href+'" onclick="event.stopPropagation()">'+p.name+'</a>'
+      +(p.sub?'<div class="prod-sub">'+p.sub+'</div>':'')
+      +(p.reviews>0?'<div class="prod-stars">'+renderStars(p.stars)+'<span class="prod-review">('+p.reviews.toLocaleString()+')</span></div>':'')
+      +'<div class="prod-price">$'+low.toFixed(2)+'</div>'
+      +'<div class="prod-price-from">Best price from '+p.sellers.length+' retailer'+(p.sellers.length>1?'s':'')+'</div>'
+      +'<div class="prod-sellers">'+sellers+'</div>'
+      +'<div class="prod-cta"><button class="btn-save" onclick="event.stopPropagation();saveItem('+idStr+')" title="Add to Kit">+Kit</button></div>'
+      +'</div></div>';
   }).join('');
-  if(filteredProducts.length>visibleCount){lmw.innerHTML='<button class="load-more-btn" onclick="loadMore()">Load More ('+(filteredProducts.length-visibleCount)+' remaining)</button>';}else{lmw.innerHTML='';}
+  lmw.innerHTML=showing<total?'<button class="load-more-btn" onclick="loadMoreProducts()">Load More ('+(total-showing)+' more)</button>':'';
 }
-function loadMore(){visibleCount+=PAGE_SIZE;renderGrid();}
+function loadMoreProducts(){visibleCount+=PAGE_SIZE;renderGrid();document.getElementById('load-more-wrap').scrollIntoView({behavior:'smooth',block:'center'});}
 function filterProducts(){
   var priceMin=parseFloat(document.getElementById('price-min').value)||0;
   var priceMax=parseFloat(document.getElementById('price-max').value)||Infinity;
