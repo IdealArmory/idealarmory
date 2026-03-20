@@ -31,17 +31,18 @@ function mapCategory(cat, name) {
   const c = (cat  || '').toLowerCase();
   const n = (name || '').toLowerCase();
   const t = c + ' ' + n;
-  if (t.includes('rifle') || t.includes('shotgun'))                                         return 'rifles';
-  if (t.includes('handgun') || t.includes('pistol') || t.includes('revolver'))              return 'handguns';
-  if (t.includes('optic') || t.includes('scope') || t.includes('sight') ||
-      t.includes('binocular') || t.includes('rangefinder') || t.includes('night vision'))   return 'optics';
-  if (t.includes('ammo') || t.includes('ammunition') || t.includes('bullet') ||
-      t.includes('cartridge') || t.includes('round'))                                        return 'ammunition';
+  // Specific accessories/gear first — prevents broad firearm terms (pistol, rifle)
+  // from swallowing holsters, ammo, optics, etc.
   if (t.includes('holster'))                                                                 return 'holsters';
   if (t.includes('magazine') || t.includes(' mag ') || t.includes('mag,'))                  return 'magazines';
   if (t.includes('cleaning') || t.includes('maintenance') || t.includes('solvent') ||
       t.includes('lubricant') || t.includes('bore'))                                         return 'cleaning';
   if (t.includes('safe') || t.includes('vault') || t.includes('storage'))                   return 'gun-safes';
+  if (t.includes('ammo') || t.includes('ammunition') || t.includes('bullet') ||
+      t.includes('cartridge') || t.includes('round') || t.includes('powder') ||
+      t.includes('primer') || t.includes('projectile'))                                      return 'ammunition';
+  if (t.includes('optic') || t.includes('scope') || t.includes('sight') ||
+      t.includes('binocular') || t.includes('rangefinder') || t.includes('night vision'))   return 'optics';
   if (t.includes('ar-') || t.includes('ar15') || t.includes('ar10') ||
       t.includes('parts') || t.includes('accessory') || t.includes('accessories') ||
       t.includes('bipod') || t.includes('grip') || t.includes('stock') ||
@@ -49,6 +50,9 @@ function mapCategory(cat, name) {
       t.includes('muzzle') || t.includes('foregrip') || t.includes('mount') ||
       t.includes('rail') || t.includes('sling') || t.includes('flashlight') ||
       t.includes('light') || t.includes('laser'))                                            return 'ar-parts';
+  // Broad firearm terms last — only reached if no specific category matched above
+  if (t.includes('rifle') || t.includes('shotgun'))                                         return 'rifles';
+  if (t.includes('handgun') || t.includes('pistol') || t.includes('revolver'))              return 'handguns';
   return 'other';
 }
 

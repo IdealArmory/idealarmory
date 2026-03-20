@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -397,7 +397,7 @@ function renderGrid(){
     var isEo=p.src==='eurooptic';
     var idAttr=isEo?("'"+p.id+"'"):p.id;
     var sellers=p.sellers.slice(0,3).map(function(s,i){return '<div class="psr"><span class="psr-n">'+s.name+'</span><span class="psr-p'+(i===0?' low':'')+'">$'+s.price.toFixed(2)+'</span></div>';}).join('');
-    return '<div class="prod-card" onclick="viewProduct('+idAttr+')">'+(p.badge==='best'?'<span class="badge-best">Best Seller</span>':'')+(isEo?'<span class="eo-badge">EuroOptic</span>':'')+'<div class="prod-img">'+(p.img?'<img src="'+p.img+'" alt="'+p.name+'" loading="lazy" style="max-width:88%;max-height:135px;object-fit:contain">':'<span class="img-ph">Image from retailer feed</span>')+'</div>'+p.brand+'</div><a class="prod-name" href="/product.html?p='+slugify(p.name)+'" onclick="event.stopPropagation()">'+p.name+'</a><div class="prod-sub">'+(p.sub||'')+'</div><div class="prod-stars">'+renderStars(p.stars)+'<span class="prod-review">'+(p.reviews?'('+p.reviews.toLocaleString()+')':'')+'</span></div><div class="prod-price">$'+low.toFixed(2)+'</div><div class="prod-price-from">Best price from '+p.sellers.length+' retailer'+(p.sellers.length>1?'s':'')+'</div><div class="prod-sellers">'+sellers+'</div><div class="prod-cta"><button class="btn-save" onclick="event.stopPropagation();saveItem('+idAttr+')" title="Add to Kit">+Kit</button></div></div></div>';
+    return '<div class="prod-card" onclick="viewProduct('+idAttr+')">'+(p.badge==='best'?'<span class="badge-best">Best Seller</span>':'')+'<div class="prod-img">'+(p.img?'<img src="'+p.img+'" alt="'+p.name+'" loading="lazy" style="max-width:88%;max-height:135px;object-fit:contain">':'<span class="img-ph">Image from retailer feed</span>')+'</div>'+p.brand+'</div><a class="prod-name" href="/product.html?p='+slugify(p.name)+'" onclick="event.stopPropagation()">'+p.name+'</a><div class="prod-sub">'+(p.sub||'')+'</div><div class="prod-stars">'+renderStars(p.stars)+'<span class="prod-review">'+(p.reviews?'('+p.reviews.toLocaleString()+')':'')+'</span></div><div class="prod-price">$'+low.toFixed(2)+'</div><div class="prod-price-from">Best price from '+p.sellers.length+' retailer'+(p.sellers.length>1?'s':'')+'</div><div class="prod-sellers">'+sellers+'</div><div class="prod-cta"><button class="btn-save" onclick="event.stopPropagation();saveItem('+idAttr+')" title="Add to Kit">+Kit</button></div></div></div>';
   }).join('');
   if(filteredProducts.length>visibleCount){lmw.innerHTML='<button class="load-more-btn" onclick="loadMore()">Load More ('+(filteredProducts.length-visibleCount)+' remaining)</button>';}else{lmw.innerHTML='';}
 }

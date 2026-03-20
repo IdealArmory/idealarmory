@@ -532,7 +532,7 @@ function renderGrid() {
     var href = p.src==='eurooptic' ? '/product.html?src=eurooptic&id='+p.id.replace('eo_','') : '/product.html?p='+slugify(p.name);
     return '<div class="prod-card" onclick="viewProduct('+idStr+')">'
       +(p.badge==='best'?'<span class="badge-best">Best Seller</span>':'')
-      +(p.src==='eurooptic'?'<span class="eo-badge">EuroOptic</span>':'')
+      
       +'<div class="prod-img">'+img+'</div>'
       +'<div class="prod-body">'
       +'<div class="prod-brand">'+p.brand+'</div>'

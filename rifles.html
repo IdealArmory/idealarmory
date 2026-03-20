@@ -468,7 +468,7 @@ function renderGrid(){
     var sellers=p.sellers.slice(0,3).map(function(s,i){return '<div class="psr"><span class="psr-n">'+s.name+'</span><span class="psr-p'+(i===0?' low':'')+'">$'+s.price.toFixed(2)+'</span></div>';}).join('');
     return '<div class="prod-card" onclick="viewProduct('+idAttr+')">'
       +(p.badge==='best'?'<span class="badge-best">Best Seller</span>':'')
-      +(isEo?'<span class="eo-badge">EuroOptic</span>':'')
+      
       +'<div class="prod-img">'+(p.img?'<img src="'+p.img+'" alt="'+p.name+'" loading="lazy" style="max-width:88%;max-height:135px;object-fit:contain">':'<span class="img-ph">Image from retailer feed</span>')+'</div>'
       +'<div class="prod-body">'
       +'<div class="prod-brand">'+p.brand+'</div>'
