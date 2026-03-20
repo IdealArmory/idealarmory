@@ -62,19 +62,16 @@ function isRelevant(item) {
 function transformProduct(item) {
   const category = mapCategory(item.Category || item.ProductType || '', item.Name || '');
   return {
-    id:            String(item.CatalogItemId || item.Id || ''),
-    upc:           item.Upc || item.UPC || '',
-    brand:         item.Manufacturer || item.BrandName || item.Brand || '',
-    name:          item.Name || '',
-    description:   item.Description || '',
-    price:         parseFloat(item.CurrentPrice || item.SalePrice || 0),
-    originalPrice: parseFloat(item.OriginalPrice || item.CurrentPrice || 0),
-    img:           item.ImageUrl || (item.AdditionalImageUrls && item.AdditionalImageUrls[0]) || '',
-    url:           item.Url || item.TrackingLink || '',
+    id:    String(item.CatalogItemId || item.Id || ''),
+    brand: item.Manufacturer || item.BrandName || item.Brand || '',
+    name:  item.Name || '',
+    price: parseFloat(item.CurrentPrice || item.SalePrice || 0),
+    orig:  parseFloat(item.OriginalPrice || item.CurrentPrice || 0),
+    img:   item.ImageUrl || (item.AdditionalImageUrls && item.AdditionalImageUrls[0]) || '',
+    url:   item.Url || item.TrackingLink || '',
     category,
-    inStock:       item.OutOfStock === false || item.OutOfStock === 'false',
-    lastUpdated:   new Date().toISOString(),
-    source:        'eurooptic'
+    inStock: item.OutOfStock === false || item.OutOfStock === 'false',
+    src: 'eurooptic'
   };
 }
 
@@ -251,15 +248,32 @@ async function main() {
   const dataDir = path.join(__dirname, '..', '..', 'data');
   if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
 
-  fs.writeFileSync(path.join(dataDir, 'eurooptic-catalog.json'), JSON.stringify(allProducts, null, 2));
+  // Write one minified JSON file per category (avoids GitHub 100MB limit)
+  const byCategory = {};
+  allProducts.forEach(p => {
+    if (!byCategory[p.category]) byCategory[p.category] = [];
+    byCategory[p.category].push(p);
+  });
+
+  const filesWritten = [];
+  for (const [cat, products] of Object.entries(byCategory)) {
+    const fname = `eurooptic-${cat}.json`;
+    fs.writeFileSync(path.join(dataDir, fname), JSON.stringify(products));
+    const kb = Math.round(fs.statSync(path.join(dataDir, fname)).size / 1024);
+    console.log(`  ${fname}: ${products.length} products (${kb} KB)`);
+    filesWritten.push(fname);
+  }
+
   fs.writeFileSync(path.join(dataDir, 'eurooptic-last-run.json'), JSON.stringify({
     lastRun: new Date().toISOString(),
     productCount: allProducts.length,
     rawCount: rawItems.length,
+    categories: catCounts,
+    files: filesWritten,
     status: 'success'
-  }, null, 2));
+  }));
 
-  console.log(`\nSUCCESS: ${allProducts.length} relevant products written to data/eurooptic-catalog.json`);
+  console.log(`\nSUCCESS: ${allProducts.length} relevant products written across ${filesWritten.length} category files.`);
 }
 
 main().catch(err => {
