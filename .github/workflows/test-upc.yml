@@ -1,0 +1,19 @@
+name: Test EuroOptic UPC Data
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Run UPC test (1 page only)
+        env:
+          IMPACT_ACCOUNT_SID: ${{ secrets.IMPACT_ACCOUNT_SID }}
+          IMPACT_AUTH_TOKEN:  ${{ secrets.IMPACT_AUTH_TOKEN }}
+          IMPACT_CATALOG_ID:  ${{ secrets.IMPACT_CATALOG_ID }}
+        run: node .github/scripts/test-upc.js

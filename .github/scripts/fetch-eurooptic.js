@@ -53,8 +53,13 @@ function mapCategory(cat, name) {
 }
 
 function isRelevant(item) {
+  // Must have an image
+  const img = item.ImageUrl || (item.AdditionalImageUrls && item.AdditionalImageUrls[0]) || '';
+  if (!img) return false;
+  // Must not be apparel/footwear/etc.
   const name = (item.Name || '').toLowerCase();
   if (NAME_EXCLUDE_KEYWORDS.some(kw => name.includes(kw))) return false;
+  // Must map to a known category
   const cat = mapCategory(item.Category || item.ProductType || '', item.Name || '');
   return cat !== 'other';
 }
@@ -63,6 +68,7 @@ function transformProduct(item) {
   const category = mapCategory(item.Category || item.ProductType || '', item.Name || '');
   return {
     id:    String(item.CatalogItemId || item.Id || ''),
+    upc:   item.Upc || item.UPC || item.GTIN || '',
     brand: item.Manufacturer || item.BrandName || item.Brand || '',
     name:  item.Name || '',
     price: parseFloat(item.CurrentPrice || item.SalePrice || 0),
