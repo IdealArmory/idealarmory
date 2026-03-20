@@ -1498,6 +1498,17 @@ function doSearch(){
 (function(){
   var product = null;
 
+  // 0. EuroOptic product — routed via ?src=eurooptic&id=xxx
+  var sp = new URLSearchParams(location.search);
+  if (sp.get('src') === 'eurooptic') {
+    try {
+      var raw = sessionStorage.getItem('ia_pv');
+      if (raw) { renderProduct(JSON.parse(raw)); return; }
+    } catch(e){}
+    renderNotFound();
+    return;
+  }
+
   // 1. URL slug match — most reliable, works for direct links, bookmarks, shares
   var slug = getSlug();
   if (slug && slug !== 'product' && slug !== 'product.html') {

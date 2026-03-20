@@ -91,6 +91,10 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--off-white);color:
 .empty-title{font-family:'Playfair Display',serif;font-size:20px;color:var(--gray-800);margin-bottom:8px}
 .empty-sub{font-size:13px;color:var(--gray-500);max-width:380px;margin:0 auto 18px;line-height:1.7}
 .empty-badge{display:inline-block;background:var(--navy);color:var(--white);font-size:11px;font-weight:700;padding:8px 20px;letter-spacing:.5px;text-transform:uppercase}
+.load-more-wrap{grid-column:1/-1;text-align:center;padding:24px 0 8px}
+.load-more-btn{background:var(--white);border:2px solid var(--navy);color:var(--navy);font-family:'Inter',sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:11px 32px;cursor:pointer;transition:all .15s}
+.load-more-btn:hover{background:var(--navy);color:var(--white)}
+.eo-badge{position:absolute;top:8px;right:8px;background:var(--gold);color:var(--navy-deep);font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;padding:2px 6px}
 .suggested-wrap{background:var(--gray-50);border-top:1px solid var(--gray-200);padding:32px 24px 48px}
 .sugg-inner{max-width:1400px;margin:0 auto}
 .sugg-hd{font-family:'Playfair Display',serif;font-size:20px;color:var(--navy);margin-bottom:4px}
@@ -380,6 +384,7 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
     </div>
     <div class="active-filters" id="active-filters-bar"></div>
     <div class="product-grid" id="product-grid"></div>
+    <div class="load-more-wrap" id="load-more-wrap"></div>
   </div>
 </div>
 
@@ -457,8 +462,45 @@ const PRODUCTS = [
   {id:16,brand:'Springfield Armory',name:'Echelon 9mm Manual Safety 20rd',sub:'9mm \u2022 20+1 \u2022 4.5" Barrel \u2022 Manual Safety \u2022 Optic Ready',img:'https://springfieldarmory.b-cdn.net/wp-content/uploads/EC9459BMS-U.png',caliber:'9mm',action:'Striker-Fired',opticReady:true,hand:'Ambidextrous',capacity:20,barrelIn:4.5,frameSize:'Full-Size',safety:'Manual Safety',finish:'Black',stars:4.7,reviews:156,badge:'',sellers:[{name:'Impact Guns',price:709.99,stock:'in',url:'https://www.impactguns.com/semi-auto-handguns/springfield-echelon-9mm-4-5-barrel-black-manual-safety-optic-ready-20rd-706397982195-ec9459bmsu#IdealArmory'}]},
 ]
 
-let filteredProducts = [...PRODUCTS];
+var EO_PRODUCTS = [];
+var ALL_PRODUCTS = PRODUCTS.slice();
+var PAGE_SIZE = 48;
+var visibleCount = PAGE_SIZE;
+let filteredProducts = ALL_PRODUCTS.slice();
 let currentSort = 'price-asc';
+
+function adaptEoProduct(eo) {
+  return {
+    id: 'eo_' + eo.id, upc: eo.upc || '',
+    brand: eo.brand, name: eo.name, sub: '',
+    img: eo.img, price: eo.price, orig: eo.orig,
+    inStock: eo.inStock, stars: 0, reviews: 0, badge: '',
+    src: 'eurooptic',
+    sellers: [{name:'EuroOptic', price:eo.price, stock:eo.inStock?'in':'out', url:eo.url}]
+  };
+}
+
+async function loadEuroOptic() {
+  try {
+    var res = await fetch('/data/eurooptic-handguns.json');
+    if (!res.ok) return;
+    var items = await res.json();
+    var upcMap = {};
+    PRODUCTS.forEach(function(p){ if(p.upc) upcMap[p.upc] = p; });
+    var newCards = 0;
+    items.forEach(function(eo) {
+      if (eo.upc && upcMap[eo.upc]) {
+        var ep = upcMap[eo.upc];
+        if (!ep.sellers.some(function(s){return s.name==='EuroOptic';}))
+          ep.sellers.push({name:'EuroOptic', price:eo.price, stock:eo.inStock?'in':'out', url:eo.url});
+      } else {
+        EO_PRODUCTS.push(adaptEoProduct(eo)); newCards++;
+      }
+    });
+    ALL_PRODUCTS = PRODUCTS.concat(EO_PRODUCTS);
+    filterProducts();
+  } catch(e) { console.warn('EuroOptic load failed:', e.message); }
+}
 
 function getLowestPrice(p) {
   return Math.min(...p.sellers.map(function(s){return s.price;}));
@@ -472,31 +514,45 @@ function renderStars(n) {
 
 function renderGrid() {
   var grid = document.getElementById('product-grid');
-  document.getElementById('result-count').innerHTML = '<strong>' + filteredProducts.length + '</strong> handguns found';
-  if (!filteredProducts.length) {
+  var lmw = document.getElementById('load-more-wrap');
+  var total = filteredProducts.length;
+  document.getElementById('result-count').innerHTML = '<strong>' + total + '</strong> handguns found';
+  if (!total) {
     grid.innerHTML = '<div class="empty-state"><div class="empty-icon">&#127806;</div><div class="empty-title">No Handguns Found</div><div class="empty-sub">Try adjusting your filters, or check back as we add more listings from our retailer network.</div><button class="empty-badge" onclick="clearAllFilters()">Clear All Filters</button></div>';
-    return;
+    lmw.innerHTML = ''; return;
   }
-  grid.innerHTML = filteredProducts.map(function(p) {
+  var showing = Math.min(visibleCount, total);
+  grid.innerHTML = filteredProducts.slice(0, showing).map(function(p) {
+    var idStr = typeof p.id === 'string' ? '"'+p.id+'"' : p.id;
     var low = getLowestPrice(p);
     var sellers = p.sellers.slice(0,3).map(function(s,i){
       return '<div class="psr"><span class="psr-n">'+s.name+'</span><span class="psr-p'+(i===0?' low':'')+'">$'+s.price.toFixed(2)+'</span></div>';
     }).join('');
     var img = p.img ? '<img src="'+p.img+'" alt="'+p.name+'" loading="lazy">' : '<span class="img-ph">Image from retailer feed</span>';
-    return '<div class="prod-card" onclick="viewProduct('+p.id+')">'
+    var href = p.src==='eurooptic' ? '/product.html?src=eurooptic&id='+p.id.replace('eo_','') : '/product.html?p='+slugify(p.name);
+    return '<div class="prod-card" onclick="viewProduct('+idStr+')">'
       +(p.badge==='best'?'<span class="badge-best">Best Seller</span>':'')
+      +(p.src==='eurooptic'?'<span class="eo-badge">EuroOptic</span>':'')
       +'<div class="prod-img">'+img+'</div>'
       +'<div class="prod-body">'
       +'<div class="prod-brand">'+p.brand+'</div>'
-      +'<a class="prod-name" href="/product.html?p='+slugify(p.name)+'" onclick="event.stopPropagation()">'+p.name+'</a>'
-      +'<div class="prod-sub">'+p.sub+'</div>'
-      
+      +'<a class="prod-name" href="'+href+'" onclick="event.stopPropagation()">'+p.name+'</a>'
+      +(p.sub?'<div class="prod-sub">'+p.sub+'</div>':'')
       +'<div class="prod-price">$'+low.toFixed(2)+'</div>'
       +'<div class="prod-price-from">Best price from '+p.sellers.length+' retailer'+(p.sellers.length>1?'s':'')+'</div>'
       +'<div class="prod-sellers">'+sellers+'</div>'
-      +'<div class="prod-cta"><button class="btn-save" onclick="event.stopPropagation();saveItem('+p.id+')" title="Add to Kit">+Kit</button></div>'
+      +'<div class="prod-cta"><button class="btn-save" onclick="event.stopPropagation();saveItem('+idStr+')" title="Add to Kit">+Kit</button></div>'
       +'</div></div>';
   }).join('');
+  lmw.innerHTML = showing < total
+    ? '<button class="load-more-btn" onclick="loadMoreProducts()">Load More (' + (total - showing) + ' more)</button>'
+    : '';
+}
+
+function loadMoreProducts() {
+  visibleCount += PAGE_SIZE;
+  renderGrid();
+  document.getElementById('load-more-wrap').scrollIntoView({behavior:'smooth', block:'center'});
 }
 
 function filterProducts() {
@@ -517,7 +573,14 @@ function filterProducts() {
   var barrels = Object.keys(checks).filter(function(v){return ['barrel-u3','barrel-3-4','barrel-4-5','barrel-5p'].indexOf(v)>=0;});
   var opticYes = checks['optic-yes'], opticNo = checks['optic-no'];
 
-  filteredProducts = PRODUCTS.filter(function(p) {
+  visibleCount = PAGE_SIZE;
+  filteredProducts = ALL_PRODUCTS.filter(function(p) {
+    if (p.src === 'eurooptic') {
+      var low = getLowestPrice(p);
+      if (low < priceMin || low > priceMax) return false;
+      if (search && (p.name+p.brand).toLowerCase().indexOf(search) < 0) return false;
+      return true;
+    }
     var low = getLowestPrice(p);
     if (low < priceMin || low > priceMax) return false;
     if (search && (p.name+p.brand+p.sub+p.caliber).toLowerCase().indexOf(search) < 0) return false;
@@ -600,7 +663,8 @@ function clearAllFilters() {
   document.getElementById('price-min').value='';
   document.getElementById('price-max').value='';
   document.getElementById('nav-srch').value='';
-  filteredProducts = [...PRODUCTS];
+  filteredProducts = ALL_PRODUCTS.slice();
+  visibleCount = PAGE_SIZE;
   sortAndRender();
   renderActiveFilters();
 }
@@ -632,6 +696,18 @@ function closeDrawer() {
 
 function slugify(s){return(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');}
 function viewProduct(id) {
+  // Handle EuroOptic products (string IDs prefixed with 'eo_')
+  if (typeof id === 'string' && id.indexOf('eo_') === 0) {
+    var eoId = id.slice(3);
+    var eoP = ALL_PRODUCTS.find(function(x){return x.id===id;});
+    if (eoP) {
+      var pd = Object.assign({}, eoP);
+      if (!pd.imgs || !pd.imgs.length) pd.imgs = pd.img ? [pd.img] : [];
+      try{sessionStorage.setItem('ia_pv',JSON.stringify(pd));}catch(e){}
+    }
+    window.location.href = '/product.html?src=eurooptic&id=' + encodeURIComponent(eoId);
+    return;
+  }
   var p = PRODUCTS.find(function(x){return x.id===id;});
   if (!p) return;
   // Normalize img → imgs[] so product.html renderProduct always has imgs array
@@ -671,6 +747,7 @@ function renderSuggested() {
 filteredProducts = [...PRODUCTS];
 sortAndRender();
 renderSuggested();
+loadEuroOptic();
 </script>
 </body>
 </html>

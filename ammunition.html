@@ -169,6 +169,10 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
   a.nav-logo svg{width:28px;height:28px;margin-right:6px}
   .nav-cat{padding:12px 14px;font-size:12px}
 }
+.load-more-wrap{grid-column:1/-1;text-align:center;padding:24px 0 8px}
+.load-more-btn{background:var(--white);border:2px solid var(--navy);color:var(--navy);font-family:'Inter',sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:11px 32px;cursor:pointer;transition:all .15s}
+.load-more-btn:hover{background:var(--navy);color:var(--white)}
+.eo-badge{position:absolute;top:8px;right:8px;background:var(--gold);color:var(--navy-deep);font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;padding:2px 6px}
 </style>
 </head>
 <body>
@@ -331,6 +335,7 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
     </div>
     <div class="active-filters" id="active-filters-bar"></div>
     <div class="product-grid" id="product-grid"></div>
+<div class="load-more-wrap" id="load-more-wrap"></div>
   </div>
 </div>
 
@@ -411,32 +416,45 @@ const PRODUCTS=[
   {id:10,brand:'Browning',name:'X-Point .380 ACP 20rd',sub:'.380 ACP \u2022 95gr JHP \u2022 Performance Defense',caliber:'.380 ACP',btype:'JHP',grain:95,qty:20,use:'Defensive',stars:4.5,reviews:234,badge:'',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629781/images/559161/202564__78481.1716240287.380.380.jpg?c=2',sellers:[{name:'Bereli',price:29.99,url:'https://bereli.com/browning-performance-defense-380-auto-95-grain-x-point/?aff=10388'}]},
 ]
 
+var EO_PRODUCTS=[];
+var ALL_PRODUCTS=PRODUCTS.slice();
+var PAGE_SIZE=48;
+var visibleCount=PAGE_SIZE;
 let filteredProducts=[...PRODUCTS];
 function getLowestPrice(p){return Math.min(...p.sellers.map(function(s){return s.price;}));}
 function getPPR(p){return getLowestPrice(p)/p.qty;}
 function renderStars(n){var s='';for(var i=0;i<5;i++)s+=i<Math.round(n)?'<span class="star">&#9733;</span>':'<span class="star" style="color:var(--gray-200)">&#9733;</span>';return s;}
+function adaptEoProduct(eo){return{id:'eo_'+eo.id,upc:eo.upc||'',brand:eo.brand,name:eo.name,sub:'',img:eo.img,price:eo.price,orig:eo.orig,inStock:eo.inStock,stars:0,reviews:0,badge:'',src:'eurooptic',qty:eo.qty||1,sellers:[{name:'EuroOptic',price:eo.price,stock:eo.inStock?'in':'out',url:eo.url}]};}
+async function loadEuroOptic(){try{var res=await fetch('/data/eurooptic-ammunition.json');if(!res.ok)return;var items=await res.json();var upcMap={};PRODUCTS.forEach(function(p){if(p.upc)upcMap[p.upc]=p;});items.forEach(function(eo){if(eo.upc&&upcMap[eo.upc]){var ep=upcMap[eo.upc];if(!ep.sellers.some(function(s){return s.name==='EuroOptic';}))ep.sellers.push({name:'EuroOptic',price:eo.price,stock:eo.inStock?'in':'out',url:eo.url});}else{EO_PRODUCTS.push(adaptEoProduct(eo));}});ALL_PRODUCTS=PRODUCTS.concat(EO_PRODUCTS);filterProducts();}catch(e){console.warn('EuroOptic load failed:',e.message);}}
+
 function renderGrid(){
   var grid=document.getElementById('product-grid');
+  var lmw=document.getElementById('load-more-wrap');
+  var visible=filteredProducts.slice(0,visibleCount);
   document.getElementById('result-count').innerHTML='<strong>'+filteredProducts.length+'</strong> ammunition listings found';
-  if(!filteredProducts.length){grid.innerHTML='<div class="empty-state"><div class="empty-icon">&#127806;</div><div class="empty-title">No Ammo Found</div><div class="empty-sub">Try adjusting your filters or check back as we add more listings.</div><button class="empty-badge" onclick="clearAllFilters()">Clear All Filters</button></div>';return;}
-  grid.innerHTML=filteredProducts.map(function(p){
+  if(!filteredProducts.length){grid.innerHTML='<div class="empty-state"><div class="empty-icon">&#127806;</div><div class="empty-title">No Ammo Found</div><div class="empty-sub">Try adjusting your filters or check back as we add more listings.</div><button class="empty-badge" onclick="clearAllFilters()">Clear All Filters</button></div>';lmw.innerHTML='';return;}
+  grid.innerHTML=visible.map(function(p){
     var low=getLowestPrice(p);
     var ppr=getPPR(p);
+    var isEo=p.src==='eurooptic';
+    var idAttr=isEo?("'"+p.id+"'"):p.id;
     var sellers=p.sellers.slice(0,3).map(function(s,i){return '<div class="psr"><span class="psr-n">'+s.name+'</span><span class="psr-p'+(i===0?' low':'')+'">$'+s.price.toFixed(2)+'</span></div>';}).join('');
-    return '<div class="prod-card" onclick="viewProduct('+p.id+')">'
+    return '<div class="prod-card" onclick="viewProduct('+idAttr+')">'
       +(p.badge==='best'?'<span class="badge-best">Best Seller</span>':'')
+      +(isEo?'<span class="eo-badge">EuroOptic</span>':'')
       +'<div class="prod-img">'+(p.img?'<img src="'+p.img+'" alt="'+p.name+'" loading="lazy" style="max-width:88%;max-height:135px;object-fit:contain">':'<span class="img-ph">Image from retailer feed</span>')+'</div>'
       +'<div class="prod-body"><div class="prod-brand">'+p.brand+'</div><a class="prod-name" href="/product.html?p='+slugify(p.name)+'" onclick="event.stopPropagation()">'+p.name+'</a>'
-      +'<div class="prod-sub">'+p.sub+'</div>'
+      +'<div class="prod-sub">'+(p.sub||'')+'</div>'
       +'<div class="prod-ppr">&#162;'+ppr.toFixed(1)+' per round</div>'
-      
       +'<div class="prod-price">$'+low.toFixed(2)+'</div>'
-      +'<div class="prod-price-from">Best price &bull; '+p.qty+' rounds</div>'
+      +'<div class="prod-price-from">Best price &bull; '+(p.qty||1)+' rounds</div>'
       +'<div class="prod-sellers">'+sellers+'</div>'
-      +'<div class="prod-cta"><button class="btn-save" onclick="event.stopPropagation();saveItem('+p.id+')" title="Add to Kit">+Kit</button></div>'
+      +'<div class="prod-cta"><button class="btn-save" onclick="event.stopPropagation();saveItem('+idAttr+')" title="Add to Kit">+Kit</button></div>'
       +'</div></div>';
   }).join('');
+  if(filteredProducts.length>visibleCount){lmw.innerHTML='<button class="load-more-btn" onclick="loadMore()">Load More ('+(filteredProducts.length-visibleCount)+' remaining)</button>';}else{lmw.innerHTML='';}
 }
+function loadMore(){visibleCount+=PAGE_SIZE;renderGrid();}
 function filterProducts(){
   var priceMin=parseFloat(document.getElementById('price-min').value)||0;
   var priceMax=parseFloat(document.getElementById('price-max').value)||Infinity;
@@ -448,7 +466,7 @@ function filterProducts(){
   var brands=Object.keys(checks).filter(function(v){return ['Federal','Winchester','Hornady','Speer','Remington','CCI','PMC','Fiocchi','Blazer'].indexOf(v)>=0;});
   var qtys=Object.keys(checks).filter(function(v){return ['qty-50','qty-100','qty-200','qty-1000'].indexOf(v)>=0;});
   var uses=Object.keys(checks).filter(function(v){return ['Target','Self-Defense','Hunting','Training'].indexOf(v)>=0;});
-  filteredProducts=PRODUCTS.filter(function(p){
+  visibleCount=PAGE_SIZE;filteredProducts=ALL_PRODUCTS.filter(function(p){if(p.src==='eurooptic'){var low=getLowestPrice(p);if(low<priceMin||low>priceMax)return false;if(search&&(p.name+p.brand).toLowerCase().indexOf(search)<0)return false;return true;}
     var low=getLowestPrice(p);
     if(low<priceMin||low>priceMax)return false;
     if(search&&(p.name+p.brand+p.sub+p.caliber).toLowerCase().indexOf(search)<0)return false;
@@ -486,12 +504,12 @@ function renderActiveFilters(){
   bar.innerHTML=chips.join('');
 }
 function removeFilter(btn){var cb=document.querySelector('.filter-body input[type=checkbox][value="'+btn.getAttribute('data-val')+'"]');if(cb){cb.checked=false;filterProducts();}}
-function clearAllFilters(){document.querySelectorAll('.filter-body input[type=checkbox]').forEach(function(cb){cb.checked=false;});document.getElementById('price-min').value='';document.getElementById('price-max').value='';document.getElementById('nav-srch').value='';filteredProducts=[...PRODUCTS];sortAndRender();renderActiveFilters();}
+function clearAllFilters(){document.querySelectorAll('.filter-body input[type=checkbox]').forEach(function(cb){cb.checked=false;});document.getElementById('price-min').value='';document.getElementById('price-max').value='';document.getElementById('nav-srch').value='';filteredProducts=ALL_PRODUCTS.slice();visibleCount=PAGE_SIZE;sortAndRender();renderActiveFilters();}
 function toggleSec(hd){var body=hd.nextElementSibling;var tog=hd.querySelector('.ftog');body.classList.toggle('collapsed');tog.classList.toggle('open');}
 function openDrawer(){var dc=document.getElementById('drawer-content');dc.innerHTML=document.getElementById('filter-sidebar').innerHTML;dc.querySelectorAll('input[type=checkbox]').forEach(function(cb){var orig=document.querySelector('#filter-sidebar input[value="'+cb.value+'"]');if(orig)cb.checked=orig.checked;cb.onchange=function(){filterProducts();};});document.getElementById('filter-drawer').classList.add('open');document.getElementById('filter-overlay').classList.add('open');document.body.style.overflow='hidden';}
 function closeDrawer(){document.getElementById('filter-drawer').classList.remove('open');document.getElementById('filter-overlay').classList.remove('open');document.body.style.overflow='';}
 function slugify(s){return(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');}
-function viewProduct(id){var p=PRODUCTS.find(function(x){return x.id===id;});if(!p)return;var pd=Object.assign({},p);if(!pd.imgs||!pd.imgs.length)pd.imgs=pd.img?[pd.img]:[];try{sessionStorage.setItem('ia_pv',JSON.stringify(pd));}catch(e){}window.location.href = '/product.html?p=' + slugify(p.name);}
+function viewProduct(id){if(typeof id==='string'&&id.indexOf('eo_')===0){var eoId=id.slice(3);var eoP=ALL_PRODUCTS.find(function(x){return x.id===id;});if(eoP){var pd=Object.assign({},eoP);if(!pd.imgs||!pd.imgs.length)pd.imgs=pd.img?[pd.img]:[];try{sessionStorage.setItem('ia_pv',JSON.stringify(pd));}catch(e){}}window.location.href='/product.html?src=eurooptic&id='+encodeURIComponent(eoId);return;}var p=PRODUCTS.find(function(x){return x.id===id;});if(!p)return;var pd=Object.assign({},p);if(!pd.imgs||!pd.imgs.length)pd.imgs=pd.img?[pd.img]:[];try{sessionStorage.setItem('ia_pv',JSON.stringify(pd));}catch(e){}window.location.href='/product.html?p='+slugify(p.name);}
 function saveItem(id){var p=PRODUCTS.find(function(x){return x.id===id;});if(p)alert('Added '+p.name+' to Kit (Kit Builder is on the main site)');}
 function renderSuggested(){
   var pool=PRODUCTS.filter(function(p){return p.badge==='best';}).sort(function(a,b){return getPPR(a)-getPPR(b);}).slice(0,6);
@@ -504,7 +522,7 @@ function renderSuggested(){
       +'<div class="sugg-reason">'+p.caliber+' \u2022 '+p.btype+'</div></div>';
   }).join('');
 }
-filteredProducts=[...PRODUCTS];sortAndRender();renderSuggested();
+filteredProducts=ALL_PRODUCTS.slice();sortAndRender();renderSuggested();loadEuroOptic();
 </script>
 </body>
 </html>
