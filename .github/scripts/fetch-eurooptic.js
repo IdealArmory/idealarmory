@@ -56,19 +56,26 @@ function isRelevant(item) {
   // Must have an image
   const img = item.ImageUrl || (item.AdditionalImageUrls && item.AdditionalImageUrls[0]) || '';
   if (!img) return false;
-  // Must not be apparel/footwear/etc.
+  // Exclude apparel/footwear by category path first (most reliable)
+  const catPath = (item.Category || '').toLowerCase();
+  if (catPath.includes('apparel') || catPath.includes('clothing') ||
+      catPath.includes('footwear') || catPath.includes('shoe') ||
+      catPath.includes('accessories > ') && !catPath.includes('firearm')) {
+    // Only allow if it maps to a known gun-related category
+  }
+  // Must not be apparel/footwear/etc. by name
   const name = (item.Name || '').toLowerCase();
   if (NAME_EXCLUDE_KEYWORDS.some(kw => name.includes(kw))) return false;
   // Must map to a known category
-  const cat = mapCategory(item.Category || item.ProductType || '', item.Name || '');
+  const cat = mapCategory(item.Category || '', item.Name || '');
   return cat !== 'other';
 }
 
 function transformProduct(item) {
-  const category = mapCategory(item.Category || item.ProductType || '', item.Name || '');
+  const category = mapCategory(item.Category || '', item.Name || '');
   return {
     id:    String(item.CatalogItemId || item.Id || ''),
-    upc:   item.Upc || item.UPC || item.GTIN || '',
+    upc:   item.Gtin || '',
     brand: item.Manufacturer || item.BrandName || item.Brand || '',
     name:  item.Name || '',
     price: parseFloat(item.CurrentPrice || item.SalePrice || 0),
@@ -76,7 +83,7 @@ function transformProduct(item) {
     img:   item.ImageUrl || (item.AdditionalImageUrls && item.AdditionalImageUrls[0]) || '',
     url:   item.Url || item.TrackingLink || '',
     category,
-    inStock: item.OutOfStock === false || item.OutOfStock === 'false',
+    inStock: item.StockAvailability === 'InStock',
     src: 'eurooptic'
   };
 }

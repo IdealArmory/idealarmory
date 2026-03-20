@@ -35,7 +35,7 @@ async function main() {
   console.log([...allKeys].sort().join('\n'));
 
   // UPC availability
-  const upcFields = ['Upc','UPC','GTIN','EAN','ISBN','Sku'];
+  const upcFields = ['Upc','UPC','Gtin','GTIN','EAN','ISBN','Sku','Mpn'];
   console.log('\n=== UPC / barcode field check ===');
   upcFields.forEach(f => {
     const count = items.filter(i => i[f] && i[f].toString().trim()).length;
