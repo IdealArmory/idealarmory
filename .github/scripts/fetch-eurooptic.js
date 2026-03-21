@@ -27,6 +27,52 @@ const NAME_EXCLUDE_KEYWORDS = [
   'trouser','underwear','balaclava','buff','gaiter','beanie','apparel','clothing'
 ];
 
+// ── Brand whitelist (major brands only per category) ──────────────────────────
+const BRAND_WHITELIST = {
+  'handguns':    ['glock','sig sauer','sig','smith & wesson','smith and wesson','springfield','ruger','cz','walther','heckler','h&k','taurus','beretta','kimber','daniel defense','canik','fn america','fn herst','shadow systems','kahr','nighthawk','wilson combat','staccato','magnum research','heritage','charter','rock island','kel-tec','keltec'],
+  'rifles':      ['ruger','smith & wesson','sig sauer','springfield','daniel defense','cmmg','fn america','fn herst','savage','mossberg','remington','winchester','henry','browning','tikka','bergara','barrett','christensen','stag arms','windham','bushmaster','dpms','armalite','palmetto','psa','lwrc','bcm','bravo company'],
+  'optics':      ['leupold','vortex','nightforce','trijicon','eotech','aimpoint','bushnell','crimson trace','sig sauer','burris','swarovski','primary arms','steiner','holosun','zeiss','maven','tract','schmidt','kahles','march','minox','hawke','nikon','weaver','mepro','meprolight','atibal','riton','swampfox','athlon','arken'],
+  'ammunition':  ['federal','hornady','winchester','remington','cci','speer','nosler','barnes','pmc','magtech','fiocchi','wolf','sellier','blazer','american eagle','corbon','buffalo bore','liberty','black hills','aguila','nato','prvi','tulammo'],
+  'holsters':    ['alien gear','blackhawk','safariland','galco','desantis','crossbreed','bianchi','uncle','vedder','we the people','blackpoint','fobus','serpa','tulster','tier 1','t1c','hidden hybrid','cloak','bravo concealment','concealment express','rounded','gun daddy','mod 1','1791','craft holsters','tagua','leather','nylon','kydex','iwb','owb','shoulder','ankle','drop leg'],
+  'ar-parts':    ['magpul','bcm','bravo company','aero precision','daniel defense','geissele','larue','yhm','yankee hill','noveske','spike','wilson combat','alg','fortis','surefire','silencerco','kac','knight','lwrc','midwest industries','yankee hill','phase 5','cmmg','seekins','rise armament'],
+  'magazines':   ['magpul','ets','promag','lancer','hexmag','kci','glock','beretta','fn','sig','cz'],
+  'cleaning':    ["hoppe's",'hoppes','break-free','otis','bore snake','tipton','real avid','sentry','ballistol','mpro','m-pro','tetra','slip 2000','clenzoil','wipe-out','shooter','froglube'],
+  'gun-safes':   ['liberty','cannon','fort knox','browning','american security','amsec','stack-on','vaultek','hornady','gunvault','barska','sentrysafe','rhino','mesa','hollon','winchester','secure','safe','vault','steelwater','sentry','v-line','bulldog','pelican','nanuk','case','box','locker','cabinet','rack']
+};
+
+// ── Price floors per category ─────────────────────────────────────────────────
+const PRICE_FLOORS = {
+  'handguns':   400,
+  'rifles':     800,
+  'optics':     250,
+  'ammunition':  40,
+  'holsters':    20,
+  'ar-parts':   300,
+  'magazines':   40,
+  'cleaning':    30,
+  'gun-safes':  100
+};
+
+// ── Max products per category (sorted by price desc) ─────────────────────────
+const CAT_CAPS = {
+  'handguns':   500,
+  'rifles':     400,
+  'optics':     600,
+  'ammunition': 400,
+  'holsters':   200,
+  'ar-parts':   350,
+  'magazines':  250,
+  'cleaning':   100,
+  'gun-safes':  200
+};
+
+function isMajorBrand(brand, category) {
+  const b = (brand || '').toLowerCase();
+  if (!b) return false;
+  const list = BRAND_WHITELIST[category] || [];
+  return list.some(kw => b.includes(kw));
+}
+
 function mapCategory(cat, name) {
   const c = (cat  || '').toLowerCase();
   const n = (name || '').toLowerCase();
@@ -60,19 +106,19 @@ function isRelevant(item) {
   // Must have an image
   const img = item.ImageUrl || (item.AdditionalImageUrls && item.AdditionalImageUrls[0]) || '';
   if (!img) return false;
-  // Exclude apparel/footwear by category path first (most reliable)
-  const catPath = (item.Category || '').toLowerCase();
-  if (catPath.includes('apparel') || catPath.includes('clothing') ||
-      catPath.includes('footwear') || catPath.includes('shoe') ||
-      catPath.includes('accessories > ') && !catPath.includes('firearm')) {
-    // Only allow if it maps to a known gun-related category
-  }
   // Must not be apparel/footwear/etc. by name
   const name = (item.Name || '').toLowerCase();
   if (NAME_EXCLUDE_KEYWORDS.some(kw => name.includes(kw))) return false;
-  // Must map to a known category
+  // Must map to a known category (holsters and gun-safes excluded from EuroOptic)
   const cat = mapCategory(item.Category || '', item.Name || '');
-  return cat !== 'other';
+  if (cat === 'other' || cat === 'holsters' || cat === 'gun-safes') return false;
+  // Must meet price floor for category
+  const price = parseFloat(item.CurrentPrice || item.SalePrice || 0);
+  if (price < (PRICE_FLOORS[cat] || 0)) return false;
+  // Must be a major brand for this category
+  const brand = item.Manufacturer || item.BrandName || item.Brand || '';
+  if (!isMajorBrand(brand, cat)) return false;
+  return true;
 }
 
 function transformProduct(item) {
@@ -297,6 +343,16 @@ async function main() {
     if (!byCategory[p.category]) byCategory[p.category] = [];
     byCategory[p.category].push(p);
   });
+
+  // Apply per-category caps — keep highest-priced products
+  for (const cat of Object.keys(byCategory)) {
+    byCategory[cat].sort((a, b) => b.price - a.price);
+    const cap = CAT_CAPS[cat];
+    if (cap && byCategory[cat].length > cap) {
+      console.log(`  [cap] ${cat}: ${byCategory[cat].length} → ${cap}`);
+      byCategory[cat] = byCategory[cat].slice(0, cap);
+    }
+  }
 
   const filesWritten = [];
   for (const [cat, products] of Object.entries(byCategory)) {

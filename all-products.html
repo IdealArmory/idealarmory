@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Handguns - Compare Prices | Ideal Armory</title>
-<meta name="description" content="Compare handgun prices from licensed retailers. Filter by caliber, action, capacity, and more.">
+<title>Browse All Products — Compare Prices | Ideal Armory</title>
+<meta name="description" content="Compare prices on firearms, optics, ammo, holsters and more from licensed retailers. Browse all categories on Ideal Armory.">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-62EBWTERM3"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-62EBWTERM3');</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -40,6 +40,10 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--off-white);color:
 .ftog.open{transform:rotate(180deg)}
 .filter-body{padding:4px 16px 12px;display:flex;flex-direction:column;gap:5px}
 .filter-body.collapsed{display:none}
+.filter-body-scroll{max-height:200px;overflow-y:auto;padding-right:4px}
+.filter-body-scroll::-webkit-scrollbar{width:4px}
+.filter-body-scroll::-webkit-scrollbar-track{background:var(--gray-100)}
+.filter-body-scroll::-webkit-scrollbar-thumb{background:var(--gray-300);border-radius:2px}
 .fopt{display:flex;align-items:center;gap:8px;cursor:pointer;padding:2px 0}
 .fopt input[type=checkbox]{width:14px;height:14px;accent-color:var(--navy);flex-shrink:0;cursor:pointer}
 .fopt label{font-size:12px;color:var(--gray-700);cursor:pointer;line-height:1.3;display:flex;align-items:center;gap:4px}
@@ -90,22 +94,12 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--off-white);color:
 .empty-icon{font-size:44px;margin-bottom:14px;opacity:.25}
 .empty-title{font-family:'Playfair Display',serif;font-size:20px;color:var(--gray-800);margin-bottom:8px}
 .empty-sub{font-size:13px;color:var(--gray-500);max-width:380px;margin:0 auto 18px;line-height:1.7}
-.empty-badge{display:inline-block;background:var(--navy);color:var(--white);font-size:11px;font-weight:700;padding:8px 20px;letter-spacing:.5px;text-transform:uppercase}
+.empty-badge{display:inline-block;background:var(--navy);color:var(--white);font-size:11px;font-weight:700;padding:8px 20px;letter-spacing:.5px;text-transform:uppercase;border:none;cursor:pointer}
 .load-more-wrap{grid-column:1/-1;text-align:center;padding:24px 0 8px}
 .load-more-btn{background:var(--white);border:2px solid var(--navy);color:var(--navy);font-family:'Inter',sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:11px 32px;cursor:pointer;transition:all .15s}
 .load-more-btn:hover{background:var(--navy);color:var(--white)}
 .eo-badge{position:absolute;top:8px;right:8px;background:var(--gold);color:var(--navy-deep);font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;padding:2px 6px}
-.suggested-wrap{background:var(--gray-50);border-top:1px solid var(--gray-200);padding:32px 24px 48px}
-.sugg-inner{max-width:1400px;margin:0 auto}
-.sugg-hd{font-family:'Playfair Display',serif;font-size:20px;color:var(--navy);margin-bottom:4px}
-.sugg-sub{font-size:12px;color:var(--gray-500);margin-bottom:18px}
-.sugg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:12px}
-.sugg-card{background:var(--white);border:1px solid var(--gray-200);padding:14px;cursor:pointer;transition:box-shadow .15s}
-.sugg-card:hover{box-shadow:0 2px 10px rgba(0,0,0,.08)}
-.sugg-brand{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--gold);margin-bottom:2px}
-.sugg-name{font-size:12px;font-weight:700;color:var(--gray-800);margin-bottom:3px;line-height:1.3}
-.sugg-price{font-size:14px;font-weight:700;color:var(--navy)}
-.sugg-reason{font-size:10px;color:var(--gray-400);margin-top:3px;font-style:italic}
+.cat-tag{display:inline-block;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gray-500);background:var(--gray-100);padding:2px 6px;margin-bottom:6px}
 .filter-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300}
 .filter-overlay.open{display:block}
 .filter-drawer{position:fixed;left:0;top:0;bottom:0;width:280px;background:var(--white);z-index:301;transform:translateX(-100%);transition:transform .25s;overflow-y:auto}
@@ -129,8 +123,8 @@ footer{background:var(--navy-deep);color:rgba(255,255,255,.75);font-size:13px;ma
 .foot-badges{display:flex;gap:8px;flex-wrap:wrap}
 .fbadge{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);padding:3px 10px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.5)}
 @media(max-width:960px){.filter-sidebar{display:none}.filter-mob-btn{display:flex}.results-area{padding:14px 16px}}
-@media(max-width:768px){.foot-grid{grid-template-columns:1fr 1fr;gap:28px;padding:36px 24px 24px}.page-header{padding:20px 16px}.product-grid{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:480px){.nav-top{padding:0 14px;height:52px}.product-grid{grid-template-columns:1fr 1fr;gap:8px}.prod-img{height:110px}.foot-grid{grid-template-columns:1fr;gap:24px}}
+@media(max-width:768px){.foot-grid{grid-template-columns:1fr 1fr;gap:28px;padding:36px 24px 24px}.page-header{padding:20px 16px}}
+@media(max-width:768px){.product-grid{grid-template-columns:repeat(3,1fr)}}@media(max-width:480px){.nav-top{padding:0 14px;height:52px}.product-grid{grid-template-columns:1fr 1fr;gap:8px}.prod-img{height:110px}.foot-grid{grid-template-columns:1fr;gap:24px}}
 
 /* ── UNIVERSAL NAV CSS ── */
 nav.site-nav{background:var(--navy-deep);position:sticky;top:0;z-index:200;box-shadow:0 2px 12px rgba(0,0,0,.35)}
@@ -193,8 +187,8 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
   <button class="mob-drawer-close" onclick="toggleDrawer()" aria-label="Close menu">&times;</button>
   <div>
     <a class="mob-nav-item" href="/">Home</a>
-    <a class="mob-nav-item" href="/all-products.html">All Products</a>
-    <a class="mob-nav-item active" href="/handguns.html">Handguns</a>
+    <a class="mob-nav-item active" href="/all-products.html">All Products</a>
+    <a class="mob-nav-item" href="/handguns.html">Handguns</a>
     <a class="mob-nav-item" href="/rifles.html">Rifles</a>
     <a class="mob-nav-item" href="/shotguns.html">Shotguns</a>
     <a class="mob-nav-item" href="/ammunition.html">Ammunition</a>
@@ -202,7 +196,7 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
     <a class="mob-nav-item" href="/holsters.html">Holsters</a>
     <a class="mob-nav-item" href="/ar-parts.html">AR Parts</a>
     <a class="mob-nav-item" href="/magazines.html">Magazines</a>
-    <a class="mob-nav-item" href="/cleaning.html">Cleaning & Accessories</a>
+    <a class="mob-nav-item" href="/cleaning.html">Cleaning &amp; Accessories</a>
     <a class="mob-nav-item" href="/gun-safes.html">Gun Safes</a>
     <a class="mob-nav-item" href="/kit.html">My Kit</a>
     <a class="mob-nav-item" href="/#ffl-sec">FFL Finder</a>
@@ -221,8 +215,8 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
     </a>
     <div class="nav-search">
       <svg viewBox="0 0 16 16"><circle cx="6.5" cy="6.5" r="5" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke-width="1.5" stroke-linecap="square"/></svg>
-      <input type="text" placeholder="Search firearms, ammo, optics, brands&hellip;" id="nav-srch" oninput="liveSearch(this.value)" onkeydown="if(event.key==='Enter'&&this.value.trim()){window.location.href='/all-products.html?q='+encodeURIComponent(this.value.trim())}" autocomplete="off">
-      <button class="nav-srch-btn" onclick="var v=(document.getElementById('nav-srch').value||'').trim()||(document.getElementById('mob-srch').value||'').trim();if(v)window.location.href='/all-products.html?q='+encodeURIComponent(v)">Find Best Price</button>
+      <input type="text" placeholder="Search firearms, ammo, optics, brands&hellip;" id="nav-srch" oninput="liveSearch(this.value)" onkeydown="if(event.key==='Enter')liveSearch(this.value)" autocomplete="off">
+      <button class="nav-srch-btn" onclick="liveSearch(document.getElementById('nav-srch').value)">Find Best Price</button>
     </div>
     <div class="nav-actions">
       <a class="nav-btn hide-mob" href="/#ffl-sec" style="text-decoration:none">FFL Finder</a>
@@ -233,13 +227,13 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
   <div class="mobile-search-bar">
     <div class="mobile-search-wrap">
       <svg viewBox="0 0 16 16"><circle cx="6.5" cy="6.5" r="5" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke-width="1.5" stroke-linecap="square"/></svg>
-      <input type="text" placeholder="Search firearms, ammo, optics&hellip;" id="mob-srch" oninput="liveSearch(this.value)" onkeydown="if(event.key==='Enter'&&this.value.trim()){window.location.href='/all-products.html?q='+encodeURIComponent(this.value.trim())}">
+      <input type="text" placeholder="Search firearms, ammo, optics&hellip;" id="mob-srch" oninput="liveSearch(this.value)" onkeydown="if(event.key==='Enter')liveSearch(this.value)">
     </div>
   </div>
   <div class="nav-cats-bar">
     <div class="nav-cats-inner">
-      <a class="nav-cat" href="/all-products.html">All</a>
-      <a class="nav-cat active" href="/handguns.html">Handguns</a>
+      <a class="nav-cat active" href="/all-products.html">All</a>
+      <a class="nav-cat" href="/handguns.html">Handguns</a>
       <a class="nav-cat" href="/rifles.html">Rifles</a>
       <a class="nav-cat" href="/shotguns.html">Shotguns</a>
       <a class="nav-cat" href="/ammunition.html">Ammo</a>
@@ -255,9 +249,9 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
 
 <div class="page-header">
   <div class="page-header-inner">
-    <div class="breadcrumb"><a href="/">Home</a> &rsaquo; <span>Handguns</span></div>
-    <h1>Handguns</h1>
-    <p>Compare prices from licensed retailers &mdash; pistols, revolvers, and more</p>
+    <div class="breadcrumb"><a href="/">Home</a> &rsaquo; <span>All Products</span></div>
+    <h1>All Products</h1>
+    <p>Compare prices on firearms, optics, ammo, holsters and more from licensed retailers</p>
   </div>
 </div>
 
@@ -271,103 +265,185 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
     </div>
 
     <div class="filter-sec">
-      <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Caliber</span><span class="ftog open">&#8964;</span></div>
-      <div class="filter-body" id="fc-caliber">
+      <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Category</span><span class="ftog open">&#8964;</span></div>
+      <div class="filter-body" id="fc-category">
+        <div class="fopt"><input type="checkbox" value="handguns" onchange="filterProducts()"><label>Handguns</label></div>
+        <div class="fopt"><input type="checkbox" value="rifles" onchange="filterProducts()"><label>Rifles</label></div>
+        <div class="fopt"><input type="checkbox" value="shotguns" onchange="filterProducts()"><label>Shotguns</label></div>
+        <div class="fopt"><input type="checkbox" value="ammunition" onchange="filterProducts()"><label>Ammunition</label></div>
+        <div class="fopt"><input type="checkbox" value="optics" onchange="filterProducts()"><label>Optics</label></div>
+        <div class="fopt"><input type="checkbox" value="holsters" onchange="filterProducts()"><label>Holsters</label></div>
+        <div class="fopt"><input type="checkbox" value="ar-parts" onchange="filterProducts()"><label>AR Parts</label></div>
+        <div class="fopt"><input type="checkbox" value="magazines" onchange="filterProducts()"><label>Magazines</label></div>
+        <div class="fopt"><input type="checkbox" value="cleaning" onchange="filterProducts()"><label>Cleaning &amp; Accessories</label></div>
+        <div class="fopt"><input type="checkbox" value="gun-safes" onchange="filterProducts()"><label>Gun Safes</label></div>
+      </div>
+    </div>
+
+    <div class="filter-sec">
+      <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Brand</span><span class="ftog open">&#8964;</span></div>
+      <div class="filter-body" id="fc-brand">
+        <div class="filter-body-scroll">
+          <div class="fopt"><input type="checkbox" value="Aimpoint" onchange="filterProducts()"><label>Aimpoint</label></div>
+          <div class="fopt"><input type="checkbox" value="Aero Precision" onchange="filterProducts()"><label>Aero Precision</label></div>
+          <div class="fopt"><input type="checkbox" value="Alien Gear" onchange="filterProducts()"><label>Alien Gear</label></div>
+          <div class="fopt"><input type="checkbox" value="Ballistol" onchange="filterProducts()"><label>Ballistol</label></div>
+          <div class="fopt"><input type="checkbox" value="BCM" onchange="filterProducts()"><label>BCM</label></div>
+          <div class="fopt"><input type="checkbox" value="Benelli" onchange="filterProducts()"><label>Benelli</label></div>
+          <div class="fopt"><input type="checkbox" value="Bergara" onchange="filterProducts()"><label>Bergara</label></div>
+          <div class="fopt"><input type="checkbox" value="Beretta" onchange="filterProducts()"><label>Beretta</label></div>
+          <div class="fopt"><input type="checkbox" value="Blackhawk" onchange="filterProducts()"><label>Blackhawk</label></div>
+          <div class="fopt"><input type="checkbox" value="Blazer" onchange="filterProducts()"><label>Blazer</label></div>
+          <div class="fopt"><input type="checkbox" value="Break-Free" onchange="filterProducts()"><label>Break-Free</label></div>
+          <div class="fopt"><input type="checkbox" value="Browning" onchange="filterProducts()"><label>Browning</label></div>
+          <div class="fopt"><input type="checkbox" value="Bravo Concealment" onchange="filterProducts()"><label>Bravo Concealment</label></div>
+          <div class="fopt"><input type="checkbox" value="Burris" onchange="filterProducts()"><label>Burris</label></div>
+          <div class="fopt"><input type="checkbox" value="Cannon" onchange="filterProducts()"><label>Cannon</label></div>
+          <div class="fopt"><input type="checkbox" value="CCI" onchange="filterProducts()"><label>CCI</label></div>
+          <div class="fopt"><input type="checkbox" value="CMMG" onchange="filterProducts()"><label>CMMG</label></div>
+          <div class="fopt"><input type="checkbox" value="Colt" onchange="filterProducts()"><label>Colt</label></div>
+          <div class="fopt"><input type="checkbox" value="CrossBreed" onchange="filterProducts()"><label>CrossBreed</label></div>
+          <div class="fopt"><input type="checkbox" value="CZ" onchange="filterProducts()"><label>CZ</label></div>
+          <div class="fopt"><input type="checkbox" value="Daniel Defense" onchange="filterProducts()"><label>Daniel Defense</label></div>
+          <div class="fopt"><input type="checkbox" value="DeSantis" onchange="filterProducts()"><label>DeSantis</label></div>
+          <div class="fopt"><input type="checkbox" value="EOTech" onchange="filterProducts()"><label>EOTech</label></div>
+          <div class="fopt"><input type="checkbox" value="ETS" onchange="filterProducts()"><label>ETS</label></div>
+          <div class="fopt"><input type="checkbox" value="Faxon" onchange="filterProducts()"><label>Faxon</label></div>
+          <div class="fopt"><input type="checkbox" value="Federal" onchange="filterProducts()"><label>Federal</label></div>
+          <div class="fopt"><input type="checkbox" value="Fiocchi" onchange="filterProducts()"><label>Fiocchi</label></div>
+          <div class="fopt"><input type="checkbox" value="Fort Knox" onchange="filterProducts()"><label>Fort Knox</label></div>
+          <div class="fopt"><input type="checkbox" value="Galco" onchange="filterProducts()"><label>Galco</label></div>
+          <div class="fopt"><input type="checkbox" value="Geissele" onchange="filterProducts()"><label>Geissele</label></div>
+          <div class="fopt"><input type="checkbox" value="Glock" onchange="filterProducts()"><label>Glock</label></div>
+          <div class="fopt"><input type="checkbox" value="H&K" onchange="filterProducts()"><label>H&amp;K</label></div>
+          <div class="fopt"><input type="checkbox" value="Henry" onchange="filterProducts()"><label>Henry</label></div>
+          <div class="fopt"><input type="checkbox" value="Holosun" onchange="filterProducts()"><label>Holosun</label></div>
+          <div class="fopt"><input type="checkbox" value="Hoppes" onchange="filterProducts()"><label>Hoppes</label></div>
+          <div class="fopt"><input type="checkbox" value="Hornady" onchange="filterProducts()"><label>Hornady</label></div>
+          <div class="fopt"><input type="checkbox" value="Houdini Holsters" onchange="filterProducts()"><label>Houdini Holsters</label></div>
+          <div class="fopt"><input type="checkbox" value="IWI" onchange="filterProducts()"><label>IWI</label></div>
+          <div class="fopt"><input type="checkbox" value="JTS" onchange="filterProducts()"><label>JTS</label></div>
+          <div class="fopt"><input type="checkbox" value="LaRue" onchange="filterProducts()"><label>LaRue</label></div>
+          <div class="fopt"><input type="checkbox" value="Leupold" onchange="filterProducts()"><label>Leupold</label></div>
+          <div class="fopt"><input type="checkbox" value="Liberty" onchange="filterProducts()"><label>Liberty</label></div>
+          <div class="fopt"><input type="checkbox" value="Magpul" onchange="filterProducts()"><label>Magpul</label></div>
+          <div class="fopt"><input type="checkbox" value="MFT" onchange="filterProducts()"><label>MFT</label></div>
+          <div class="fopt"><input type="checkbox" value="Mossberg" onchange="filterProducts()"><label>Mossberg</label></div>
+          <div class="fopt"><input type="checkbox" value="Nightforce" onchange="filterProducts()"><label>Nightforce</label></div>
+          <div class="fopt"><input type="checkbox" value="Otis" onchange="filterProducts()"><label>Otis</label></div>
+          <div class="fopt"><input type="checkbox" value="PMC" onchange="filterProducts()"><label>PMC</label></div>
+          <div class="fopt"><input type="checkbox" value="Primary Arms" onchange="filterProducts()"><label>Primary Arms</label></div>
+          <div class="fopt"><input type="checkbox" value="ProMag" onchange="filterProducts()"><label>ProMag</label></div>
+          <div class="fopt"><input type="checkbox" value="PSA" onchange="filterProducts()"><label>PSA</label></div>
+          <div class="fopt"><input type="checkbox" value="Radian Weapons" onchange="filterProducts()"><label>Radian Weapons</label></div>
+          <div class="fopt"><input type="checkbox" value="Real Avid" onchange="filterProducts()"><label>Real Avid</label></div>
+          <div class="fopt"><input type="checkbox" value="Remington" onchange="filterProducts()"><label>Remington</label></div>
+          <div class="fopt"><input type="checkbox" value="Ruger" onchange="filterProducts()"><label>Ruger</label></div>
+          <div class="fopt"><input type="checkbox" value="Rugged" onchange="filterProducts()"><label>Rugged</label></div>
+          <div class="fopt"><input type="checkbox" value="Safariland" onchange="filterProducts()"><label>Safariland</label></div>
+          <div class="fopt"><input type="checkbox" value="Savage" onchange="filterProducts()"><label>Savage</label></div>
+          <div class="fopt"><input type="checkbox" value="Sig Sauer" onchange="filterProducts()"><label>Sig Sauer</label></div>
+          <div class="fopt"><input type="checkbox" value="Smith &amp; Wesson" onchange="filterProducts()"><label>Smith &amp; Wesson</label></div>
+          <div class="fopt"><input type="checkbox" value="Speer" onchange="filterProducts()"><label>Speer</label></div>
+          <div class="fopt"><input type="checkbox" value="Springfield Armory" onchange="filterProducts()"><label>Springfield Armory</label></div>
+          <div class="fopt"><input type="checkbox" value="Stack-On" onchange="filterProducts()"><label>Stack-On</label></div>
+          <div class="fopt"><input type="checkbox" value="Steyr" onchange="filterProducts()"><label>Steyr</label></div>
+          <div class="fopt"><input type="checkbox" value="Stoeger" onchange="filterProducts()"><label>Stoeger</label></div>
+          <div class="fopt"><input type="checkbox" value="Taurus" onchange="filterProducts()"><label>Taurus</label></div>
+          <div class="fopt"><input type="checkbox" value="Trijicon" onchange="filterProducts()"><label>Trijicon</label></div>
+          <div class="fopt"><input type="checkbox" value="Vaultek" onchange="filterProducts()"><label>Vaultek</label></div>
+          <div class="fopt"><input type="checkbox" value="Vedder" onchange="filterProducts()"><label>Vedder</label></div>
+          <div class="fopt"><input type="checkbox" value="Vortex" onchange="filterProducts()"><label>Vortex</label></div>
+          <div class="fopt"><input type="checkbox" value="Walther" onchange="filterProducts()"><label>Walther</label></div>
+          <div class="fopt"><input type="checkbox" value="Winchester" onchange="filterProducts()"><label>Winchester</label></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="filter-sec">
+      <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Caliber / Gauge</span><span class="ftog">&#8964;</span></div>
+      <div class="filter-body collapsed" id="fc-caliber">
         <div class="fopt"><input type="checkbox" value="9mm" onchange="filterProducts()"><label>9mm</label></div>
+        <div class="fopt"><input type="checkbox" value=".223" onchange="filterProducts()"><label>.223 Remington</label></div>
+        <div class="fopt"><input type="checkbox" value="5.56" onchange="filterProducts()"><label>5.56 NATO</label></div>
+        <div class="fopt"><input type="checkbox" value=".308/7.62" onchange="filterProducts()"><label>.308 / 7.62 NATO</label></div>
         <div class="fopt"><input type="checkbox" value=".45 ACP" onchange="filterProducts()"><label>.45 ACP</label></div>
-        <div class="fopt"><input type="checkbox" value=".40 SW" onchange="filterProducts()"><label>.40 S&amp;W</label></div>
+        <div class="fopt"><input type="checkbox" value=".40 S&W" onchange="filterProducts()"><label>.40 S&amp;W</label></div>
         <div class="fopt"><input type="checkbox" value=".380 ACP" onchange="filterProducts()"><label>.380 ACP</label></div>
-        <div class="fopt"><input type="checkbox" value="10mm" onchange="filterProducts()"><label>10mm</label></div>
-        <div class="fopt"><input type="checkbox" value=".357 Mag" onchange="filterProducts()"><label>.357 Mag</label></div>
-        <div class="fopt"><input type="checkbox" value=".44 Mag" onchange="filterProducts()"><label>.44 Mag</label></div>
+        <div class="fopt"><input type="checkbox" value=".357 Mag" onchange="filterProducts()"><label>.357 Magnum</label></div>
+        <div class="fopt"><input type="checkbox" value=".300 BLK" onchange="filterProducts()"><label>.300 Blackout</label></div>
+        <div class="fopt"><input type="checkbox" value="6.5 Creedmoor" onchange="filterProducts()"><label>6.5 Creedmoor</label></div>
         <div class="fopt"><input type="checkbox" value=".22 LR" onchange="filterProducts()"><label>.22 LR</label></div>
-        <div class="fopt"><input type="checkbox" value="5.7x28mm" onchange="filterProducts()"><label>5.7x28mm</label></div>
+        <div class="fopt"><input type="checkbox" value="7.62x39" onchange="filterProducts()"><label>7.62x39mm</label></div>
+        <div class="fopt"><input type="checkbox" value=".30-06" onchange="filterProducts()"><label>.30-06 Springfield</label></div>
+        <div class="fopt"><input type="checkbox" value="12 Gauge" onchange="filterProducts()"><label>12 Gauge</label></div>
+        <div class="fopt"><input type="checkbox" value="20 Gauge" onchange="filterProducts()"><label>20 Gauge</label></div>
+        <div class="fopt"><input type="checkbox" value=".410" onchange="filterProducts()"><label>.410 Bore</label></div>
+        <div class="fopt"><input type="checkbox" value="10mm" onchange="filterProducts()"><label>10mm</label></div>
+        <div class="fopt"><input type="checkbox" value="6mm ARC" onchange="filterProducts()"><label>6mm ARC</label></div>
+        <div class="fopt"><input type="checkbox" value=".338 Lapua" onchange="filterProducts()"><label>.338 Lapua Mag</label></div>
+        <div class="fopt"><input type="checkbox" value=".243 Win" onchange="filterProducts()"><label>.243 Winchester</label></div>
       </div>
     </div>
 
     <div class="filter-sec">
-      <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Action Type</span><span class="ftog open">&#8964;</span></div>
-      <div class="filter-body">
-        <div class="fopt"><input type="checkbox" value="Striker-Fired" onchange="filterProducts()"><label>Striker-Fired</label></div>
+      <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Action Type</span><span class="ftog">&#8964;</span></div>
+      <div class="filter-body collapsed" id="fc-action">
+        <div class="fopt"><input type="checkbox" value="Semi-Auto" onchange="filterProducts()"><label>Semi-Auto</label></div>
+        <div class="fopt"><input type="checkbox" value="Bolt-Action" onchange="filterProducts()"><label>Bolt-Action</label></div>
+        <div class="fopt"><input type="checkbox" value="Lever-Action" onchange="filterProducts()"><label>Lever-Action</label></div>
         <div class="fopt"><input type="checkbox" value="Revolver" onchange="filterProducts()"><label>Revolver</label></div>
-        <div class="fopt"><input type="checkbox" value="Single Action" onchange="filterProducts()"><label>Single Action</label></div>
-        <div class="fopt"><input type="checkbox" value="DA/SA" onchange="filterProducts()"><label>DA/SA</label></div>
-        <div class="fopt"><input type="checkbox" value="DAO" onchange="filterProducts()"><label>Double Action Only</label></div>
+        <div class="fopt"><input type="checkbox" value="Striker-Fired" onchange="filterProducts()"><label>Striker-Fired</label></div>
+        <div class="fopt"><input type="checkbox" value="Pump-Action" onchange="filterProducts()"><label>Pump-Action</label></div>
+        <div class="fopt"><input type="checkbox" value="Single Shot" onchange="filterProducts()"><label>Single Shot</label></div>
+        <div class="fopt"><input type="checkbox" value="Over-Under" onchange="filterProducts()"><label>Over-Under</label></div>
       </div>
     </div>
 
     <div class="filter-sec">
-      <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Manufacturer</span><span class="ftog open">&#8964;</span></div>
-      <div class="filter-body">
-        <div class="fopt"><input type="checkbox" value="Glock" onchange="filterProducts()"><label>Glock</label></div>
-        <div class="fopt"><input type="checkbox" value="Sig Sauer" onchange="filterProducts()"><label>Sig Sauer</label></div>
-        <div class="fopt"><input type="checkbox" value="Smith &amp; Wesson" onchange="filterProducts()"><label>Smith &amp; Wesson</label></div>
-        <div class="fopt"><input type="checkbox" value="Springfield Armory" onchange="filterProducts()"><label>Springfield Armory</label></div>
-        <div class="fopt"><input type="checkbox" value="Ruger" onchange="filterProducts()"><label>Ruger</label></div>
-        <div class="fopt"><input type="checkbox" value="CZ" onchange="filterProducts()"><label>CZ</label></div>
-        <div class="fopt"><input type="checkbox" value="Walther" onchange="filterProducts()"><label>Walther</label></div>
-        <div class="fopt"><input type="checkbox" value="Taurus" onchange="filterProducts()"><label>Taurus</label></div>
-        <div class="fopt"><input type="checkbox" value="Beretta" onchange="filterProducts()"><label>Beretta</label></div>
-        <div class="fopt"><input type="checkbox" value="H&amp;K" onchange="filterProducts()"><label>H&amp;K</label></div>
-        <div class="fopt"><input type="checkbox" value="Daniel Defense" onchange="filterProducts()"><label>Daniel Defense</label></div>
+      <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Optic Type</span><span class="ftog">&#8964;</span></div>
+      <div class="filter-body collapsed" id="fc-optictype">
+        <div class="fopt"><input type="checkbox" value="Red Dot" onchange="filterProducts()"><label>Red Dot</label></div>
+        <div class="fopt"><input type="checkbox" value="Holographic" onchange="filterProducts()"><label>Holographic</label></div>
+        <div class="fopt"><input type="checkbox" value="LPVO" onchange="filterProducts()"><label>LPVO</label></div>
+        <div class="fopt"><input type="checkbox" value="Scope" onchange="filterProducts()"><label>Scope</label></div>
+        <div class="fopt"><input type="checkbox" value="Prism" onchange="filterProducts()"><label>Prism</label></div>
       </div>
     </div>
 
     <div class="filter-sec">
-      <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Optics Ready</span><span class="ftog open">&#8964;</span></div>
-      <div class="filter-body">
-        <div class="fopt"><input type="checkbox" value="optic-yes" onchange="filterProducts()"><label>Optics Ready / MOS / RDO</label></div>
-        <div class="fopt"><input type="checkbox" value="optic-no" onchange="filterProducts()"><label>Standard (No Cut)</label></div>
+      <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Carry Style</span><span class="ftog">&#8964;</span></div>
+      <div class="filter-body collapsed" id="fc-carry">
+        <div class="fopt"><input type="checkbox" value="IWB" onchange="filterProducts()"><label>IWB (Inside Waistband)</label></div>
+        <div class="fopt"><input type="checkbox" value="OWB" onchange="filterProducts()"><label>OWB (Outside Waistband)</label></div>
+        <div class="fopt"><input type="checkbox" value="AIWB" onchange="filterProducts()"><label>AIWB (Appendix)</label></div>
+        <div class="fopt"><input type="checkbox" value="Ankle" onchange="filterProducts()"><label>Ankle</label></div>
+        <div class="fopt"><input type="checkbox" value="Shoulder" onchange="filterProducts()"><label>Shoulder</label></div>
       </div>
     </div>
 
     <div class="filter-sec">
-      <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Dominant Hand</span><span class="ftog open">&#8964;</span></div>
-      <div class="filter-body">
-        <div class="fopt"><input type="checkbox" value="Ambidextrous" onchange="filterProducts()"><label>Ambidextrous</label></div>
-        <div class="fopt"><input type="checkbox" value="Right" onchange="filterProducts()"><label>Right-Hand</label></div>
-        <div class="fopt"><input type="checkbox" value="Left" onchange="filterProducts()"><label>Left-Hand</label></div>
-      </div>
-    </div>
-
-    <div class="filter-sec">
-      <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Capacity</span><span class="ftog open">&#8964;</span></div>
-      <div class="filter-body">
-        <div class="fopt"><input type="checkbox" value="1-6" onchange="filterProducts()"><label>1&ndash;6 rounds</label></div>
-        <div class="fopt"><input type="checkbox" value="7-10" onchange="filterProducts()"><label>7&ndash;10 rounds</label></div>
-        <div class="fopt"><input type="checkbox" value="11-15" onchange="filterProducts()"><label>11&ndash;15 rounds</label></div>
-        <div class="fopt"><input type="checkbox" value="16-20" onchange="filterProducts()"><label>16&ndash;20 rounds</label></div>
-        <div class="fopt"><input type="checkbox" value="21+" onchange="filterProducts()"><label>21+ rounds</label></div>
-      </div>
-    </div>
-
-    <div class="filter-sec">
-      <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Barrel Length</span><span class="ftog open">&#8964;</span></div>
-      <div class="filter-body">
-        <div class="fopt"><input type="checkbox" value="barrel-u3" onchange="filterProducts()"><label>Under 3&quot;</label></div>
-        <div class="fopt"><input type="checkbox" value="barrel-3-4" onchange="filterProducts()"><label>3&quot; &ndash; 3.9&quot;</label></div>
-        <div class="fopt"><input type="checkbox" value="barrel-4-5" onchange="filterProducts()"><label>4&quot; &ndash; 4.9&quot;</label></div>
-        <div class="fopt"><input type="checkbox" value="barrel-5p" onchange="filterProducts()"><label>5&quot; and over</label></div>
-      </div>
-    </div>
-
-    <div class="filter-sec">
-      <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Frame Size</span><span class="ftog open">&#8964;</span></div>
-      <div class="filter-body">
-        <div class="fopt"><input type="checkbox" value="Subcompact" onchange="filterProducts()"><label>Subcompact</label></div>
-        <div class="fopt"><input type="checkbox" value="Compact" onchange="filterProducts()"><label>Compact</label></div>
-        <div class="fopt"><input type="checkbox" value="Full-Size" onchange="filterProducts()"><label>Full-Size</label></div>
-        <div class="fopt"><input type="checkbox" value="Long Slide" onchange="filterProducts()"><label>Long Slide / Competition</label></div>
+      <div class="filter-sec-hd" onclick="toggleSec(this)"><span>AR Part Type</span><span class="ftog">&#8964;</span></div>
+      <div class="filter-body collapsed" id="fc-parttype">
+        <div class="fopt"><input type="checkbox" value="Barrel" onchange="filterProducts()"><label>Barrel</label></div>
+        <div class="fopt"><input type="checkbox" value="Trigger" onchange="filterProducts()"><label>Trigger</label></div>
+        <div class="fopt"><input type="checkbox" value="BCG" onchange="filterProducts()"><label>Bolt Carrier Group</label></div>
+        <div class="fopt"><input type="checkbox" value="Handguard" onchange="filterProducts()"><label>Handguard / Rail</label></div>
+        <div class="fopt"><input type="checkbox" value="Upper" onchange="filterProducts()"><label>Complete Upper</label></div>
+        <div class="fopt"><input type="checkbox" value="Lower" onchange="filterProducts()"><label>Complete Lower</label></div>
+        <div class="fopt"><input type="checkbox" value="Stock" onchange="filterProducts()"><label>Stock / Buffer</label></div>
+        <div class="fopt"><input type="checkbox" value="Muzzle" onchange="filterProducts()"><label>Muzzle Device</label></div>
       </div>
     </div>
 
     <div class="filter-sec" style="border-bottom:none">
-      <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Safety Type</span><span class="ftog open">&#8964;</span></div>
+      <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Sort</span><span class="ftog open">&#8964;</span></div>
       <div class="filter-body">
-        <div class="fopt"><input type="checkbox" value="Manual Safety" onchange="filterProducts()"><label>Manual Safety</label></div>
-        <div class="fopt"><input type="checkbox" value="No Manual Safety" onchange="filterProducts()"><label>No Manual Safety</label></div>
-        <div class="fopt"><input type="checkbox" value="Thumb Safety" onchange="filterProducts()"><label>Thumb Safety</label></div>
-        <div class="fopt"><input type="checkbox" value="Decocker" onchange="filterProducts()"><label>Decocker</label></div>
+        <select class="sort-select" id="sort-select-sidebar" onchange="document.getElementById('sort-select').value=this.value;sortAndRender()" style="width:100%;margin-top:4px">
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+          <option value="name-asc">Name: A&ndash;Z</option>
+        </select>
       </div>
     </div>
   </aside>
@@ -375,12 +451,10 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
   <div class="results-area">
     <div class="results-toolbar">
       <button class="filter-mob-btn" onclick="openDrawer()">&#9776; Filters</button>
-      <div class="results-count" id="result-count">Loading...</div>
+      <div class="results-count" id="result-count">Loading products...</div>
       <select class="sort-select" id="sort-select" onchange="sortAndRender()">
         <option value="price-asc">Price: Low to High</option>
         <option value="price-desc">Price: High to Low</option>
-        <option value="rating">Top Rated</option>
-        <option value="reviews">Most Reviewed</option>
         <option value="name-asc">Name: A&ndash;Z</option>
       </select>
     </div>
@@ -394,14 +468,6 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
 <div class="filter-drawer" id="filter-drawer">
   <div class="fdrawer-head"><span>Filters</span><button class="fdrawer-close" onclick="closeDrawer()">&#10005;</button></div>
   <div id="drawer-content"></div>
-</div>
-
-<div class="suggested-wrap">
-  <div class="sugg-inner">
-    <div class="sugg-hd">You May Also Like</div>
-    <div class="sugg-sub">Popular handguns frequently compared alongside these results</div>
-    <div class="sugg-grid" id="sugg-grid"></div>
-  </div>
 </div>
 
 <footer>
@@ -438,70 +504,84 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
 </footer>
 
 <script>
-// ── NAV CATS ──
-// ── PRODUCT DATA ──
-// This array is populated by retailer data feed.
-// Each product object structure:
-// { id, brand, name, sub, caliber, action, opticReady, hand, capacity, barrelIn,
-//   frameSize, safety, finish, stars, reviews, badge, img, sellers:[{name,price,stock}] }
-// When retailer data is available, replace PRODUCTS with the live feed.
-const PRODUCTS = [
-  {id:1,brand:'Beretta',name:'APX A1 Tactical 9mm',sub:'9mm \u2022 21+1 \u2022 4.8" Barrel \u2022 Optic Ready \u2022 OD Green',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/570865/images/535927/BRJAXA1F921TAC_1_HR__71404.1700068806.380.380.jpg?c=2',caliber:'9mm',action:'Striker-Fired',opticReady:true,hand:'Ambidextrous',capacity:21,barrelIn:4.8,frameSize:'Full-Size',safety:'No Manual Safety',finish:'OD Green',stars:4.7,reviews:312,badge:'best',sellers:[{name:'Bereli',price:479.00,stock:'in',url:'https://bereli.com/beretta-apx-a1-tactical-9mm-4-8-barrel-21-round-optic-ready-od-green-pistol/?aff=10388'}]},
-  {id:2,brand:'Daniel Defense',name:'H9 Pistol',sub:'9mm \u2022 15+1 \u2022 4.28" Barrel \u2022 RDS Ready',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629464/images/575386/Daniel-Defense-H9-Package-Deal__13011.1755277956.380.380.jpg?c=2',caliber:'9mm',action:'Striker-Fired',opticReady:true,hand:'Ambidextrous',capacity:15,barrelIn:4.28,frameSize:'Full-Size',safety:'No Manual Safety',finish:'Black',stars:4.8,reviews:127,badge:'',sellers:[{name:'Bereli',price:799.00,stock:'in',url:'https://bereli.com/daniel-defense-h9-pistol-4-28-barrel-5-15rd-magazines-rds-optic-plate/?aff=10388'}]},
-  {id:3,brand:'Beretta',name:'92X Performance Competition',sub:'9mm \u2022 15+1 \u2022 4.9" Barrel \u2022 DA/SA',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/631516/images/578486/148604__66326.1772556492.380.380.png?c=2',caliber:'9mm',action:'DA/SA',opticReady:false,hand:'Right',capacity:15,barrelIn:4.9,frameSize:'Full-Size',safety:'Decocker/Safety',finish:'Black',stars:4.9,reviews:88,badge:'',sellers:[{name:'Bereli',price:999.00,stock:'in',url:'https://bereli.com/j92xpco21/?aff=10388'}]},
-  {id:4,brand:'Smith & Wesson',name:'Bodyguard 2.0 .380',sub:'.380 ACP \u2022 6+1 \u2022 2.75" Barrel \u2022 Optic Ready',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632194/images/572572/236046__37602.1748531032.380.380.jpg?c=2',caliber:'.380 ACP',action:'Striker-Fired',opticReady:true,hand:'Ambidextrous',capacity:6,barrelIn:2.75,frameSize:'Subcompact',safety:'Manual Safety',finish:'Black',stars:4.5,reviews:204,badge:'best',sellers:[{name:'Bereli',price:424.99,stock:'in',url:'https://bereli.com/14439/?aff=10388'}]},
-  {id:5,brand:'Springfield Armory',name:'Echelon 9mm',sub:'9mm \u2022 17+1 \u2022 4.5" Barrel \u2022 Optic Ready',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/573416/images/536971/157498__59191.1690470267.380.380.jpg?c=2',caliber:'9mm',action:'Striker-Fired',opticReady:true,hand:'Ambidextrous',capacity:17,barrelIn:4.5,frameSize:'Full-Size',safety:'No Manual Safety',finish:'Black',stars:4.7,reviews:356,badge:'best',sellers:[{name:'Bereli',price:519.00,stock:'in',url:'https://bereli.com/springfield-firstline-echelon-9mm-luger-17-1-4-50/?aff=10388'}]},
-  {id:6,brand:'Springfield Armory',name:'1911 Ronin 10mm',sub:'10mm Auto \u2022 8+1 \u2022 5" Barrel \u2022 Night Sights',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/510297/images/507353/SPX9121L_1_HR__56845.1700231839.380.380.jpg?c=2',caliber:'10mm',action:'SA',opticReady:false,hand:'Right',capacity:8,barrelIn:5.0,frameSize:'Full-Size',safety:'Manual Safety',finish:'Black',stars:4.8,reviews:142,badge:'',sellers:[{name:'Bereli',price:703.00,stock:'in',url:'https://bereli.com/springfield-armory-firstline-1911-ronin-10mm-5-pistol/?aff=10388'}]},
-  {id:7,brand:'H&K',name:'CC9 9mm Compact',sub:'9mm \u2022 10+1 \u2022 3.86" Barrel \u2022 Safety',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/631844/images/570801/232334__53096.1745858255.380.380.jpg?c=2',caliber:'9mm',action:'Striker-Fired',opticReady:false,hand:'Ambidextrous',capacity:10,barrelIn:3.86,frameSize:'Compact',safety:'Manual Safety',finish:'Black',stars:4.6,reviews:93,badge:'',sellers:[{name:'Bereli',price:745.00,stock:'in',url:'https://bereli.com/81001131/?aff=10388'}]},
-  {id:8,brand:'Sig Sauer',name:'P320 M18 Coyote',sub:'9mm \u2022 17+1 \u2022 3.9" Barrel \u2022 SIGLITE',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/479393/images/487038/SG320CA-9-M18-MS_1_HR__81768.1650810223.380.380.jpg?c=2',caliber:'9mm',action:'Striker-Fired',opticReady:true,hand:'Ambidextrous',capacity:17,barrelIn:3.9,frameSize:'Compact',safety:'No Manual Safety',finish:'Coyote Tan',stars:4.9,reviews:621,badge:'best',sellers:[{name:'Bereli',price:599.00,stock:'in',url:'https://bereli.com/sig-sauer-p320-m18-9mm-3-9-barrel-coyote-tan-pistol-3-magazines/?aff=10388'}]},
-  {id:9,brand:'Walther',name:'PDP Full Size 9mm',sub:'9mm \u2022 18+1 \u2022 4.5" Barrel \u2022 Optic Ready',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/448479/images/467671/WA2842475_1_HR__28900.1623788912.380.380.jpg?c=2',caliber:'9mm',action:'Striker-Fired',opticReady:true,hand:'Ambidextrous',capacity:18,barrelIn:4.5,frameSize:'Full-Size',safety:'No Manual Safety',finish:'Black',stars:4.8,reviews:487,badge:'',sellers:[{name:'Bereli',price:599.00,stock:'in',url:'https://bereli.com/walther-pdp-optics-ready-9mm-18-round-capacity-4-5-barrel-pistol/?aff=10388'}]},
-  {id:10,brand:'Sig Sauer',name:'P320 M17 9mm',sub:'9mm \u2022 17+1 \u2022 4.7" Barrel \u2022 Manual Safety',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/479394/images/487041/SG320F-9-M17-MS_1_HR__65355.1700069755.380.380.jpg?c=2',caliber:'9mm',action:'Striker-Fired',opticReady:true,hand:'Ambidextrous',capacity:17,barrelIn:4.7,frameSize:'Full-Size',safety:'Manual Safety',finish:'Coyote Tan',stars:4.8,reviews:534,badge:'',sellers:[{name:'Bereli',price:625.00,stock:'in',url:'https://bereli.com/sig-sauer-p320-m17-9mm-4-7-barrel-siglite-night-sights-manual-safety/?aff=10388'}]},
-  {id:11,brand:'Ruger',name:'RXM 9mm 4.5" Black',sub:'9mm \u2022 17+1 \u2022 4.5" Barrel \u2022 Night Sight \u2022 Optic Ready',img:'https://www.ruger.com/products/rxm/images/19444.jpg',caliber:'9mm',action:'Striker-Fired',opticReady:true,hand:'Ambidextrous',capacity:17,barrelIn:4.5,frameSize:'Full-Size',safety:'No Manual Safety',finish:'Black',stars:4.7,reviews:89,badge:'',sellers:[{name:'Impact Guns',price:399.99,stock:'in',url:'https://www.impactguns.com/semi-auto-handguns/ruger-rxm-9mm-4-5-barrel-nitride-black-magpul-ehg-optics-ready-night-sight-2x17rd-magpul-pmag-17-gl9-mags-736676194445-19444#IdealArmory'}]},
-  {id:12,brand:'Smith & Wesson',name:'M&P M2.0 Metal HD 9mm 5"',sub:'9mm \u2022 17+1 \u2022 5" Barrel \u2022 Night Sight \u2022 Metal Frame',img:'https://cdn11.bigcommerce.com/s-c7gr8wg3cg/products/1556/images/8634/14672-mp-pistol-OnWhite-3Q-Right__14237.1768237465.1280.1280.png?c=1',caliber:'9mm',action:'Striker-Fired',opticReady:true,hand:'Ambidextrous',capacity:17,barrelIn:5.0,frameSize:'Full-Size',safety:'Manual Safety',finish:'Black',stars:4.8,reviews:112,badge:'',sellers:[{name:'Impact Guns',price:1049.00,stock:'in',url:'https://www.impactguns.com/semi-auto-handguns/smith-wesson-m-p-m2-0-metal-heavy-duty-9mm-5-barrel-armornite-black-front-night-sight-black-rear-sight-thumb-safety-optics-ready-2x17rd-mags-022188904895-14672#IdealArmory'}]},
-  {id:13,brand:'Ruger',name:'RXM 9mm 4" Gray',sub:'9mm \u2022 17+1 \u2022 4" Barrel \u2022 Night Sight \u2022 Gray Frame',img:'https://www.ruger.com/products/rxm/images/19441.jpg',caliber:'9mm',action:'Striker-Fired',opticReady:true,hand:'Ambidextrous',capacity:17,barrelIn:4.0,frameSize:'Full-Size',safety:'No Manual Safety',finish:'Gray',stars:4.7,reviews:64,badge:'',sellers:[{name:'Impact Guns',price:419.99,stock:'in',url:'https://www.impactguns.com/semi-auto-handguns/ruger-rxm-9mm-4-barrel-nitride-finish-black-slide-magpul-ehg-gray-frame-optics-ready-front-night-sight-2x17rd-magpul-pmag-17-gl9-mags-736676194414-19441#IdealArmory'}]},
-  {id:14,brand:'Smith & Wesson',name:'M&P PC Carry Comp 10mm',sub:'10mm \u2022 15+1 \u2022 4" Ported Barrel \u2022 Night Sight \u2022 Compact',img:'https://cdn11.bigcommerce.com/s-c7gr8wg3cg/products/1562/images/8620/14413-pc-mp10mm-OnWhite-3Q-Right__62104.1767716327.1280.1280.png?c=1',caliber:'10mm',action:'Striker-Fired',opticReady:true,hand:'Ambidextrous',capacity:15,barrelIn:4.0,frameSize:'Compact',safety:'No Manual Safety',finish:'Black',stars:4.8,reviews:47,badge:'',sellers:[{name:'Impact Guns',price:749.00,stock:'in',url:'https://www.impactguns.com/semi-auto-handguns/smith-wesson-m-p-2-0-performance-center-carry-comp-10mm-4-ported-barrel-armornite-black-optics-ready-front-night-sight-2x15rd-mags-022188901795-14413#IdealArmory'}]},
-  {id:15,brand:'Smith & Wesson',name:'M&P M2.0 PC 10mm 5.6"',sub:'10mm \u2022 10+1 \u2022 5.6" Ported Barrel \u2022 Night Sights \u2022 Optic Ready',img:'https://cdn11.bigcommerce.com/s-c7gr8wg3cg/products/956/images/3892/13915-mp-OnWhite-3Q-Right__75824.1741878750.1280.1280.png?c=1',caliber:'10mm',action:'Striker-Fired',opticReady:true,hand:'Right',capacity:10,barrelIn:5.6,frameSize:'Full-Size',safety:'Manual Safety',finish:'Black',stars:4.9,reviews:38,badge:'',sellers:[{name:'Impact Guns',price:819.99,stock:'in',url:'https://www.impactguns.com/semi-auto-handguns/smith-wesson-m-p-m2-0-performance-center-10mm-5-6-ported-barrel-night-sights-optics-ready-2x10rd-mags-022188900163-13916#IdealArmory'}]},
-  {id:16,brand:'Springfield Armory',name:'Echelon 9mm Manual Safety 20rd',sub:'9mm \u2022 20+1 \u2022 4.5" Barrel \u2022 Manual Safety \u2022 Optic Ready',img:'https://springfieldarmory.b-cdn.net/wp-content/uploads/EC9459BMS-U.png',caliber:'9mm',action:'Striker-Fired',opticReady:true,hand:'Ambidextrous',capacity:20,barrelIn:4.5,frameSize:'Full-Size',safety:'Manual Safety',finish:'Black',stars:4.7,reviews:156,badge:'',sellers:[{name:'Impact Guns',price:709.99,stock:'in',url:'https://www.impactguns.com/semi-auto-handguns/springfield-echelon-9mm-4-5-barrel-black-manual-safety-optic-ready-20rd-706397982195-ec9459bmsu#IdealArmory'}]},
-]
+/* ── UNIVERSAL NAV JS ── */
+function toggleDrawer(){
+  var d=document.getElementById('mobile-drawer');
+  var o=document.getElementById('drawer-overlay');
+  var h=document.getElementById('nav-hamburger');
+  var isOpen=d.classList.contains('open');
+  d.classList.toggle('open',!isOpen);
+  o.classList.toggle('open',!isOpen);
+  if(h)h.classList.toggle('open',!isOpen);
+  document.body.style.overflow=isOpen?'':'hidden';
+}
+(function updateNavKitCount(){
+  try{
+    var raw=localStorage.getItem('ia_kit_v1');
+    if(!raw)return;
+    var data=JSON.parse(raw);
+    var count=(data.kit||[]).length;
+    var el=document.getElementById('nav-kit-count');
+    if(el&&count>0){el.textContent=count;el.style.display='inline-flex';}
+  }catch(e){}
+})();
 
-var EO_PRODUCTS = [];
-var ALL_PRODUCTS = PRODUCTS.slice();
+/* ── ALL PRODUCTS DATA ── */
+var ALL_PRODUCTS = [];
+var filteredProducts = [];
 var PAGE_SIZE = 48;
 var visibleCount = PAGE_SIZE;
-let filteredProducts = ALL_PRODUCTS.slice();
-let currentSort = 'price-asc';
 
-function adaptEoProduct(eo) {
-  return {
-    id: 'eo_' + eo.id, upc: eo.upc || '',
-    brand: eo.brand, name: eo.name, sub: '',
-    img: eo.img, price: eo.price, orig: eo.orig,
-    inStock: eo.inStock, stars: 0, reviews: 0, badge: '',
-    src: 'eurooptic',
-    sellers: [{name:'EuroOptic', price:eo.price, stock:eo.inStock?'in':'out', url:eo.url}]
-  };
-}
+var EO_FILES = [
+  'handguns','rifles','ammunition','optics',
+  'ar-parts','magazines','cleaning'
+];
 
-async function loadEuroOptic() {
+async function loadAllEuroOptic() {
+  document.getElementById('result-count').innerHTML = 'Loading products...';
   try {
-    var res = await fetch('/data/eurooptic-handguns.json');
-    if (!res.ok) return;
-    var items = await res.json();
-    var upcMap = {};
-    PRODUCTS.forEach(function(p){ if(p.upc) upcMap[p.upc] = p; });
-    var newCards = 0;
-    items.forEach(function(eo) {
-      if (eo.upc && upcMap[eo.upc]) {
-        var ep = upcMap[eo.upc];
-        if (!ep.sellers.some(function(s){return s.name==='EuroOptic';}))
-          ep.sellers.push({name:'EuroOptic', price:eo.price, stock:eo.inStock?'in':'out', url:eo.url});
-      } else {
-        EO_PRODUCTS.push(adaptEoProduct(eo)); newCards++;
-      }
+    var manualPromise = fetch('/data/manual-products.json')
+      .then(function(r){ return r.ok ? r.json() : []; })
+      .catch(function(){ return []; });
+    var staticPromise = fetch('/data/static-products.json')
+      .then(function(r){ return r.ok ? r.json() : []; })
+      .catch(function(){ return []; });
+    var results = await Promise.all(
+      EO_FILES.map(function(cat) {
+        return fetch('/data/eurooptic-'+cat+'.json')
+          .then(function(r){ return r.ok ? r.json() : []; })
+          .catch(function(){ return []; });
+      })
+    );
+    var manualItems = await manualPromise;
+    var staticItems = await staticPromise;
+    ALL_PRODUCTS = manualItems.concat(staticItems);
+    results.forEach(function(items, i) {
+      var cat = EO_FILES[i];
+      items.forEach(function(eo) {
+        ALL_PRODUCTS.push({
+          id: 'eo_' + eo.id,
+          brand: eo.brand,
+          name: eo.name,
+          sub: eo.sub || '',
+          img: eo.img || '',
+          price: eo.price,
+          orig: eo.orig,
+          inStock: eo.inStock,
+          stars: 0,
+          reviews: 0,
+          badge: '',
+          src: 'eurooptic',
+          category: cat,
+          sellers: [{name:'EuroOptic', price:eo.price, stock:eo.inStock?'in':'out', url:eo.url}]
+        });
+      });
     });
-    ALL_PRODUCTS = PRODUCTS.concat(EO_PRODUCTS);
+    filteredProducts = ALL_PRODUCTS.slice();
     filterProducts();
-  } catch(e) { console.warn('EuroOptic load failed:', e.message); }
+  } catch(e) {
+    document.getElementById('result-count').innerHTML = 'Failed to load products.';
+  }
 }
 
 function getLowestPrice(p) {
@@ -518,9 +598,9 @@ function renderGrid() {
   var grid = document.getElementById('product-grid');
   var lmw = document.getElementById('load-more-wrap');
   var total = filteredProducts.length;
-  document.getElementById('result-count').innerHTML = '<strong>' + total + '</strong> handguns found';
+  document.getElementById('result-count').innerHTML = '<strong>' + total + '</strong> products found';
   if (!total) {
-    grid.innerHTML = '<div class="empty-state"><div class="empty-icon">&#127806;</div><div class="empty-title">No Handguns Found</div><div class="empty-sub">Try adjusting your filters, or check back as we add more listings from our retailer network.</div><button class="empty-badge" onclick="clearAllFilters()">Clear All Filters</button></div>';
+    grid.innerHTML = '<div class="empty-state"><div class="empty-icon">&#127806;</div><div class="empty-title">No Products Found</div><div class="empty-sub">Try adjusting your filters, or check back as we add more listings from our retailer network.</div><button class="empty-badge" onclick="clearAllFilters()">Clear All Filters</button></div>';
     lmw.innerHTML = ''; return;
   }
   var showing = Math.min(visibleCount, total);
@@ -531,15 +611,17 @@ function renderGrid() {
       return '<div class="psr"><span class="psr-n">'+s.name+'</span><span class="psr-p'+(i===0?' low':'')+'">$'+s.price.toFixed(2)+'</span></div>';
     }).join('');
     var img = p.img ? '<img src="'+p.img+'" alt="'+p.name+'" loading="lazy">' : '<span class="img-ph">Image from retailer feed</span>';
-    var href = p.src==='eurooptic' ? '/product.html?src=eurooptic&id='+p.id.replace('eo_','')+'&cat=handguns' : '/product.html?p='+slugify(p.name);
+    var href = p.src==='eurooptic' ? '/product.html?src=eurooptic&id='+p.id.replace('eo_','')+'&cat='+(p.category||'') : '/product.html?p='+slugify(p.name);
+    var catTag = p.category ? '<span class="cat-tag">'+p.category.replace(/-/g,' ')+'</span>' : '';
     return '<div class="prod-card" onclick="viewProduct('+idStr+')">'
       +(p.badge==='best'?'<span class="badge-best">Best Seller</span>':'')
-      
       +'<div class="prod-img">'+img+'</div>'
       +'<div class="prod-body">'
       +'<div class="prod-brand">'+p.brand+'</div>'
+      +catTag
       +'<a class="prod-name" href="'+href+'" onclick="event.stopPropagation()">'+p.name+'</a>'
       +(p.sub?'<div class="prod-sub">'+p.sub+'</div>':'')
+      +(p.reviews>0?'<div class="prod-stars">'+renderStars(p.stars)+'<span class="prod-review">('+p.reviews.toLocaleString()+')</span></div>':'')
       +'<div class="prod-price">$'+low.toFixed(2)+'</div>'
       +'<div class="prod-price-from">Best price from '+p.sellers.length+' retailer'+(p.sellers.length>1?'s':'')+'</div>'
       +'<div class="prod-sellers">'+sellers+'</div>'
@@ -557,64 +639,101 @@ function loadMoreProducts() {
   document.getElementById('load-more-wrap').scrollIntoView({behavior:'smooth', block:'center'});
 }
 
-var CALIBER_KEYS={'9mm':['9mm'],'10mm':['10mm'],'.45 ACP':['.45 acp','45 acp'],'.40 SW':['.40 s&w','.40sw','40 s&w','40sw'],'.380 ACP':['.380','380 acp'],'.357 Mag':['.357 mag','357 mag'],'.44 Mag':['.44 mag','44 mag'],'.22 LR':['.22 lr','22lr','22 lr'],'5.7x28mm':['5.7x28']};
-function _caliberMatch(p,cal){var s=(p.name+' '+(p.sub||'')+' '+(p.caliber||'')).toLowerCase();var keys=CALIBER_KEYS[cal]||[cal.toLowerCase()];return keys.some(function(k){return s.indexOf(k)>=0;});}
+// Caliber keyword matching (same pattern as category pages)
+var CALIBER_KEYS_ALL={
+  '9mm':['9mm'],
+  '.223':['.223','223 rem'],
+  '5.56':['5.56'],
+  '.308/7.62':['.308','308 win','7.62x51','7.62 nato'],
+  '.45 ACP':['.45 acp','45 acp'],
+  '.40 S&W':['.40 s&w','.40sw','40 s&w'],
+  '.380 ACP':['.380','380 acp'],
+  '.357 Mag':['.357 mag','357 mag'],
+  '.300 BLK':['300 blk','300 blackout'],
+  '6.5 Creedmoor':['6.5 creedmoor','6.5cm'],
+  '.22 LR':['.22 lr','22lr','22 lr'],
+  '7.62x39':['7.62x39'],
+  '.30-06':['30-06'],
+  '12 Gauge':['12 gauge','12ga'],
+  '20 Gauge':['20 gauge','20ga'],
+  '.410':['410 bore','.410'],
+  '10mm':['10mm'],
+  '6mm ARC':['6mm arc'],
+  '.338 Lapua':['338 lapua'],
+  '.243 Win':['.243 win','243 win']
+};
+function _caliberMatchAll(p,cal){var s=(p.name+' '+(p.sub||'')+' '+(p.caliber||'')).toLowerCase();var keys=CALIBER_KEYS_ALL[cal]||[cal.toLowerCase()];return keys.some(function(k){return s.indexOf(k)>=0;});}
+
+// Category sets for scoped filter logic
+var CALIBER_CATS_ALL=['handguns','rifles','ammunition','magazines','ar-parts','shotguns','cleaning'];
+var ACTION_CATS_ALL=['handguns','rifles','shotguns'];
+
+function _getChecked(sectionId){var vals=[];document.querySelectorAll('#'+sectionId+' input[type=checkbox]:checked').forEach(function(cb){vals.push(cb.value);});return vals;}
 
 function filterProducts() {
   var priceMin = parseFloat(document.getElementById('price-min').value) || 0;
   var priceMax = parseFloat(document.getElementById('price-max').value) || Infinity;
-  var search = (document.getElementById('nav-srch').value || '').toLowerCase();
-  var checks = {};
-  document.querySelectorAll('.filter-body input[type=checkbox]:checked').forEach(function(cb) {
-    checks[cb.value] = true;
-  });
-  var calibers = Object.keys(checks).filter(function(v){return ['9mm','.45 ACP','.40 SW','.380 ACP','10mm','.357 Mag','.44 Mag','.22 LR','5.7x28mm'].indexOf(v)>=0;});
-  var actions = Object.keys(checks).filter(function(v){return ['Striker-Fired','Revolver','Single Action','DA/SA','DAO'].indexOf(v)>=0;});
-  var brands = Object.keys(checks).filter(function(v){return ['Glock','Sig Sauer','Smith & Wesson','Springfield Armory','Ruger','CZ','Walther','Taurus','Beretta','H&K','Daniel Defense'].indexOf(v)>=0;});
-  var frames = Object.keys(checks).filter(function(v){return ['Subcompact','Compact','Full-Size','Long Slide'].indexOf(v)>=0;});
-  var safeties = Object.keys(checks).filter(function(v){return ['Manual Safety','No Manual Safety','Thumb Safety','Decocker'].indexOf(v)>=0;});
-  var hands = Object.keys(checks).filter(function(v){return ['Ambidextrous','Right','Left'].indexOf(v)>=0;});
-  var caps = Object.keys(checks).filter(function(v){return ['1-6','7-10','11-15','16-20','21+'].indexOf(v)>=0;});
-  var barrels = Object.keys(checks).filter(function(v){return ['barrel-u3','barrel-3-4','barrel-4-5','barrel-5p'].indexOf(v)>=0;});
-  var opticYes = checks['optic-yes'], opticNo = checks['optic-no'];
+  var search = ((document.getElementById('nav-srch')||{}).value || (document.getElementById('mob-srch')||{}).value || '').toLowerCase();
+
+  var selectedCats = _getChecked('fc-category');
+  var brands       = _getChecked('fc-brand');
+  var calibers     = _getChecked('fc-caliber');
+  var actions      = _getChecked('fc-action');
+  var opticTypes   = _getChecked('fc-optictype');
+  var carries      = _getChecked('fc-carry');
+  var partTypes    = _getChecked('fc-parttype');
 
   visibleCount = PAGE_SIZE;
   filteredProducts = ALL_PRODUCTS.filter(function(p) {
+    var cat = p.category || '';
     var low = getLowestPrice(p);
+
+    // Price
     if (low < priceMin || low > priceMax) return false;
+
+    // Search
     if (search && (p.name+p.brand+(p.sub||'')+(p.caliber||'')).toLowerCase().indexOf(search) < 0) return false;
-    if (calibers.length && !calibers.some(function(cal){return _caliberMatch(p,cal);})) return false;
+
+    // Category
+    if (selectedCats.length && selectedCats.indexOf(cat) < 0) return false;
+
+    // Brand — applies to ALL products (all have brand field)
     if (brands.length && brands.indexOf(p.brand) < 0) return false;
-    if (p.src === 'eurooptic') return true;
-    if (actions.length && actions.indexOf(p.action) < 0) return false;
-    if (frames.length && frames.indexOf(p.frameSize) < 0) return false;
-    if (safeties.length && safeties.indexOf(p.safety) < 0) return false;
-    if (hands.length && hands.indexOf(p.hand) < 0) return false;
-    if (opticYes && !opticNo && !p.opticReady) return false;
-    if (opticNo && !opticYes && p.opticReady) return false;
-    if (caps.length) {
-      var c = p.capacity;
-      var match = caps.some(function(v){
-        if(v==='1-6') return c>=1&&c<=6;
-        if(v==='7-10') return c>=7&&c<=10;
-        if(v==='11-15') return c>=11&&c<=15;
-        if(v==='16-20') return c>=16&&c<=20;
-        if(v==='21+') return c>=21;
-        return false;
-      });
-      if (!match) return false;
+
+    // Caliber — only caliber-aware categories; other categories excluded when active
+    if (calibers.length) {
+      if (CALIBER_CATS_ALL.indexOf(cat) < 0) return false;
+      if (!calibers.some(function(cal){return _caliberMatchAll(p,cal);})) return false;
     }
-    if (barrels.length) {
-      var b = p.barrelIn;
-      var bmatch = barrels.some(function(v){
-        if(v==='barrel-u3') return b<3;
-        if(v==='barrel-3-4') return b>=3&&b<4;
-        if(v==='barrel-4-5') return b>=4&&b<5;
-        if(v==='barrel-5p') return b>=5;
-        return false;
-      });
-      if (!bmatch) return false;
+
+    // Action — only firearm categories; other categories excluded when active
+    if (actions.length) {
+      if (ACTION_CATS_ALL.indexOf(cat) < 0) return false;
+      var aStr = (p.name+' '+(p.sub||'')+' '+(p.action||'')).toLowerCase();
+      if (!actions.some(function(a){return aStr.indexOf(a.toLowerCase())>=0;})) return false;
     }
+
+    // Optic Type — only optics category
+    if (opticTypes.length) {
+      if (cat !== 'optics') return false;
+      var oStr = (p.name+' '+(p.sub||'')+' '+(p.type||'')).toLowerCase();
+      if (!opticTypes.some(function(t){return oStr.indexOf(t.toLowerCase())>=0;})) return false;
+    }
+
+    // Carry Style — only holsters category
+    if (carries.length) {
+      if (cat !== 'holsters') return false;
+      var cStr = (p.name+' '+(p.sub||'')+' '+(p.carry||'')).toLowerCase();
+      if (!carries.some(function(c){return cStr.indexOf(c.toLowerCase())>=0;})) return false;
+    }
+
+    // Part Type — only ar-parts category
+    if (partTypes.length) {
+      if (cat !== 'ar-parts') return false;
+      var ptStr = (p.name+' '+(p.sub||'')+' '+(p.ptype||'')).toLowerCase();
+      if (!partTypes.some(function(pt){return ptStr.indexOf(pt.toLowerCase())>=0;})) return false;
+    }
+
     return true;
   });
   sortAndRender();
@@ -622,9 +741,12 @@ function filterProducts() {
 }
 
 function liveSearch(v) {
-  var ns=document.getElementById('nav-srch');
-  var ms=document.getElementById('mob-srch');
-  if(v!==undefined){if(ns&&document.activeElement!==ns)ns.value=v;if(ms&&document.activeElement!==ms)ms.value=v;}
+  var ns = document.getElementById('nav-srch');
+  var ms = document.getElementById('mob-srch');
+  if(v !== undefined) {
+    if(ns && document.activeElement !== ns) ns.value = v;
+    if(ms && document.activeElement !== ms) ms.value = v;
+  }
   filterProducts();
 }
 
@@ -633,8 +755,6 @@ function sortAndRender() {
   filteredProducts.sort(function(a,b) {
     if(s==='price-asc') return getLowestPrice(a)-getLowestPrice(b);
     if(s==='price-desc') return getLowestPrice(b)-getLowestPrice(a);
-    if(s==='rating') return b.stars-a.stars;
-    if(s==='reviews') return b.reviews-a.reviews;
     if(s==='name-asc') return a.name.localeCompare(b.name);
     return 0;
   });
@@ -663,6 +783,8 @@ function clearAllFilters() {
   document.getElementById('price-min').value='';
   document.getElementById('price-max').value='';
   document.getElementById('nav-srch').value='';
+  var ms = document.getElementById('mob-srch');
+  if(ms) ms.value='';
   filteredProducts = ALL_PRODUCTS.slice();
   visibleCount = PAGE_SIZE;
   sortAndRender();
@@ -695,8 +817,8 @@ function closeDrawer() {
 }
 
 function slugify(s){return(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');}
+
 function viewProduct(id) {
-  // Handle EuroOptic products (string IDs prefixed with 'eo_')
   if (typeof id === 'string' && id.indexOf('eo_') === 0) {
     var eoId = id.slice(3);
     var eoP = ALL_PRODUCTS.find(function(x){return x.id===id;});
@@ -705,16 +827,20 @@ function viewProduct(id) {
       if (!pd.imgs || !pd.imgs.length) pd.imgs = pd.img ? [pd.img] : [];
       try{sessionStorage.setItem('ia_pv',JSON.stringify(pd));}catch(e){}
     }
-    window.location.href = '/product.html?src=eurooptic&id=' + encodeURIComponent(eoId) + '&cat=handguns';
+    var eoP2 = ALL_PRODUCTS.find(function(x){return x.id==='eo_'+eoId;});
+    window.location.href = '/product.html?src=eurooptic&id=' + encodeURIComponent(eoId) + '&cat=' + (eoP2 ? (eoP2.category||'') : '');
     return;
   }
-  var p = PRODUCTS.find(function(x){return x.id===id;});
-  if (!p) return;
-  // Normalize img → imgs[] so product.html renderProduct always has imgs array
-  var pd = Object.assign({}, p);
-  if (!pd.imgs || !pd.imgs.length) pd.imgs = pd.img ? [pd.img] : [];
-  try{sessionStorage.setItem('ia_pv',JSON.stringify(pd));}catch(e){}
-  window.location.href = '/product.html?p=' + slugify(p.name);
+  // Manual affiliate products — store in sessionStorage and route via slug
+  var manP = ALL_PRODUCTS.find(function(x){return x.id===id||x.id===String(id);});
+  if (manP) {
+    var mpd = Object.assign({},manP);
+    if (!mpd.imgs || !mpd.imgs.length) mpd.imgs = mpd.img ? [mpd.img] : [];
+    try{sessionStorage.setItem('ia_pv',JSON.stringify(mpd));}catch(e){}
+    window.location.href = '/product.html?p=' + slugify(manP.name);
+    return;
+  }
+  window.location.href = '/product.html?p=' + slugify(String(id));
 }
 
 var _IA_KIT_KEY='ia_kit_v1',_IA_KIT_MAX=20;
@@ -723,42 +849,30 @@ function _kitSave(k){try{localStorage.setItem(_IA_KIT_KEY,JSON.stringify({kit:k,
 function _kitToast(msg){var t=document.getElementById('_ia_kt');if(!t){t=document.createElement('div');t.id='_ia_kt';t.style.cssText='position:fixed;bottom:calc(70px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:#1b2a3b;color:#fff;padding:10px 20px;font-family:Inter,sans-serif;font-size:13px;font-weight:600;z-index:99999;opacity:0;transition:opacity .25s;pointer-events:none;border-radius:3px;box-shadow:0 4px 20px rgba(0,0,0,.3);';document.body.appendChild(t);}t.textContent=msg;t.style.opacity='1';clearTimeout(t._tm);t._tm=setTimeout(function(){t.style.opacity='0';},3200);}
 function _kitBadge(){try{var n=_kitLoad().length;var el=document.getElementById('nav-kit-count');if(el){el.textContent=n;el.style.display=n>0?'inline-flex':'none';}}catch(e){}}
 function saveItem(id){
-  var p=(typeof ALL_PRODUCTS!=='undefined'?ALL_PRODUCTS:PRODUCTS).find(function(x){return x.id===id;});
+  var p=ALL_PRODUCTS.find(function(x){return x.id===id;});
   if(!p)return;
   var kit=_kitLoad(),pid=String(p.id);
   if(kit.some(function(i){return i.productId===pid;})){_kitToast('\u2714 Already in your kit');return;}
   if(kit.length>=_IA_KIT_MAX){_kitToast('Kit full \u2014 max '+_IA_KIT_MAX+' items');return;}
   var low=p.sellers&&p.sellers.length?p.sellers.reduce(function(a,b){return a.price<=b.price?a:b;}):{price:p.price||0,name:'Retailer',url:''};
-  kit.push({uid:Date.now().toString(36)+Math.random().toString(36).substr(2,9),productId:pid,productName:p.name,brand:p.brand||'',sub:p.sub||'',img:p.img||'',price:low.price,retailer:low.name,label:'Handguns',cat:'handguns',badge:p.badge||'',sellers:(p.sellers||[]).map(function(s){return{name:s.name,price:s.price,ship:s.ship||0,stock:s.stock||'in',url:s.url||''};})});
+  var catCode=(p.category||p.cat||'').replace(/\s+/g,'-').toLowerCase();
+  var catLabels={'handguns':'Handguns','rifles':'Rifles','ammunition':'Ammunition','optics':'Optics','ar-parts':'AR Parts','magazines':'Magazines','holsters':'Holsters','cleaning':'Cleaning','shotguns':'Shotguns','gun-safes':'Gun Safes'};
+  kit.push({uid:Date.now().toString(36)+Math.random().toString(36).substr(2,9),productId:pid,productName:p.name,brand:p.brand||'',sub:p.sub||'',img:p.img||'',price:low.price,retailer:low.name,label:catLabels[catCode]||p.category||'Item',cat:catCode,badge:p.badge||'',sellers:(p.sellers||[]).map(function(s){return{name:s.name,price:s.price,ship:s.ship||0,stock:s.stock||'in',url:s.url||''};})});
   _kitSave(kit);_kitBadge();_kitToast('\u2714 '+p.name+' added to kit');
 }
 
-// ── SUGGESTED PRODUCTS ──
-function renderSuggested() {
-  var pool = PRODUCTS.filter(function(p){return p.badge==='best';}).slice(0,6);
-  var g = document.getElementById('sugg-grid');
-  g.innerHTML = pool.map(function(p) {
-    var low = getLowestPrice(p);
-    var reasons = {
-      'Striker-Fired':'Similar action type',
-      'Revolver':'Similar wheel gun',
-      'DA/SA':'Similar action system',
-      'Single Action':'Similar single-action platform'
-    };
-    return '<div class="sugg-card" onclick="viewProduct('+p.id+')">'
-      +'<div class="sugg-brand">'+p.brand+'</div>'
-      +'<div class="sugg-name">'+p.name+'</div>'
-      +'<div class="sugg-price">$'+low.toFixed(2)+'</div>'
-      +'<div class="sugg-reason">'+(reasons[p.action]||'Frequently compared together')+'</div>'
-      +'</div>';
-  }).join('');
-}
-
-// ── INIT ──
-filteredProducts = [...PRODUCTS];
-sortAndRender();
-renderSuggested();
-loadEuroOptic();
+/* ── INIT ── */
+(function(){
+  var sp = new URLSearchParams(location.search);
+  var q = sp.get('q') || '';
+  if (q) {
+    var ns = document.getElementById('nav-srch');
+    var ms = document.getElementById('mob-srch');
+    if (ns) ns.value = q;
+    if (ms) ms.value = q;
+  }
+})();
+loadAllEuroOptic();
 </script>
 <script src="/js/search-autocomplete.js"></script>
 </body>

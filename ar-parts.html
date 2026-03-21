@@ -46,7 +46,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--off-white);color:
 .active-filters{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
 .fchip{display:flex;align-items:center;gap:4px;background:var(--navy);color:var(--white);font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px}
 .fchip button{background:none;border:none;color:rgba(255,255,255,.7);font-size:13px;line-height:1;cursor:pointer;padding:0 0 0 2px}
-.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.product-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 .prod-card{background:var(--white);border:1px solid var(--gray-200);cursor:pointer;transition:box-shadow .15s,border-color .15s;position:relative;display:flex;flex-direction:column}
 .prod-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.1);border-color:var(--navy)}
 .prod-img{height:155px;background:var(--gray-50);display:flex;align-items:center;justify-content:center;overflow:hidden;border-bottom:1px solid var(--gray-100)}
@@ -111,7 +111,7 @@ footer{background:var(--navy-deep);color:rgba(255,255,255,.75);font-size:13px;ma
 .fbadge{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);padding:3px 10px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.5)}
 @media(max-width:960px){.filter-sidebar{display:none}.filter-mob-btn{display:flex}.results-area{padding:14px 16px}}
 @media(max-width:768px){.foot-grid{grid-template-columns:1fr 1fr;gap:28px;padding:36px 24px 24px}.page-header{padding:20px 16px}}
-@media(max-width:480px){.nav-top{padding:0 14px;height:52px}.product-grid{grid-template-columns:1fr 1fr;gap:8px}.prod-img{height:110px}.foot-grid{grid-template-columns:1fr;gap:24px}}
+@media(max-width:768px){.product-grid{grid-template-columns:repeat(3,1fr)}}@media(max-width:480px){.nav-top{padding:0 14px;height:52px}.product-grid{grid-template-columns:1fr 1fr;gap:8px}.prod-img{height:110px}.foot-grid{grid-template-columns:1fr;gap:24px}}
 
 /* ── UNIVERSAL NAV CSS ── */
 nav.site-nav{background:var(--navy-deep);position:sticky;top:0;z-index:200;box-shadow:0 2px 12px rgba(0,0,0,.35)}
@@ -178,6 +178,7 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
   <button class="mob-drawer-close" onclick="toggleDrawer()" aria-label="Close menu">&times;</button>
   <div>
     <a class="mob-nav-item" href="/">Home</a>
+    <a class="mob-nav-item" href="/all-products.html">All Products</a>
     <a class="mob-nav-item" href="/handguns.html">Handguns</a>
     <a class="mob-nav-item" href="/rifles.html">Rifles</a>
     <a class="mob-nav-item" href="/shotguns.html">Shotguns</a>
@@ -205,8 +206,8 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
     </a>
     <div class="nav-search">
       <svg viewBox="0 0 16 16"><circle cx="6.5" cy="6.5" r="5" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke-width="1.5" stroke-linecap="square"/></svg>
-      <input type="text" placeholder="Search firearms, ammo, optics, brands&hellip;" id="nav-srch" oninput="liveSearch(this.value)" autocomplete="off">
-      <button class="nav-srch-btn" onclick="liveSearch(document.getElementById('nav-srch')||document.getElementById('mob-srch'))">Find Best Price</button>
+      <input type="text" placeholder="Search firearms, ammo, optics, brands&hellip;" id="nav-srch" oninput="liveSearch(this.value)" onkeydown="if(event.key==='Enter'&&this.value.trim()){window.location.href='/all-products.html?q='+encodeURIComponent(this.value.trim())}" autocomplete="off">
+      <button class="nav-srch-btn" onclick="var v=(document.getElementById('nav-srch').value||'').trim()||(document.getElementById('mob-srch').value||'').trim();if(v)window.location.href='/all-products.html?q='+encodeURIComponent(v)">Find Best Price</button>
     </div>
     <div class="nav-actions">
       <a class="nav-btn hide-mob" href="/#ffl-sec" style="text-decoration:none">FFL Finder</a>
@@ -217,12 +218,12 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
   <div class="mobile-search-bar">
     <div class="mobile-search-wrap">
       <svg viewBox="0 0 16 16"><circle cx="6.5" cy="6.5" r="5" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke-width="1.5" stroke-linecap="square"/></svg>
-      <input type="text" placeholder="Search firearms, ammo, optics&hellip;" id="mob-srch" oninput="liveSearch(this.value)">
+      <input type="text" placeholder="Search firearms, ammo, optics&hellip;" id="mob-srch" oninput="liveSearch(this.value)" onkeydown="if(event.key==='Enter'&&this.value.trim()){window.location.href='/all-products.html?q='+encodeURIComponent(this.value.trim())}">
     </div>
   </div>
   <div class="nav-cats-bar">
     <div class="nav-cats-inner">
-      <a class="nav-cat" href="/">All</a>
+      <a class="nav-cat" href="/all-products.html">All</a>
       <a class="nav-cat" href="/handguns.html">Handguns</a>
       <a class="nav-cat" href="/rifles.html">Rifles</a>
       <a class="nav-cat" href="/shotguns.html">Shotguns</a>
@@ -285,6 +286,10 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
         <div class="fopt"><input type="checkbox" value="LaRue" onchange="filterProducts()"><label>LaRue Tactical</label></div>
         <div class="fopt"><input type="checkbox" value="Magpul" onchange="filterProducts()"><label>Magpul</label></div>
         <div class="fopt"><input type="checkbox" value="Faxon" onchange="filterProducts()"><label>Faxon Firearms</label></div>
+        <div class="fopt"><input type="checkbox" value="Ballistic Advantage" onchange="filterProducts()"><label>Ballistic Advantage</label></div>
+        <div class="fopt"><input type="checkbox" value="Radian Weapons" onchange="filterProducts()"><label>Radian Weapons</label></div>
+        <div class="fopt"><input type="checkbox" value="Grip Pod" onchange="filterProducts()"><label>Grip Pod Systems</label></div>
+        <div class="fopt"><input type="checkbox" value="Rugged" onchange="filterProducts()"><label>Rugged Suppressors</label></div>
       </div>
     </div>
   </aside>
@@ -382,11 +387,14 @@ function renderGrid(){
     var isEo=p.src==='eurooptic';
     var idAttr=isEo?("'"+p.id+"'"):p.id;
     var sellers=p.sellers.slice(0,3).map(function(s,i){return '<div class="psr"><span class="psr-n">'+s.name+'</span><span class="psr-p'+(i===0?' low':'')+'">$'+s.price.toFixed(2)+'</span></div>';}).join('');
-    return '<div class="prod-card" onclick="viewProduct('+idAttr+')">'+(p.badge==='best'?'<span class="badge-best">Best Seller</span>':'')+'<div class="prod-img">'+(p.img?'<img src="'+p.img+'" alt="'+p.name+'" loading="lazy" style="max-width:88%;max-height:135px;object-fit:contain">':'<span class="img-ph">Image from retailer feed</span>')+'</div>'+p.brand+'</div><a class="prod-name" href="/product.html?p='+slugify(p.name)+'" onclick="event.stopPropagation()">'+p.name+'</a><div class="prod-sub">'+(p.sub||'')+'</div><div class="prod-stars">'+renderStars(p.stars)+'<span class="prod-review">'+(p.reviews?'('+p.reviews.toLocaleString()+')':'')+'</span></div><div class="prod-price">$'+low.toFixed(2)+'</div><div class="prod-price-from">Best price from '+p.sellers.length+' retailer'+(p.sellers.length>1?'s':'')+'</div><div class="prod-sellers">'+sellers+'</div><div class="prod-cta"><button class="btn-save" onclick="event.stopPropagation();saveItem('+idAttr+')" title="Add to Kit">+Kit</button></div></div></div>';
+    return '<div class="prod-card" onclick="viewProduct('+idAttr+')">'+(p.badge==='best'?'<span class="badge-best">Best Seller</span>':'')+'<div class="prod-img">'+(p.img?'<img src="'+p.img+'" alt="'+p.name+'" loading="lazy" style="max-width:88%;max-height:135px;object-fit:contain">':'<span class="img-ph">Image from retailer feed</span>')+'</div><div class="prod-body"><div class="prod-brand">'+p.brand+'</div><a class="prod-name" href="'+(isEo?'/product.html?src=eurooptic&id='+p.id.replace('eo_','')+'&cat=ar-parts':'/product.html?p='+slugify(p.name))+'" onclick="event.stopPropagation()">'+p.name+'</a><div class="prod-sub">'+(p.sub||'')+'</div><div class="prod-stars">'+renderStars(p.stars)+'<span class="prod-review">'+(p.reviews?'('+p.reviews.toLocaleString()+')':'')+'</span></div><div class="prod-price">$'+low.toFixed(2)+'</div><div class="prod-price-from">Best price from '+p.sellers.length+' retailer'+(p.sellers.length>1?'s':'')+'</div><div class="prod-sellers">'+sellers+'</div><div class="prod-cta"><button class="btn-save" onclick="event.stopPropagation();saveItem('+idAttr+')" title="Add to Kit">+Kit</button></div></div></div>';
   }).join('');
   if(filteredProducts.length>visibleCount){lmw.innerHTML='<button class="load-more-btn" onclick="loadMore()">Load More ('+(filteredProducts.length-visibleCount)+' remaining)</button>';}else{lmw.innerHTML='';}
 }
 function loadMore(){visibleCount+=PAGE_SIZE;renderGrid();}
+var CALIBER_KEYS={'.223/5.56':['.223','223 rem','5.56'],'.300 BLK':['300 blk','300 blackout'],'6.5 Creedmoor':['6.5 creedmoor','6.5cm'],'Multi':['multi']};
+function _caliberMatch(p,cal){var s=(p.name+' '+(p.sub||'')+' '+(p.caliber||'')).toLowerCase();var keys=CALIBER_KEYS[cal]||[cal.toLowerCase()];return keys.some(function(k){return s.indexOf(k)>=0;});}
+
 function filterProducts(){
   var priceMin=parseFloat(document.getElementById('price-min').value)||0;
   var priceMax=parseFloat(document.getElementById('price-max').value)||Infinity;
@@ -394,14 +402,15 @@ function filterProducts(){
   var checks={};document.querySelectorAll('.filter-body input[type=checkbox]:checked').forEach(function(cb){checks[cb.value]=true;});
   var ptypes=Object.keys(checks).filter(function(v){return ['Complete Upper','Complete Lower','Barrel','BCG','Handguard','Trigger','Stock','Buffer','Muzzle Device','Lower Parts Kit'].indexOf(v)>=0;});
   var calibers=Object.keys(checks).filter(function(v){return ['.223/5.56','.300 BLK','6.5 Creedmoor','Multi'].indexOf(v)>=0;});
-  var brands=Object.keys(checks).filter(function(v){return ['Aero Precision','BCM','PSA','Daniel Defense','Geissele','LaRue','Magpul','Faxon'].indexOf(v)>=0;});
-  visibleCount=PAGE_SIZE;filteredProducts=ALL_PRODUCTS.filter(function(p){if(p.src==='eurooptic'){var low=getLowestPrice(p);if(low<priceMin||low>priceMax)return false;if(search&&(p.name+p.brand).toLowerCase().indexOf(search)<0)return false;return true;}
+  var brands=Object.keys(checks).filter(function(v){return ['Aero Precision','BCM','PSA','Daniel Defense','Geissele','LaRue','Magpul','Faxon','Ballistic Advantage','Radian Weapons','Grip Pod','Rugged'].indexOf(v)>=0;});
+  visibleCount=PAGE_SIZE;filteredProducts=ALL_PRODUCTS.filter(function(p){
     var low=getLowestPrice(p);
     if(low<priceMin||low>priceMax)return false;
-    if(search&&(p.name+p.brand+p.sub+p.ptype).toLowerCase().indexOf(search)<0)return false;
-    if(ptypes.length&&ptypes.indexOf(p.ptype)<0)return false;
-    if(calibers.length&&calibers.indexOf(p.caliber)<0)return false;
+    if(search&&(p.name+p.brand+(p.sub||'')+(p.ptype||'')).toLowerCase().indexOf(search)<0)return false;
+    if(calibers.length&&!calibers.some(function(cal){return _caliberMatch(p,cal);}))return false;
     if(brands.length&&brands.indexOf(p.brand)<0)return false;
+    if(p.src==='eurooptic')return true;
+    if(ptypes.length&&ptypes.indexOf(p.ptype)<0)return false;
     return true;
   });
   sortAndRender();renderActiveFilters();
@@ -420,10 +429,16 @@ function toggleSec(hd){var body=hd.nextElementSibling;var tog=hd.querySelector('
 function openDrawer(){var dc=document.getElementById('drawer-content');dc.innerHTML=document.getElementById('filter-sidebar').innerHTML;dc.querySelectorAll('input[type=checkbox]').forEach(function(cb){var orig=document.querySelector('#filter-sidebar input[value="'+cb.value+'"]');if(orig)cb.checked=orig.checked;cb.onchange=function(){filterProducts();};});document.getElementById('filter-drawer').classList.add('open');document.getElementById('filter-overlay').classList.add('open');document.body.style.overflow='hidden';}
 function closeDrawer(){document.getElementById('filter-drawer').classList.remove('open');document.getElementById('filter-overlay').classList.remove('open');document.body.style.overflow='';}
 function slugify(s){return(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');}
-function viewProduct(id){if(typeof id==='string'&&id.indexOf('eo_')===0){var eoId=id.slice(3);var eoP=ALL_PRODUCTS.find(function(x){return x.id===id;});if(eoP){var pd=Object.assign({},eoP);if(!pd.imgs||!pd.imgs.length)pd.imgs=pd.img?[pd.img]:[];try{sessionStorage.setItem('ia_pv',JSON.stringify(pd));}catch(e){}}window.location.href='/product.html?src=eurooptic&id='+encodeURIComponent(eoId);return;}var p=PRODUCTS.find(function(x){return x.id===id;});if(!p)return;var pd=Object.assign({},p);if(!pd.imgs||!pd.imgs.length)pd.imgs=pd.img?[pd.img]:[];try{sessionStorage.setItem('ia_pv',JSON.stringify(pd));}catch(e){}window.location.href='/product.html?p='+slugify(p.name);}
-function saveItem(id){var p=PRODUCTS.find(function(x){return x.id===id;});if(p)alert('Added '+p.name+' to Kit');}
+function viewProduct(id){if(typeof id==='string'&&id.indexOf('eo_')===0){var eoId=id.slice(3);var eoP=ALL_PRODUCTS.find(function(x){return x.id===id;});if(eoP){var pd=Object.assign({},eoP);if(!pd.imgs||!pd.imgs.length)pd.imgs=pd.img?[pd.img]:[];try{sessionStorage.setItem('ia_pv',JSON.stringify(pd));}catch(e){}}window.location.href='/product.html?src=eurooptic&id='+encodeURIComponent(eoId)+'&cat=ar-parts';return;}var p=PRODUCTS.find(function(x){return x.id===id;});if(!p)return;var pd=Object.assign({},p);if(!pd.imgs||!pd.imgs.length)pd.imgs=pd.img?[pd.img]:[];try{sessionStorage.setItem('ia_pv',JSON.stringify(pd));}catch(e){}window.location.href='/product.html?p='+slugify(p.name);}
+var _IA_KIT_KEY='ia_kit_v1',_IA_KIT_MAX=20;
+function _kitLoad(){try{var r=localStorage.getItem(_IA_KIT_KEY);if(!r)return[];var d=JSON.parse(r);return(d.expiry&&Date.now()>d.expiry)?(localStorage.removeItem(_IA_KIT_KEY),[]):(d.kit||[]);}catch(e){return[];}}
+function _kitSave(k){try{localStorage.setItem(_IA_KIT_KEY,JSON.stringify({kit:k,expiry:Date.now()+2592000000,saved:new Date().toISOString()}));}catch(e){}}
+function _kitToast(msg){var t=document.getElementById('_ia_kt');if(!t){t=document.createElement('div');t.id='_ia_kt';t.style.cssText='position:fixed;bottom:calc(70px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:#1b2a3b;color:#fff;padding:10px 20px;font-family:Inter,sans-serif;font-size:13px;font-weight:600;z-index:99999;opacity:0;transition:opacity .25s;pointer-events:none;border-radius:3px;box-shadow:0 4px 20px rgba(0,0,0,.3);';document.body.appendChild(t);}t.textContent=msg;t.style.opacity='1';clearTimeout(t._tm);t._tm=setTimeout(function(){t.style.opacity='0';},3200);}
+function _kitBadge(){try{var n=_kitLoad().length;var el=document.getElementById('nav-kit-count');if(el){el.textContent=n;el.style.display=n>0?'inline-flex':'none';}}catch(e){}}
+function saveItem(id){var p=(typeof ALL_PRODUCTS!=='undefined'?ALL_PRODUCTS:PRODUCTS).find(function(x){return x.id===id;});if(!p)return;var kit=_kitLoad(),pid=String(p.id);if(kit.some(function(i){return i.productId===pid;})){_kitToast('\u2714 Already in your kit');return;}if(kit.length>=_IA_KIT_MAX){_kitToast('Kit full \u2014 max '+_IA_KIT_MAX+' items');return;}var low=p.sellers&&p.sellers.length?p.sellers.reduce(function(a,b){return a.price<=b.price?a:b;}):{price:p.price||0,name:'Retailer',url:''};kit.push({uid:Date.now().toString(36)+Math.random().toString(36).substr(2,9),productId:pid,productName:p.name,brand:p.brand||'',sub:p.sub||'',img:p.img||'',price:low.price,retailer:low.name,label:'AR Parts',cat:'ar-parts',badge:p.badge||'',sellers:(p.sellers||[]).map(function(s){return{name:s.name,price:s.price,ship:s.ship||0,stock:s.stock||'in',url:s.url||''};})});_kitSave(kit);_kitBadge();_kitToast('\u2714 '+p.name+' added to kit');}
 function renderSuggested(){var pool=PRODUCTS.filter(function(p){return p.badge==='best';}).slice(0,6);document.getElementById('sugg-grid').innerHTML=pool.map(function(p){var low=getLowestPrice(p);return '<div class="sugg-card" onclick="viewProduct('+p.id+')">'+'<div class="sugg-brand">'+p.brand+'</div><div class="sugg-name">'+p.name+'</div><div class="sugg-price">$'+low.toFixed(2)+'</div><div class="sugg-reason">'+p.ptype+'</div></div>';}).join('');}
 filteredProducts=ALL_PRODUCTS.slice();sortAndRender();renderSuggested();loadEuroOptic();
 </script>
+<script src="/js/search-autocomplete.js"></script>
 </body>
 </html>
