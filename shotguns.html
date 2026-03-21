@@ -417,17 +417,17 @@ function renderGrid(){
   if(!filteredProducts.length){grid.innerHTML='<div class="empty-state"><div class="empty-icon">&#127806;</div><div class="empty-title">No Shotguns Found</div><div class="empty-sub">Try adjusting your filters or check back as we add more listings.</div><button class="empty-badge" onclick="clearAllFilters()">Clear All Filters</button></div>';return;}
   grid.innerHTML=filteredProducts.map(function(p){
     var low=getLowestPrice(p);
+    var idAttr=typeof p.id==='string'?("'"+p.id+"'"):p.id;
     var sellers=p.sellers.slice(0,3).map(function(s,i){return '<div class="psr"><span class="psr-n">'+s.name+'</span><span class="psr-p'+(i===0?' low':'')+'">$'+s.price.toFixed(2)+'</span></div>';}).join('');
-    return '<div class="prod-card" onclick="viewProduct('+p.id+')">'
+    return '<div class="prod-card" onclick="viewProduct('+idAttr+')">'
       +(p.badge==='best'?'<span class="badge-best">Best Seller</span>':'')
       +'<div class="prod-img">'+(p.img?'<img src="'+p.img+'" alt="'+p.name+'" loading="lazy" style="max-width:88%;max-height:135px;object-fit:contain">':'<span class="img-ph">Image from retailer feed</span>')+'</div>'
       +'<div class="prod-body"><div class="prod-brand">'+p.brand+'</div><a class="prod-name" href="/product.html?p='+slugify(p.name)+'" onclick="event.stopPropagation()">'+p.name+'</a>'
       +'<div class="prod-sub">'+p.sub+'</div>'
-      
       +'<div class="prod-price">$'+low.toFixed(2)+'</div>'
       +'<div class="prod-price-from">Best price from '+p.sellers.length+' retailer'+(p.sellers.length>1?'s':'')+'</div>'
       +'<div class="prod-sellers">'+sellers+'</div>'
-      +'<div class="prod-cta"><button class="btn-save" onclick="event.stopPropagation();saveItem('+p.id+')" title="Add to Kit">+Kit</button></div>'
+      +'<div class="prod-cta"><button class="btn-save" onclick="event.stopPropagation();saveItem('+idAttr+')" title="Add to Kit">+Kit</button></div>'
       +'</div></div>';
   }).join('');
 }
