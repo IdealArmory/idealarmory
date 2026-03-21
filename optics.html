@@ -418,7 +418,7 @@ function renderGrid(){
     var idStr=typeof p.id==='string'?'"'+p.id+'"':p.id;
     var low=getLowestPrice(p);
     var sellers=p.sellers.slice(0,3).map(function(s,i){return '<div class="psr"><span class="psr-n">'+s.name+'</span><span class="psr-p'+(i===0?' low':'')+'">$'+s.price.toFixed(2)+'</span></div>';}).join('');
-    var img=p.img?'<img src="'+p.img+'" alt="'+p.name+'" loading="lazy">':'<span class="img-ph">Image from retailer feed</span>';
+    var img=p.img?'<img src="'+p.img+'" alt="'+p.name+'" loading="lazy" style="max-width:88%;max-height:135px;object-fit:contain">':'<span class="img-ph">Image from retailer feed</span>';
     var href=p.src==='eurooptic'?'/product.html?src=eurooptic&id='+p.id.replace('eo_','')+'&cat=optics':'/product.html?p='+slugify(p.name);
     return '<div class="prod-card" onclick="viewProduct('+idStr+')">'
       +(p.badge==='best'?'<span class="badge-best">Best Seller</span>':'')
