@@ -382,6 +382,9 @@ async function loadAllEuroOptic() {
     var manualPromise = fetch('/data/manual-products.json')
       .then(function(r){ return r.ok ? r.json() : []; })
       .catch(function(){ return []; });
+    var staticPromise = fetch('/data/static-products.json')
+      .then(function(r){ return r.ok ? r.json() : []; })
+      .catch(function(){ return []; });
     var results = await Promise.all(
       EO_FILES.map(function(cat) {
         return fetch('/data/eurooptic-'+cat+'.json')
@@ -390,7 +393,8 @@ async function loadAllEuroOptic() {
       })
     );
     var manualItems = await manualPromise;
-    ALL_PRODUCTS = manualItems.slice();
+    var staticItems = await staticPromise;
+    ALL_PRODUCTS = manualItems.concat(staticItems);
     results.forEach(function(items, i) {
       var cat = EO_FILES[i];
       items.forEach(function(eo) {
