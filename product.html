@@ -1495,11 +1495,12 @@ function doSearch(){
 /* ══════════════════════════════════════════════════════════════════════════════
    INIT — load product from URL slug (primary) or sessionStorage (fallback)
 ══════════════════════════════════════════════════════════════════════════════ */
-(function(){
+(async function(){
   var product = null;
+  var sp = new URLSearchParams(location.search);
+  var slug = getSlug();
 
   // 0. EuroOptic product — routed via ?src=eurooptic&id=xxx&cat=CATEGORY
-  var sp = new URLSearchParams(location.search);
   if (sp.get('src') === 'eurooptic') {
     var eoId = sp.get('id');
     try {
@@ -1529,18 +1530,33 @@ function doSearch(){
   }
 
   // 1. URL slug match — most reliable, works for direct links, bookmarks, shares
-  var slug = getSlug();
   if (slug && slug !== 'product' && slug !== 'product.html') {
     product = ALL_PRODUCTS.find(function(p){
       return slugify(p.name) === slug || p.upc === slug;
     });
   }
 
-  // 2. sessionStorage fallback — for cases where slug is missing
+  // 1.5. Manual/affiliate products (e.g. Houdini Holsters) — not in static ALL_PRODUCTS
+  if (!product && slug && slug !== 'product' && slug !== 'product.html') {
+    try {
+      var manuals = await fetch('/data/manual-products.json').then(function(r){ return r.ok ? r.json() : []; });
+      product = manuals.find(function(p){ return slugify(p.name) === slug; });
+      if (product) { try{ sessionStorage.setItem('ia_pv', JSON.stringify(product)); }catch(e){} }
+    } catch(e){}
+  }
+
+  // 2. sessionStorage fallback — validated against slug to prevent stale cache
   if (!product) {
     try {
       var raw = sessionStorage.getItem('ia_pv');
-      if (raw) product = JSON.parse(raw);
+      if (raw) {
+        var cached = JSON.parse(raw);
+        // Reject cache if slug is present and doesn't match — prevents wrong product display
+        var noSlug = !slug || slug === 'product' || slug === 'product.html';
+        if (noSlug || slugify(cached.name || '') === slug) {
+          product = cached;
+        }
+      }
     } catch(e){}
   }
 
