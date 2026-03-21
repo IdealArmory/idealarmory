@@ -1465,12 +1465,26 @@ function renderNotFound(){
     +'</div>';
 }
 
+var _IA_KIT_KEY='ia_kit_v1',_IA_KIT_MAX=20;
+function _kitLoad(){try{var r=localStorage.getItem(_IA_KIT_KEY);if(!r)return[];var d=JSON.parse(r);return(d.expiry&&Date.now()>d.expiry)?(localStorage.removeItem(_IA_KIT_KEY),[]):(d.kit||[]);}catch(e){return[];}}
+function _kitSave(k){try{localStorage.setItem(_IA_KIT_KEY,JSON.stringify({kit:k,expiry:Date.now()+2592000000,saved:new Date().toISOString()}));}catch(e){}}
+function _kitToast(msg){var t=document.getElementById('_ia_kt');if(!t){t=document.createElement('div');t.id='_ia_kt';t.style.cssText='position:fixed;bottom:calc(70px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:#1b2a3b;color:#fff;padding:10px 20px;font-family:Inter,sans-serif;font-size:13px;font-weight:600;z-index:99999;opacity:0;transition:opacity .25s;pointer-events:none;border-radius:3px;box-shadow:0 4px 20px rgba(0,0,0,.3);';document.body.appendChild(t);}t.textContent=msg;t.style.opacity='1';clearTimeout(t._tm);t._tm=setTimeout(function(){t.style.opacity='0';},3200);}
+function _kitBadge(){try{var n=_kitLoad().length;var el=document.getElementById('nav-kit-count');if(el){el.textContent=n;el.style.display=n>0?'inline-flex':'none';}}catch(e){}}
 function addToKit(){
-  try {
-    var raw = sessionStorage.getItem('ia_pv');
-    if (raw){ var p = JSON.parse(raw); alert('Kit Builder: '+p.name+' added!\n(Full kit integration available on the main site.)'); }
-    else { alert('Kit Builder is available on the main site.'); }
-  } catch(e){ alert('Kit Builder is available on the main site.'); }
+  try{
+    var raw=sessionStorage.getItem('ia_pv');
+    if(!raw){_kitToast('Product data not available');return;}
+    var p=JSON.parse(raw);
+    var kit=_kitLoad(),pid=String(p.id||p.name||Date.now());
+    if(kit.some(function(i){return i.productId===pid;})){_kitToast('\u2714 Already in your kit');return;}
+    if(kit.length>=_IA_KIT_MAX){_kitToast('Kit full \u2014 max '+_IA_KIT_MAX+' items');return;}
+    var sp=new URLSearchParams(location.search);
+    var catCode=sp.get('cat')||p.category||p.cat||'';
+    var catLabels={'handguns':'Handguns','rifles':'Rifles','ammunition':'Ammunition','optics':'Optics','ar-parts':'AR Parts','magazines':'Magazines','holsters':'Holsters','cleaning':'Cleaning','shotguns':'Shotguns','gun-safes':'Gun Safes'};
+    var low=p.sellers&&p.sellers.length?p.sellers.reduce(function(a,b){return a.price<=b.price?a:b;}):{price:p.price||0,name:'Retailer',url:''};
+    kit.push({uid:Date.now().toString(36)+Math.random().toString(36).substr(2,9),productId:pid,productName:p.name,brand:p.brand||'',sub:p.sub||'',img:p.img||'',price:low.price,retailer:low.name,label:catLabels[catCode]||catCode||'Item',cat:catCode,badge:p.badge||'',sellers:(p.sellers||[]).map(function(s){return{name:s.name,price:s.price,ship:s.ship||0,stock:s.stock||'in',url:s.url||''};})});
+    _kitSave(kit);_kitBadge();_kitToast('\u2714 '+p.name+' added to kit');
+  }catch(e){_kitToast('Could not add to kit');}
 }
 
 function shareProduct(){

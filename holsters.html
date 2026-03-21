@@ -278,7 +278,7 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
       <div class="filter-body">
         <div class="fopt"><input type="checkbox" value="Glock" onchange="filterProducts()"><label>Glock (17/19/43)</label></div>
         <div class="fopt"><input type="checkbox" value="Sig P365" onchange="filterProducts()"><label>SIG P365 / P320</label></div>
-        <div class="fopt"><input type="checkbox" value="Smith and Wesson" onchange="filterProducts()"><label>S&amp;W M&amp;P / Shield</label></div>
+        <div class="fopt"><input type="checkbox" value="S&amp;W" onchange="filterProducts()"><label>S&amp;W M&amp;P / Shield</label></div>
         <div class="fopt"><input type="checkbox" value="Springfield" onchange="filterProducts()"><label>Springfield Hellcat / XD</label></div>
         <div class="fopt"><input type="checkbox" value="1911" onchange="filterProducts()"><label>1911 Platform</label></div>
         <div class="fopt"><input type="checkbox" value="Universal" onchange="filterProducts()"><label>Universal Fit</label></div>
@@ -295,6 +295,7 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
         <div class="fopt"><input type="checkbox" value="CrossBreed" onchange="filterProducts()"><label>CrossBreed</label></div>
         <div class="fopt"><input type="checkbox" value="Galco" onchange="filterProducts()"><label>Galco</label></div>
         <div class="fopt"><input type="checkbox" value="DeSantis" onchange="filterProducts()"><label>DeSantis</label></div>
+        <div class="fopt"><input type="checkbox" value="Houdini Holsters" onchange="filterProducts()"><label>Houdini Holsters</label></div>
       </div>
     </div>
   </aside>
@@ -417,15 +418,15 @@ function filterProducts(){
   var checks={};document.querySelectorAll('.filter-body input[type=checkbox]:checked').forEach(function(cb){checks[cb.value]=true;});
   var carries=Object.keys(checks).filter(function(v){return ['IWB','OWB','AIWB','Ankle','Shoulder','Pocket','Duty'].indexOf(v)>=0;});
   var mats=Object.keys(checks).filter(function(v){return ['Kydex','Leather','Hybrid','Nylon','Polymer'].indexOf(v)>=0;});
-  var fits=Object.keys(checks).filter(function(v){return ['Glock','Sig P365','Smith and Wesson','Springfield','1911','Universal'].indexOf(v)>=0;});
-  var brands=Object.keys(checks).filter(function(v){return ['Safariland','Blackhawk','Alien Gear','Vedder','Bravo Concealment','CrossBreed','Galco','DeSantis'].indexOf(v)>=0;});
+  var fits=Object.keys(checks).filter(function(v){return ['Glock','Sig P365','S&W','Springfield','1911','Universal'].indexOf(v)>=0;});
+  var brands=Object.keys(checks).filter(function(v){return ['Safariland','Blackhawk','Alien Gear','Vedder','Bravo Concealment','CrossBreed','Galco','DeSantis','Houdini Holsters'].indexOf(v)>=0;});
   visibleCount=PAGE_SIZE;filteredProducts=ALL_PRODUCTS.filter(function(p){if(p.src==='eurooptic'){var low=getLowestPrice(p);if(low<priceMin||low>priceMax)return false;if(search&&(p.name+p.brand).toLowerCase().indexOf(search)<0)return false;return true;}
     var low=getLowestPrice(p);
     if(low<priceMin||low>priceMax)return false;
     if(search&&(p.name+p.brand+p.sub).toLowerCase().indexOf(search)<0)return false;
     if(carries.length&&carries.indexOf(p.carry)<0)return false;
     if(mats.length&&mats.indexOf(p.mat)<0)return false;
-    if(fits.length&&fits.indexOf(p.fit)<0)return false;
+    if(fits.length&&!fits.some(function(f){return (p.fit||'').toLowerCase().indexOf(f.toLowerCase())>=0;}))return false;
     if(brands.length&&brands.indexOf(p.brand)<0)return false;
     return true;
   });
@@ -446,7 +447,12 @@ function openDrawer(){var dc=document.getElementById('drawer-content');dc.innerH
 function closeDrawer(){document.getElementById('filter-drawer').classList.remove('open');document.getElementById('filter-overlay').classList.remove('open');document.body.style.overflow='';}
 function slugify(s){return(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');}
 function viewProduct(id){if(typeof id==='string'&&id.indexOf('eo_')===0){var eoId=id.slice(3);var eoP=ALL_PRODUCTS.find(function(x){return x.id===id;});if(eoP){var pd=Object.assign({},eoP);if(!pd.imgs||!pd.imgs.length)pd.imgs=pd.img?[pd.img]:[];try{sessionStorage.setItem('ia_pv',JSON.stringify(pd));}catch(e){}}window.location.href='/product.html?src=eurooptic&id='+encodeURIComponent(eoId)+'&cat=holsters';return;}var p=PRODUCTS.find(function(x){return x.id===id;});if(!p)return;var pd=Object.assign({},p);if(!pd.imgs||!pd.imgs.length)pd.imgs=pd.img?[pd.img]:[];try{sessionStorage.setItem('ia_pv',JSON.stringify(pd));}catch(e){}window.location.href='/product.html?p='+slugify(p.name);}
-function saveItem(id){var p=PRODUCTS.find(function(x){return x.id===id;});if(p)alert('Added '+p.name+' to Kit');}
+var _IA_KIT_KEY='ia_kit_v1',_IA_KIT_MAX=20;
+function _kitLoad(){try{var r=localStorage.getItem(_IA_KIT_KEY);if(!r)return[];var d=JSON.parse(r);return(d.expiry&&Date.now()>d.expiry)?(localStorage.removeItem(_IA_KIT_KEY),[]):(d.kit||[]);}catch(e){return[];}}
+function _kitSave(k){try{localStorage.setItem(_IA_KIT_KEY,JSON.stringify({kit:k,expiry:Date.now()+2592000000,saved:new Date().toISOString()}));}catch(e){}}
+function _kitToast(msg){var t=document.getElementById('_ia_kt');if(!t){t=document.createElement('div');t.id='_ia_kt';t.style.cssText='position:fixed;bottom:calc(70px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:#1b2a3b;color:#fff;padding:10px 20px;font-family:Inter,sans-serif;font-size:13px;font-weight:600;z-index:99999;opacity:0;transition:opacity .25s;pointer-events:none;border-radius:3px;box-shadow:0 4px 20px rgba(0,0,0,.3);';document.body.appendChild(t);}t.textContent=msg;t.style.opacity='1';clearTimeout(t._tm);t._tm=setTimeout(function(){t.style.opacity='0';},3200);}
+function _kitBadge(){try{var n=_kitLoad().length;var el=document.getElementById('nav-kit-count');if(el){el.textContent=n;el.style.display=n>0?'inline-flex':'none';}}catch(e){}}
+function saveItem(id){var p=(typeof ALL_PRODUCTS!=='undefined'?ALL_PRODUCTS:PRODUCTS).find(function(x){return x.id===id;});if(!p)return;var kit=_kitLoad(),pid=String(p.id);if(kit.some(function(i){return i.productId===pid;})){_kitToast('\u2714 Already in your kit');return;}if(kit.length>=_IA_KIT_MAX){_kitToast('Kit full \u2014 max '+_IA_KIT_MAX+' items');return;}var low=p.sellers&&p.sellers.length?p.sellers.reduce(function(a,b){return a.price<=b.price?a:b;}):{price:p.price||0,name:'Retailer',url:''};kit.push({uid:Date.now().toString(36)+Math.random().toString(36).substr(2,9),productId:pid,productName:p.name,brand:p.brand||'',sub:p.sub||'',img:p.img||'',price:low.price,retailer:low.name,label:'Holsters',cat:'holsters',badge:p.badge||'',sellers:(p.sellers||[]).map(function(s){return{name:s.name,price:s.price,ship:s.ship||0,stock:s.stock||'in',url:s.url||''};})});_kitSave(kit);_kitBadge();_kitToast('\u2714 '+p.name+' added to kit');}
 function renderSuggested(){var pool=PRODUCTS.filter(function(p){return p.badge==='best';}).slice(0,6);document.getElementById('sugg-grid').innerHTML=pool.map(function(p){var low=getLowestPrice(p);return '<div class="sugg-card" onclick="viewProduct('+p.id+')">'+'<div class="sugg-brand">'+p.brand+'</div><div class="sugg-name">'+p.name+'</div><div class="sugg-price">$'+low.toFixed(2)+'</div><div class="sugg-reason">'+p.carry+' \u2022 '+p.mat+'</div></div>';}).join('');}
 filteredProducts=ALL_PRODUCTS.slice();sortAndRender();renderSuggested();loadEuroOptic();
 </script>
