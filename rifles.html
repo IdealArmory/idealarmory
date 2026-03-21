@@ -473,7 +473,7 @@ function renderGrid(){
       +'<div class="prod-img">'+(p.img?'<img src="'+p.img+'" alt="'+p.name+'" loading="lazy" style="max-width:88%;max-height:135px;object-fit:contain">':'<span class="img-ph">Image from retailer feed</span>')+'</div>'
       +'<div class="prod-body">'
       +'<div class="prod-brand">'+p.brand+'</div>'
-      +'<a class="prod-name" href="/product.html?p='+slugify(p.name)+'" onclick="event.stopPropagation()">'+p.name+'</a>'
+      +'<a class="prod-name" href="'+(isEo?'/product.html?src=eurooptic&id='+p.id.replace('eo_','')+'&cat=rifles':'/product.html?p='+slugify(p.name))+'" onclick="event.stopPropagation()">'+p.name+'</a>'
       +'<div class="prod-sub">'+(p.sub||'')+'</div>'
       +'<div class="prod-price">$'+low.toFixed(2)+'</div>'
       +'<div class="prod-price-from">Best price from '+p.sellers.length+' retailer'+(p.sellers.length>1?'s':'')+'</div>'
