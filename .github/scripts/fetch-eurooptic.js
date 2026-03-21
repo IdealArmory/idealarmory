@@ -109,9 +109,9 @@ function isRelevant(item) {
   // Must not be apparel/footwear/etc. by name
   const name = (item.Name || '').toLowerCase();
   if (NAME_EXCLUDE_KEYWORDS.some(kw => name.includes(kw))) return false;
-  // Must map to a known category
+  // Must map to a known category (holsters and gun-safes excluded from EuroOptic)
   const cat = mapCategory(item.Category || '', item.Name || '');
-  if (cat === 'other') return false;
+  if (cat === 'other' || cat === 'holsters' || cat === 'gun-safes') return false;
   // Must meet price floor for category
   const price = parseFloat(item.CurrentPrice || item.SalePrice || 0);
   if (price < (PRICE_FLOORS[cat] || 0)) return false;
