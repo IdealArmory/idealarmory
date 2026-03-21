@@ -1501,12 +1501,16 @@ function doSearch(){
   // 0. EuroOptic product — routed via ?src=eurooptic&id=xxx&cat=CATEGORY
   var sp = new URLSearchParams(location.search);
   if (sp.get('src') === 'eurooptic') {
+    var eoId = sp.get('id');
     try {
       var raw = sessionStorage.getItem('ia_pv');
-      if (raw) { renderProduct(JSON.parse(raw)); return; }
+      if (raw) {
+        var cached = JSON.parse(raw);
+        var cachedRawId = String(cached.id || '').replace(/^eo_/, '');
+        if (cachedRawId === eoId) { renderProduct(cached); return; }
+      }
     } catch(e){}
     // Fallback: fetch directly from category JSON using &cat= param
-    var eoId = sp.get('id');
     var eoCat = sp.get('cat') || 'handguns';
     fetch('/data/eurooptic-' + eoCat + '.json')
       .then(function(r){ return r.ok ? r.json() : []; })

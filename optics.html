@@ -415,7 +415,7 @@ function renderGrid(){
   if(!total){grid.innerHTML='<div class="empty-state"><div class="empty-icon">&#127806;</div><div class="empty-title">No Optics Found</div><div class="empty-sub">Try adjusting your filters, or check back as we add more listings from our retailer network.</div><button class="empty-badge" onclick="clearAllFilters()">Clear All Filters</button></div>';lmw.innerHTML='';return;}
   var showing=Math.min(visibleCount,total);
   grid.innerHTML=filteredProducts.slice(0,showing).map(function(p){
-    var idStr=typeof p.id==='string'?'"'+p.id+'"':p.id;
+    var idStr=typeof p.id==='string'?"'"+p.id+"'":p.id;
     var low=getLowestPrice(p);
     var sellers=p.sellers.slice(0,3).map(function(s,i){return '<div class="psr"><span class="psr-n">'+s.name+'</span><span class="psr-p'+(i===0?' low':'')+'">$'+s.price.toFixed(2)+'</span></div>';}).join('');
     var img=p.img?'<img src="'+p.img+'" alt="'+p.name+'" loading="lazy" style="max-width:88%;max-height:135px;object-fit:contain">':'<span class="img-ph">Image from retailer feed</span>';

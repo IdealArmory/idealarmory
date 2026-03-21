@@ -524,7 +524,7 @@ function renderGrid() {
   }
   var showing = Math.min(visibleCount, total);
   grid.innerHTML = filteredProducts.slice(0, showing).map(function(p) {
-    var idStr = typeof p.id === 'string' ? '"'+p.id+'"' : p.id;
+    var idStr = typeof p.id === 'string' ? "'"+p.id+"'" : p.id;
     var low = getLowestPrice(p);
     var sellers = p.sellers.slice(0,3).map(function(s,i){
       return '<div class="psr"><span class="psr-n">'+s.name+'</span><span class="psr-p'+(i===0?' low':'')+'">$'+s.price.toFixed(2)+'</span></div>';
