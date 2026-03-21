@@ -40,6 +40,10 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--off-white);color:
 .ftog.open{transform:rotate(180deg)}
 .filter-body{padding:4px 16px 12px;display:flex;flex-direction:column;gap:5px}
 .filter-body.collapsed{display:none}
+.filter-body-scroll{max-height:200px;overflow-y:auto;padding-right:4px}
+.filter-body-scroll::-webkit-scrollbar{width:4px}
+.filter-body-scroll::-webkit-scrollbar-track{background:var(--gray-100)}
+.filter-body-scroll::-webkit-scrollbar-thumb{background:var(--gray-300);border-radius:2px}
 .fopt{display:flex;align-items:center;gap:8px;cursor:pointer;padding:2px 0}
 .fopt input[type=checkbox]{width:14px;height:14px;accent-color:var(--navy);flex-shrink:0;cursor:pointer}
 .fopt label{font-size:12px;color:var(--gray-700);cursor:pointer;line-height:1.3;display:flex;align-items:center;gap:4px}
@@ -265,6 +269,7 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
       <div class="filter-body" id="fc-category">
         <div class="fopt"><input type="checkbox" value="handguns" onchange="filterProducts()"><label>Handguns</label></div>
         <div class="fopt"><input type="checkbox" value="rifles" onchange="filterProducts()"><label>Rifles</label></div>
+        <div class="fopt"><input type="checkbox" value="shotguns" onchange="filterProducts()"><label>Shotguns</label></div>
         <div class="fopt"><input type="checkbox" value="ammunition" onchange="filterProducts()"><label>Ammunition</label></div>
         <div class="fopt"><input type="checkbox" value="optics" onchange="filterProducts()"><label>Optics</label></div>
         <div class="fopt"><input type="checkbox" value="holsters" onchange="filterProducts()"><label>Holsters</label></div>
@@ -272,6 +277,162 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
         <div class="fopt"><input type="checkbox" value="magazines" onchange="filterProducts()"><label>Magazines</label></div>
         <div class="fopt"><input type="checkbox" value="cleaning" onchange="filterProducts()"><label>Cleaning &amp; Accessories</label></div>
         <div class="fopt"><input type="checkbox" value="gun-safes" onchange="filterProducts()"><label>Gun Safes</label></div>
+      </div>
+    </div>
+
+    <div class="filter-sec">
+      <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Brand</span><span class="ftog open">&#8964;</span></div>
+      <div class="filter-body" id="fc-brand">
+        <div class="filter-body-scroll">
+          <div class="fopt"><input type="checkbox" value="Aimpoint" onchange="filterProducts()"><label>Aimpoint</label></div>
+          <div class="fopt"><input type="checkbox" value="Aero Precision" onchange="filterProducts()"><label>Aero Precision</label></div>
+          <div class="fopt"><input type="checkbox" value="Alien Gear" onchange="filterProducts()"><label>Alien Gear</label></div>
+          <div class="fopt"><input type="checkbox" value="Ballistol" onchange="filterProducts()"><label>Ballistol</label></div>
+          <div class="fopt"><input type="checkbox" value="BCM" onchange="filterProducts()"><label>BCM</label></div>
+          <div class="fopt"><input type="checkbox" value="Benelli" onchange="filterProducts()"><label>Benelli</label></div>
+          <div class="fopt"><input type="checkbox" value="Bergara" onchange="filterProducts()"><label>Bergara</label></div>
+          <div class="fopt"><input type="checkbox" value="Beretta" onchange="filterProducts()"><label>Beretta</label></div>
+          <div class="fopt"><input type="checkbox" value="Blackhawk" onchange="filterProducts()"><label>Blackhawk</label></div>
+          <div class="fopt"><input type="checkbox" value="Blazer" onchange="filterProducts()"><label>Blazer</label></div>
+          <div class="fopt"><input type="checkbox" value="Break-Free" onchange="filterProducts()"><label>Break-Free</label></div>
+          <div class="fopt"><input type="checkbox" value="Browning" onchange="filterProducts()"><label>Browning</label></div>
+          <div class="fopt"><input type="checkbox" value="Bravo Concealment" onchange="filterProducts()"><label>Bravo Concealment</label></div>
+          <div class="fopt"><input type="checkbox" value="Burris" onchange="filterProducts()"><label>Burris</label></div>
+          <div class="fopt"><input type="checkbox" value="Cannon" onchange="filterProducts()"><label>Cannon</label></div>
+          <div class="fopt"><input type="checkbox" value="CCI" onchange="filterProducts()"><label>CCI</label></div>
+          <div class="fopt"><input type="checkbox" value="CMMG" onchange="filterProducts()"><label>CMMG</label></div>
+          <div class="fopt"><input type="checkbox" value="Colt" onchange="filterProducts()"><label>Colt</label></div>
+          <div class="fopt"><input type="checkbox" value="CrossBreed" onchange="filterProducts()"><label>CrossBreed</label></div>
+          <div class="fopt"><input type="checkbox" value="CZ" onchange="filterProducts()"><label>CZ</label></div>
+          <div class="fopt"><input type="checkbox" value="Daniel Defense" onchange="filterProducts()"><label>Daniel Defense</label></div>
+          <div class="fopt"><input type="checkbox" value="DeSantis" onchange="filterProducts()"><label>DeSantis</label></div>
+          <div class="fopt"><input type="checkbox" value="EOTech" onchange="filterProducts()"><label>EOTech</label></div>
+          <div class="fopt"><input type="checkbox" value="ETS" onchange="filterProducts()"><label>ETS</label></div>
+          <div class="fopt"><input type="checkbox" value="Faxon" onchange="filterProducts()"><label>Faxon</label></div>
+          <div class="fopt"><input type="checkbox" value="Federal" onchange="filterProducts()"><label>Federal</label></div>
+          <div class="fopt"><input type="checkbox" value="Fiocchi" onchange="filterProducts()"><label>Fiocchi</label></div>
+          <div class="fopt"><input type="checkbox" value="Fort Knox" onchange="filterProducts()"><label>Fort Knox</label></div>
+          <div class="fopt"><input type="checkbox" value="Galco" onchange="filterProducts()"><label>Galco</label></div>
+          <div class="fopt"><input type="checkbox" value="Geissele" onchange="filterProducts()"><label>Geissele</label></div>
+          <div class="fopt"><input type="checkbox" value="Glock" onchange="filterProducts()"><label>Glock</label></div>
+          <div class="fopt"><input type="checkbox" value="H&K" onchange="filterProducts()"><label>H&amp;K</label></div>
+          <div class="fopt"><input type="checkbox" value="Henry" onchange="filterProducts()"><label>Henry</label></div>
+          <div class="fopt"><input type="checkbox" value="Holosun" onchange="filterProducts()"><label>Holosun</label></div>
+          <div class="fopt"><input type="checkbox" value="Hoppes" onchange="filterProducts()"><label>Hoppes</label></div>
+          <div class="fopt"><input type="checkbox" value="Hornady" onchange="filterProducts()"><label>Hornady</label></div>
+          <div class="fopt"><input type="checkbox" value="Houdini Holsters" onchange="filterProducts()"><label>Houdini Holsters</label></div>
+          <div class="fopt"><input type="checkbox" value="IWI" onchange="filterProducts()"><label>IWI</label></div>
+          <div class="fopt"><input type="checkbox" value="JTS" onchange="filterProducts()"><label>JTS</label></div>
+          <div class="fopt"><input type="checkbox" value="LaRue" onchange="filterProducts()"><label>LaRue</label></div>
+          <div class="fopt"><input type="checkbox" value="Leupold" onchange="filterProducts()"><label>Leupold</label></div>
+          <div class="fopt"><input type="checkbox" value="Liberty" onchange="filterProducts()"><label>Liberty</label></div>
+          <div class="fopt"><input type="checkbox" value="Magpul" onchange="filterProducts()"><label>Magpul</label></div>
+          <div class="fopt"><input type="checkbox" value="MFT" onchange="filterProducts()"><label>MFT</label></div>
+          <div class="fopt"><input type="checkbox" value="Mossberg" onchange="filterProducts()"><label>Mossberg</label></div>
+          <div class="fopt"><input type="checkbox" value="Nightforce" onchange="filterProducts()"><label>Nightforce</label></div>
+          <div class="fopt"><input type="checkbox" value="Otis" onchange="filterProducts()"><label>Otis</label></div>
+          <div class="fopt"><input type="checkbox" value="PMC" onchange="filterProducts()"><label>PMC</label></div>
+          <div class="fopt"><input type="checkbox" value="Primary Arms" onchange="filterProducts()"><label>Primary Arms</label></div>
+          <div class="fopt"><input type="checkbox" value="ProMag" onchange="filterProducts()"><label>ProMag</label></div>
+          <div class="fopt"><input type="checkbox" value="PSA" onchange="filterProducts()"><label>PSA</label></div>
+          <div class="fopt"><input type="checkbox" value="Radian Weapons" onchange="filterProducts()"><label>Radian Weapons</label></div>
+          <div class="fopt"><input type="checkbox" value="Real Avid" onchange="filterProducts()"><label>Real Avid</label></div>
+          <div class="fopt"><input type="checkbox" value="Remington" onchange="filterProducts()"><label>Remington</label></div>
+          <div class="fopt"><input type="checkbox" value="Ruger" onchange="filterProducts()"><label>Ruger</label></div>
+          <div class="fopt"><input type="checkbox" value="Rugged" onchange="filterProducts()"><label>Rugged</label></div>
+          <div class="fopt"><input type="checkbox" value="Safariland" onchange="filterProducts()"><label>Safariland</label></div>
+          <div class="fopt"><input type="checkbox" value="Savage" onchange="filterProducts()"><label>Savage</label></div>
+          <div class="fopt"><input type="checkbox" value="Sig Sauer" onchange="filterProducts()"><label>Sig Sauer</label></div>
+          <div class="fopt"><input type="checkbox" value="Smith &amp; Wesson" onchange="filterProducts()"><label>Smith &amp; Wesson</label></div>
+          <div class="fopt"><input type="checkbox" value="Speer" onchange="filterProducts()"><label>Speer</label></div>
+          <div class="fopt"><input type="checkbox" value="Springfield Armory" onchange="filterProducts()"><label>Springfield Armory</label></div>
+          <div class="fopt"><input type="checkbox" value="Stack-On" onchange="filterProducts()"><label>Stack-On</label></div>
+          <div class="fopt"><input type="checkbox" value="Steyr" onchange="filterProducts()"><label>Steyr</label></div>
+          <div class="fopt"><input type="checkbox" value="Stoeger" onchange="filterProducts()"><label>Stoeger</label></div>
+          <div class="fopt"><input type="checkbox" value="Taurus" onchange="filterProducts()"><label>Taurus</label></div>
+          <div class="fopt"><input type="checkbox" value="Trijicon" onchange="filterProducts()"><label>Trijicon</label></div>
+          <div class="fopt"><input type="checkbox" value="Vaultek" onchange="filterProducts()"><label>Vaultek</label></div>
+          <div class="fopt"><input type="checkbox" value="Vedder" onchange="filterProducts()"><label>Vedder</label></div>
+          <div class="fopt"><input type="checkbox" value="Vortex" onchange="filterProducts()"><label>Vortex</label></div>
+          <div class="fopt"><input type="checkbox" value="Walther" onchange="filterProducts()"><label>Walther</label></div>
+          <div class="fopt"><input type="checkbox" value="Winchester" onchange="filterProducts()"><label>Winchester</label></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="filter-sec">
+      <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Caliber / Gauge</span><span class="ftog">&#8964;</span></div>
+      <div class="filter-body collapsed" id="fc-caliber">
+        <div class="fopt"><input type="checkbox" value="9mm" onchange="filterProducts()"><label>9mm</label></div>
+        <div class="fopt"><input type="checkbox" value=".223" onchange="filterProducts()"><label>.223 Remington</label></div>
+        <div class="fopt"><input type="checkbox" value="5.56" onchange="filterProducts()"><label>5.56 NATO</label></div>
+        <div class="fopt"><input type="checkbox" value=".308/7.62" onchange="filterProducts()"><label>.308 / 7.62 NATO</label></div>
+        <div class="fopt"><input type="checkbox" value=".45 ACP" onchange="filterProducts()"><label>.45 ACP</label></div>
+        <div class="fopt"><input type="checkbox" value=".40 S&W" onchange="filterProducts()"><label>.40 S&amp;W</label></div>
+        <div class="fopt"><input type="checkbox" value=".380 ACP" onchange="filterProducts()"><label>.380 ACP</label></div>
+        <div class="fopt"><input type="checkbox" value=".357 Mag" onchange="filterProducts()"><label>.357 Magnum</label></div>
+        <div class="fopt"><input type="checkbox" value=".300 BLK" onchange="filterProducts()"><label>.300 Blackout</label></div>
+        <div class="fopt"><input type="checkbox" value="6.5 Creedmoor" onchange="filterProducts()"><label>6.5 Creedmoor</label></div>
+        <div class="fopt"><input type="checkbox" value=".22 LR" onchange="filterProducts()"><label>.22 LR</label></div>
+        <div class="fopt"><input type="checkbox" value="7.62x39" onchange="filterProducts()"><label>7.62x39mm</label></div>
+        <div class="fopt"><input type="checkbox" value=".30-06" onchange="filterProducts()"><label>.30-06 Springfield</label></div>
+        <div class="fopt"><input type="checkbox" value="12 Gauge" onchange="filterProducts()"><label>12 Gauge</label></div>
+        <div class="fopt"><input type="checkbox" value="20 Gauge" onchange="filterProducts()"><label>20 Gauge</label></div>
+        <div class="fopt"><input type="checkbox" value=".410" onchange="filterProducts()"><label>.410 Bore</label></div>
+        <div class="fopt"><input type="checkbox" value="10mm" onchange="filterProducts()"><label>10mm</label></div>
+        <div class="fopt"><input type="checkbox" value="6mm ARC" onchange="filterProducts()"><label>6mm ARC</label></div>
+        <div class="fopt"><input type="checkbox" value=".338 Lapua" onchange="filterProducts()"><label>.338 Lapua Mag</label></div>
+        <div class="fopt"><input type="checkbox" value=".243 Win" onchange="filterProducts()"><label>.243 Winchester</label></div>
+      </div>
+    </div>
+
+    <div class="filter-sec">
+      <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Action Type</span><span class="ftog">&#8964;</span></div>
+      <div class="filter-body collapsed" id="fc-action">
+        <div class="fopt"><input type="checkbox" value="Semi-Auto" onchange="filterProducts()"><label>Semi-Auto</label></div>
+        <div class="fopt"><input type="checkbox" value="Bolt-Action" onchange="filterProducts()"><label>Bolt-Action</label></div>
+        <div class="fopt"><input type="checkbox" value="Lever-Action" onchange="filterProducts()"><label>Lever-Action</label></div>
+        <div class="fopt"><input type="checkbox" value="Revolver" onchange="filterProducts()"><label>Revolver</label></div>
+        <div class="fopt"><input type="checkbox" value="Striker-Fired" onchange="filterProducts()"><label>Striker-Fired</label></div>
+        <div class="fopt"><input type="checkbox" value="Pump-Action" onchange="filterProducts()"><label>Pump-Action</label></div>
+        <div class="fopt"><input type="checkbox" value="Single Shot" onchange="filterProducts()"><label>Single Shot</label></div>
+        <div class="fopt"><input type="checkbox" value="Over-Under" onchange="filterProducts()"><label>Over-Under</label></div>
+      </div>
+    </div>
+
+    <div class="filter-sec">
+      <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Optic Type</span><span class="ftog">&#8964;</span></div>
+      <div class="filter-body collapsed" id="fc-optictype">
+        <div class="fopt"><input type="checkbox" value="Red Dot" onchange="filterProducts()"><label>Red Dot</label></div>
+        <div class="fopt"><input type="checkbox" value="Holographic" onchange="filterProducts()"><label>Holographic</label></div>
+        <div class="fopt"><input type="checkbox" value="LPVO" onchange="filterProducts()"><label>LPVO</label></div>
+        <div class="fopt"><input type="checkbox" value="Scope" onchange="filterProducts()"><label>Scope</label></div>
+        <div class="fopt"><input type="checkbox" value="Prism" onchange="filterProducts()"><label>Prism</label></div>
+      </div>
+    </div>
+
+    <div class="filter-sec">
+      <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Carry Style</span><span class="ftog">&#8964;</span></div>
+      <div class="filter-body collapsed" id="fc-carry">
+        <div class="fopt"><input type="checkbox" value="IWB" onchange="filterProducts()"><label>IWB (Inside Waistband)</label></div>
+        <div class="fopt"><input type="checkbox" value="OWB" onchange="filterProducts()"><label>OWB (Outside Waistband)</label></div>
+        <div class="fopt"><input type="checkbox" value="AIWB" onchange="filterProducts()"><label>AIWB (Appendix)</label></div>
+        <div class="fopt"><input type="checkbox" value="Ankle" onchange="filterProducts()"><label>Ankle</label></div>
+        <div class="fopt"><input type="checkbox" value="Shoulder" onchange="filterProducts()"><label>Shoulder</label></div>
+      </div>
+    </div>
+
+    <div class="filter-sec">
+      <div class="filter-sec-hd" onclick="toggleSec(this)"><span>AR Part Type</span><span class="ftog">&#8964;</span></div>
+      <div class="filter-body collapsed" id="fc-parttype">
+        <div class="fopt"><input type="checkbox" value="Barrel" onchange="filterProducts()"><label>Barrel</label></div>
+        <div class="fopt"><input type="checkbox" value="Trigger" onchange="filterProducts()"><label>Trigger</label></div>
+        <div class="fopt"><input type="checkbox" value="BCG" onchange="filterProducts()"><label>Bolt Carrier Group</label></div>
+        <div class="fopt"><input type="checkbox" value="Handguard" onchange="filterProducts()"><label>Handguard / Rail</label></div>
+        <div class="fopt"><input type="checkbox" value="Upper" onchange="filterProducts()"><label>Complete Upper</label></div>
+        <div class="fopt"><input type="checkbox" value="Lower" onchange="filterProducts()"><label>Complete Lower</label></div>
+        <div class="fopt"><input type="checkbox" value="Stock" onchange="filterProducts()"><label>Stock / Buffer</label></div>
+        <div class="fopt"><input type="checkbox" value="Muzzle" onchange="filterProducts()"><label>Muzzle Device</label></div>
       </div>
     </div>
 
@@ -478,21 +639,101 @@ function loadMoreProducts() {
   document.getElementById('load-more-wrap').scrollIntoView({behavior:'smooth', block:'center'});
 }
 
+// Caliber keyword matching (same pattern as category pages)
+var CALIBER_KEYS_ALL={
+  '9mm':['9mm'],
+  '.223':['.223','223 rem'],
+  '5.56':['5.56'],
+  '.308/7.62':['.308','308 win','7.62x51','7.62 nato'],
+  '.45 ACP':['.45 acp','45 acp'],
+  '.40 S&W':['.40 s&w','.40sw','40 s&w'],
+  '.380 ACP':['.380','380 acp'],
+  '.357 Mag':['.357 mag','357 mag'],
+  '.300 BLK':['300 blk','300 blackout'],
+  '6.5 Creedmoor':['6.5 creedmoor','6.5cm'],
+  '.22 LR':['.22 lr','22lr','22 lr'],
+  '7.62x39':['7.62x39'],
+  '.30-06':['30-06'],
+  '12 Gauge':['12 gauge','12ga'],
+  '20 Gauge':['20 gauge','20ga'],
+  '.410':['410 bore','.410'],
+  '10mm':['10mm'],
+  '6mm ARC':['6mm arc'],
+  '.338 Lapua':['338 lapua'],
+  '.243 Win':['.243 win','243 win']
+};
+function _caliberMatchAll(p,cal){var s=(p.name+' '+(p.sub||'')+' '+(p.caliber||'')).toLowerCase();var keys=CALIBER_KEYS_ALL[cal]||[cal.toLowerCase()];return keys.some(function(k){return s.indexOf(k)>=0;});}
+
+// Category sets for scoped filter logic
+var CALIBER_CATS_ALL=['handguns','rifles','ammunition','magazines','ar-parts','shotguns','cleaning'];
+var ACTION_CATS_ALL=['handguns','rifles','shotguns'];
+
+function _getChecked(sectionId){var vals=[];document.querySelectorAll('#'+sectionId+' input[type=checkbox]:checked').forEach(function(cb){vals.push(cb.value);});return vals;}
+
 function filterProducts() {
   var priceMin = parseFloat(document.getElementById('price-min').value) || 0;
   var priceMax = parseFloat(document.getElementById('price-max').value) || Infinity;
-  var search = (document.getElementById('nav-srch').value || document.getElementById('mob-srch').value || '').toLowerCase();
-  var selectedCats = [];
-  document.querySelectorAll('#fc-category input[type=checkbox]:checked').forEach(function(cb) {
-    selectedCats.push(cb.value);
-  });
+  var search = ((document.getElementById('nav-srch')||{}).value || (document.getElementById('mob-srch')||{}).value || '').toLowerCase();
+
+  var selectedCats = _getChecked('fc-category');
+  var brands       = _getChecked('fc-brand');
+  var calibers     = _getChecked('fc-caliber');
+  var actions      = _getChecked('fc-action');
+  var opticTypes   = _getChecked('fc-optictype');
+  var carries      = _getChecked('fc-carry');
+  var partTypes    = _getChecked('fc-parttype');
 
   visibleCount = PAGE_SIZE;
   filteredProducts = ALL_PRODUCTS.filter(function(p) {
+    var cat = p.category || '';
     var low = getLowestPrice(p);
+
+    // Price
     if (low < priceMin || low > priceMax) return false;
-    if (search && (p.name+p.brand+(p.sub||'')).toLowerCase().indexOf(search) < 0) return false;
-    if (selectedCats.length && selectedCats.indexOf(p.category) < 0) return false;
+
+    // Search
+    if (search && (p.name+p.brand+(p.sub||'')+(p.caliber||'')).toLowerCase().indexOf(search) < 0) return false;
+
+    // Category
+    if (selectedCats.length && selectedCats.indexOf(cat) < 0) return false;
+
+    // Brand — applies to ALL products (all have brand field)
+    if (brands.length && brands.indexOf(p.brand) < 0) return false;
+
+    // Caliber — only caliber-aware categories; other categories excluded when active
+    if (calibers.length) {
+      if (CALIBER_CATS_ALL.indexOf(cat) < 0) return false;
+      if (!calibers.some(function(cal){return _caliberMatchAll(p,cal);})) return false;
+    }
+
+    // Action — only firearm categories; other categories excluded when active
+    if (actions.length) {
+      if (ACTION_CATS_ALL.indexOf(cat) < 0) return false;
+      var aStr = (p.name+' '+(p.sub||'')+' '+(p.action||'')).toLowerCase();
+      if (!actions.some(function(a){return aStr.indexOf(a.toLowerCase())>=0;})) return false;
+    }
+
+    // Optic Type — only optics category
+    if (opticTypes.length) {
+      if (cat !== 'optics') return false;
+      var oStr = (p.name+' '+(p.sub||'')+' '+(p.type||'')).toLowerCase();
+      if (!opticTypes.some(function(t){return oStr.indexOf(t.toLowerCase())>=0;})) return false;
+    }
+
+    // Carry Style — only holsters category
+    if (carries.length) {
+      if (cat !== 'holsters') return false;
+      var cStr = (p.name+' '+(p.sub||'')+' '+(p.carry||'')).toLowerCase();
+      if (!carries.some(function(c){return cStr.indexOf(c.toLowerCase())>=0;})) return false;
+    }
+
+    // Part Type — only ar-parts category
+    if (partTypes.length) {
+      if (cat !== 'ar-parts') return false;
+      var ptStr = (p.name+' '+(p.sub||'')+' '+(p.ptype||'')).toLowerCase();
+      if (!partTypes.some(function(pt){return ptStr.indexOf(pt.toLowerCase())>=0;})) return false;
+    }
+
     return true;
   });
   sortAndRender();
