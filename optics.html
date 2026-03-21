@@ -477,5 +477,6 @@ function saveItem(id){var p=PRODUCTS.find(function(x){return x.id===id;});if(p)a
 function renderSuggested(){var pool=PRODUCTS.filter(function(p){return p.badge==='best';}).slice(0,6);document.getElementById('sugg-grid').innerHTML=pool.map(function(p){var low=getLowestPrice(p);return '<div class="sugg-card" onclick="viewProduct('+p.id+')">'+'<div class="sugg-brand">'+p.brand+'</div><div class="sugg-name">'+p.name+'</div><div class="sugg-price">$'+low.toFixed(2)+'</div><div class="sugg-reason">'+p.type+'</div></div>';}).join('');}
 filteredProducts=ALL_PRODUCTS.slice();sortAndRender();renderSuggested();loadEuroOptic();
 </script>
+<script src="/js/search-autocomplete.js"></script>
 </body>
 </html>
