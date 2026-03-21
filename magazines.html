@@ -406,6 +406,9 @@ function renderGrid(){
   if(filteredProducts.length>visibleCount){lmw.innerHTML='<button class="load-more-btn" onclick="loadMore()">Load More ('+(filteredProducts.length-visibleCount)+' remaining)</button>';}else{lmw.innerHTML='';}
 }
 function loadMore(){visibleCount+=PAGE_SIZE;renderGrid();}
+var CALIBER_KEYS={'9mm':['9mm'],'.223/5.56':['.223','223 rem','5.56'],'.45 ACP':['.45 acp','45 acp'],'.40 SW':['.40 s&w','.40sw','40 s&w','40sw'],'7.62x39':['7.62x39'],'.22 LR':['.22 lr','22lr','22 lr'],'.308/7.62':['.308','308 win','7.62x51','7.62 nato']};
+function _caliberMatch(p,cal){var s=(p.name+' '+(p.sub||'')+' '+(p.caliber||'')).toLowerCase();var keys=CALIBER_KEYS[cal]||[cal.toLowerCase()];return keys.some(function(k){return s.indexOf(k)>=0;});}
+
 function filterProducts(){
   var priceMin=parseFloat(document.getElementById('price-min').value)||0;
   var priceMax=parseFloat(document.getElementById('price-max').value)||Infinity;
@@ -416,14 +419,15 @@ function filterProducts(){
   var caps=Object.keys(checks).filter(function(v){return ['cap-u10','cap-10-15','cap-17-20','cap-21-30','cap-o30'].indexOf(v)>=0;});
   var mats=Object.keys(checks).filter(function(v){return ['Polymer','Steel','Aluminum'].indexOf(v)>=0;});
   var brands=Object.keys(checks).filter(function(v){return ['Magpul','Glock','Sig Sauer','Springfield Armory','Steyr','ETS','MFT','ProMag'].indexOf(v)>=0;});
-  visibleCount=PAGE_SIZE;filteredProducts=ALL_PRODUCTS.filter(function(p){if(p.src==='eurooptic'){var low=getLowestPrice(p);if(low<priceMin||low>priceMax)return false;if(search&&(p.name+p.brand).toLowerCase().indexOf(search)<0)return false;return true;}
+  visibleCount=PAGE_SIZE;filteredProducts=ALL_PRODUCTS.filter(function(p){
     var low=getLowestPrice(p);
     if(low<priceMin||low>priceMax)return false;
-    if(search&&(p.name+p.brand+p.sub+p.caliber).toLowerCase().indexOf(search)<0)return false;
-    if(fits.length&&!fits.some(function(f){return (p.fit||'').toLowerCase().indexOf(f.toLowerCase())>=0;}))return false;
-    if(calibers.length&&calibers.indexOf(p.caliber)<0)return false;
-    if(mats.length&&mats.indexOf(p.mat)<0)return false;
+    if(search&&(p.name+p.brand+(p.sub||'')+(p.caliber||'')).toLowerCase().indexOf(search)<0)return false;
+    if(fits.length&&!fits.some(function(f){return (p.name+' '+(p.sub||'')+' '+(p.fit||'')).toLowerCase().indexOf(f.toLowerCase())>=0;}))return false;
+    if(calibers.length&&!calibers.some(function(cal){return _caliberMatch(p,cal);}))return false;
     if(brands.length&&brands.indexOf(p.brand)<0)return false;
+    if(p.src==='eurooptic')return true;
+    if(mats.length&&mats.indexOf(p.mat)<0)return false;
     if(caps.length){var c=p.cap;if(!caps.some(function(v){if(v==='cap-u10')return c<10;if(v==='cap-10-15')return c>=10&&c<=15;if(v==='cap-17-20')return c>=17&&c<=20;if(v==='cap-21-30')return c>=21&&c<=30;if(v==='cap-o30')return c>30;return false;}))return false;}
     return true;
   });

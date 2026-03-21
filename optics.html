@@ -446,12 +446,13 @@ function filterProducts(){
   var brands=Object.keys(checks).filter(function(v){return ['Vortex','Leupold','Trijicon','Aimpoint','EOTech','Primary Arms','Sig Sauer','Nightforce','Burris','Holosun'].indexOf(v)>=0;});
   var mags=Object.keys(checks).filter(function(v){return ['1x','lpvo','3-10x','10x+'].indexOf(v)>=0;});
   var platforms=Object.keys(checks).filter(function(v){return ['AR-15','Pistol','Bolt-Action','Universal'].indexOf(v)>=0;});
-  visibleCount=PAGE_SIZE;filteredProducts=ALL_PRODUCTS.filter(function(p){if(p.src==='eurooptic'){var low=getLowestPrice(p);if(low<priceMin||low>priceMax)return false;if(search&&(p.name+p.brand).toLowerCase().indexOf(search)<0)return false;return true;}
+  visibleCount=PAGE_SIZE;filteredProducts=ALL_PRODUCTS.filter(function(p){
     var low=getLowestPrice(p);
     if(low<priceMin||low>priceMax)return false;
-    if(search&&(p.name+p.brand+p.sub).toLowerCase().indexOf(search)<0)return false;
-    if(types.length&&types.indexOf(p.type)<0)return false;
+    if(search&&(p.name+p.brand+(p.sub||'')).toLowerCase().indexOf(search)<0)return false;
     if(brands.length&&brands.indexOf(p.brand)<0)return false;
+    if(p.src==='eurooptic')return true;
+    if(types.length&&types.indexOf(p.type)<0)return false;
     if(mags.length&&mags.indexOf(p.mag)<0)return false;
     if(platforms.length&&platforms.indexOf(p.platform)<0)return false;
     return true;

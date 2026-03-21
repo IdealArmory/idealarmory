@@ -377,6 +377,9 @@ function renderGrid(){
   if(filteredProducts.length>visibleCount){lmw.innerHTML='<button class="load-more-btn" onclick="loadMore()">Load More ('+(filteredProducts.length-visibleCount)+' remaining)</button>';}else{lmw.innerHTML='';}
 }
 function loadMore(){visibleCount+=PAGE_SIZE;renderGrid();}
+var CALIBER_KEYS={'Universal':['universal'],'9mm':['9mm'],'.223/5.56':['.223','223 rem','5.56'],'.308/7.62':['.308','308 win','7.62x51','7.62 nato'],'.22 LR':['.22 lr','22lr','22 lr'],'12 Gauge':['12 gauge','12ga']};
+function _caliberMatch(p,cal){var s=(p.name+' '+(p.sub||'')+' '+(p.caliber||'')).toLowerCase();var keys=CALIBER_KEYS[cal]||[cal.toLowerCase()];return keys.some(function(k){return s.indexOf(k)>=0;});}
+
 function filterProducts(){
   var priceMin=parseFloat(document.getElementById('price-min').value)||0;
   var priceMax=parseFloat(document.getElementById('price-max').value)||Infinity;
@@ -385,13 +388,14 @@ function filterProducts(){
   var ptypes=Object.keys(checks).filter(function(v){return ['Cleaning Kit','Solvent','Oil','CLP','Bore Snake','Patches','Brush Set','Wipes'].indexOf(v)>=0;});
   var brands=Object.keys(checks).filter(function(v){return ['Hoppes','Break-Free','Ballistol','Otis','Slip 2000','Bore Tech','Real Avid','M-Pro 7'].indexOf(v)>=0;});
   var calibers=Object.keys(checks).filter(function(v){return ['Universal','9mm','.223/5.56','.308/7.62','.22 LR','12 Gauge'].indexOf(v)>=0;});
-  visibleCount=PAGE_SIZE;filteredProducts=ALL_PRODUCTS.filter(function(p){if(p.src==='eurooptic'){var low=getLowestPrice(p);if(low<priceMin||low>priceMax)return false;if(search&&(p.name+p.brand).toLowerCase().indexOf(search)<0)return false;return true;}
+  visibleCount=PAGE_SIZE;filteredProducts=ALL_PRODUCTS.filter(function(p){
     var low=getLowestPrice(p);
     if(low<priceMin||low>priceMax)return false;
-    if(search&&(p.name+p.brand+p.sub).toLowerCase().indexOf(search)<0)return false;
-    if(ptypes.length&&ptypes.indexOf(p.ptype)<0)return false;
+    if(search&&(p.name+p.brand+(p.sub||'')).toLowerCase().indexOf(search)<0)return false;
+    if(calibers.length&&!calibers.some(function(cal){return _caliberMatch(p,cal);}))return false;
     if(brands.length&&brands.indexOf(p.brand)<0)return false;
-    if(calibers.length&&calibers.indexOf(p.caliber)<0)return false;
+    if(p.src==='eurooptic')return true;
+    if(ptypes.length&&ptypes.indexOf(p.ptype)<0)return false;
     return true;
   });
   sortAndRender();renderActiveFilters();

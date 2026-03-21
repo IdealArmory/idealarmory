@@ -412,14 +412,15 @@ function filterProducts(){
   var locks=Object.keys(checks).filter(function(v){return ['Electronic','Biometric','Mechanical','Key Lock'].indexOf(v)>=0;});
   var fires=Object.keys(checks).filter(function(v){return ['No Rating','30 min','60 min','90 min'].indexOf(v)>=0;});
   var brands=Object.keys(checks).filter(function(v){return ['Liberty','Fort Knox','Browning','Cannon','Vaultek','Hornady','V-Line','Stack-On'].indexOf(v)>=0;});
-  visibleCount=PAGE_SIZE;filteredProducts=ALL_PRODUCTS.filter(function(p){if(p.src==='eurooptic'){var low=getLowestPrice(p);if(low<priceMin||low>priceMax)return false;if(search&&(p.name+p.brand).toLowerCase().indexOf(search)<0)return false;return true;}
+  visibleCount=PAGE_SIZE;filteredProducts=ALL_PRODUCTS.filter(function(p){
     var low=getLowestPrice(p);
     if(low<priceMin||low>priceMax)return false;
-    if(search&&(p.name+p.brand+p.sub).toLowerCase().indexOf(search)<0)return false;
+    if(search&&(p.name+p.brand+(p.sub||'')).toLowerCase().indexOf(search)<0)return false;
+    if(brands.length&&brands.indexOf(p.brand)<0)return false;
+    if(p.src==='eurooptic')return true;
     if(stypes.length&&stypes.indexOf(p.stype)<0)return false;
     if(locks.length&&locks.indexOf(p.lock)<0)return false;
     if(fires.length&&fires.indexOf(p.fire)<0)return false;
-    if(brands.length&&brands.indexOf(p.brand)<0)return false;
     if(caps.length){var c=p.cap;if(!caps.some(function(v){if(v==='cap-1-2')return c<=2;if(v==='cap-3-5')return c>=3&&c<=5;if(v==='cap-6-12')return c>=6&&c<=12;if(v==='cap-13-24')return c>=13&&c<=24;if(v==='cap-25p')return c>=25;return false;}))return false;}
     return true;
   });

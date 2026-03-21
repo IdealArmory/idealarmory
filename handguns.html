@@ -557,6 +557,9 @@ function loadMoreProducts() {
   document.getElementById('load-more-wrap').scrollIntoView({behavior:'smooth', block:'center'});
 }
 
+var CALIBER_KEYS={'9mm':['9mm'],'10mm':['10mm'],'.45 ACP':['.45 acp','45 acp'],'.40 SW':['.40 s&w','.40sw','40 s&w','40sw'],'.380 ACP':['.380','380 acp'],'.357 Mag':['.357 mag','357 mag'],'.44 Mag':['.44 mag','44 mag'],'.22 LR':['.22 lr','22lr','22 lr'],'5.7x28mm':['5.7x28']};
+function _caliberMatch(p,cal){var s=(p.name+' '+(p.sub||'')+' '+(p.caliber||'')).toLowerCase();var keys=CALIBER_KEYS[cal]||[cal.toLowerCase()];return keys.some(function(k){return s.indexOf(k)>=0;});}
+
 function filterProducts() {
   var priceMin = parseFloat(document.getElementById('price-min').value) || 0;
   var priceMax = parseFloat(document.getElementById('price-max').value) || Infinity;
@@ -577,18 +580,13 @@ function filterProducts() {
 
   visibleCount = PAGE_SIZE;
   filteredProducts = ALL_PRODUCTS.filter(function(p) {
-    if (p.src === 'eurooptic') {
-      var low = getLowestPrice(p);
-      if (low < priceMin || low > priceMax) return false;
-      if (search && (p.name+p.brand).toLowerCase().indexOf(search) < 0) return false;
-      return true;
-    }
     var low = getLowestPrice(p);
     if (low < priceMin || low > priceMax) return false;
-    if (search && (p.name+p.brand+p.sub+p.caliber).toLowerCase().indexOf(search) < 0) return false;
-    if (calibers.length && calibers.indexOf(p.caliber) < 0) return false;
-    if (actions.length && actions.indexOf(p.action) < 0) return false;
+    if (search && (p.name+p.brand+(p.sub||'')+(p.caliber||'')).toLowerCase().indexOf(search) < 0) return false;
+    if (calibers.length && !calibers.some(function(cal){return _caliberMatch(p,cal);})) return false;
     if (brands.length && brands.indexOf(p.brand) < 0) return false;
+    if (p.src === 'eurooptic') return true;
+    if (actions.length && actions.indexOf(p.action) < 0) return false;
     if (frames.length && frames.indexOf(p.frameSize) < 0) return false;
     if (safeties.length && safeties.indexOf(p.safety) < 0) return false;
     if (hands.length && hands.indexOf(p.hand) < 0) return false;

@@ -270,7 +270,8 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
     <div class="filter-sec">
       <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Caliber</span><span class="ftog open">&#8964;</span></div>
       <div class="filter-body" id="fc-caliber">
-        <div class="fopt"><input type="checkbox" value=".223/5.56" onchange="filterProducts()"><label>.223 / 5.56 NATO</label></div>
+        <div class="fopt"><input type="checkbox" value=".223" onchange="filterProducts()"><label>.223 Remington</label></div>
+        <div class="fopt"><input type="checkbox" value="5.56" onchange="filterProducts()"><label>5.56 NATO</label></div>
         <div class="fopt"><input type="checkbox" value=".308/7.62" onchange="filterProducts()"><label>.308 / 7.62 NATO</label></div>
         <div class="fopt"><input type="checkbox" value=".300 BLK" onchange="filterProducts()"><label>.300 Blackout</label></div>
         <div class="fopt"><input type="checkbox" value="6.5 Creedmoor" onchange="filterProducts()"><label>6.5 Creedmoor</label></div>
@@ -491,27 +492,44 @@ function renderGrid(){
 }
 function loadMore(){visibleCount+=PAGE_SIZE;renderGrid();}
 
+// Caliber keyword map: filter value → keywords to search in product name/sub/caliber
+var CALIBER_KEYS={
+  '.223':['.223','223 rem'],
+  '5.56':['5.56'],
+  '.308/7.62':['.308','308 win','7.62x51','7.62 nato'],
+  '.300 BLK':['300 blk','300 blackout'],
+  '6.5 Creedmoor':['6.5 creedmoor','6.5cm'],
+  '.22 LR':['.22 lr','22lr','22 lr'],
+  '.30-06':['30-06'],
+  '.243 Win':['.243 win','243 win','.243 winchester'],
+  '7.62x39':['7.62x39'],
+  '.338 Lapua':['338 lapua','338 lm'],
+  '6mm ARC':['6mm arc']
+};
+function _caliberMatch(p,cal){var s=(p.name+' '+(p.sub||'')+' '+(p.caliber||'')).toLowerCase();var keys=CALIBER_KEYS[cal]||[cal.toLowerCase()];return keys.some(function(k){return s.indexOf(k)>=0;});}
+
 function filterProducts(){
   var priceMin=parseFloat(document.getElementById('price-min').value)||0;
   var priceMax=parseFloat(document.getElementById('price-max').value)||Infinity;
   var search=(document.getElementById('nav-srch').value||'').toLowerCase();
   var checks={};
   document.querySelectorAll('.filter-body input[type=checkbox]:checked').forEach(function(cb){checks[cb.value]=true;});
-  var calibers=Object.keys(checks).filter(function(v){return ['.223/5.56','.308/7.62','.300 BLK','6.5 Creedmoor','.22 LR','.30-06','.243 Win','7.62x39','.338 Lapua','6mm ARC'].indexOf(v)>=0;});
+  var calibers=Object.keys(checks).filter(function(v){return ['.223','5.56','.308/7.62','.300 BLK','6.5 Creedmoor','.22 LR','.30-06','.243 Win','7.62x39','.338 Lapua','6mm ARC'].indexOf(v)>=0;});
   var actions=Object.keys(checks).filter(function(v){return ['Semi-Auto','Bolt-Action','Lever-Action','Single Shot','Pump-Action'].indexOf(v)>=0;});
   var platforms=Object.keys(checks).filter(function(v){return ['AR-15','AK','Precision','Hunting','Rimfire'].indexOf(v)>=0;});
   var brands=Object.keys(checks).filter(function(v){return ['Aero Precision','Daniel Defense','PSA','Ruger','Savage','Winchester','Remington','CMMG','Smith & Wesson','Sig Sauer','Springfield Armory','IWI','Colt','Henry','Bergara','Steyr'].indexOf(v)>=0;});
   var barrels=Object.keys(checks).filter(function(v){return ['barrel-u16','barrel-16-18','barrel-18-20','barrel-20-24','barrel-o24'].indexOf(v)>=0;});
   var feats=Object.keys(checks).filter(function(v){return ['optic-ready','threaded','folding','free-float'].indexOf(v)>=0;});
 
-  visibleCount=PAGE_SIZE;filteredProducts=ALL_PRODUCTS.filter(function(p){if(p.src==='eurooptic'){var low=getLowestPrice(p);if(low<priceMin||low>priceMax)return false;if(search&&(p.name+p.brand).toLowerCase().indexOf(search)<0)return false;return true;}
+  visibleCount=PAGE_SIZE;filteredProducts=ALL_PRODUCTS.filter(function(p){
     var low=getLowestPrice(p);
     if(low<priceMin||low>priceMax)return false;
-    if(search&&(p.name+p.brand+p.sub+p.caliber).toLowerCase().indexOf(search)<0)return false;
-    if(calibers.length&&calibers.indexOf(p.caliber)<0)return false;
+    if(search&&(p.name+' '+(p.brand||'')+' '+(p.sub||'')+' '+(p.caliber||'')).toLowerCase().indexOf(search)<0)return false;
+    if(calibers.length&&!calibers.some(function(cal){return _caliberMatch(p,cal);}))return false;
+    if(brands.length&&brands.indexOf(p.brand)<0)return false;
+    if(p.src==='eurooptic')return true;
     if(actions.length&&actions.indexOf(p.action)<0)return false;
     if(platforms.length&&platforms.indexOf(p.platform)<0)return false;
-    if(brands.length&&brands.indexOf(p.brand)<0)return false;
     if(feats.length&&!feats.every(function(f){return p.features.indexOf(f)>=0;}))return false;
     if(barrels.length){
       var b=p.barrelIn;
