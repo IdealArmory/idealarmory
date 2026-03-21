@@ -379,6 +379,9 @@ var EO_FILES = [
 async function loadAllEuroOptic() {
   document.getElementById('result-count').innerHTML = 'Loading products...';
   try {
+    var manualPromise = fetch('/data/manual-products.json')
+      .then(function(r){ return r.ok ? r.json() : []; })
+      .catch(function(){ return []; });
     var results = await Promise.all(
       EO_FILES.map(function(cat) {
         return fetch('/data/eurooptic-'+cat+'.json')
@@ -386,7 +389,8 @@ async function loadAllEuroOptic() {
           .catch(function(){ return []; });
       })
     );
-    ALL_PRODUCTS = [];
+    var manualItems = await manualPromise;
+    ALL_PRODUCTS = manualItems.slice();
     results.forEach(function(items, i) {
       var cat = EO_FILES[i];
       items.forEach(function(eo) {
@@ -580,6 +584,15 @@ function viewProduct(id) {
     }
     var eoP2 = ALL_PRODUCTS.find(function(x){return x.id==='eo_'+eoId;});
     window.location.href = '/product.html?src=eurooptic&id=' + encodeURIComponent(eoId) + '&cat=' + (eoP2 ? (eoP2.category||'') : '');
+    return;
+  }
+  // Manual affiliate products — store in sessionStorage and route via slug
+  var manP = ALL_PRODUCTS.find(function(x){return x.id===id||x.id===String(id);});
+  if (manP) {
+    var mpd = Object.assign({},manP);
+    if (!mpd.imgs || !mpd.imgs.length) mpd.imgs = mpd.img ? [mpd.img] : [];
+    try{sessionStorage.setItem('ia_pv',JSON.stringify(mpd));}catch(e){}
+    window.location.href = '/product.html?p=' + slugify(manP.name);
     return;
   }
   window.location.href = '/product.html?p=' + slugify(String(id));
