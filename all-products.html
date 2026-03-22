@@ -668,6 +668,36 @@ function _caliberMatchAll(p,cal){var s=(p.name+' '+(p.sub||'')+' '+(p.caliber||'
 var CALIBER_CATS_ALL=['handguns','rifles','ammunition','magazines','ar-parts','shotguns','cleaning'];
 var ACTION_CATS_ALL=['handguns','rifles','shotguns'];
 
+/* Build a word-boundary regex so "sig" doesn't match "sights", "signal", etc. */
+function _buildSearchRe(q) {
+  var e = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  if (/^\w/.test(q)) e = '\\b' + e;
+  if (/\w$/.test(q)) e = e + '\\b';
+  return new RegExp(e, 'i');
+}
+
+/* Relevance score: higher = more relevant. Used to sort results when search is active. */
+var _FIREARM_CATS = ['handguns','rifles','shotguns'];
+var _ACCESSORY_CATS = ['ammunition','magazines','optics','ar-parts'];
+function _searchScore(p, ql, re) {
+  var score = 0;
+  var brand = (p.brand || '').toLowerCase();
+  var name  = (p.name  || '').toLowerCase();
+  var cat   = p.category || '';
+  // Brand relevance (highest priority)
+  if (brand === ql)                           score += 100;
+  else if (brand.indexOf(ql) === 0)           score +=  80;
+  else if (/^\w/.test(ql) && new RegExp('\\b' + ql.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), 'i').test(brand)) score += 60;
+  // Name relevance
+  if (name.indexOf(ql) === 0)                 score +=  40;
+  // Category priority: firearms first, then ammo/optics, then everything else
+  if (_FIREARM_CATS.indexOf(cat) >= 0)        score +=  15;
+  else if (_ACCESSORY_CATS.indexOf(cat) >= 0) score +=   5;
+  // Best-seller badge
+  if (p.badge === 'best')                     score +=  10;
+  return score;
+}
+
 function _getChecked(sectionId){var vals=[];document.querySelectorAll('#'+sectionId+' input[type=checkbox]:checked').forEach(function(cb){vals.push(cb.value);});return vals;}
 
 function filterProducts() {
@@ -684,6 +714,7 @@ function filterProducts() {
   var partTypes    = _getChecked('fc-parttype');
 
   visibleCount = PAGE_SIZE;
+  var _searchRe = search ? _buildSearchRe(search) : null;
   filteredProducts = ALL_PRODUCTS.filter(function(p) {
     var cat = p.category || '';
     var low = getLowestPrice(p);
@@ -691,8 +722,8 @@ function filterProducts() {
     // Price
     if (low < priceMin || low > priceMax) return false;
 
-    // Search
-    if (search && (p.name+p.brand+(p.sub||'')+(p.caliber||'')).toLowerCase().indexOf(search) < 0) return false;
+    // Search — word-boundary match so "sig" doesn't match "sights"
+    if (_searchRe && !_searchRe.test(p.name + ' ' + p.brand + ' ' + (p.sub||'') + ' ' + (p.caliber||''))) return false;
 
     // Category
     if (selectedCats.length && selectedCats.indexOf(cat) < 0) return false;
@@ -736,7 +767,16 @@ function filterProducts() {
 
     return true;
   });
-  sortAndRender();
+  // When search is active, sort by relevance (brand match → firearm category → badge)
+  // so "P320" and "P365" appear before accessories/holsters for a "Sig" search.
+  if (search && _searchRe) {
+    filteredProducts.sort(function(a, b) {
+      return _searchScore(b, search, _searchRe) - _searchScore(a, search, _searchRe);
+    });
+    renderGrid();
+  } else {
+    sortAndRender();
+  }
   renderActiveFilters();
 }
 

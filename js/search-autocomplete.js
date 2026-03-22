@@ -49,20 +49,28 @@
   }
 
   /* ── Search ── */
+  function buildRe(ql) {
+    var e = ql.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    if (/^\w/.test(ql)) e = '\\b' + e;
+    if (/\w$/.test(ql)) e = e + '\\b';
+    return new RegExp(e, 'i');
+  }
+
   function search(q, limit) {
     if (!q || !INDEX || !INDEX.length) return [];
     var ql = q.toLowerCase().trim();
+    var re = buildRe(ql);
     var brandExact = [], nameStart = [], partial = [];
     for (var i = 0; i < INDEX.length; i++) {
       var p = INDEX[i];
       var name = (p.name || '').toLowerCase();
       var brand = (p.brand || '').toLowerCase();
-      var haystack = name + ' ' + brand;
+      var haystack = p.name + ' ' + p.brand + ' ' + (p.sub || '');
       if (brand === ql) {
         brandExact.push(p);
       } else if (name.indexOf(ql) === 0 || brand.indexOf(ql) === 0) {
         nameStart.push(p);
-      } else if (haystack.indexOf(ql) >= 0) {
+      } else if (re.test(haystack)) {
         partial.push(p);
       }
       if (brandExact.length + nameStart.length + partial.length >= (limit || 10) * 4) break;
