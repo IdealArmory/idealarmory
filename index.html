@@ -1864,7 +1864,7 @@ function updateNavKitCount(){
 ══════════════════════════════════════════════ */
 (function(){
   var CATS=[
-    {l:'All',h:null},
+    {l:'All',h:'/all-products.html'},
     {l:'Handguns',h:'/handguns.html'},
     {l:'Rifles',h:'/rifles.html'},
     {l:'Shotguns',h:'/shotguns.html'},
@@ -1878,12 +1878,12 @@ function updateNavKitCount(){
   ];
   var _nc=document.getElementById('nav-cats');
   if(!_nc)return;
-  CATS.forEach(function(cat,i){
-    var d=document.createElement(cat.h?'a':'div');
-    d.className='nav-cat'+(i===0?' active':'');
+  CATS.forEach(function(cat){
+    var d=document.createElement('a');
+    d.className='nav-cat';
     d.textContent=cat.l;
-    if(cat.h){d.href=cat.h;d.style.textDecoration='none';}
-    else{d.onclick=function(){document.querySelectorAll('.nav-cat').forEach(function(e){e.classList.remove('active');});this.classList.add('active');};}
+    d.href=cat.h;
+    d.style.textDecoration='none';
     _nc.appendChild(d);
   });
 })();
