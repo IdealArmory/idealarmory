@@ -2048,11 +2048,11 @@ initSearchAutocomplete('mob-srch');
    CATEGORIES
 ══════════════════════════════════════════════ */
 const CAT_NAMES=['Handguns','Rifles','Shotguns','Ammunition','Optics','Holsters','AR Parts','Magazines','Body Armor','Cleaning Kits','Gun Safes','Tactical Gear'];
-var _cg=document.getElementById('cat-grid');if(_cg)_cg.innerHTML=CAT_NAMES.map((name,i)=>`
-  <div class="cat-tile">
-    <div class="cat-name">${name}</div>
-    <div class="cat-count">${CATS[i].count}</div>
-  </div>`).join('');
+const CAT_URLS={'Handguns':'/handguns.html','Rifles':'/rifles.html','Shotguns':'/shotguns.html','Ammunition':'/ammunition.html','Optics':'/optics.html','Holsters':'/holsters.html','AR Parts':'/ar-parts.html','Magazines':'/magazines.html','Cleaning Kits':'/cleaning.html','Gun Safes':'/gun-safes.html'};
+var _cg=document.getElementById('cat-grid');if(_cg)_cg.innerHTML=CAT_NAMES.map((name,i)=>{
+  var url=CAT_URLS[name]||'/all-products.html';
+  return `<a class="cat-tile" href="${url}"><div class="cat-name">${name}</div><div class="cat-count">${CATS[i]?CATS[i].count:''}</div></a>`;
+}).join('');
 
 /* ══════════════════════════════════════════════
 
