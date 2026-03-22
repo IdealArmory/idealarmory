@@ -82,20 +82,34 @@ function mapCategory(cat, name) {
   if (t.includes('holster'))                                                                 return 'holsters';
   if (t.includes('magazine') || t.includes(' mag ') || t.includes('mag,'))                  return 'magazines';
   if (t.includes('cleaning') || t.includes('maintenance') || t.includes('solvent') ||
-      t.includes('lubricant') || t.includes('bore'))                                         return 'cleaning';
+      t.includes('lubricant') || t.includes('bore') || t.includes('brush') ||
+      t.includes('patch') || t.includes('cleaner') || t.includes('lube ') ||
+      t.includes('oil ') || t.includes('degreaser'))                                         return 'cleaning';
   if (t.includes('safe') || t.includes('vault') || t.includes('storage'))                   return 'gun-safes';
+  // Cases/pouches/accessories — reject before firearm keyword matching
+  if (t.includes(' case') || t.includes(' pouch') || t.includes(' rug ') ||
+      t.includes(' bag ') || t.includes(' mat ') || t.includes(' sleeve') ||
+      t.includes('adapter') || t.includes(' cover ') || t.includes('protector') ||
+      t.includes(' wrap ') || t.includes('spacer') || t.includes('buttpad'))                return 'other';
   if (t.includes('ammo') || t.includes('ammunition') || t.includes('bullet') ||
       t.includes('cartridge') || t.includes('round') || t.includes('powder') ||
-      t.includes('primer') || t.includes('projectile'))                                      return 'ammunition';
+      t.includes('primer') || t.includes('projectile') || t.includes(' rds') ||
+      t.includes(' rd,') || t.includes(' gr.') || t.includes('grain ') ||
+      t.includes('fmj') || t.includes('jhp') || t.includes('subsonic') ||
+      t.includes('buckshot') || t.includes('birdshot') || t.includes('slug'))               return 'ammunition';
   if (t.includes('optic') || t.includes('scope') || t.includes('sight') ||
       t.includes('binocular') || t.includes('rangefinder') || t.includes('night vision'))   return 'optics';
+  // AR parts — check pistol-length/pistol-grip descriptors BEFORE handgun keywords
   if (t.includes('ar-') || t.includes('ar15') || t.includes('ar10') ||
       t.includes('parts') || t.includes('accessory') || t.includes('accessories') ||
       t.includes('bipod') || t.includes('grip') || t.includes('stock') ||
       t.includes('trigger') || t.includes('suppressor') || t.includes('silencer') ||
       t.includes('muzzle') || t.includes('foregrip') || t.includes('mount') ||
       t.includes('rail') || t.includes('sling') || t.includes('flashlight') ||
-      t.includes('light') || t.includes('laser'))                                            return 'ar-parts';
+      t.includes('light') || t.includes('laser') || t.includes('gas tube') ||
+      t.includes('gas block') || t.includes('bolt carrier') || t.includes('handguard') ||
+      t.includes('pistol length') || t.includes('pistol grip') ||
+      t.includes('pistol buffer') || t.includes('pistol caliber'))                          return 'ar-parts';
   // Broad firearm terms last — only reached if no specific category matched above
   if (t.includes('rifle') || t.includes('shotgun'))                                         return 'rifles';
   if (t.includes('handgun') || t.includes('pistol') || t.includes('revolver'))              return 'handguns';
