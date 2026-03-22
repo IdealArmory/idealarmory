@@ -488,7 +488,7 @@ async function loadEuroOptic() {
     if (!res.ok) return;
     var items = await res.json();
     // Client-side relevance filter: only keep actual handguns
-    var HG_EXCL=['case ','pistol case',' rug ',' pouch',' mat ',' bag ',' sleeve','adapter','brush ','patch ','gas tube','gas block','bolt carrier','charging handle','handguard',' rds',' rd.',' gr.','grain ','fmj','jhp',' ammo','ammunition','bullet ','cleaning','solvent','maintenance','binocular','rangefinder','suppressor','silencer','bipod','sling ','flashlight',' laser','magazine',' mag ','holster'];
+    var HG_EXCL=['case ','pistol case',' rug ',' pouch',' mat ',' bag ',' sleeve','brush ','patch ','gas tube','gas block','bolt carrier','charging handle','50rds','100rds','250rds','500rds','1000rds','50 rds','100 rds','250 rds','500 rds',' gr.','grain ','fmj','jhp',' ammo','ammunition','bullet ','cleaning','solvent','maintenance','binocular','rangefinder','bipod','sling ','flashlight',' laser','magazine',' mag ','holster'];
     items=items.filter(function(eo){if(!eo.price||eo.price<150)return false;if(!eo.img||eo.img.includes('no-image'))return false;var n=(eo.name+' '+(eo.brand||'')).toLowerCase();return!HG_EXCL.some(function(w){return n.indexOf(w)>=0;});}).slice(0,500);
     var upcMap = {};
     PRODUCTS.forEach(function(p){ if(p.upc) upcMap[p.upc] = p; });
