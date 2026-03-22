@@ -1948,8 +1948,17 @@ var SEARCH_SUGGESTIONS = [
 ];
 
 function navSearch(srcInput) {
-  var input = srcInput || document.getElementById('nav-srch') || document.getElementById('mob-srch');
-  var v = input ? input.value.trim() : '';
+  var v = '';
+  if (srcInput) {
+    v = srcInput.value.trim();
+  } else {
+    // nav-srch is hidden (display:none) on mobile but still exists in the DOM,
+    // so getElementById('nav-srch') always returns an element with an empty value
+    // on mobile. Check mob-srch first so mobile searches are captured correctly.
+    var ms = document.getElementById('mob-srch');
+    var ns = document.getElementById('nav-srch');
+    v = (ms && ms.value.trim()) || (ns && ns.value.trim()) || '';
+  }
   if (v) {
     window.location.href = '/all-products.html?q=' + encodeURIComponent(v);
   } else {
