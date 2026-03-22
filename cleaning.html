@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Gun Cleaning Supplies - Compare Prices | Ideal Armory</title>
-<meta name="description" content="Compare gun cleaning kit prices from licensed retailers. Solvents, oils, bore snakes, CLP, patch sets — find the best deal.">
+<meta name="description" content="Compare gun cleaning kit prices from licensed retailers. Solvents, oils, bore snakes, CLP, patch sets � find the best deal.">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-62EBWTERM3"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-62EBWTERM3');</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -113,7 +113,7 @@ footer{background:var(--navy-deep);color:rgba(255,255,255,.75);font-size:13px;ma
 @media(max-width:768px){.foot-grid{grid-template-columns:1fr 1fr;gap:28px;padding:36px 24px 24px}.page-header{padding:20px 16px}}
 @media(max-width:768px){.product-grid{grid-template-columns:repeat(3,1fr)}}@media(max-width:480px){.nav-top{padding:0 14px;height:52px}.product-grid{grid-template-columns:1fr 1fr;gap:8px}.prod-img{height:110px}.foot-grid{grid-template-columns:1fr;gap:24px}}
 
-/* ── UNIVERSAL NAV CSS ── */
+/* -- UNIVERSAL NAV CSS -- */
 nav.site-nav{background:var(--navy-deep);position:sticky;top:0;z-index:200;box-shadow:0 2px 12px rgba(0,0,0,.35)}
 .nav-top{display:flex;align-items:center;max-width:1360px;margin:0 auto;padding:0 24px;height:58px;gap:18px}
 a.nav-logo{display:flex;align-items:center;gap:0;font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--white);letter-spacing:-.5px;white-space:nowrap;flex-shrink:0;cursor:pointer;line-height:1;text-decoration:none}
@@ -172,7 +172,7 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
 </style>
 </head>
 <body>
-<!-- ═══ NAV ═══ -->
+<!-- --- NAV --- -->
 <div class="drawer-overlay" id="drawer-overlay" onclick="toggleDrawer()"></div>
 <div class="mobile-drawer" id="mobile-drawer">
   <button class="mob-drawer-close" onclick="toggleDrawer()" aria-label="Close menu">&times;</button>
@@ -294,6 +294,7 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
       <button class="filter-mob-btn" onclick="openDrawer()">&#9776; Filters</button>
       <div class="results-count" id="result-count">Loading...</div>
       <select class="sort-select" id="sort-select" onchange="sortAndRender()">
+        <option value="popular">Most Popular</option>
         <option value="price-asc">Price: Low to High</option>
         <option value="price-desc">Price: High to Low</option>
         <option value="rating">Top Rated</option>
@@ -328,7 +329,7 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
   <div class="foot-bottom"><p>&copy; 2025 Ideal Armory LLC. Price comparison only. All purchases subject to applicable law and retailer terms.</p><div class="foot-badges"><span class="fbadge">No Sales</span><span class="fbadge">Price Comparison Only</span><span class="fbadge">SSL Secure</span></div></div>
 </footer>
 <script>
-/* ── UNIVERSAL NAV JS ── */
+/* -- UNIVERSAL NAV JS -- */
 function toggleDrawer(){
   var d=document.getElementById('mobile-drawer');
   var o=document.getElementById('drawer-overlay');
@@ -406,7 +407,8 @@ function liveSearch(v) {
   if(v!==undefined){if(ns&&document.activeElement!==ns)ns.value=v;if(ms&&document.activeElement!==ms)ms.value=v;}
   filterProducts();
 }
-function sortAndRender(){var s=document.getElementById('sort-select').value;filteredProducts.sort(function(a,b){if(s==='price-asc')return getLowestPrice(a)-getLowestPrice(b);if(s==='price-desc')return getLowestPrice(b)-getLowestPrice(a);if(s==='rating')return b.stars-a.stars;if(s==='reviews')return b.reviews-a.reviews;if(s==='name-asc')return a.name.localeCompare(b.name);return 0;});renderGrid();}
+function _popularityScore(p){var score=0;if(p.badge==='best')score+=40;if(p.reviews>0)score+=Math.min(Math.log(p.reviews+1)*8,30);if(p.stars>0)score+=p.stars*2;score+=Math.min((p.sellers?p.sellers.length:0)*3,15);if(p.src!=='eurooptic')score+=15;return score;}
+function sortAndRender(){var s=document.getElementById('sort-select').value;filteredProducts.sort(function(a,b){if(s==='popular')return _popularityScore(b)-_popularityScore(a);if(s==='price-asc')return getLowestPrice(a)-getLowestPrice(b);if(s==='price-desc')return getLowestPrice(b)-getLowestPrice(a);if(s==='rating')return b.stars-a.stars;if(s==='reviews')return b.reviews-a.reviews;if(s==='name-asc')return a.name.localeCompare(b.name);return 0;});renderGrid();}
 function renderActiveFilters(){var bar=document.getElementById('active-filters-bar');var chips=[];document.querySelectorAll('.filter-body input[type=checkbox]:checked').forEach(function(cb){var lbl=cb.parentElement.querySelector('label');chips.push('<span class="fchip">'+(lbl?lbl.textContent.trim():cb.value)+'<button onclick="removeFilter(this)" data-val="'+cb.value+'">&#10005;</button></span>');});bar.innerHTML=chips.join('');}
 function removeFilter(btn){var cb=document.querySelector('.filter-body input[type=checkbox][value="'+btn.getAttribute('data-val')+'"]');if(cb){cb.checked=false;filterProducts();}}
 function clearAllFilters(){document.querySelectorAll('.filter-body input[type=checkbox]').forEach(function(cb){cb.checked=false;});document.getElementById('price-min').value='';document.getElementById('price-max').value='';document.getElementById('nav-srch').value='';filteredProducts=ALL_PRODUCTS.slice();visibleCount=PAGE_SIZE;sortAndRender();renderActiveFilters();}

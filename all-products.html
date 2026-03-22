@@ -440,6 +440,7 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
       <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Sort</span><span class="ftog open">&#8964;</span></div>
       <div class="filter-body">
         <select class="sort-select" id="sort-select-sidebar" onchange="document.getElementById('sort-select').value=this.value;sortAndRender()" style="width:100%;margin-top:4px">
+          <option value="popular">Most Popular</option>
           <option value="price-asc">Price: Low to High</option>
           <option value="price-desc">Price: High to Low</option>
           <option value="name-asc">Name: A&ndash;Z</option>
@@ -453,6 +454,7 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
       <button class="filter-mob-btn" onclick="openDrawer()">&#9776; Filters</button>
       <div class="results-count" id="result-count">Loading products...</div>
       <select class="sort-select" id="sort-select" onchange="sortAndRender()">
+        <option value="popular">Most Popular</option>
         <option value="price-asc">Price: Low to High</option>
         <option value="price-desc">Price: High to Low</option>
         <option value="name-asc">Name: A&ndash;Z</option>
@@ -676,25 +678,37 @@ function _buildSearchRe(q) {
   return new RegExp(e, 'i');
 }
 
-/* Relevance score: higher = more relevant. Used to sort results when search is active. */
+/* Popularity score — used for default sort and as secondary signal in search.
+   Signals: best-seller badge, review count (log scale), star rating,
+   number of sellers, and whether the product is curated (non-EO). */
 var _FIREARM_CATS = ['handguns','rifles','shotguns'];
 var _ACCESSORY_CATS = ['ammunition','magazines','optics','ar-parts'];
-function _searchScore(p, ql, re) {
+function _popularityScore(p) {
   var score = 0;
+  if (p.badge === 'best') score += 40;
+  if (p.reviews > 0) score += Math.min(Math.log(p.reviews + 1) * 8, 30);
+  if (p.stars > 0) score += p.stars * 2;
+  score += Math.min((p.sellers ? p.sellers.length : 0) * 3, 15);
+  if (p.src !== 'eurooptic') score += 15; // curated/manual products rank higher
+  return score;
+}
+
+/* Search relevance: brand match is primary, popularity is secondary tie-breaker.
+   Firearms rank above accessories for brand searches. */
+function _searchScore(p, ql) {
   var brand = (p.brand || '').toLowerCase();
   var name  = (p.name  || '').toLowerCase();
   var cat   = p.category || '';
-  // Brand relevance (highest priority)
+  var score = _popularityScore(p) * 0.4; // popularity as secondary (max ~40 pts)
+  // Brand relevance (primary — max 100 pts)
   if (brand === ql)                           score += 100;
   else if (brand.indexOf(ql) === 0)           score +=  80;
   else if (/^\w/.test(ql) && new RegExp('\\b' + ql.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), 'i').test(brand)) score += 60;
-  // Name relevance
-  if (name.indexOf(ql) === 0)                 score +=  40;
-  // Category priority: firearms first, then ammo/optics, then everything else
+  // Name starts with query
+  if (name.indexOf(ql) === 0)                 score +=  30;
+  // Category priority: firearms first, then accessories
   if (_FIREARM_CATS.indexOf(cat) >= 0)        score +=  15;
   else if (_ACCESSORY_CATS.indexOf(cat) >= 0) score +=   5;
-  // Best-seller badge
-  if (p.badge === 'best')                     score +=  10;
   return score;
 }
 
@@ -771,11 +785,11 @@ function filterProducts() {
 
     return true;
   });
-  // When search is active, sort by relevance (brand match → firearm category → badge)
-  // so "P320" and "P365" appear before accessories/holsters for a "Sig" search.
+  // When search is active, sort by relevance (brand match → firearms → popularity).
+  // P320/P365 appear before Sig-compatible holsters/cleaning for a "Sig" search.
   if (search && _searchRe) {
     filteredProducts.sort(function(a, b) {
-      return _searchScore(b, search, _searchRe) - _searchScore(a, search, _searchRe);
+      return _searchScore(b, search) - _searchScore(a, search);
     });
     renderGrid();
   } else {
@@ -797,6 +811,7 @@ function liveSearch(v) {
 function sortAndRender() {
   var s = document.getElementById('sort-select').value;
   filteredProducts.sort(function(a,b) {
+    if(s==='popular') return _popularityScore(b)-_popularityScore(a);
     if(s==='price-asc') return getLowestPrice(a)-getLowestPrice(b);
     if(s==='price-desc') return getLowestPrice(b)-getLowestPrice(a);
     if(s==='name-asc') return a.name.localeCompare(b.name);
