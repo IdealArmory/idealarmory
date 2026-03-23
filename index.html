@@ -912,7 +912,7 @@ footer{background:var(--navy-deep);border-top:1px solid rgba(255,255,255,.06)}
     <a class="nav-logo" href="/"><svg width="34" height="34" viewBox="0 0 66 66" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="33" cy="33" r="29" fill="#ffffff" stroke="#1b2a3b" stroke-width="2"/><path d="M33 6 L37 21 L33 17 L29 21 Z" fill="#d4a82e"/><path d="M33 60 L37 45 L33 49 L29 45 Z" fill="#1b2a3b"/><path d="M60 33 L45 29 L49 33 L45 37 Z" fill="#1b2a3b"/><path d="M6 33 L21 29 L17 33 L21 37 Z" fill="#1b2a3b"/><circle cx="33" cy="33" r="6" fill="#1b2a3b"/><circle cx="33" cy="33" r="3" fill="#d4a82e"/></svg><span class="nav-wm">Ideal <span>Armory</span></span></a>
     <div class="nav-search">
       <svg viewBox="0 0 16 16"><circle cx="6.5" cy="6.5" r="5" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke-width="1.5" stroke-linecap="square"/></svg>
-      <input type="text" placeholder="Search firearms, ammo, optics, brands…" id="nav-srch" autocomplete="off">
+      <input type="text" placeholder="Search firearms, ammo, optics, brands…" id="nav-srch" autocomplete="off" onkeydown="if(event.key==='Enter')navSearch()">
       <button class="nav-srch-btn" onclick="navSearch()">Find Best Price</button>
     </div>
     <div class="nav-actions">
@@ -928,7 +928,7 @@ footer{background:var(--navy-deep);border-top:1px solid rgba(255,255,255,.06)}
   <div class="mobile-search-bar">
     <div class="mobile-search-wrap">
       <svg viewBox="0 0 16 16"><circle cx="6.5" cy="6.5" r="5" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke-width="1.5" stroke-linecap="square"/></svg>
-      <input type="text" placeholder="Search firearms, ammo, optics…" id="mob-srch">
+      <input type="text" placeholder="Search firearms, ammo, optics…" id="mob-srch" onkeydown="if(event.key==='Enter')navSearch()">
     </div>
   </div>
   <div class="nav-cats-bar"><div class="nav-cats-inner" id="nav-cats"></div></div>
@@ -1864,7 +1864,7 @@ function updateNavKitCount(){
 ══════════════════════════════════════════════ */
 (function(){
   var CATS=[
-    {l:'All',h:null},
+    {l:'All',h:'/all-products.html'},
     {l:'Handguns',h:'/handguns.html'},
     {l:'Rifles',h:'/rifles.html'},
     {l:'Shotguns',h:'/shotguns.html'},
@@ -1878,12 +1878,12 @@ function updateNavKitCount(){
   ];
   var _nc=document.getElementById('nav-cats');
   if(!_nc)return;
-  CATS.forEach(function(cat,i){
-    var d=document.createElement(cat.h?'a':'div');
-    d.className='nav-cat'+(i===0?' active':'');
+  CATS.forEach(function(cat){
+    var d=document.createElement('a');
+    d.className='nav-cat';
     d.textContent=cat.l;
-    if(cat.h){d.href=cat.h;d.style.textDecoration='none';}
-    else{d.onclick=function(){document.querySelectorAll('.nav-cat').forEach(function(e){e.classList.remove('active');});this.classList.add('active');};}
+    d.href=cat.h;
+    d.style.textDecoration='none';
     _nc.appendChild(d);
   });
 })();
@@ -1948,9 +1948,22 @@ var SEARCH_SUGGESTIONS = [
 ];
 
 function navSearch(srcInput) {
-  var input = srcInput || document.getElementById('nav-srch') || document.getElementById('mob-srch');
-  var v = input ? input.value.trim() : '';
-  goTo('featured');
+  var v = '';
+  if (srcInput) {
+    v = srcInput.value.trim();
+  } else {
+    // nav-srch is hidden (display:none) on mobile but still exists in the DOM,
+    // so getElementById('nav-srch') always returns an element with an empty value
+    // on mobile. Check mob-srch first so mobile searches are captured correctly.
+    var ms = document.getElementById('mob-srch');
+    var ns = document.getElementById('nav-srch');
+    v = (ms && ms.value.trim()) || (ns && ns.value.trim()) || '';
+  }
+  if (v) {
+    window.location.href = '/all-products.html?q=' + encodeURIComponent(v);
+  } else {
+    window.location.href = '/all-products.html';
+  }
 }
 
 function initSearchAutocomplete(inputId) {
@@ -2041,18 +2054,15 @@ function initSearchAutocomplete(inputId) {
   });
 }
 
-initSearchAutocomplete('nav-srch');
-initSearchAutocomplete('mob-srch');
-
 /* ══════════════════════════════════════════════
    CATEGORIES
 ══════════════════════════════════════════════ */
 const CAT_NAMES=['Handguns','Rifles','Shotguns','Ammunition','Optics','Holsters','AR Parts','Magazines','Body Armor','Cleaning Kits','Gun Safes','Tactical Gear'];
-var _cg=document.getElementById('cat-grid');if(_cg)_cg.innerHTML=CAT_NAMES.map((name,i)=>`
-  <div class="cat-tile">
-    <div class="cat-name">${name}</div>
-    <div class="cat-count">${CATS[i].count}</div>
-  </div>`).join('');
+const CAT_URLS={'Handguns':'/handguns.html','Rifles':'/rifles.html','Shotguns':'/shotguns.html','Ammunition':'/ammunition.html','Optics':'/optics.html','Holsters':'/holsters.html','AR Parts':'/ar-parts.html','Magazines':'/magazines.html','Cleaning Kits':'/cleaning.html','Gun Safes':'/gun-safes.html'};
+var _cg=document.getElementById('cat-grid');if(_cg)_cg.innerHTML=CAT_NAMES.map((name,i)=>{
+  var url=CAT_URLS[name]||'/all-products.html';
+  return `<a class="cat-tile" href="${url}"><div class="cat-name">${name}</div><div class="cat-count">${CATS[i]?CATS[i].count:''}</div></a>`;
+}).join('');
 
 /* ══════════════════════════════════════════════
 
@@ -2983,7 +2993,6 @@ document.querySelectorAll('.modal').forEach(modal => {
   }, {passive:true});
 });
 
-/* mob-srch keydown is handled by initSearchAutocomplete('mob-srch') above */
 
 /* ══════════════════════════════════════════════
    VIEWPORT HEIGHT FIX (iOS Safari 100vh bug)

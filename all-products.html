@@ -232,7 +232,7 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
   </div>
   <div class="nav-cats-bar">
     <div class="nav-cats-inner">
-      <a class="nav-cat active" href="/all-products.html">All</a>
+      <a class="nav-cat" href="/all-products.html">All</a>
       <a class="nav-cat" href="/handguns.html">Handguns</a>
       <a class="nav-cat" href="/rifles.html">Rifles</a>
       <a class="nav-cat" href="/shotguns.html">Shotguns</a>
@@ -440,6 +440,7 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
       <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Sort</span><span class="ftog open">&#8964;</span></div>
       <div class="filter-body">
         <select class="sort-select" id="sort-select-sidebar" onchange="document.getElementById('sort-select').value=this.value;sortAndRender()" style="width:100%;margin-top:4px">
+          <option value="popular">Most Popular</option>
           <option value="price-asc">Price: Low to High</option>
           <option value="price-desc">Price: High to Low</option>
           <option value="name-asc">Name: A&ndash;Z</option>
@@ -453,6 +454,7 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
       <button class="filter-mob-btn" onclick="openDrawer()">&#9776; Filters</button>
       <div class="results-count" id="result-count">Loading products...</div>
       <select class="sort-select" id="sort-select" onchange="sortAndRender()">
+        <option value="popular">Most Popular</option>
         <option value="price-asc">Price: Low to High</option>
         <option value="price-desc">Price: High to Low</option>
         <option value="name-asc">Name: A&ndash;Z</option>
@@ -668,12 +670,58 @@ function _caliberMatchAll(p,cal){var s=(p.name+' '+(p.sub||'')+' '+(p.caliber||'
 var CALIBER_CATS_ALL=['handguns','rifles','ammunition','magazines','ar-parts','shotguns','cleaning'];
 var ACTION_CATS_ALL=['handguns','rifles','shotguns'];
 
+/* Build a word-boundary regex so "sig" doesn't match "sights", "signal", etc. */
+function _buildSearchRe(q) {
+  var e = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  if (/^\w/.test(q)) e = '\\b' + e;
+  if (/\w$/.test(q)) e = e + '\\b';
+  return new RegExp(e, 'i');
+}
+
+/* Popularity score — used for default sort and as secondary signal in search.
+   Signals: best-seller badge, review count (log scale), star rating,
+   number of sellers, and whether the product is curated (non-EO). */
+var _FIREARM_CATS = ['handguns','rifles','shotguns'];
+var _ACCESSORY_CATS = ['ammunition','magazines','optics','ar-parts'];
+function _popularityScore(p) {
+  var score = 0;
+  if (p.badge === 'best') score += 40;
+  if (p.reviews > 0) score += Math.min(Math.log(p.reviews + 1) * 8, 30);
+  if (p.stars > 0) score += p.stars * 2;
+  score += Math.min((p.sellers ? p.sellers.length : 0) * 3, 15);
+  if (p.src !== 'eurooptic') score += 15; // curated/manual products rank higher
+  return score;
+}
+
+/* Search relevance: brand match is primary, popularity is secondary tie-breaker.
+   Firearms rank above accessories for brand searches. */
+function _searchScore(p, ql) {
+  var brand = (p.brand || '').toLowerCase();
+  var name  = (p.name  || '').toLowerCase();
+  var cat   = p.category || '';
+  var score = _popularityScore(p) * 0.4; // popularity as secondary (max ~40 pts)
+  // Brand relevance (primary — max 100 pts)
+  if (brand === ql)                           score += 100;
+  else if (brand.indexOf(ql) === 0)           score +=  80;
+  else if (/^\w/.test(ql) && new RegExp('\\b' + ql.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), 'i').test(brand)) score += 60;
+  // Name starts with query
+  if (name.indexOf(ql) === 0)                 score +=  30;
+  // Category priority: firearms first, then accessories
+  if (_FIREARM_CATS.indexOf(cat) >= 0)        score +=  15;
+  else if (_ACCESSORY_CATS.indexOf(cat) >= 0) score +=   5;
+  return score;
+}
+
 function _getChecked(sectionId){var vals=[];document.querySelectorAll('#'+sectionId+' input[type=checkbox]:checked').forEach(function(cb){vals.push(cb.value);});return vals;}
 
 function filterProducts() {
   var priceMin = parseFloat(document.getElementById('price-min').value) || 0;
   var priceMax = parseFloat(document.getElementById('price-max').value) || Infinity;
-  var search = ((document.getElementById('nav-srch')||{}).value || (document.getElementById('mob-srch')||{}).value || '').toLowerCase();
+  // Read from whichever input has a value — nav-srch is hidden on mobile but
+  // still in the DOM (always empty on mobile), so check mob-srch first.
+  var _ns = document.getElementById('nav-srch');
+  var _ms = document.getElementById('mob-srch');
+  var search = ((_ms && _ms.value.trim()) || (_ns && _ns.value.trim()) || '').toLowerCase();
 
   var selectedCats = _getChecked('fc-category');
   var brands       = _getChecked('fc-brand');
@@ -684,6 +732,7 @@ function filterProducts() {
   var partTypes    = _getChecked('fc-parttype');
 
   visibleCount = PAGE_SIZE;
+  var _searchRe = search ? _buildSearchRe(search) : null;
   filteredProducts = ALL_PRODUCTS.filter(function(p) {
     var cat = p.category || '';
     var low = getLowestPrice(p);
@@ -691,8 +740,8 @@ function filterProducts() {
     // Price
     if (low < priceMin || low > priceMax) return false;
 
-    // Search
-    if (search && (p.name+p.brand+(p.sub||'')+(p.caliber||'')).toLowerCase().indexOf(search) < 0) return false;
+    // Search — word-boundary match so "sig" doesn't match "sights"
+    if (_searchRe && !_searchRe.test(p.name + ' ' + p.brand + ' ' + (p.sub||'') + ' ' + (p.caliber||''))) return false;
 
     // Category
     if (selectedCats.length && selectedCats.indexOf(cat) < 0) return false;
@@ -736,7 +785,16 @@ function filterProducts() {
 
     return true;
   });
-  sortAndRender();
+  // When search is active, sort by relevance (brand match → firearms → popularity).
+  // P320/P365 appear before Sig-compatible holsters/cleaning for a "Sig" search.
+  if (search && _searchRe) {
+    filteredProducts.sort(function(a, b) {
+      return _searchScore(b, search) - _searchScore(a, search);
+    });
+    renderGrid();
+  } else {
+    sortAndRender();
+  }
   renderActiveFilters();
 }
 
@@ -753,6 +811,7 @@ function liveSearch(v) {
 function sortAndRender() {
   var s = document.getElementById('sort-select').value;
   filteredProducts.sort(function(a,b) {
+    if(s==='popular') return _popularityScore(b)-_popularityScore(a);
     if(s==='price-asc') return getLowestPrice(a)-getLowestPrice(b);
     if(s==='price-desc') return getLowestPrice(b)-getLowestPrice(a);
     if(s==='name-asc') return a.name.localeCompare(b.name);
