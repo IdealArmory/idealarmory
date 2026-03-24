@@ -561,7 +561,22 @@ var visibleCount=PAGE_SIZE;
 let filteredProducts=[...PRODUCTS];
 function getLowestPrice(p){return Math.min(...p.sellers.map(function(s){return s.price;}));}
 function renderStars(n){var s='';for(var i=0;i<5;i++)s+=i<Math.round(n)?'<span class="star">&#9733;</span>':'<span class="star" style="color:var(--gray-200)">&#9733;</span>';return s;}
-function adaptEoProduct(eo){return{id:'eo_'+eo.id,upc:eo.upc||'',brand:eo.brand,name:eo.name,sub:'',img:eo.img,price:eo.price,orig:eo.orig,inStock:eo.inStock,stars:0,reviews:0,badge:'',src:'eurooptic',sellers:[{name:'EuroOptic',price:eo.price,stock:eo.inStock?'in':'out',url:eo.url}]};}
+function adaptEoProduct(eo){
+  var n=(eo.name+' '+(eo.brand||'')).toLowerCase();
+  var carry='OWB';
+  if(/\baiwb\b/.test(n))carry='AIWB';
+  else if(/\biwb\b|inside[\-\s]waistband/.test(n))carry='IWB';
+  else if(/ankle/.test(n))carry='Ankle';
+  else if(/shoulder/.test(n))carry='Shoulder';
+  else if(/pocket/.test(n))carry='Pocket';
+  else if(/duty/.test(n))carry='Duty';
+  var mat='Kydex';
+  if(/leather/.test(n))mat='Leather';
+  else if(/hybrid/.test(n))mat='Hybrid';
+  else if(/nylon/.test(n))mat='Nylon';
+  else if(/polymer/.test(n))mat='Polymer';
+  return{id:'eo_'+eo.id,upc:eo.upc||'',brand:eo.brand,name:eo.name,sub:'',img:eo.img,price:eo.price,orig:eo.orig,inStock:eo.inStock,stars:0,reviews:0,badge:'',src:'eurooptic',carry:carry,mat:mat,sellers:[{name:'EuroOptic',price:eo.price,stock:eo.inStock?'in':'out',url:eo.url}]};
+}
 async function loadEuroOptic(){try{var res=await fetch('/data/eurooptic-holsters.json');if(!res.ok)return;var items=await res.json();var upcMap={};PRODUCTS.forEach(function(p){if(p.upc)upcMap[p.upc]=p;});items.forEach(function(eo){if(eo.upc&&upcMap[eo.upc]){var ep=upcMap[eo.upc];if(!ep.sellers.some(function(s){return s.name==='EuroOptic';}))ep.sellers.push({name:'EuroOptic',price:eo.price,stock:eo.inStock?'in':'out',url:eo.url});}else{EO_PRODUCTS.push(adaptEoProduct(eo));}});ALL_PRODUCTS=PRODUCTS.concat(EO_PRODUCTS);filterProducts();}catch(e){console.warn('EuroOptic load failed:',e.message);}}
 
 function renderGrid(){
@@ -595,7 +610,6 @@ function filterProducts(){
     if(search&&(p.name+p.brand+(p.sub||'')).toLowerCase().indexOf(search)<0)return false;
     if(fits.length&&!fits.some(function(f){return (p.name+' '+(p.sub||'')+' '+(p.fit||'')).toLowerCase().indexOf(f.toLowerCase())>=0;}))return false;
     if(brands.length&&brands.indexOf(p.brand)<0)return false;
-    if(p.src==='eurooptic')return true;
     if(carries.length&&carries.indexOf(p.carry)<0)return false;
     if(mats.length&&mats.indexOf(p.mat)<0)return false;
     return true;

@@ -325,6 +325,7 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
         <div class="fopt"><input type="checkbox" value="Henry" onchange="filterProducts()"><label>Henry Repeating Arms</label></div>
         <div class="fopt"><input type="checkbox" value="Bergara" onchange="filterProducts()"><label>Bergara</label></div>
         <div class="fopt"><input type="checkbox" value="Steyr" onchange="filterProducts()"><label>Steyr Arms</label></div>
+        <div class="fopt"><input type="checkbox" value="Tikka" onchange="filterProducts()"><label>Tikka</label></div>
       </div>
     </div>
 
@@ -461,8 +462,29 @@ let filteredProducts=[...PRODUCTS];
 
 function getLowestPrice(p){return Math.min(...p.sellers.map(function(s){return s.price;}));}
 function renderStars(n){var s='';for(var i=0;i<5;i++)s+=i<Math.round(n)?'<span class="star">&#9733;</span>':'<span class="star" style="color:var(--gray-200)">&#9733;</span>';return s;}
-function adaptEoProduct(eo){return{id:'eo_'+eo.id,upc:eo.upc||'',brand:eo.brand,name:eo.name,sub:'',img:eo.img,price:eo.price,orig:eo.orig,inStock:eo.inStock,stars:0,reviews:0,badge:'',src:'eurooptic',sellers:[{name:'EuroOptic',price:eo.price,stock:eo.inStock?'in':'out',url:eo.url}]};}
-async function loadEuroOptic(){try{var res=await fetch('/data/eurooptic-rifles.json');if(!res.ok)return;var items=await res.json();var RF_EXCL=['brush ','patch ','cleaner','solvent','cleaning kit',' ammo','ammunition','50rds','100rds','250rds','500rds','1000rds','50 rds','100 rds','250 rds','500 rds',' gr.','grain ','fmj','jhp','holster',' pouch',' mat ',' rug ',' bag ',' case ','bipod','flashlight',' laser','magazine',' mag '];items=items.filter(function(eo){if(!eo.price||eo.price<300)return false;if(!eo.img||eo.img.includes('no-image'))return false;var n=(eo.name+' '+(eo.brand||'')).toLowerCase();return!RF_EXCL.some(function(w){return n.indexOf(w)>=0;});}).slice(0,500);var upcMap={};PRODUCTS.forEach(function(p){if(p.upc)upcMap[p.upc]=p;});items.forEach(function(eo){if(eo.upc&&upcMap[eo.upc]){var ep=upcMap[eo.upc];if(!ep.sellers.some(function(s){return s.name==='EuroOptic';}))ep.sellers.push({name:'EuroOptic',price:eo.price,stock:eo.inStock?'in':'out',url:eo.url});}else{EO_PRODUCTS.push(adaptEoProduct(eo));}});ALL_PRODUCTS=PRODUCTS.concat(EO_PRODUCTS);filterProducts();}catch(e){console.warn('EuroOptic load failed:',e.message);}}
+function adaptEoProduct(eo){
+  var n=(eo.name+' '+(eo.brand||'')).toLowerCase();
+  var action='Semi-Auto';
+  if(/bolt[\-\s]?action|\bbolt\b/.test(n))action='Bolt-Action';
+  else if(/lever[\-\s]?action|\blever\b/.test(n))action='Lever-Action';
+  else if(/pump[\-\s]?action|\bpump\b/.test(n))action='Pump-Action';
+  else if(/single[\-\s]?shot/.test(n))action='Single Shot';
+  var platform='Hunting';
+  if(/\bar[\-]?15\b|\bm4\b|\bm16\b/.test(n))platform='AR-15';
+  else if(/\bak[\-]?47\b|\bak[\-]?74\b|\bak[\-]?pattern\b/.test(n))platform='AK';
+  else if(/\bprecision\b|\btarget\b|\bprs\b|\bcompetition\b/.test(n))platform='Precision';
+  else if(/rimfire|\.22\s*lr|22lr/.test(n))platform='Rimfire';
+  var features=[];
+  if(/threaded/.test(n))features.push('threaded');
+  if(/picatinny|optic[\-\s]ready|rail/.test(n))features.push('optic-ready');
+  if(/folding|collapsible/.test(n))features.push('folding');
+  if(/free[\-\s]float/.test(n))features.push('free-float');
+  var barrelIn=0;
+  var bm=n.match(/(\d+(?:\.\d+)?)["\u201d]?\s*(?:inch|in\b)/);
+  if(bm)barrelIn=parseFloat(bm[1]);
+  return{id:'eo_'+eo.id,upc:eo.upc||'',brand:eo.brand,name:eo.name,sub:'',img:eo.img,price:eo.price,orig:eo.orig,inStock:eo.inStock,stars:0,reviews:0,badge:'',src:'eurooptic',action:action,platform:platform,features:features,barrelIn:barrelIn,sellers:[{name:'EuroOptic',price:eo.price,stock:eo.inStock?'in':'out',url:eo.url}]};
+}
+async function loadEuroOptic(){try{var res=await fetch('/data/eurooptic-rifles.json');if(!res.ok)return;var items=await res.json();var RF_EXCL=['brush ','patch ','cleaner','solvent','cleaning kit',' ammo','ammunition','50rds','100rds','250rds','500rds','1000rds','50 rds','100 rds','250 rds','500 rds',' gr.','grain ','fmj','jhp','holster',' pouch',' mat ',' rug ',' bag ',' case ','bipod','flashlight',' laser','magazine',' mag '];items=items.filter(function(eo){if(!eo.price||eo.price<500)return false;if(!eo.img||eo.img.includes('no-image'))return false;var n=(eo.name+' '+(eo.brand||'')).toLowerCase();return!RF_EXCL.some(function(w){return n.indexOf(w)>=0;});}).slice(0,500);var upcMap={};PRODUCTS.forEach(function(p){if(p.upc)upcMap[p.upc]=p;});items.forEach(function(eo){if(eo.upc&&upcMap[eo.upc]){var ep=upcMap[eo.upc];if(!ep.sellers.some(function(s){return s.name==='EuroOptic';}))ep.sellers.push({name:'EuroOptic',price:eo.price,stock:eo.inStock?'in':'out',url:eo.url});}else{EO_PRODUCTS.push(adaptEoProduct(eo));}});ALL_PRODUCTS=PRODUCTS.concat(EO_PRODUCTS);filterProducts();}catch(e){console.warn('EuroOptic load failed:',e.message);}}
 
 function renderGrid(){
   var grid=document.getElementById('product-grid');
@@ -518,7 +540,7 @@ function filterProducts(){
   var calibers=Object.keys(checks).filter(function(v){return ['.223','5.56','.308/7.62','.300 BLK','6.5 Creedmoor','.22 LR','.30-06','.243 Win','7.62x39','.338 Lapua','6mm ARC'].indexOf(v)>=0;});
   var actions=Object.keys(checks).filter(function(v){return ['Semi-Auto','Bolt-Action','Lever-Action','Single Shot','Pump-Action'].indexOf(v)>=0;});
   var platforms=Object.keys(checks).filter(function(v){return ['AR-15','AK','Precision','Hunting','Rimfire'].indexOf(v)>=0;});
-  var brands=Object.keys(checks).filter(function(v){return ['Aero Precision','Daniel Defense','PSA','Ruger','Savage','Winchester','Remington','CMMG','Smith & Wesson','Sig Sauer','Springfield Armory','IWI','Colt','Henry','Bergara','Steyr'].indexOf(v)>=0;});
+  var brands=Object.keys(checks).filter(function(v){return ['Aero Precision','Daniel Defense','PSA','Ruger','Savage','Winchester','Remington','CMMG','Smith & Wesson','Sig Sauer','Springfield Armory','IWI','Colt','Henry','Bergara','Steyr','Tikka'].indexOf(v)>=0;});
   var barrels=Object.keys(checks).filter(function(v){return ['barrel-u16','barrel-16-18','barrel-18-20','barrel-20-24','barrel-o24'].indexOf(v)>=0;});
   var feats=Object.keys(checks).filter(function(v){return ['optic-ready','threaded','folding','free-float'].indexOf(v)>=0;});
 
@@ -528,11 +550,10 @@ function filterProducts(){
     if(search&&(p.name+' '+(p.brand||'')+' '+(p.sub||'')+' '+(p.caliber||'')).toLowerCase().indexOf(search)<0)return false;
     if(calibers.length&&!calibers.some(function(cal){return _caliberMatch(p,cal);}))return false;
     if(brands.length&&brands.indexOf(p.brand)<0)return false;
-    if(p.src==='eurooptic')return true;
     if(actions.length&&actions.indexOf(p.action)<0)return false;
     if(platforms.length&&platforms.indexOf(p.platform)<0)return false;
-    if(feats.length&&!feats.every(function(f){return p.features.indexOf(f)>=0;}))return false;
-    if(barrels.length){
+    if(feats.length&&!feats.every(function(f){return (p.features||[]).indexOf(f)>=0;}))return false;
+    if(barrels.length&&p.barrelIn){
       var b=p.barrelIn;
       var bm=barrels.some(function(v){
         if(v==='barrel-u16')return b<16;

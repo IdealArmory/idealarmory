@@ -388,7 +388,16 @@ var visibleCount=PAGE_SIZE;
 let filteredProducts=[...PRODUCTS];
 function getLowestPrice(p){return Math.min(...p.sellers.map(function(s){return s.price;}));}
 function renderStars(n){var s='';for(var i=0;i<5;i++)s+=i<Math.round(n)?'<span class="star">&#9733;</span>':'<span class="star" style="color:var(--gray-200)">&#9733;</span>';return s;}
-function adaptEoProduct(eo){return{id:'eo_'+eo.id,upc:eo.upc||'',brand:eo.brand,name:eo.name,sub:'',img:eo.img,price:eo.price,orig:eo.orig,inStock:eo.inStock,stars:0,reviews:0,badge:'',src:'eurooptic',sellers:[{name:'EuroOptic',price:eo.price,stock:eo.inStock?'in':'out',url:eo.url}]};}
+function adaptEoProduct(eo){
+  var n=(eo.name+' '+(eo.brand||'')).toLowerCase();
+  var mat='Polymer';
+  if(/\bsteel\b|\bmetal\b/.test(n)&&!/polymer|plastic/.test(n))mat='Steel';
+  else if(/aluminum|aluminium/.test(n))mat='Aluminum';
+  var cap=0;
+  var cm=n.match(/\b(\d+)[\-\s]?(?:rd|round|rnd)\b/);
+  if(cm)cap=parseInt(cm[1]);
+  return{id:'eo_'+eo.id,upc:eo.upc||'',brand:eo.brand,name:eo.name,sub:'',img:eo.img,price:eo.price,orig:eo.orig,inStock:eo.inStock,stars:0,reviews:0,badge:'',src:'eurooptic',mat:mat,cap:cap,sellers:[{name:'EuroOptic',price:eo.price,stock:eo.inStock?'in':'out',url:eo.url}]};
+}
 async function loadEuroOptic(){try{var res=await fetch('/data/eurooptic-magazines.json');if(!res.ok)return;var items=await res.json();var MG_EXCL=['holster',' ammo','ammunition',' rds',' gr.','grain ','fmj','jhp','cleaning','solvent','brush ','scope','optic',' case ',' bag ',' pouch',' rug '];items=items.filter(function(eo){if(!eo.price||eo.price<5)return false;if(!eo.img||eo.img.includes('no-image'))return false;var n=(eo.name+' '+(eo.brand||'')).toLowerCase();return!MG_EXCL.some(function(w){return n.indexOf(w)>=0;});}).slice(0,300);var upcMap={};PRODUCTS.forEach(function(p){if(p.upc)upcMap[p.upc]=p;});items.forEach(function(eo){if(eo.upc&&upcMap[eo.upc]){var ep=upcMap[eo.upc];if(!ep.sellers.some(function(s){return s.name==='EuroOptic';}))ep.sellers.push({name:'EuroOptic',price:eo.price,stock:eo.inStock?'in':'out',url:eo.url});}else{EO_PRODUCTS.push(adaptEoProduct(eo));}});ALL_PRODUCTS=PRODUCTS.concat(EO_PRODUCTS);filterProducts();}catch(e){console.warn('EuroOptic load failed:',e.message);}}
 
 function renderGrid(){
@@ -427,9 +436,8 @@ function filterProducts(){
     if(fits.length&&!fits.some(function(f){return (p.name+' '+(p.sub||'')+' '+(p.fit||'')).toLowerCase().indexOf(f.toLowerCase())>=0;}))return false;
     if(calibers.length&&!calibers.some(function(cal){return _caliberMatch(p,cal);}))return false;
     if(brands.length&&brands.indexOf(p.brand)<0)return false;
-    if(p.src==='eurooptic')return true;
     if(mats.length&&mats.indexOf(p.mat)<0)return false;
-    if(caps.length){var c=p.cap;if(!caps.some(function(v){if(v==='cap-u10')return c<10;if(v==='cap-10-15')return c>=10&&c<=15;if(v==='cap-17-20')return c>=17&&c<=20;if(v==='cap-21-30')return c>=21&&c<=30;if(v==='cap-o30')return c>30;return false;}))return false;}
+    if(caps.length&&p.cap>0){var c=p.cap;if(!caps.some(function(v){if(v==='cap-u10')return c<10;if(v==='cap-10-15')return c>=10&&c<=15;if(v==='cap-17-20')return c>=17&&c<=20;if(v==='cap-21-30')return c>=21&&c<=30;if(v==='cap-o30')return c>30;return false;}))return false;}
     return true;
   });
   sortAndRender();renderActiveFilters();

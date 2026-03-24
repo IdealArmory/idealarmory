@@ -473,12 +473,35 @@ let filteredProducts = ALL_PRODUCTS.slice();
 let currentSort = 'price-asc';
 
 function adaptEoProduct(eo) {
+  var n=(eo.name+' '+(eo.brand||'')).toLowerCase();
+  var action='Striker-Fired';
+  if(/\brevolver\b/.test(n))action='Revolver';
+  else if(/\bsingle[\-\s]action\b/.test(n))action='Single Action';
+  else if(/\bda\/sa\b|\bdasa\b/.test(n))action='DA/SA';
+  else if(/\bdao\b/.test(n))action='DAO';
+  var frameSize='';
+  if(/subcompact|micro[\-\s]compact|\bmicro\b/.test(n))frameSize='Subcompact';
+  else if(/\bcompact\b/.test(n))frameSize='Compact';
+  else if(/full[\-\s]size/.test(n))frameSize='Full-Size';
+  else if(/long[\-\s]slide/.test(n))frameSize='Long Slide';
+  var safety='';
+  if(/manual[\-\s]safety/.test(n))safety='Manual Safety';
+  else if(/no[\-\s]manual[\-\s]safety/.test(n))safety='No Manual Safety';
+  else if(/decock|de-cock/.test(n))safety='Decocker';
+  var opticReady=/optic[\-\s]ready|optics[\-\s]ready|\bmos\b|\brmr\b|optic[\-\s]cut/.test(n);
+  var barrelIn=0;
+  var bm=n.match(/(\d+(?:\.\d+)?)["\u201d]?\s*(?:inch|in\b)/);
+  if(bm)barrelIn=parseFloat(bm[1]);
+  var capacity=0;
+  var cm=n.match(/(\d+)\+1/);
+  if(cm)capacity=parseInt(cm[1])+1;
   return {
     id: 'eo_' + eo.id, upc: eo.upc || '',
     brand: eo.brand, name: eo.name, sub: '',
     img: eo.img, price: eo.price, orig: eo.orig,
     inStock: eo.inStock, stars: 0, reviews: 0, badge: '',
-    src: 'eurooptic',
+    src: 'eurooptic', action: action, frameSize: frameSize,
+    safety: safety, opticReady: opticReady, barrelIn: barrelIn, capacity: capacity,
     sellers: [{name:'EuroOptic', price:eo.price, stock:eo.inStock?'in':'out', url:eo.url}]
   };
 }
@@ -589,7 +612,6 @@ function filterProducts() {
     if (search && (p.name+p.brand+(p.sub||'')+(p.caliber||'')).toLowerCase().indexOf(search) < 0) return false;
     if (calibers.length && !calibers.some(function(cal){return _caliberMatch(p,cal);})) return false;
     if (brands.length && brands.indexOf(p.brand) < 0) return false;
-    if (p.src === 'eurooptic') return true;
     if (actions.length && actions.indexOf(p.action) < 0) return false;
     if (frames.length && frames.indexOf(p.frameSize) < 0) return false;
     if (safeties.length && safeties.indexOf(p.safety) < 0) return false;
@@ -608,7 +630,7 @@ function filterProducts() {
       });
       if (!match) return false;
     }
-    if (barrels.length) {
+    if (barrels.length && p.barrelIn) {
       var b = p.barrelIn;
       var bmatch = barrels.some(function(v){
         if(v==='barrel-u3') return b<3;

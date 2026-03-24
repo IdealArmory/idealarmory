@@ -454,7 +454,7 @@ function filterProducts(){
     if(actions.length&&actions.indexOf(p.action)<0)return false;
     if(uses.length&&uses.indexOf(p.use)<0)return false;
     if(brands.length&&brands.indexOf(p.brand)<0)return false;
-    if(barrels.length){var b=p.barrelIn;if(!barrels.some(function(v){if(v==='barrel-u18')return b<18;if(v==='barrel-18-20')return b>=18&&b<=20;if(v==='barrel-22-24')return b>=22&&b<=24;if(v==='barrel-o26')return b>26;return false;}))return false;}
+    if(barrels.length){var b=p.barrelIn;if(!barrels.some(function(v){if(v==='barrel-u18')return b<18;if(v==='barrel-18-20')return b>=18&&b<=20;if(v==='barrel-22-24')return b>=22&&b<=24;if(v==='barrel-o26')return b>=26;return false;}))return false;}
     if(caps.length){var c=p.capacity;if(!caps.some(function(v){if(v==='cap-2')return c<=2;if(v==='cap-3-4')return c>=3&&c<=4;if(v==='cap-5-6')return c>=5&&c<=6;if(v==='cap-7p')return c>=7;return false;}))return false;}
     return true;
   });
