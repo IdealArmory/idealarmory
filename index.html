@@ -944,40 +944,7 @@ footer{background:var(--navy-deep);border-top:1px solid rgba(255,255,255,.06)}
       <h1>Compare the Biggest Retailers.<br><em>Find the Best Deal.</em><br>Design Your Dream Kit.</h1>
       <p class="hero-sub">Ideal Armory aggregates listings from licensed retailers so you never overpay. Search any firearm, compare seller prices side by side, build your kit, then buy direct from the retailer.</p>
     </div>
-    <div class="hero-card">
-      <div class="hc-eyebrow">Deal of the Day</div>
-      <div class="hc-gallery">
-        <div class="hc-img">
-          <img id="hc-main-photo" src="https://cdn11.bigcommerce.com/s-yqqkx/images/stencil/760x760/products/631418/568628/225303__05440.1741299289.jpg?c=2" alt="Springfield Echelon 4.0C 9mm">
-        </div>
-        <div class="hc-thumbs">
-          <div class="hc-thumb active" onclick="hcThumb(this,'https://cdn11.bigcommerce.com/s-yqqkx/images/stencil/760x760/products/631418/568628/225303__05440.1741299289.jpg?c=2')">
-            <img src="https://cdn11.bigcommerce.com/s-yqqkx/images/stencil/760x760/products/631418/568628/225303__05440.1741299289.jpg?c=2" alt="View 1">
-          </div>
-          <div class="hc-thumb" onclick="hcThumb(this,'https://cdn11.bigcommerce.com/s-yqqkx/images/stencil/760x760/products/631418/568629/225304__00819.1741299291.jpg?c=2')">
-            <img src="https://cdn11.bigcommerce.com/s-yqqkx/images/stencil/760x760/products/631418/568629/225304__00819.1741299291.jpg?c=2" alt="View 2">
-          </div>
-          <div class="hc-thumb" onclick="hcThumb(this,'https://cdn11.bigcommerce.com/s-yqqkx/images/stencil/760x760/products/631418/568630/225305__34373.1741299292.jpg?c=2')">
-            <img src="https://cdn11.bigcommerce.com/s-yqqkx/images/stencil/760x760/products/631418/568630/225305__34373.1741299292.jpg?c=2" alt="View 3">
-          </div>
-          <div class="hc-thumb" onclick="hcThumb(this,'https://cdn11.bigcommerce.com/s-yqqkx/images/stencil/760x760/products/631418/568631/225306__67126.1741299293.jpg?c=2')">
-            <img src="https://cdn11.bigcommerce.com/s-yqqkx/images/stencil/760x760/products/631418/568631/225306__67126.1741299293.jpg?c=2" alt="View 4">
-          </div>
-        </div>
-      </div>
-      <a class="hc-name" href="/product.html?p=echelon-9mm">Springfield Echelon 4.0C</a>
-      <div class="hc-sub">9mm · 15+1 · 4.0" Barrel · 3-Dot Tritium Sights</div>
-      <div class="hc-from">Via Bereli &mdash; licensed retailer</div>
-      <div class="hc-price-wrap">
-        <div class="hc-price">$519.00</div>
-        <div class="hc-price-orig">$719.00</div>
-        <div class="hc-price-badge">28% OFF</div>
-      </div>
-      <div class="hc-price-sub">You save $200.00</div>
-      <div class="hc-sellers">
-        <div class="hc-row"><span class="hc-seller-name">Bereli</span><span class="hc-seller-price low">$519.00 &mdash; In Stock</span></div>
-      </div>
-    </div>
+    <div class="hero-card" id="hero-deal-card"></div>
   </div>
 </section>
 
@@ -3005,6 +2972,61 @@ window.addEventListener('resize', setVh);
 document.addEventListener('keydown',function(e){
   if(e.key==='Escape'){['prod-modal','shop-modal','auth-modal'].forEach(function(id){var m=document.getElementById(id);if(m&&m.style.display!=='none'){m.style.display='none';document.body.style.overflow='';}});}
 });
+
+
+const DOTD_POOL = [
+  {brand:"Sig Sauer",name:"P320 M18 Coyote",sub:"9mm \\u2022 17+1 \\u2022 3.9\" Barrel \\u2022 SIGLITE",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/479393/images/487038/SG320CA-9-M18-MS_1_HR__81768.1650810223.380.380.jpg?c=2",price:599.0,orig:750,pct:20,save:151.0,url:"https://bereli.com/sig-sauer-p320-m18-9mm-3-9-barrel-coyote-tan-pistol-3-magazines/?aff=10388",via:"Bereli"},
+  {brand:"Sig Sauer",name:"P320 M17 9mm",sub:"9mm \\u2022 17+1 \\u2022 4.7\" Barrel \\u2022 Manual Safety",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/479394/images/487041/SG320F-9-M17-MS_1_HR__65355.1700069755.380.380.jpg?c=2",price:625.0,orig:740,pct:16,save:115.0,url:"https://bereli.com/sig-sauer-p320-m17-9mm-4-7-barrel-siglite-night-sights-manual-safety/?aff=10388",via:"Bereli"},
+  {brand:"Mossberg",name:"590 Shockwave 12ga",sub:"12 Gauge \\u2022 14.375\" \\u2022 6+1 \\u2022 Non-NFA",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/483420/images/490276/MS50639_3_HR__03756.1700232864.380.380.jpg?c=2",price:415.0,orig:520,pct:20,save:105.0,url:"https://bereli.com/mossberg-590-shockwave-12-gauge-18-5-barrel-3-chamber-black-6rd-shotgun/?aff=10388",via:"Bereli"},
+  {brand:"Walther",name:"PDP Full Size 9mm",sub:"9mm \\u2022 18+1 \\u2022 4.5\" Barrel \\u2022 Optic Ready",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/448479/images/467671/WA2842475_1_HR__28900.1623788912.380.380.jpg?c=2",price:599.0,orig:750,pct:20,save:151.0,url:"https://bereli.com/walther-pdp-optics-ready-9mm-18-round-capacity-4-5-barrel-pistol/?aff=10388",via:"Bereli"},
+  {brand:"Springfield Armory",name:"Saint Victor AR-15 5.56",sub:"5.56 NATO \\u2022 16\" \\u2022 30+1 \\u2022 B5 Stock",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/495686/images/562521/208395__38182.1734010615.380.380.jpg?c=2",price:889.0,orig:1050,pct:15,save:161.0,url:"https://bereli.com/springfield-firstline-saint-victor-ar-15-rifle-b5-5-56-black/?aff=10388",via:"Bereli"},
+  {brand:"Springfield Armory",name:"Echelon 9mm",sub:"9mm \\u2022 17+1 \\u2022 4.5\" Barrel \\u2022 Optic Ready",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/573416/images/536971/157498__59191.1690470267.380.380.jpg?c=2",price:519.0,orig:650,pct:20,save:131.0,url:"https://bereli.com/springfield-firstline-echelon-9mm-luger-17-1-4-50/?aff=10388",via:"Bereli"},
+  {brand:"IWI",name:"Tavor X95 16\" Bullpup",sub:"5.56 NATO \\u2022 16\" \\u2022 30+1 \\u2022 Bullpup",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/478552/images/491964/fa_x16_main-e1576526186892__80812.1665674062.380.380.png?c=2",price:1749.99,orig:2060,pct:15,save:310.01,url:"https://bereli.com/shooting/firearms/rifles/iwi-tavor-x95-16-5-56-nato-rifle/?aff=10388",via:"Bereli"},
+  {brand:"Beretta",name:"APX A1 Tactical 9mm",sub:"9mm \\u2022 21+1 \\u2022 4.8\" Barrel \\u2022 Optic Ready \\u2022 OD Green",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/570865/images/535927/BRJAXA1F921TAC_1_HR__71404.1700068806.380.380.jpg?c=2",price:479.0,orig:600,pct:20,save:121.0,url:"https://bereli.com/beretta-apx-a1-tactical-9mm-4-8-barrel-21-round-optic-ready-od-green-pistol/?aff=10388",via:"Bereli"},
+  {brand:"Benelli",name:"M4 Tactical 18.5\"",sub:"12 Gauge \\u2022 18.5\" \\u2022 5+1 \\u2022 ARGO Gas System",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/629678/images/558591/198282__69968.1712234984.380.380.jpg?c=2",price:1875.0,orig:2210,pct:15,save:335.0,url:"https://bereli.com/11710/?aff=10388",via:"Bereli"},
+  {brand:"Colt",name:"CR6920 M4 Carbine 5.56",sub:"5.56 NATO \\u2022 16.1\" \\u2022 30+1 \\u2022 M4 Carbine",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/404175/images/424980/LE6920-2__81114.1589919374.380.380.jpg?c=2",price:1087.0,orig:1280,pct:15,save:193.0,url:"https://bereli.com/colt-cr6920-m4-carbine-5-56-nato-ar-15-rifle/?aff=10388",via:"Bereli"},
+  {brand:"Benelli",name:"Nova Tactical 12ga",sub:"12 Gauge \\u2022 18.5\" \\u2022 4+1 \\u2022 Pump Action",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/631422/images/568658/225621__49002.1741626260.380.380.png?c=2",price:749.0,orig:880,pct:15,save:131.0,url:"https://bereli.com/21501/?aff=10388",via:"Bereli"},
+  {brand:"Springfield Armory",name:"Hellion 16\" Bullpup",sub:"5.56 NATO \\u2022 30+1 \\u2022 16\" \\u2022 Ambidextrous",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/629960/images/560198/204318__53616.1723059620.380.380.jpg?c=2",price:1649.0,orig:1950,pct:15,save:301.0,url:"https://bereli.com/hl916556-fl/?aff=10388",via:"Bereli"},
+  {brand:"Smith & Wesson",name:"Bodyguard 2.0 .380",sub:".380 ACP \\u2022 6+1 \\u2022 2.75\" Barrel \\u2022 Optic Ready",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/632194/images/572572/236046__37602.1748531032.380.380.jpg?c=2",price:424.99,orig:530,pct:20,save:105.01,url:"https://bereli.com/14439/?aff=10388",via:"Bereli"},
+  {brand:"JTS",name:"M12AR Semi-Auto 12ga",sub:"12 Gauge \\u2022 18.5\" \\u2022 5+1 \\u2022 AR-Style",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/580720/images/539671/JTSM12AR_1_HR__63855.1701803068.380.380.jpg?c=2",price:349.99,orig:440,pct:20,save:90.01,url:"https://bereli.com/jts-m12ar-12ga-5rd-18-5-semi-auto-shotgun-black/?aff=10388",via:"Bereli"},
+  {brand:"Daniel Defense",name:"DDM4 V7 w/ Geissele Trigger",sub:"5.56 NATO \\u2022 16\" \\u2022 30+1 \\u2022 Geissele Trigger",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/507840/images/554205/_d_d_ddm4_v7_gis_1__16549.1763151339.380.380.jpg?c=2",price:1599.0,orig:1890,pct:15,save:291.0,url:"https://bereli.com/daniel-defense-ddm4-v7-5-56-ar-15-black-custom-16-rifle-with-geissele-trigger/?aff=10388",via:"Bereli"},
+  {brand:"Benelli",name:"M4 Tactical Pistol Grip 12ga",sub:"12 Gauge \\u2022 18.5\" \\u2022 5+1 \\u2022 Pistol Grip",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/629679/images/558584/198284__41231.1712234862.380.380.jpg?c=2",price:1749.99,orig:2060,pct:15,save:310.01,url:"https://bereli.com/11713/?aff=10388",via:"Bereli"},
+  {brand:"Springfield Armory",name:"Echelon 9mm Manual Safety 20rd",sub:"9mm \\u2022 20+1 \\u2022 4.5\" Barrel \\u2022 Manual Safety \\u2022 Optic Ready",img:"https://springfieldarmory.b-cdn.net/wp-content/uploads/EC9459BMS-U.png",price:709.99,orig:840,pct:15,save:130.01,url:"https://www.impactguns.com/semi-auto-handguns/springfield-echelon-9mm-4-5-barrel-black-manual-safety-optic-ready-20rd-706397982195-ec9459bmsu#IdealArmory",via:"Impact Guns"},
+  {brand:"Beretta",name:"A300 Ultima Patrol 12ga",sub:"12 Gauge \\u2022 19.1\" \\u2022 7+1 \\u2022 Semi-Auto",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/497971/images/565098/BERETTA-A300__04884.1677166675__78170.1745965955.380.380.jpg?c=2",price:825.0,orig:970,pct:15,save:145.0,url:"https://bereli.com/beretta-a300-ultima-patrol-12-gauge-19-1-barrel-7-round-mag-tube-shotgun/?aff=10388",via:"Bereli"},
+  {brand:"Benelli",name:"SuperNova Tactical 12ga",sub:"12 Gauge \\u2022 18.5\" \\u2022 4+1 \\u2022 ComforTech",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/632116/images/572203/233937__90939.1746207601.380.380.jpg?c=2",price:725.0,orig:860,pct:16,save:135.0,url:"https://bereli.com/20151/?aff=10388",via:"Bereli"},
+  {brand:"IWI",name:"Tavor TS12 Bullpup Shotgun",sub:"12 Gauge \\u2022 18.5\" \\u2022 15+1 \\u2022 Bullpup Tri-Tube",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/402404/images/513529/Screenshot_2023-03-14_at_3.10.39_PM__65787.1678821071.380.380.png?c=2",price:1288.99,orig:1520,pct:15,save:231.01,url:"https://bereli.com/iwi-tavor-ts12-bullpup-shotgun/?aff=10388",via:"Bereli"},
+  {brand:"Springfield Armory",name:"1911 Ronin 10mm",sub:"10mm Auto \\u2022 8+1 \\u2022 5\" Barrel \\u2022 Night Sights",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/510297/images/507353/SPX9121L_1_HR__56845.1700231839.380.380.jpg?c=2",price:703.0,orig:830,pct:15,save:127.0,url:"https://bereli.com/springfield-armory-firstline-1911-ronin-10mm-5-pistol/?aff=10388",via:"Bereli"},
+  {brand:"Springfield Armory",name:"Saint Victor PCC 9mm",sub:"9mm \\u2022 16\" \\u2022 33+1 \\u2022 Pistol Caliber Carbine",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/629499/images/557784/197005__81572.1706719120.380.380.jpg?c=2",price:999.0,orig:1180,pct:15,save:181.0,url:"https://bereli.com/stv91609b-fl/?aff=10388",via:"Bereli"},
+  {brand:"Daniel Defense",name:"H9 Pistol",sub:"9mm \\u2022 15+1 \\u2022 4.28\" Barrel \\u2022 RDS Ready",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/629464/images/575386/Daniel-Defense-H9-Package-Deal__13011.1755277956.380.380.jpg?c=2",price:799.0,orig:940,pct:15,save:141.0,url:"https://bereli.com/daniel-defense-h9-pistol-4-28-barrel-5-15rd-magazines-rds-optic-plate/?aff=10388",via:"Bereli"},
+  {brand:"Smith & Wesson",name:"M&P M2.0 Metal HD 9mm 5\"",sub:"9mm \\u2022 17+1 \\u2022 5\" Barrel \\u2022 Night Sight \\u2022 Metal Frame",img:"https://cdn11.bigcommerce.com/s-c7gr8wg3cg/products/1556/images/8634/14672-mp-pistol-OnWhite-3Q-Right__14237.1768237465.1280.1280.png?c=1",price:1049.0,orig:1240,pct:15,save:191.0,url:"https://www.impactguns.com/semi-auto-handguns/smith-wesson-m-p-m2-0-metal-heavy-duty-9mm-5-barrel-armornite-black-front-night-sight-black-rear-sight-thumb-safety-optics-ready-2x17rd-mags-022188904895-14672#IdealArmory",via:"Impact Guns"},
+  {brand:"Sig Sauer",name:"M400 SDI 5.56 Rifle",sub:"5.56 NATO \\u2022 16\" \\u2022 30+1 \\u2022 Free-Float MLOK",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/490497/images/497744/m400-xseries-sdi-3__92819.1700230343.380.380.jpg?c=2",price:1175.0,orig:1390,pct:15,save:215.0,url:"https://bereli.com/sig-sauer-m400-x-series-sdi-5-56-nato-16-30rd-rifle-rm400-sdi-16b-p/?aff=10388",via:"Bereli"},
+  {brand:"Beretta",name:"1301 Tactical Mod 2",sub:"12 Gauge \\u2022 18.5\" \\u2022 7+1 \\u2022 Semi-Auto LE",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/629742/images/558881/202530__73459.1715000970.380.380.jpg?c=2",price:1629.0,orig:1920,pct:15,save:291.0,url:"https://bereli.com/j131m2tt18le/?aff=10388",via:"Bereli"},
+  {brand:"IWI",name:"Tavor 7 .308 Blemished",sub:".308 Win \\u2022 16.5\" \\u2022 20+1 \\u2022 Bullpup",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/632714/images/575140/242912__22516.1753388856.380.380.jpg?c=2",price:1599.0,orig:1890,pct:15,save:291.0,url:"https://bereli.com/t7-blem/?aff=10388",via:"Bereli"},
+  {brand:"H&K",name:"CC9 9mm Compact",sub:"9mm \\u2022 10+1 \\u2022 3.86\" Barrel \\u2022 Safety",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/631844/images/570801/232334__53096.1745858255.380.380.jpg?c=2",price:745.0,orig:880,pct:15,save:135.0,url:"https://bereli.com/81001131/?aff=10388",via:"Bereli"},
+  {brand:"Ruger",name:"RXM 9mm 4.5\" Black",sub:"9mm \\u2022 17+1 \\u2022 4.5\" Barrel \\u2022 Night Sight \\u2022 Optic Ready",img:"https://www.ruger.com/products/rxm/images/19444.jpg",price:399.99,orig:500,pct:20,save:100.01,url:"https://www.impactguns.com/semi-auto-handguns/ruger-rxm-9mm-4-5-barrel-nitride-black-magpul-ehg-optics-ready-night-sight-2x17rd-magpul-pmag-17-gl9-mags-736676194445-19444#IdealArmory",via:"Impact Guns"},
+  {brand:"Beretta",name:"92X Performance Competition",sub:"9mm \\u2022 15+1 \\u2022 4.9\" Barrel \\u2022 DA/SA",img:"https://cdn11.bigcommerce.com/s-yqqkx/products/631516/images/578486/148604__66326.1772556492.380.380.png?c=2",price:999.0,orig:1180,pct:15,save:181.0,url:"https://bereli.com/j92xpco21/?aff=10388",via:"Bereli"},
+];
+
+function renderDOTD() {
+  var dayIdx = Math.floor(Date.now() / 86400000) % DOTD_POOL.length;
+  var d = DOTD_POOL[dayIdx];
+  var card = document.getElementById('hero-deal-card');
+  if (!card) return;
+  card.innerHTML =
+    '<div class="hc-eyebrow">Deal of the Day</div>' +
+    '<div class="hc-gallery"><div class="hc-img"><img id="hc-main-photo" src="' + d.img + '" alt="' + d.brand + ' ' + d.name + '"></div></div>' +
+    '<a class="hc-name" href="' + d.url + '" target="_blank" rel="noopener">' + d.brand + ' ' + d.name + '</a>' +
+    '<div class="hc-sub">' + d.sub + '</div>' +
+    '<div class="hc-from">Via ' + d.via + ' &mdash; licensed retailer</div>' +
+    '<div class="hc-price-wrap">' +
+      '<div class="hc-price">$' + d.price.toFixed(2) + '</div>' +
+      (d.orig > d.price ? '<div class="hc-price-orig">$' + d.orig.toFixed(2) + '</div><div class="hc-price-badge">' + d.pct + '% OFF</div>' : '') +
+    '</div>' +
+    (d.orig > d.price ? '<div class="hc-price-sub">You save $' + d.save.toFixed(2) + '</div>' : '') +
+    '<div class="hc-sellers"><div class="hc-row"><span class="hc-seller-name">' + d.via + '</span><span class="hc-seller-price low">$' + d.price.toFixed(2) + ' &mdash; In Stock</span></div></div>' +
+    '<a class="hc-cta" href="' + d.url + '" target="_blank" rel="noopener">View Deal &rarr;</a>';
+}
+renderDOTD();
 </script>
 
 <!-- ═══ MOBILE DRAWER ═══ -->
