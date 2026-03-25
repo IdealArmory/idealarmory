@@ -1,0 +1,36 @@
+name: Refresh FFL Dealer Data
+
+on:
+  schedule:
+    - cron: '0 8 1 * *'   # 1st of every month at 08:00 UTC
+  workflow_dispatch:        # Manual trigger from GitHub Actions tab
+
+jobs:
+  refresh-ffl:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install adm-zip (for zip extraction)
+        run: npm install adm-zip
+
+      - name: Fetch ATF FFL data and build state JSON files
+        run: node .github/scripts/fetch-ffl.js
+
+      - name: Commit and push updated FFL data
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name  "github-actions[bot]"
+          git add data/ffl/
+          git diff --staged --quiet || git commit -m "Auto-update FFL dealer data [$(date -u '+%Y-%m-%d')]"
+          git pull --rebase origin ${{ github.ref_name }}
+          git push origin ${{ github.ref_name }}

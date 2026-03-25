@@ -1,0 +1,6 @@
+{
+  "updated": "pending",
+  "states": {},
+  "total": 0,
+  "note": "FFL data is populated by the refresh-ffl GitHub Actions workflow. Trigger it manually from the Actions tab to populate initial data."
+}

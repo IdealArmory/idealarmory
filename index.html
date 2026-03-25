@@ -1383,8 +1383,9 @@ function loadUserKit(id){
    3. Run ffl-setup/import_ffls.py with your service key
    4. Paste your Project URL and anon key below
 ══════════════════════════════════════════════ */
-const SUPABASE_URL      = 'https://thxnfvjbtczhpgujehlf.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_pm3jp80sb-PE5uu5JYiikQ_jGftpdL3';
+// FFL data is served from static per-state JSON files under /data/ffl/
+// Updated monthly via GitHub Actions (refresh-ffl.yml) from ATF public data.
+// No database or API keys required.
 
 /* ══════════════════════════════════════════════
    AUTH — CONFIG
@@ -2592,25 +2593,27 @@ function formatPhone(p){
 
 const FFL_LIC_LABELS={'01':'Dealer','02':'Pawnbroker','07':'Manufacturer','08':'Importer'};
 
+// Haversine distance in miles between two lat/lng points
+function fflDist(lat1,lon1,lat2,lon2){
+  const R=3958.8,r=Math.PI/180;
+  const dLat=(lat2-lat1)*r, dLon=(lon2-lon1)*r;
+  const a=Math.sin(dLat/2)*Math.sin(dLat/2)+
+          Math.cos(lat1*r)*Math.cos(lat2*r)*
+          Math.sin(dLon/2)*Math.sin(dLon/2);
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
 async function searchFFL(){
   const zip=(document.getElementById('ffl-zip').value||'').trim().replace(/\D/g,'').slice(0,5);
   const rad=parseInt(document.getElementById('ffl-rad').value)||25;
   const grid=document.getElementById('ffl-grid');
 
-  if(!zip||zip.length<5){
-    showToast('Please enter a valid 5-digit ZIP code.');
-    return;
-  }
-
-  if(SUPABASE_URL==='YOUR_SUPABASE_URL'){
-    grid.innerHTML='<div class="ffl-no-results"><strong>Database Not Yet Configured</strong>Follow the setup guide in ffl-setup/ to connect your Supabase project.</div>';
-    return;
-  }
+  if(!zip||zip.length<5){showToast('Please enter a valid 5-digit ZIP code.');return;}
 
   grid.innerHTML='<div class="ffl-loading">Searching for licensed dealers near '+zip+'…</div>';
 
   try{
-    // Step 1: Geocode ZIP code → lat/lng
+    // Step 1: Geocode ZIP → lat/lng/state via Zippopotam (free, no key)
     const geoRes=await fetch('https://api.zippopotam.us/us/'+zip);
     if(!geoRes.ok){
       grid.innerHTML='<div class="ffl-no-results"><strong>ZIP Code Not Found</strong>Please check the ZIP code and try again.</div>';
@@ -2620,43 +2623,43 @@ async function searchFFL(){
     const lat=parseFloat(geo.places[0].latitude);
     const lng=parseFloat(geo.places[0].longitude);
     const placeName=geo.places[0]['place name'];
-    const stateAbr=geo.places[0]['state abbreviation'];
+    const stateAbr=(geo.places[0]['state abbreviation']||'').toUpperCase();
 
-    // Step 2: Radius search via Supabase RPC
-    const rpcRes=await fetch(SUPABASE_URL+'/rest/v1/rpc/find_ffls_near',{
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'apikey':SUPABASE_ANON_KEY,
-        'Authorization':'Bearer '+SUPABASE_ANON_KEY,
-      },
-      body:JSON.stringify({search_lat:lat,search_lng:lng,radius_mi:rad,max_results:30})
-    });
-
-    if(!rpcRes.ok){
-      console.error('[FFL] Supabase error:',rpcRes.status,await rpcRes.text());
-      grid.innerHTML='<div class="ffl-no-results"><strong>Search Unavailable</strong>Unable to retrieve dealer data. Please try again later.</div>';
+    // Step 2: Load this state's FFL data file (lazy — only fetched on search)
+    const dataRes=await fetch('/data/ffl/'+stateAbr+'.json');
+    if(!dataRes.ok){
+      grid.innerHTML='<div class="ffl-no-results"><strong>Data Unavailable</strong>FFL data for '+escHtml(stateAbr)+' is not yet available. Please check back soon.</div>';
       return;
     }
+    const allDealers=await dataRes.json();
 
-    const dealers=await rpcRes.json();
+    // Step 3: Filter by radius using Haversine, sort by distance, cap at 30
+    const nearby=[];
+    for(const f of allDealers){
+      if(typeof f.lat!=='number'||typeof f.lng!=='number') continue;
+      const d=fflDist(lat,lng,f.lat,f.lng);
+      if(d<=rad) nearby.push({...f,distance_miles:Math.round(d*10)/10});
+    }
+    nearby.sort((a,b)=>a.distance_miles-b.distance_miles);
+    const dealers=nearby.slice(0,30);
 
-    if(!dealers||!dealers.length){
+    if(!dealers.length){
       grid.innerHTML='<div class="ffl-no-results"><strong>No Dealers Found</strong>No licensed FFL dealers found within '+rad+' miles of '+escHtml(placeName)+', '+escHtml(stateAbr)+'. Try expanding your radius.</div>';
       return;
     }
 
+    // Step 4: Render cards (field mapping: n=lic_name, b=dba_name, a=address, c=city, s=state, z=zip, p=phone, t=type)
     grid.innerHTML=dealers.map(f=>{
-      const name=((f.dba_name||'').trim())||(f.lic_name||'').trim()||'FFL Dealer';
-      const addr=[f.address,f.city,f.state,f.zip].filter(Boolean).join(', ');
+      const name=((f.b||'').trim())||((f.n||'').trim())||'FFL Dealer';
+      const addr=[f.a,f.c,f.s,f.z].filter(Boolean).join(', ');
       const mapsUrl='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(addr);
-      const typeLabel=FFL_LIC_LABELS[f.lic_type]||'FFL Dealer';
-      const distTxt=f.distance_miles!=null?escHtml(String(f.distance_miles))+' mi away':'';
-      const phoneTxt=f.phone?'<div class="ffl-phone"><a href="tel:'+escHtml(f.phone)+'">'+escHtml(formatPhone(f.phone))+'</a></div>':'';
+      const typeLabel=FFL_LIC_LABELS[f.t]||'FFL Dealer';
+      const distTxt=f.distance_miles!=null?f.distance_miles+' mi away':'';
+      const phoneTxt=f.p?'<div class="ffl-phone"><a href="tel:'+escHtml(f.p)+'">'+escHtml(formatPhone(f.p))+'</a></div>':'';
       return(
         '<div class="ffl-card">'+
           '<div class="ffl-name">'+escHtml(name)+'</div>'+
-          '<div class="ffl-addr">'+escHtml(f.address||'')+(f.city?', '+escHtml(f.city):'')+(f.state?', '+escHtml(f.state):'')+(f.zip?' '+escHtml(f.zip):'')+'</div>'+
+          '<div class="ffl-addr">'+escHtml(f.a||'')+(f.c?', '+escHtml(f.c):'')+(f.s?', '+escHtml(f.s):'')+(f.z?' '+escHtml(f.z):'')+'</div>'+
           (distTxt?'<div class="ffl-dist">'+distTxt+'</div>':'')+
           '<div class="ffl-pills"><span class="fp">'+escHtml(typeLabel)+'</span></div>'+
           phoneTxt+
