@@ -514,11 +514,20 @@ nav{background:var(--navy-deep);position:sticky;top:0;z-index:200;box-shadow:0 2
 .partners-track{display:flex;align-items:center;gap:56px;width:max-content;animation:partners-scroll 28s linear infinite}
 .partners-track:hover{animation-play-state:paused}
 @keyframes partners-scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-.partner-item{display:flex;flex-direction:column;align-items:center;gap:10px;text-decoration:none;opacity:.6;transition:opacity .25s,transform .25s;flex-shrink:0}
+.partner-item{display:flex;flex-direction:column;align-items:center;gap:10px;text-decoration:none;opacity:.65;transition:opacity .25s,transform .25s;flex-shrink:0}
 .partner-item:hover{opacity:1;transform:translateY(-2px)}
-.partner-logo{height:48px;width:auto;max-width:150px;object-fit:contain;filter:grayscale(100%);transition:filter .25s}
+.partner-logo{height:48px;width:auto;max-width:150px;object-fit:contain;filter:grayscale(100%);transition:filter .25s;display:block}
 .partner-item:hover .partner-logo{filter:grayscale(0%)}
 .partner-name{font-size:11px;color:var(--gray-500);font-weight:700;letter-spacing:.07em;text-transform:uppercase}
+/* Badge shown when all logo sources fail — looks intentional, not broken */
+.partner-name.logo-fallback{background:var(--navy);color:var(--white);padding:8px 18px;border-radius:3px;font-size:10px;letter-spacing:.1em;color:#fff}
+/* Mobile */
+@media(max-width:640px){
+  .sec-partners{padding:32px 0}
+  .partners-track{gap:40px;animation-duration:22s}
+  .partner-logo{height:36px;max-width:110px}
+  .partners-track-wrap::before,.partners-track-wrap::after{width:48px}
+}
 
 /* ── TRUST BAR ────────────────────────────── */
 .trust-bar{background:var(--navy-deep);border-top:2px solid var(--gold);padding:22px 24px}
@@ -1007,53 +1016,53 @@ footer{background:var(--navy-deep);border-top:1px solid rgba(255,255,255,.06)}
 
         <!-- ── Set 1 ── -->
         <a class="partner-item" href="https://bereli.com/?aff=10388" target="_blank" rel="noopener sponsored" title="Bereli">
-          <img class="partner-logo" src="https://logo.clearbit.com/bereli.com" alt="Bereli" onerror="this.parentElement.querySelector('.partner-name').style.fontSize='15px'">
+          <img class="partner-logo" src="https://logo.clearbit.com/bereli.com" alt="Bereli" onerror="_pLogoErr(this)">
           <span class="partner-name">Bereli</span>
         </a>
         <a class="partner-item" href="https://www.impactguns.com/" target="_blank" rel="noopener sponsored" title="Impact Guns">
-          <img class="partner-logo" src="https://logo.clearbit.com/impactguns.com" alt="Impact Guns" onerror="this.parentElement.querySelector('.partner-name').style.fontSize='15px'">
+          <img class="partner-logo" src="https://logo.clearbit.com/impactguns.com" alt="Impact Guns" onerror="_pLogoErr(this)">
           <span class="partner-name">Impact Guns</span>
         </a>
         <a class="partner-item" href="https://www.galco.com/" target="_blank" rel="noopener sponsored" title="Galco Holsters">
-          <img class="partner-logo" src="https://logo.clearbit.com/galco.com" alt="Galco Holsters" onerror="this.parentElement.querySelector('.partner-name').style.fontSize='15px'">
+          <img class="partner-logo" src="https://logo.clearbit.com/galco.com" alt="Galco Holsters" onerror="_pLogoErr(this)">
           <span class="partner-name">Galco Holsters</span>
         </a>
         <a class="partner-item" href="https://houdiniholsters.com/?ref=IdealArmory" target="_blank" rel="noopener sponsored" title="Houdini Holsters">
-          <img class="partner-logo" src="https://logo.clearbit.com/houdiniholsters.com" alt="Houdini Holsters" onerror="this.parentElement.querySelector('.partner-name').style.fontSize='15px'">
+          <img class="partner-logo" src="https://logo.clearbit.com/houdiniholsters.com" alt="Houdini Holsters" onerror="_pLogoErr(this)">
           <span class="partner-name">Houdini Holsters</span>
         </a>
         <a class="partner-item" href="https://www.eurooptic.com/" target="_blank" rel="noopener sponsored" title="EuroOptic">
-          <img class="partner-logo" src="https://logo.clearbit.com/eurooptic.com" alt="EuroOptic" onerror="this.parentElement.querySelector('.partner-name').style.fontSize='15px'">
+          <img class="partner-logo" src="https://logo.clearbit.com/eurooptic.com" alt="EuroOptic" onerror="_pLogoErr(this)">
           <span class="partner-name">EuroOptic</span>
         </a>
         <a class="partner-item" href="https://eclipseholsters.com/?sca_ref=10899101.910eldcNQCkMN2N&utm_source=230647&utm_medium=aff-10899101&utm_campaign=recruit-program" target="_blank" rel="noopener sponsored" title="Eclipse Holsters">
-          <img class="partner-logo" src="https://logo.clearbit.com/eclipseholsters.com" alt="Eclipse Holsters" onerror="this.parentElement.querySelector('.partner-name').style.fontSize='15px'">
+          <img class="partner-logo" src="https://logo.clearbit.com/eclipseholsters.com" alt="Eclipse Holsters" onerror="_pLogoErr(this)">
           <span class="partner-name">Eclipse Holsters</span>
         </a>
 
         <!-- ── Set 2 (duplicate for seamless infinite loop) ── -->
         <a class="partner-item" href="https://bereli.com/?aff=10388" target="_blank" rel="noopener sponsored" title="Bereli">
-          <img class="partner-logo" src="https://logo.clearbit.com/bereli.com" alt="Bereli" onerror="this.parentElement.querySelector('.partner-name').style.fontSize='15px'">
+          <img class="partner-logo" src="https://logo.clearbit.com/bereli.com" alt="Bereli" onerror="_pLogoErr(this)">
           <span class="partner-name">Bereli</span>
         </a>
         <a class="partner-item" href="https://www.impactguns.com/" target="_blank" rel="noopener sponsored" title="Impact Guns">
-          <img class="partner-logo" src="https://logo.clearbit.com/impactguns.com" alt="Impact Guns" onerror="this.parentElement.querySelector('.partner-name').style.fontSize='15px'">
+          <img class="partner-logo" src="https://logo.clearbit.com/impactguns.com" alt="Impact Guns" onerror="_pLogoErr(this)">
           <span class="partner-name">Impact Guns</span>
         </a>
         <a class="partner-item" href="https://www.galco.com/" target="_blank" rel="noopener sponsored" title="Galco Holsters">
-          <img class="partner-logo" src="https://logo.clearbit.com/galco.com" alt="Galco Holsters" onerror="this.parentElement.querySelector('.partner-name').style.fontSize='15px'">
+          <img class="partner-logo" src="https://logo.clearbit.com/galco.com" alt="Galco Holsters" onerror="_pLogoErr(this)">
           <span class="partner-name">Galco Holsters</span>
         </a>
         <a class="partner-item" href="https://houdiniholsters.com/?ref=IdealArmory" target="_blank" rel="noopener sponsored" title="Houdini Holsters">
-          <img class="partner-logo" src="https://logo.clearbit.com/houdiniholsters.com" alt="Houdini Holsters" onerror="this.parentElement.querySelector('.partner-name').style.fontSize='15px'">
+          <img class="partner-logo" src="https://logo.clearbit.com/houdiniholsters.com" alt="Houdini Holsters" onerror="_pLogoErr(this)">
           <span class="partner-name">Houdini Holsters</span>
         </a>
         <a class="partner-item" href="https://www.eurooptic.com/" target="_blank" rel="noopener sponsored" title="EuroOptic">
-          <img class="partner-logo" src="https://logo.clearbit.com/eurooptic.com" alt="EuroOptic" onerror="this.parentElement.querySelector('.partner-name').style.fontSize='15px'">
+          <img class="partner-logo" src="https://logo.clearbit.com/eurooptic.com" alt="EuroOptic" onerror="_pLogoErr(this)">
           <span class="partner-name">EuroOptic</span>
         </a>
         <a class="partner-item" href="https://eclipseholsters.com/?sca_ref=10899101.910eldcNQCkMN2N&utm_source=230647&utm_medium=aff-10899101&utm_campaign=recruit-program" target="_blank" rel="noopener sponsored" title="Eclipse Holsters">
-          <img class="partner-logo" src="https://logo.clearbit.com/eclipseholsters.com" alt="Eclipse Holsters" onerror="this.parentElement.querySelector('.partner-name').style.fontSize='15px'">
+          <img class="partner-logo" src="https://logo.clearbit.com/eclipseholsters.com" alt="Eclipse Holsters" onerror="_pLogoErr(this)">
           <span class="partner-name">Eclipse Holsters</span>
         </a>
 
@@ -3115,6 +3124,36 @@ function renderDOTD() {
     '<a class="hc-cta" href="' + d.url + '" target="_blank" rel="noopener">View Deal &rarr;</a>';
 }
 renderDOTD();
+
+/* ── Partners: logo fallback chain + mobile touch pause ─────────────── */
+function _pLogoErr(img) {
+  // Save original domain on first failure (img.src is still the failing Clearbit URL)
+  if (!img.dataset.partnerDomain) {
+    img.dataset.partnerDomain = img.src.replace(/^https?:\/\/logo\.clearbit\.com\//, '').split('?')[0];
+  }
+  var domain = img.dataset.partnerDomain;
+  var n = parseInt(img.dataset.partnerN || '0', 10);
+  var chain = [
+    'https://img.logo.dev/' + domain + '?token=pk_free&size=64'
+  ];
+  if (n < chain.length) {
+    img.dataset.partnerN = n + 1;
+    img.src = chain[n];
+  } else {
+    // All sources exhausted — hide image, promote name to styled badge
+    img.style.display = 'none';
+    var nm = img.parentElement && img.parentElement.querySelector('.partner-name');
+    if (nm) nm.classList.add('logo-fallback');
+  }
+}
+// Mobile: pause scroll on touch, resume on lift
+(function(){
+  var tr = document.getElementById('partners-track');
+  if (!tr) return;
+  tr.addEventListener('touchstart', function(){ tr.style.animationPlayState = 'paused'; }, {passive:true});
+  tr.addEventListener('touchend',   function(){ tr.style.animationPlayState = 'running'; }, {passive:true});
+  tr.addEventListener('touchcancel',function(){ tr.style.animationPlayState = 'running'; }, {passive:true});
+})();
 </script>
 
 <!-- ═══ MOBILE DRAWER ═══ -->
