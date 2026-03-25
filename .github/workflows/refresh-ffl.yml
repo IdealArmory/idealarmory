@@ -20,12 +20,112 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install adm-zip (for zip extraction)
+      - name: Install adm-zip
         run: npm install adm-zip
 
-      - name: Fetch ATF FFL data and build state JSON files
-        run: node .github/scripts/fetch-ffl.js
+      # ── Download ATF FFL zip via curl (better browser simulation than Node.js) ──
+      - name: Download ATF FFL data
+        run: |
+          set -e
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+          REFERER="https://www.atf.gov/firearms/listing-federal-firearms-licensees"
+          COOKIE_JAR="/tmp/atf-cookies.txt"
+          OUT="/tmp/atf_ffl.zip"
 
+          # Step 1: Visit the ATF page first to get session cookies and find the download link
+          echo "Visiting ATF FFL listing page..."
+          PAGE=$(curl -sf --max-time 30 \
+            -A "$UA" \
+            -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" \
+            -H "Accept-Language: en-US,en;q=0.9" \
+            -c "$COOKIE_JAR" \
+            "$REFERER" 2>/dev/null || echo "")
+
+          # Step 2: Try to extract the download URL from the page
+          ATF_URL=$(echo "$PAGE" | grep -oP 'href="[^"]*allstates[^"]*?/download"' \
+            | head -1 | grep -oP '(?<=href=")[^"]+' || echo "")
+          if [ -n "$ATF_URL" ]; then
+            [[ "$ATF_URL" != http* ]] && ATF_URL="https://www.atf.gov$ATF_URL"
+            echo "Found URL via page scrape: $ATF_URL"
+          fi
+
+          # Step 3: Build candidate URL list (many naming patterns ATF has used)
+          YYYY=$(date +%Y)
+          YY=$(date +%y)
+          MM=$(date +%m)
+          MON_LOWER=$(date +%b | tr '[:upper:]' '[:lower:]')
+          MONTH_LOWER=$(date +%B | tr '[:upper:]' '[:lower:]')
+
+          # Previous month values
+          PREV_DATE=$(date -d "last month" 2>/dev/null || date -v-1m 2>/dev/null || echo "")
+          if [ -n "$PREV_DATE" ]; then
+            PMM=$(date -d "last month" +%m 2>/dev/null || date -v-1m +%m)
+            PMON=$(date -d "last month" +%b 2>/dev/null | tr '[:upper:]' '[:lower:]' || date -v-1m +%b | tr '[:upper:]' '[:lower:]')
+            PMONTH=$(date -d "last month" +%B 2>/dev/null | tr '[:upper:]' '[:lower:]' || date -v-1m +%B | tr '[:upper:]' '[:lower:]')
+            PYYYY=$(date -d "last month" +%Y 2>/dev/null || date -v-1m +%Y)
+            PYY=$(date -d "last month" +%y 2>/dev/null || date -v-1m +%y)
+          else
+            PMM=""; PMON=""; PMONTH=""; PYYYY="$YYYY"; PYY="$YY"
+          fi
+
+          BASE="https://www.atf.gov/firearms/docs/undefined"
+          CANDIDATES=(
+            # Scraped URL goes first if found
+            "$ATF_URL"
+            # Current month — common patterns
+            "${BASE}/allstates${MONTH_LOWER}${YYYY}/download"
+            "${BASE}/allstates${MON_LOWER}${YYYY}/download"
+            "${BASE}/allstates${MM}${YYYY}/download"
+            "${BASE}/allstates${MONTH_LOWER}${YY}/download"
+            "${BASE}/allstates${MON_LOWER}${YY}/download"
+            "${BASE}/allstatesffl${MONTH_LOWER}${YYYY}/download"
+            "${BASE}/allstatesffl${MON_LOWER}${YYYY}/download"
+            "${BASE}/allstatesffl${MM}${YYYY}/download"
+            "${BASE}/all-states-${MONTH_LOWER}-${YYYY}/download"
+            # Previous month fallbacks
+            "${BASE}/allstates${PMONTH}${PYYYY}/download"
+            "${BASE}/allstates${PMON}${PYYYY}/download"
+            "${BASE}/allstates${PMM}${PYYYY}/download"
+            "${BASE}/allstatesffl${PMONTH}${PYYYY}/download"
+            "${BASE}/allstatesffl${PMON}${PYYYY}/download"
+          )
+
+          # Step 4: Try each candidate until one succeeds
+          SUCCESS=0
+          for URL in "${CANDIDATES[@]}"; do
+            [ -z "$URL" ] && continue
+            echo "Trying: $URL"
+            HTTP=$(curl -sf --max-time 60 \
+              -A "$UA" \
+              -H "Referer: $REFERER" \
+              -H "Accept: application/zip,application/octet-stream,*/*;q=0.8" \
+              -H "Accept-Language: en-US,en;q=0.9" \
+              -b "$COOKIE_JAR" \
+              -L -o "$OUT" \
+              -w "%{http_code}" \
+              "$URL" 2>/dev/null || echo "000")
+            SIZE=$(stat -c%s "$OUT" 2>/dev/null || echo "0")
+            echo "  HTTP $HTTP | Size: $SIZE bytes"
+            if [ "$HTTP" = "200" ] && [ "$SIZE" -gt 10000 ]; then
+              echo "SUCCESS: Downloaded $SIZE bytes from $URL"
+              SUCCESS=1
+              break
+            fi
+            rm -f "$OUT"
+          done
+
+          if [ "$SUCCESS" != "1" ]; then
+            echo "ERROR: All ATF download URLs failed."
+            echo "Visit https://www.atf.gov/firearms/listing-federal-firearms-licensees"
+            echo "to find the current download URL and update CANDIDATES in this workflow."
+            exit 1
+          fi
+
+      # ── Process the downloaded zip ────────────────────────────────────────────
+      - name: Process FFL data
+        run: node .github/scripts/fetch-ffl.js /tmp/atf_ffl.zip
+
+      # ── Commit state files ────────────────────────────────────────────────────
       - name: Commit and push updated FFL data
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"

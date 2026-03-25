@@ -155,7 +155,20 @@ async function findAtfUrl() {
   return candidates;
 }
 
-// ── Step 3: Download and parse ATF FFL data ───────────────────────────────────
+// ── Step 3a: Parse ATF zip already on disk ────────────────────────────────────
+
+async function parseAtfZip(atfPath, tmpDir, zipCentroids) {
+  const atfDir = path.join(tmpDir, 'atf');
+  fs.mkdirSync(atfDir, { recursive: true });
+  await unzipFile(atfPath, atfDir);
+
+  const txtFile = fs.readdirSync(atfDir).find(f => /\.(txt|csv)$/i.test(f));
+  if (!txtFile) throw new Error('ATF text file not found in zip');
+
+  return parseAtfText(path.join(atfDir, txtFile), zipCentroids);
+}
+
+// ── Step 3b: Download and parse ATF FFL data ──────────────────────────────────
 
 async function fetchAtfData(tmpDir, zipCentroids) {
   const urls = await findAtfUrl();
@@ -180,16 +193,18 @@ async function fetchAtfData(tmpDir, zipCentroids) {
   fs.mkdirSync(atfDir, { recursive: true });
   await unzipFile(atfPath, atfDir);
 
-  // Find the pipe-delimited text file
-  const txtFile = fs.readdirSync(atfDir).find(f => /\.(txt|csv)$/i.test(f));
-  if (!txtFile) throw new Error('ATF text file not found in zip');
+  const txtFile2 = fs.readdirSync(atfDir).find(f => /\.(txt|csv)$/i.test(f));
+  if (!txtFile2) throw new Error('ATF text file not found in zip');
+  return parseAtfText(path.join(atfDir, txtFile2), zipCentroids);
+}
 
-  const raw = fs.readFileSync(path.join(atfDir, txtFile), 'latin1');
+// ── Shared ATF text parser ────────────────────────────────────────────────────
+
+function parseAtfText(filePath, zipCentroids) {
+  const raw = fs.readFileSync(filePath, 'latin1');
   const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
-
   console.log(`  Parsing ${lines.length} ATF lines...`);
 
-  // Parse header to find column indices
   const header = lines[0].split('|').map(h => h.trim().toLowerCase());
 
   function col(names) {
@@ -208,7 +223,6 @@ async function fetchAtfData(tmpDir, zipCentroids) {
   const iState  = col(['premise_state', 'state', 'prem_state']);
   const iZip    = col(['premise_zip', 'zip_code', 'zip', 'prem_zip']);
   const iPhone  = col(['voice_phone', 'phone']);
-
   console.log('  Column indices:', { iType, iName, iBiz, iStreet, iCity, iState, iZip, iPhone });
 
   const byState = {};
@@ -285,19 +299,33 @@ function writeStateFiles(byState) {
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────
+// Usage:
+//   node fetch-ffl.js                    — downloads ATF zip automatically
+//   node fetch-ffl.js /path/to/atf.zip  — uses a pre-downloaded ATF zip
 
 async function main() {
+  const predownloadedZip = process.argv[2] || null;
   const tmpDir = path.join(require('os').tmpdir(), 'ideal-armory-ffl-' + Date.now());
   fs.mkdirSync(tmpDir, { recursive: true });
   console.log(`Using temp dir: ${tmpDir}`);
 
   try {
     const zipCentroids = await buildZipCentroids(tmpDir);
-    const byState      = await fetchAtfData(tmpDir, zipCentroids);
+
+    let byState;
+    if (predownloadedZip && fs.existsSync(predownloadedZip)) {
+      console.log(`Using pre-downloaded ATF file: ${predownloadedZip}`);
+      // Copy to tmp so extraction lands in a clean dir
+      const dest = path.join(tmpDir, 'atf_ffl.zip');
+      fs.copyFileSync(predownloadedZip, dest);
+      byState = await parseAtfZip(dest, tmpDir, zipCentroids);
+    } else {
+      byState = await fetchAtfData(tmpDir, zipCentroids);
+    }
+
     writeStateFiles(byState);
     console.log('\nFFL data refresh complete.');
   } finally {
-    // Clean up temp files
     try { fs.rmSync(tmpDir, { recursive: true, force: true }); } catch (e) {}
   }
 }
