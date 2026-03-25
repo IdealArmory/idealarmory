@@ -734,32 +734,6 @@
     },
     {
         "badge":  "",
-        "fit":  "Other",
-        "category":  "holsters",
-        "img":  "https://cdn.shopify.com/s/files/1/0544/6942/7375/files/IMG_0424.jpg?v=1689686445",
-        "carry":  "OWB",
-        "stars":  0,
-        "id":  "manual_eclipse_46",
-        "mat":  "Kydex",
-        "sub":  "OWB - Kydex - Chest Sling - USA Made",
-        "src":  "manual",
-        "orig":  60,
-        "inStock":  true,
-        "brand":  "Eclipse Holsters",
-        "price":  60,
-        "sellers":  [
-                        {
-                            "price":  60,
-                            "stock":  "in",
-                            "url":  "https://eclipseholsters.com/products/chest-sling?sca_ref=10899101.910eldcNQCkMN2N\u0026utm_source=230647\u0026utm_medium=aff-10899101\u0026utm_campaign=recruit-program",
-                            "name":  "Eclipse Holsters"
-                        }
-                    ],
-        "reviews":  0,
-        "name":  "Chest Sling"
-    },
-    {
-        "badge":  "",
         "fit":  "Taurus",
         "category":  "holsters",
         "img":  "https://cdn.shopify.com/s/files/1/0544/6942/7375/files/TAURUS.jpg?v=1684940806",
