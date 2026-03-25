@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "statusMessage": "Running site audit...",
+            "command": "FILE=$(jq -r '.tool_input.file_path // .tool_response.filePath // \"\"' 2>/dev/null); case \"$FILE\" in *holsters.html|*handguns.html|*rifles.html|*shotguns.html|*optics.html|*ammunition.html|*ar-parts.html|*magazines.html|*cleaning.html|*gun-safes.html|*manual-products.json|*static-products.json|*search-index.json|*fetch-eurooptic.js) powershell.exe -ExecutionPolicy Bypass -File 'C:\\Users\\jmali\\OneDrive\\Ideal Armory\\New Deployment\\tools\\audit.ps1' -ChangedFile \"$FILE\" 2>&1;; esac; true"
+          }
+        ]
+      }
+    ]
+  }
+}
