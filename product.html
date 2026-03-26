@@ -1518,29 +1518,58 @@ function doSearch(){
   // 0. EuroOptic product — routed via ?src=eurooptic&id=xxx&cat=CATEGORY
   if (sp.get('src') === 'eurooptic') {
     var eoId = sp.get('id');
+    var eoCat = sp.get('cat') || 'handguns';
     try {
       var raw = sessionStorage.getItem('ia_pv');
       if (raw) {
         var cached = JSON.parse(raw);
         var cachedRawId = String(cached.id || '').replace(/^eo_/, '');
-        if (cachedRawId === eoId) { renderProduct(cached); return; }
+        if (cachedRawId === eoId) {
+          // If cache only has 1 seller, still try to enrich with Bereli
+          if (!cached.sellers || cached.sellers.length < 2) {
+            fetch('/data/bereli-' + eoCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; })
+              .then(function(beItems){
+                if (cached.upc) {
+                  var beMatch = beItems.find(function(x){ return x.upc && x.upc === cached.upc; });
+                  if (beMatch && !cached.sellers.some(function(s){ return s.name === 'Bereli'; })) {
+                    cached.sellers.push({name:'Bereli', price:beMatch.price, stock:beMatch.inStock?'in':'out', url:beMatch.url});
+                    cached.sellers.sort(function(a,b){ return a.price - b.price; });
+                  }
+                }
+                try{ sessionStorage.setItem('ia_pv', JSON.stringify(cached)); }catch(e2){}
+                renderProduct(cached);
+              });
+          } else {
+            renderProduct(cached);
+          }
+          return;
+        }
       }
     } catch(e){}
-    // Fallback: fetch directly from category JSON using &cat= param
-    var eoCat = sp.get('cat') || 'handguns';
-    fetch('/data/eurooptic-' + eoCat + '.json')
-      .then(function(r){ return r.ok ? r.json() : []; })
-      .then(function(items){
-        var item = items.find(function(x){ return String(x.id) === String(eoId); });
-        if (item) {
-          var pd = Object.assign({}, item);
-          if (!pd.imgs || !pd.imgs.length) pd.imgs = pd.img ? [pd.img] : [];
-          pd.sellers = pd.sellers || [{name:'EuroOptic', price:pd.price, stock:pd.inStock?'in':'out', url:pd.url}];
-          try{ sessionStorage.setItem('ia_pv', JSON.stringify(pd)); }catch(e){}
-          renderProduct(pd);
-        } else { renderNotFound(); }
-      })
-      .catch(function(){ renderNotFound(); });
+    // Fallback: fetch both EO and Bereli JSON in parallel
+    Promise.all([
+      fetch('/data/eurooptic-' + eoCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; }),
+      fetch('/data/bereli-' + eoCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; })
+    ]).then(function(results){
+      var eoItems = results[0], beItems = results[1];
+      var item = eoItems.find(function(x){ return String(x.id) === String(eoId); });
+      if (item) {
+        var pd = Object.assign({}, item);
+        if (!pd.imgs || !pd.imgs.length) pd.imgs = pd.img ? [pd.img] : [];
+        if (pd.sub === undefined) pd.sub = pd.caliber || '';
+        pd.sellers = pd.sellers || [{name:'EuroOptic', price:pd.price, stock:pd.inStock?'in':'out', url:pd.url}];
+        // Cross-reference Bereli by UPC
+        if (pd.upc) {
+          var beMatch = beItems.find(function(x){ return x.upc && x.upc === pd.upc; });
+          if (beMatch && !pd.sellers.some(function(s){ return s.name === 'Bereli'; })) {
+            pd.sellers.push({name:'Bereli', price:beMatch.price, stock:beMatch.inStock?'in':'out', url:beMatch.url});
+            pd.sellers.sort(function(a,b){ return a.price - b.price; });
+          }
+        }
+        try{ sessionStorage.setItem('ia_pv', JSON.stringify(pd)); }catch(e){}
+        renderProduct(pd);
+      } else { renderNotFound(); }
+    }).catch(function(){ renderNotFound(); });
     return;
   }
 
