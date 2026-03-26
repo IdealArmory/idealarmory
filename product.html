@@ -1364,8 +1364,9 @@ function renderProduct(p){
     galleryHTML = '<div class="pd-main-wrap" style="display:flex;align-items:center;justify-content:center;height:280px;color:var(--gray-400);font-style:italic;font-size:13px">Image from retailer feed</div>';
   }
 
-  // Sellers
-  var sellerRows = p.sellers.map(function(s,i){
+  // Sellers — sort lowest price first
+  var sortedSellers = p.sellers.slice().sort(function(a,b){return a.price - b.price;});
+  var sellerRows = sortedSellers.map(function(s,i){
     return '<div class="pd-seller-row'+(i===0?' best-row':'')+'">'
       +'<div><div class="pd-seller-name">'+s.name+'</div>'
       +'<div class="pd-seller-meta">'+(s.fflRequired ? '&#9737; FFL Transfer Required' : '&#10003; Ships Direct')+'</div></div>'

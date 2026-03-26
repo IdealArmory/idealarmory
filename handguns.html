@@ -524,7 +524,7 @@ function adaptBereliProduct(b){
   var capacity=0;var cm=n.match(/(\d+)\+1/);if(cm)capacity=parseInt(cm[1])+1;
   return{id:b.id,upc:b.upc||'',brand:b.brand,name:b.name,sub:b.caliber||'',img:b.img,price:b.price,orig:b.price,inStock:b.inStock,stars:0,reviews:0,badge:'',src:'bereli',action:action,frameSize:frameSize,safety:safety,opticReady:opticReady,barrelIn:barrelIn,capacity:capacity,caliber:b.caliber||'',sellers:[{name:'Bereli',price:b.price,stock:b.inStock?'in':'out',url:b.url}]};
 }
-async function loadBereli(){try{var res=await fetch('/data/bereli-handguns.json');if(!res.ok)return;var items=await res.json();items=items.filter(function(b){if(!b.price||b.price<300)return false;if(!b.img)return false;return true;});var upcMap={};PRODUCTS.forEach(function(p){if(p.upc)upcMap[p.upc]=p;});var newCards=0;items.forEach(function(b){if(b.upc&&upcMap[b.upc]){var ep=upcMap[b.upc];if(!ep.sellers.some(function(s){return s.name==='Bereli';}))ep.sellers.push({name:'Bereli',price:b.price,stock:b.inStock?'in':'out',url:b.url});}else{BERELI_PRODUCTS.push(adaptBereliProduct(b));newCards++;}});ALL_PRODUCTS=PRODUCTS.concat(EO_PRODUCTS).concat(BERELI_PRODUCTS);filterProducts();}catch(e){console.warn('Bereli load failed:',e.message);}}
+async function loadBereli(){try{var res=await fetch('/data/bereli-handguns.json');if(!res.ok)return;var items=await res.json();items=items.filter(function(b){if(!b.price||b.price<300)return false;if(!b.img)return false;return true;});var upcMap={};ALL_PRODUCTS.forEach(function(p){if(p.upc)upcMap[p.upc]=p;});items.forEach(function(b){if(b.upc&&upcMap[b.upc]){var ep=upcMap[b.upc];if(!ep.sellers.some(function(s){return s.name==='Bereli';})){ep.sellers.push({name:'Bereli',price:b.price,stock:b.inStock?'in':'out',url:b.url});ep.sellers.sort(function(a,b){return a.price-b.price;});}}else{BERELI_PRODUCTS.push(adaptBereliProduct(b));}});ALL_PRODUCTS=PRODUCTS.concat(EO_PRODUCTS).concat(BERELI_PRODUCTS);filterProducts();}catch(e){console.warn('Bereli load failed:',e.message);}}
 
 async function loadEuroOptic() {
   try {
@@ -540,8 +540,10 @@ async function loadEuroOptic() {
     items.forEach(function(eo) {
       if (eo.upc && upcMap[eo.upc]) {
         var ep = upcMap[eo.upc];
-        if (!ep.sellers.some(function(s){return s.name==='EuroOptic';}))
+        if (!ep.sellers.some(function(s){return s.name==='EuroOptic';})) {
           ep.sellers.push({name:'EuroOptic', price:eo.price, stock:eo.inStock?'in':'out', url:eo.url});
+          ep.sellers.sort(function(a,b){return a.price-b.price;});
+        }
       } else {
         EO_PRODUCTS.push(adaptEoProduct(eo)); newCards++;
       }
@@ -574,7 +576,7 @@ function renderGrid() {
   grid.innerHTML = filteredProducts.slice(0, showing).map(function(p) {
     var idStr = typeof p.id === 'string' ? "'"+p.id+"'" : p.id;
     var low = getLowestPrice(p);
-    var sellers = p.sellers.slice(0,3).map(function(s,i){
+    var sellers = p.sellers.slice().sort(function(a,b){return a.price-b.price;}).slice(0,3).map(function(s,i){
       return '<div class="psr"><span class="psr-n">'+s.name+'</span><span class="psr-p'+(i===0?' low':'')+'">$'+s.price.toFixed(2)+'</span></div>';
     }).join('');
     var img = p.img ? '<img src="'+p.img+'" alt="'+p.name+'" loading="lazy">' : '<span class="img-ph">Image from retailer feed</span>';
@@ -817,8 +819,7 @@ function renderSuggested() {
 filteredProducts = [...PRODUCTS];
 sortAndRender();
 renderSuggested();
-loadEuroOptic();
-loadBereli();
+loadEuroOptic().then(function(){loadBereli();});
 </script>
 <script src="/js/search-autocomplete.js"></script>
 </body>
