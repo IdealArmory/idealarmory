@@ -466,6 +466,7 @@ const PRODUCTS = [
 ]
 
 var EO_PRODUCTS = [];
+var BERELI_PRODUCTS=[];
 var ALL_PRODUCTS = PRODUCTS.slice();
 var PAGE_SIZE = 48;
 var visibleCount = PAGE_SIZE;
@@ -506,6 +507,25 @@ function adaptEoProduct(eo) {
   };
 }
 
+function adaptBereliProduct(b){
+  var n=b.name.toLowerCase();
+  var action='Striker-Fired';
+  if(/revolver/.test(n))action='Revolver';
+  else if(/\bda\/sa\b|double[\-\s]action/.test(n))action='DA/SA';
+  else if(/single[\-\s]action/.test(n))action='Single Action';
+  var frameSize='Full-Size';
+  if(/sub[\-\s]?compact|micro/.test(n))frameSize='Sub-Compact';
+  else if(/compact/.test(n))frameSize='Compact';
+  var safety='';
+  if(/manual[\-\s]safety/.test(n))safety='Manual Safety';
+  else if(/no[\-\s]manual|without[\-\s]safety/.test(n))safety='No Manual Safety';
+  var opticReady=/optic[\-\s]ready|\bmos\b|\brmr\b|optic[\-\s]cut/.test(n);
+  var barrelIn=0;var bm=n.match(/(\d+(?:\.\d+)?)["\u201d]?\s*(?:inch|in\b)/);if(bm)barrelIn=parseFloat(bm[1]);
+  var capacity=0;var cm=n.match(/(\d+)\+1/);if(cm)capacity=parseInt(cm[1])+1;
+  return{id:b.id,upc:b.upc||'',brand:b.brand,name:b.name,sub:b.caliber||'',img:b.img,price:b.price,orig:b.price,inStock:b.inStock,stars:0,reviews:0,badge:'',src:'bereli',action:action,frameSize:frameSize,safety:safety,opticReady:opticReady,barrelIn:barrelIn,capacity:capacity,caliber:b.caliber||'',sellers:[{name:'Bereli',price:b.price,stock:b.inStock?'in':'out',url:b.url}]};
+}
+async function loadBereli(){try{var res=await fetch('/data/bereli-handguns.json');if(!res.ok)return;var items=await res.json();items=items.filter(function(b){if(!b.price||b.price<300)return false;if(!b.img)return false;return true;});var upcMap={};PRODUCTS.forEach(function(p){if(p.upc)upcMap[p.upc]=p;});var newCards=0;items.forEach(function(b){if(b.upc&&upcMap[b.upc]){var ep=upcMap[b.upc];if(!ep.sellers.some(function(s){return s.name==='Bereli';}))ep.sellers.push({name:'Bereli',price:b.price,stock:b.inStock?'in':'out',url:b.url});}else{BERELI_PRODUCTS.push(adaptBereliProduct(b));newCards++;}});ALL_PRODUCTS=PRODUCTS.concat(EO_PRODUCTS).concat(BERELI_PRODUCTS);filterProducts();}catch(e){console.warn('Bereli load failed:',e.message);}}
+
 async function loadEuroOptic() {
   try {
     var res = await fetch('/data/eurooptic-handguns.json');
@@ -526,7 +546,7 @@ async function loadEuroOptic() {
         EO_PRODUCTS.push(adaptEoProduct(eo)); newCards++;
       }
     });
-    ALL_PRODUCTS = PRODUCTS.concat(EO_PRODUCTS);
+    ALL_PRODUCTS = PRODUCTS.concat(EO_PRODUCTS).concat(BERELI_PRODUCTS);
     filterProducts();
   } catch(e) { console.warn('EuroOptic load failed:', e.message); }
 }
@@ -558,7 +578,7 @@ function renderGrid() {
       return '<div class="psr"><span class="psr-n">'+s.name+'</span><span class="psr-p'+(i===0?' low':'')+'">$'+s.price.toFixed(2)+'</span></div>';
     }).join('');
     var img = p.img ? '<img src="'+p.img+'" alt="'+p.name+'" loading="lazy">' : '<span class="img-ph">Image from retailer feed</span>';
-    var href = p.src==='eurooptic' ? '/product.html?src=eurooptic&id='+p.id.replace('eo_','')+'&cat=handguns' : '/product.html?p='+slugify(p.name);
+    var href = p.src==='eurooptic' ? '/product.html?src=eurooptic&id='+p.id.replace('eo_','')+'&cat=handguns' : p.src==='bereli' ? '/product.html?src=bereli&id='+encodeURIComponent(p.id.replace('bereli_',''))+'&cat=handguns' : '/product.html?p='+slugify(p.name);
     return '<div class="prod-card" onclick="viewProduct('+idStr+')">'
       +(p.badge==='best'?'<span class="badge-best">Best Seller</span>':'')
       
@@ -736,6 +756,17 @@ function viewProduct(id) {
     window.location.href = '/product.html?src=eurooptic&id=' + encodeURIComponent(eoId) + '&cat=handguns';
     return;
   }
+  if (typeof id === 'string' && id.indexOf('bereli_') === 0) {
+    var beId = id.slice(7);
+    var beP = ALL_PRODUCTS.find(function(x){return x.id===id;});
+    if (beP) {
+      var pd = Object.assign({}, beP);
+      if (!pd.imgs || !pd.imgs.length) pd.imgs = pd.img ? [pd.img] : [];
+      try{sessionStorage.setItem('ia_pv',JSON.stringify(pd));}catch(e){}
+    }
+    window.location.href = '/product.html?src=bereli&id=' + encodeURIComponent(beId) + '&cat=handguns';
+    return;
+  }
   var p = PRODUCTS.find(function(x){return x.id===id;});
   if (!p) return;
   // Normalize img → imgs[] so product.html renderProduct always has imgs array
@@ -787,6 +818,7 @@ filteredProducts = [...PRODUCTS];
 sortAndRender();
 renderSuggested();
 loadEuroOptic();
+loadBereli();
 </script>
 <script src="/js/search-autocomplete.js"></script>
 </body>

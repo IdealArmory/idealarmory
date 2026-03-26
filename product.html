@@ -1543,6 +1543,36 @@ function doSearch(){
     return;
   }
 
+  // 0b. Bereli product — routed via ?src=bereli&id=xxx&cat=CATEGORY
+  if (sp.get('src') === 'bereli') {
+    var beId = sp.get('id');
+    try {
+      var raw = sessionStorage.getItem('ia_pv');
+      if (raw) {
+        var cached = JSON.parse(raw);
+        var cachedRawId = String(cached.id || '').replace(/^bereli_/, '');
+        if (cachedRawId === beId) { renderProduct(cached); return; }
+      }
+    } catch(e){}
+    var beCat = sp.get('cat') || 'handguns';
+    fetch('/data/bereli-' + beCat + '.json')
+      .then(function(r){ return r.ok ? r.json() : []; })
+      .then(function(items){
+        var item = items.find(function(x){
+          return String(x.id || '').replace(/^bereli_/, '') === String(beId);
+        });
+        if (item) {
+          var pd = Object.assign({}, item);
+          if (!pd.imgs || !pd.imgs.length) pd.imgs = pd.img ? [pd.img] : [];
+          pd.sellers = pd.sellers || [{name:'Bereli', price:pd.price, stock:pd.inStock?'in':'out', url:pd.url}];
+          try{ sessionStorage.setItem('ia_pv', JSON.stringify(pd)); }catch(e){}
+          renderProduct(pd);
+        } else { renderNotFound(); }
+      })
+      .catch(function(){ renderNotFound(); });
+    return;
+  }
+
   // 1. URL slug match — most reliable, works for direct links, bookmarks, shares
   if (slug && slug !== 'product' && slug !== 'product.html') {
     product = ALL_PRODUCTS.find(function(p){

@@ -419,6 +419,7 @@ const PRODUCTS=[
 ]
 
 var EO_PRODUCTS=[];
+var BERELI_PRODUCTS=[];
 var ALL_PRODUCTS=PRODUCTS.slice();
 var PAGE_SIZE=48;
 var visibleCount=PAGE_SIZE;
@@ -442,7 +443,9 @@ function adaptEoProduct(eo){
   else if(/hunting|deer|\bgame\b|big[\-\s]game|premium/.test(n))use='Hunting';
   return{id:'eo_'+eo.id,upc:eo.upc||'',brand:eo.brand,name:eo.name,sub:'',img:eo.img,price:eo.price,orig:eo.orig,inStock:eo.inStock,stars:0,reviews:0,badge:'',src:'eurooptic',qty:eo.qty||1,btype:btype,use:use,sellers:[{name:'EuroOptic',price:eo.price,stock:eo.inStock?'in':'out',url:eo.url}]};
 }
-async function loadEuroOptic(){try{var res=await fetch('/data/eurooptic-ammunition.json');if(!res.ok)return;var items=await res.json();var AM_EXCL=['holster','cleaning kit','solvent','lubricant',' case ',' bag ',' pouch',' mat ','scope','optic','sight ','magazine',' mag '];items=items.filter(function(eo){if(!eo.price||eo.price<5)return false;if(!eo.img||eo.img.includes('no-image'))return false;var n=(eo.name+' '+(eo.brand||'')).toLowerCase();return!AM_EXCL.some(function(w){return n.indexOf(w)>=0;});}).slice(0,500);var upcMap={};PRODUCTS.forEach(function(p){if(p.upc)upcMap[p.upc]=p;});items.forEach(function(eo){if(eo.upc&&upcMap[eo.upc]){var ep=upcMap[eo.upc];if(!ep.sellers.some(function(s){return s.name==='EuroOptic';}))ep.sellers.push({name:'EuroOptic',price:eo.price,stock:eo.inStock?'in':'out',url:eo.url});}else{EO_PRODUCTS.push(adaptEoProduct(eo));}});ALL_PRODUCTS=PRODUCTS.concat(EO_PRODUCTS);filterProducts();}catch(e){console.warn('EuroOptic load failed:',e.message);}}
+function adaptBereliProduct(b){var n=b.name.toLowerCase();var btype='FMJ';if(/\bjhp\b|jacketed[\-\s]hollow|hollow[\-\s]point/.test(n))btype='JHP';else if(/\bhp\b/.test(n))btype='HP';else if(/\bsp\b|soft[\-\s]point/.test(n))btype='SP';else if(/frangible/.test(n))btype='Frangible';else if(/subsonic/.test(n))btype='Subsonic';else if(/buckshot|buck\b/.test(n))btype='Buckshot';else if(/\bslug\b/.test(n))btype='Slug';var use='Training';if(/\bmatch\b|competition|target/.test(n))use='Target';else if(/defense|defensive|self[\-\s]defense|jhp|hollow/.test(n))use='Self-Defense';else if(/hunting|deer|\bgame\b|big[\-\s]game|premium/.test(n))use='Hunting';return{id:b.id,upc:b.upc||'',brand:b.brand,name:b.name,sub:b.caliber||'',img:b.img,price:b.price,orig:b.price,inStock:b.inStock,stars:0,reviews:0,badge:'',src:'bereli',qty:b.numrounds||1,btype:btype,use:use,caliber:b.caliber||'',sellers:[{name:'Bereli',price:b.price,stock:b.inStock?'in':'out',url:b.url}]};}
+async function loadBereli(){try{var res=await fetch('/data/bereli-ammunition.json');if(!res.ok)return;var items=await res.json();items=items.filter(function(b){return b.price>=15&&b.img;});var upcMap={};PRODUCTS.forEach(function(p){if(p.upc)upcMap[p.upc]=p;});items.forEach(function(b){if(b.upc&&upcMap[b.upc]){var ep=upcMap[b.upc];if(!ep.sellers.some(function(s){return s.name==='Bereli';}))ep.sellers.push({name:'Bereli',price:b.price,stock:b.inStock?'in':'out',url:b.url});}else{BERELI_PRODUCTS.push(adaptBereliProduct(b));}});ALL_PRODUCTS=PRODUCTS.concat(EO_PRODUCTS).concat(BERELI_PRODUCTS);filterProducts();}catch(e){console.warn('Bereli load failed:',e.message);}}
+async function loadEuroOptic(){try{var res=await fetch('/data/eurooptic-ammunition.json');if(!res.ok)return;var items=await res.json();var AM_EXCL=['holster','cleaning kit','solvent','lubricant',' case ',' bag ',' pouch',' mat ','scope','optic','sight ','magazine',' mag '];items=items.filter(function(eo){if(!eo.price||eo.price<5)return false;if(!eo.img||eo.img.includes('no-image'))return false;var n=(eo.name+' '+(eo.brand||'')).toLowerCase();return!AM_EXCL.some(function(w){return n.indexOf(w)>=0;});}).slice(0,500);var upcMap={};PRODUCTS.forEach(function(p){if(p.upc)upcMap[p.upc]=p;});items.forEach(function(eo){if(eo.upc&&upcMap[eo.upc]){var ep=upcMap[eo.upc];if(!ep.sellers.some(function(s){return s.name==='EuroOptic';}))ep.sellers.push({name:'EuroOptic',price:eo.price,stock:eo.inStock?'in':'out',url:eo.url});}else{EO_PRODUCTS.push(adaptEoProduct(eo));}});ALL_PRODUCTS=PRODUCTS.concat(EO_PRODUCTS).concat(BERELI_PRODUCTS);filterProducts();}catch(e){console.warn('EuroOptic load failed:',e.message);}}
 
 function renderGrid(){
   var grid=document.getElementById('product-grid');
@@ -454,13 +457,14 @@ function renderGrid(){
     var low=getLowestPrice(p);
     var ppr=getPPR(p);
     var isEo=p.src==='eurooptic';
-    var idAttr=isEo?("'"+p.id+"'"):p.id;
+    var isBereli=p.src==='bereli';
+    var idAttr=(isEo||isBereli)?("'"+p.id+"'"):p.id;
     var sellers=p.sellers.slice(0,3).map(function(s,i){return '<div class="psr"><span class="psr-n">'+s.name+'</span><span class="psr-p'+(i===0?' low':'')+'">$'+s.price.toFixed(2)+'</span></div>';}).join('');
     return '<div class="prod-card" onclick="viewProduct('+idAttr+')">'
       +(p.badge==='best'?'<span class="badge-best">Best Seller</span>':'')
       
       +'<div class="prod-img">'+(p.img?'<img src="'+p.img+'" alt="'+p.name+'" loading="lazy" style="max-width:88%;max-height:135px;object-fit:contain">':'<span class="img-ph">Image from retailer feed</span>')+'</div>'
-      +'<div class="prod-body"><div class="prod-brand">'+p.brand+'</div><a class="prod-name" href="'+(isEo?'/product.html?src=eurooptic&id='+p.id.replace('eo_','')+'&cat=ammunition':'/product.html?p='+slugify(p.name))+'" onclick="event.stopPropagation()">'+p.name+'</a>'
+      +'<div class="prod-body"><div class="prod-brand">'+p.brand+'</div><a class="prod-name" href="'+(isEo?'/product.html?src=eurooptic&id='+p.id.replace('eo_','')+'&cat=ammunition':isBereli?'/product.html?src=bereli&id='+encodeURIComponent(p.id.replace('bereli_',''))+'&cat=ammunition':'/product.html?p='+slugify(p.name))+'" onclick="event.stopPropagation()">'+p.name+'</a>'
       +'<div class="prod-sub">'+(p.sub||'')+'</div>'
       +'<div class="prod-ppr">&#162;'+ppr.toFixed(1)+' per round</div>'
       +'<div class="prod-price">$'+low.toFixed(2)+'</div>'
@@ -531,7 +535,7 @@ function toggleSec(hd){var body=hd.nextElementSibling;var tog=hd.querySelector('
 function openDrawer(){var dc=document.getElementById('drawer-content');dc.innerHTML=document.getElementById('filter-sidebar').innerHTML;dc.querySelectorAll('input[type=checkbox]').forEach(function(cb){var orig=document.querySelector('#filter-sidebar input[value="'+cb.value+'"]');if(orig)cb.checked=orig.checked;cb.onchange=function(){filterProducts();};});document.getElementById('filter-drawer').classList.add('open');document.getElementById('filter-overlay').classList.add('open');document.body.style.overflow='hidden';}
 function closeDrawer(){document.getElementById('filter-drawer').classList.remove('open');document.getElementById('filter-overlay').classList.remove('open');document.body.style.overflow='';}
 function slugify(s){return(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');}
-function viewProduct(id){if(typeof id==='string'&&id.indexOf('eo_')===0){var eoId=id.slice(3);var eoP=ALL_PRODUCTS.find(function(x){return x.id===id;});if(eoP){var pd=Object.assign({},eoP);if(!pd.imgs||!pd.imgs.length)pd.imgs=pd.img?[pd.img]:[];try{sessionStorage.setItem('ia_pv',JSON.stringify(pd));}catch(e){}}window.location.href='/product.html?src=eurooptic&id='+encodeURIComponent(eoId)+'&cat=ammunition';return;}var p=PRODUCTS.find(function(x){return x.id===id;});if(!p)return;var pd=Object.assign({},p);if(!pd.imgs||!pd.imgs.length)pd.imgs=pd.img?[pd.img]:[];try{sessionStorage.setItem('ia_pv',JSON.stringify(pd));}catch(e){}window.location.href='/product.html?p='+slugify(p.name);}
+function viewProduct(id){if(typeof id==='string'&&id.indexOf('eo_')===0){var eoId=id.slice(3);var eoP=ALL_PRODUCTS.find(function(x){return x.id===id;});if(eoP){var pd=Object.assign({},eoP);if(!pd.imgs||!pd.imgs.length)pd.imgs=pd.img?[pd.img]:[];try{sessionStorage.setItem('ia_pv',JSON.stringify(pd));}catch(e){}}window.location.href='/product.html?src=eurooptic&id='+encodeURIComponent(eoId)+'&cat=ammunition';return;}if(typeof id==='string'&&id.indexOf('bereli_')===0){var beId=id.slice(7);var beP=ALL_PRODUCTS.find(function(x){return x.id===id;});if(beP){var pd=Object.assign({},beP);if(!pd.imgs||!pd.imgs.length)pd.imgs=pd.img?[pd.img]:[];try{sessionStorage.setItem('ia_pv',JSON.stringify(pd));}catch(e){}}window.location.href='/product.html?src=bereli&id='+encodeURIComponent(beId)+'&cat=ammunition';return;}var p=PRODUCTS.find(function(x){return x.id===id;});if(!p)return;var pd=Object.assign({},p);if(!pd.imgs||!pd.imgs.length)pd.imgs=pd.img?[pd.img]:[];try{sessionStorage.setItem('ia_pv',JSON.stringify(pd));}catch(e){}window.location.href='/product.html?p='+slugify(p.name);}
 var _IA_KIT_KEY='ia_kit_v1',_IA_KIT_MAX=20;
 function _kitLoad(){try{var r=localStorage.getItem(_IA_KIT_KEY);if(!r)return[];var d=JSON.parse(r);return(d.expiry&&Date.now()>d.expiry)?(localStorage.removeItem(_IA_KIT_KEY),[]):(d.kit||[]);}catch(e){return[];}}
 function _kitSave(k){try{localStorage.setItem(_IA_KIT_KEY,JSON.stringify({kit:k,expiry:Date.now()+2592000000,saved:new Date().toISOString()}));}catch(e){}}
@@ -549,7 +553,7 @@ function renderSuggested(){
       +'<div class="sugg-reason">'+p.caliber+' \u2022 '+p.btype+'</div></div>';
   }).join('');
 }
-filteredProducts=ALL_PRODUCTS.slice();sortAndRender();renderSuggested();loadEuroOptic();
+filteredProducts=ALL_PRODUCTS.slice();sortAndRender();renderSuggested();loadEuroOptic();loadBereli();
 </script>
 <script src="/js/search-autocomplete.js"></script>
 </body>
