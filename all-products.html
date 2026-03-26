@@ -1,9 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="shortcut icon" href="/favicon.svg">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Browse All Products — Compare Prices | Ideal Armory</title>
+<title>Browse All Products â€” Compare Prices | Ideal Armory</title>
 <meta name="description" content="Compare prices on firearms, optics, ammo, holsters and more from licensed retailers. Browse all categories on Ideal Armory.">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-62EBWTERM3"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-62EBWTERM3');</script>
@@ -126,7 +128,7 @@ footer{background:var(--navy-deep);color:rgba(255,255,255,.75);font-size:13px;ma
 @media(max-width:768px){.foot-grid{grid-template-columns:1fr 1fr;gap:28px;padding:36px 24px 24px}.page-header{padding:20px 16px}}
 @media(max-width:768px){.product-grid{grid-template-columns:repeat(3,1fr)}}@media(max-width:480px){.nav-top{padding:0 14px;height:52px}.product-grid{grid-template-columns:1fr 1fr;gap:8px}.prod-img{height:110px}.foot-grid{grid-template-columns:1fr;gap:24px}}
 
-/* ── UNIVERSAL NAV CSS ── */
+/* â”€â”€ UNIVERSAL NAV CSS â”€â”€ */
 nav.site-nav{background:var(--navy-deep);position:sticky;top:0;z-index:200;box-shadow:0 2px 12px rgba(0,0,0,.35)}
 .nav-top{display:flex;align-items:center;max-width:1360px;margin:0 auto;padding:0 24px;height:58px;gap:18px}
 a.nav-logo{display:flex;align-items:center;gap:0;font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--white);letter-spacing:-.5px;white-space:nowrap;flex-shrink:0;cursor:pointer;line-height:1;text-decoration:none}
@@ -181,7 +183,7 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
 </style>
 </head>
 <body>
-<!-- ═══ NAV ═══ -->
+<!-- â•â•â• NAV â•â•â• -->
 <div class="drawer-overlay" id="drawer-overlay" onclick="toggleDrawer()"></div>
 <div class="mobile-drawer" id="mobile-drawer">
   <button class="mob-drawer-close" onclick="toggleDrawer()" aria-label="Close menu">&times;</button>
@@ -506,7 +508,7 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
 </footer>
 
 <script>
-/* ── UNIVERSAL NAV JS ── */
+/* â”€â”€ UNIVERSAL NAV JS â”€â”€ */
 function toggleDrawer(){
   var d=document.getElementById('mobile-drawer');
   var o=document.getElementById('drawer-overlay');
@@ -528,7 +530,7 @@ function toggleDrawer(){
   }catch(e){}
 })();
 
-/* ── ALL PRODUCTS DATA ── */
+/* â”€â”€ ALL PRODUCTS DATA â”€â”€ */
 var ALL_PRODUCTS = [];
 var filteredProducts = [];
 var PAGE_SIZE = 48;
@@ -727,7 +729,7 @@ function _buildSearchRe(q) {
   return new RegExp(e, 'i');
 }
 
-/* Popularity score — used for default sort and as secondary signal in search.
+/* Popularity score â€” used for default sort and as secondary signal in search.
    Signals: best-seller badge, review count (log scale), star rating,
    number of sellers, and whether the product is curated (non-EO). */
 var _FIREARM_CATS = ['handguns','rifles','shotguns'];
@@ -749,7 +751,7 @@ function _searchScore(p, ql) {
   var name  = (p.name  || '').toLowerCase();
   var cat   = p.category || '';
   var score = _popularityScore(p) * 0.4; // popularity as secondary (max ~40 pts)
-  // Brand relevance (primary — max 100 pts)
+  // Brand relevance (primary â€” max 100 pts)
   if (brand === ql)                           score += 100;
   else if (brand.indexOf(ql) === 0)           score +=  80;
   else if (/^\w/.test(ql) && new RegExp('\\b' + ql.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), 'i').test(brand)) score += 60;
@@ -766,7 +768,7 @@ function _getChecked(sectionId){var vals=[];document.querySelectorAll('#'+sectio
 function filterProducts() {
   var priceMin = parseFloat(document.getElementById('price-min').value) || 0;
   var priceMax = parseFloat(document.getElementById('price-max').value) || Infinity;
-  // Read from whichever input has a value — nav-srch is hidden on mobile but
+  // Read from whichever input has a value â€” nav-srch is hidden on mobile but
   // still in the DOM (always empty on mobile), so check mob-srch first.
   var _ns = document.getElementById('nav-srch');
   var _ms = document.getElementById('mob-srch');
@@ -789,43 +791,43 @@ function filterProducts() {
     // Price
     if (low < priceMin || low > priceMax) return false;
 
-    // Search — word-boundary match so "sig" doesn't match "sights"
+    // Search â€” word-boundary match so "sig" doesn't match "sights"
     if (_searchRe && !_searchRe.test(p.name + ' ' + p.brand + ' ' + (p.sub||'') + ' ' + (p.caliber||''))) return false;
 
     // Category
     if (selectedCats.length && selectedCats.indexOf(cat) < 0) return false;
 
-    // Brand — applies to ALL products (all have brand field)
+    // Brand â€” applies to ALL products (all have brand field)
     if (brands.length && brands.indexOf(p.brand) < 0) return false;
 
-    // Caliber — only caliber-aware categories; other categories excluded when active
+    // Caliber â€” only caliber-aware categories; other categories excluded when active
     if (calibers.length) {
       if (CALIBER_CATS_ALL.indexOf(cat) < 0) return false;
       if (!calibers.some(function(cal){return _caliberMatchAll(p,cal);})) return false;
     }
 
-    // Action — only firearm categories; other categories excluded when active
+    // Action â€” only firearm categories; other categories excluded when active
     if (actions.length) {
       if (ACTION_CATS_ALL.indexOf(cat) < 0) return false;
       var aStr = (p.name+' '+(p.sub||'')+' '+(p.action||'')).toLowerCase();
       if (!actions.some(function(a){return aStr.indexOf(a.toLowerCase())>=0;})) return false;
     }
 
-    // Optic Type — only optics category
+    // Optic Type â€” only optics category
     if (opticTypes.length) {
       if (cat !== 'optics') return false;
       var oStr = (p.name+' '+(p.sub||'')+' '+(p.type||'')).toLowerCase();
       if (!opticTypes.some(function(t){return oStr.indexOf(t.toLowerCase())>=0;})) return false;
     }
 
-    // Carry Style — only holsters category
+    // Carry Style â€” only holsters category
     if (carries.length) {
       if (cat !== 'holsters') return false;
       var cStr = (p.name+' '+(p.sub||'')+' '+(p.carry||'')).toLowerCase();
       if (!carries.some(function(c){return cStr.indexOf(c.toLowerCase())>=0;})) return false;
     }
 
-    // Part Type — only ar-parts category
+    // Part Type â€” only ar-parts category
     if (partTypes.length) {
       if (cat !== 'ar-parts') return false;
       var ptStr = (p.name+' '+(p.sub||'')+' '+(p.ptype||'')).toLowerCase();
@@ -834,7 +836,7 @@ function filterProducts() {
 
     return true;
   });
-  // When search is active, sort by relevance (brand match → firearms → popularity).
+  // When search is active, sort by relevance (brand match â†’ firearms â†’ popularity).
   // P320/P365 appear before Sig-compatible holsters/cleaning for a "Sig" search.
   if (search && _searchRe) {
     filteredProducts.sort(function(a, b) {
@@ -951,7 +953,7 @@ function viewProduct(id) {
     window.location.href = '/product.html?src=bereli&id=' + encodeURIComponent(rawId) + '&cat=' + cat;
     return;
   }
-  // Manual affiliate products — store in sessionStorage and route via slug
+  // Manual affiliate products â€” store in sessionStorage and route via slug
   var manP = ALL_PRODUCTS.find(function(x){return x.id===id||x.id===String(id);});
   if (manP) {
     var mpd = Object.assign({},manP);
@@ -981,7 +983,7 @@ function saveItem(id){
   _kitSave(kit);_kitBadge();_kitToast('\u2714 '+p.name+' added to kit');
 }
 
-/* ── INIT ── */
+/* â”€â”€ INIT â”€â”€ */
 (function(){
   var sp = new URLSearchParams(location.search);
   var q = sp.get('q') || '';

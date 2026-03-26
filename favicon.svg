@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 66 66">
+  <!-- Navy background circle -->
+  <circle cx="33" cy="33" r="33" fill="#1b2a3b"/>
+  <!-- White inner circle -->
+  <circle cx="33" cy="33" r="29" fill="#ffffff"/>
+  <!-- Gold top arrow -->
+  <path d="M33 6 L37 21 L33 17 L29 21 Z" fill="#d4a82e"/>
+  <!-- Navy bottom arrow -->
+  <path d="M33 60 L37 45 L33 49 L29 45 Z" fill="#1b2a3b"/>
+  <!-- Navy right arrow -->
+  <path d="M60 33 L45 29 L49 33 L45 37 Z" fill="#1b2a3b"/>
+  <!-- Navy left arrow -->
+  <path d="M6 33 L21 29 L17 33 L21 37 Z" fill="#1b2a3b"/>
+  <!-- Center navy circle -->
+  <circle cx="33" cy="33" r="6" fill="#1b2a3b"/>
+  <!-- Gold center dot -->
+  <circle cx="33" cy="33" r="3" fill="#d4a82e"/>
+</svg>
