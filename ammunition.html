@@ -459,7 +459,6 @@ function renderGrid(){
     var isEo=p.src==='eurooptic';
     var isBereli=p.src==='bereli';
     var idAttr=(isEo||isBereli)?("'"+p.id+"'"):p.id;
-    var sellers=p.sellers.slice().sort(function(a,b){return a.price-b.price;}).slice(0,3).map(function(s,i){return '<div class="psr"><span class="psr-n">'+s.name+'</span><span class="psr-p'+(i===0?' low':'')+'">$'+s.price.toFixed(2)+'</span></div>';}).join('');
     return '<div class="prod-card" onclick="viewProduct('+idAttr+')">'
       +(p.badge==='best'?'<span class="badge-best">Best Seller</span>':'')
       
@@ -469,7 +468,6 @@ function renderGrid(){
       +'<div class="prod-ppr">&#162;'+ppr.toFixed(1)+' per round</div>'
       +'<div class="prod-price">$'+low.toFixed(2)+'</div>'
       +'<div class="prod-price-from">Best price &bull; '+(p.qty||1)+' rounds</div>'
-      +'<div class="prod-sellers">'+sellers+'</div>'
       +'<div class="prod-cta"><button class="btn-save" onclick="event.stopPropagation();saveItem('+idAttr+')" title="Add to Kit">+Kit</button></div>'
       +'</div></div>';
   }).join('');

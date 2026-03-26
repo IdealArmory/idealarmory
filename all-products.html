@@ -563,6 +563,7 @@ async function loadAllEuroOptic() {
       items.forEach(function(eo) {
         ALL_PRODUCTS.push({
           id: 'eo_' + eo.id,
+          upc: eo.upc || '',
           brand: eo.brand,
           name: eo.name,
           sub: eo.sub || '',
@@ -583,6 +584,58 @@ async function loadAllEuroOptic() {
     filterProducts();
   } catch(e) {
     document.getElementById('result-count').innerHTML = 'Failed to load products.';
+  }
+}
+
+async function loadAllBereli() {
+  try {
+    var results = await Promise.all(
+      EO_FILES.map(function(cat) {
+        return fetch('/data/bereli-'+cat+'.json')
+          .then(function(r){ return r.ok ? r.json() : []; })
+          .catch(function(){ return []; });
+      })
+    );
+    var upcMap = {};
+    ALL_PRODUCTS.forEach(function(p) {
+      if (p.upc) upcMap[p.upc] = p;
+    });
+    results.forEach(function(items, i) {
+      var cat = EO_FILES[i];
+      items.forEach(function(b) {
+        if (!b.price || b.price <= 0 || !b.img) return;
+        if (b.upc && upcMap[b.upc]) {
+          var existing = upcMap[b.upc];
+          if (!existing.sellers.some(function(s){ return s.name === 'Bereli'; })) {
+            existing.sellers.push({name:'Bereli', price:b.price, stock:b.inStock?'in':'out', url:b.url});
+            existing.sellers.sort(function(a,b){ return a.price - b.price; });
+          }
+        } else {
+          var newProd = {
+            id: 'bereli_' + b.id,
+            upc: b.upc || '',
+            brand: b.brand,
+            name: b.name,
+            sub: b.caliber || '',
+            img: b.img || '',
+            price: b.price,
+            orig: b.price,
+            inStock: b.inStock,
+            stars: 0,
+            reviews: 0,
+            badge: '',
+            src: 'bereli',
+            category: cat,
+            sellers: [{name:'Bereli', price:b.price, stock:b.inStock?'in':'out', url:b.url}]
+          };
+          ALL_PRODUCTS.push(newProd);
+          if (b.upc) upcMap[b.upc] = newProd;
+        }
+      });
+    });
+    filterProducts();
+  } catch(e) {
+    console.warn('Bereli load failed:', e.message);
   }
 }
 
@@ -609,11 +662,8 @@ function renderGrid() {
   grid.innerHTML = filteredProducts.slice(0, showing).map(function(p) {
     var idStr = typeof p.id === 'string' ? "'"+p.id+"'" : p.id;
     var low = getLowestPrice(p);
-    var sellers = p.sellers.slice().sort(function(a,b){return a.price-b.price;}).slice(0,3).map(function(s,i){
-      return '<div class="psr"><span class="psr-n">'+s.name+'</span><span class="psr-p'+(i===0?' low':'')+'">$'+s.price.toFixed(2)+'</span></div>';
-    }).join('');
     var img = p.img ? '<img src="'+p.img+'" alt="'+p.name+'" loading="lazy">' : '<span class="img-ph">Image from retailer feed</span>';
-    var href = p.src==='eurooptic' ? '/product.html?src=eurooptic&id='+p.id.replace('eo_','')+'&cat='+(p.category||'') : '/product.html?p='+slugify(p.name);
+    var href = p.src==='eurooptic' ? '/product.html?src=eurooptic&id='+p.id.replace('eo_','')+'&cat='+(p.category||'') : p.src==='bereli' ? '/product.html?src=bereli&id='+encodeURIComponent(p.id.replace('bereli_',''))+'&cat='+(p.category||'') : '/product.html?p='+slugify(p.name);
     var catTag = p.category ? '<span class="cat-tag">'+p.category.replace(/-/g,' ')+'</span>' : '';
     return '<div class="prod-card" onclick="viewProduct('+idStr+')">'
       +(p.badge==='best'?'<span class="badge-best">Best Seller</span>':'')
@@ -626,7 +676,6 @@ function renderGrid() {
       +(p.reviews>0?'<div class="prod-stars">'+renderStars(p.stars)+'<span class="prod-review">('+p.reviews.toLocaleString()+')</span></div>':'')
       +'<div class="prod-price">$'+low.toFixed(2)+'</div>'
       +'<div class="prod-price-from">Best price from '+p.sellers.length+' retailer'+(p.sellers.length>1?'s':'')+'</div>'
-      +'<div class="prod-sellers">'+sellers+'</div>'
       +'<div class="prod-cta"><button class="btn-save" onclick="event.stopPropagation();saveItem('+idStr+')" title="Add to Kit">+Kit</button></div>'
       +'</div></div>';
   }).join('');
@@ -890,6 +939,18 @@ function viewProduct(id) {
     window.location.href = '/product.html?src=eurooptic&id=' + encodeURIComponent(eoId) + '&cat=' + (eoP2 ? (eoP2.category||'') : '');
     return;
   }
+  if (typeof id === 'string' && id.indexOf('bereli_') === 0) {
+    var rawId = id.slice(7);
+    var bP = ALL_PRODUCTS.find(function(x){return x.id===id;});
+    if (bP) {
+      var bpd = Object.assign({}, bP);
+      if (!bpd.imgs || !bpd.imgs.length) bpd.imgs = bpd.img ? [bpd.img] : [];
+      try{sessionStorage.setItem('ia_pv',JSON.stringify(bpd));}catch(e){}
+    }
+    var cat = bP ? (bP.category||'') : '';
+    window.location.href = '/product.html?src=bereli&id=' + encodeURIComponent(rawId) + '&cat=' + cat;
+    return;
+  }
   // Manual affiliate products — store in sessionStorage and route via slug
   var manP = ALL_PRODUCTS.find(function(x){return x.id===id||x.id===String(id);});
   if (manP) {
@@ -932,6 +993,7 @@ function saveItem(id){
   }
 })();
 loadAllEuroOptic();
+loadAllBereli();
 </script>
 <script src="/js/search-autocomplete.js"></script>
 </body>
