@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Ideal Armory — Image Audit Tool</title>
+<title>Ideal Armory â€” Image Audit Tool</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:system-ui,sans-serif;background:#f4f4f4;color:#1b2a3b;padding:20px}
@@ -46,18 +46,18 @@ td.status{width:80px;text-align:center}
 </head>
 <body>
 
-<h1>Ideal Armory — Image Audit Tool</h1>
-<p class="subtitle">Compares card images (index.html) vs product page images (product.html) for every product. Open this file locally — it reads image data from the same arrays used on the live site.</p>
+<h1>Ideal Armory â€” Image Audit Tool</h1>
+<p class="subtitle">Compares card images (index.html) vs product page images (product.html) for every product. Open this file locally â€” it reads image data from the same arrays used on the live site.</p>
 
 <div class="summary" id="summary"></div>
 
 <div class="controls">
-  <input type="text" id="search" placeholder="Search product name or brand…" oninput="filterTable()">
+  <input type="text" id="search" placeholder="Search product name or brandâ€¦" oninput="filterTable()">
   <select id="filterStatus" onchange="filterTable()">
     <option value="all">All Products</option>
-    <option value="match">✓ Matching</option>
-    <option value="diff">✗ Mismatched</option>
-    <option value="missing">⚠ Missing Image</option>
+    <option value="match">âœ“ Matching</option>
+    <option value="diff">âœ— Mismatched</option>
+    <option value="missing">âš  Missing Image</option>
   </select>
   <select id="filterCat" onchange="filterTable()">
     <option value="all">All Categories</option>
@@ -81,12 +81,12 @@ td.status{width:80px;text-align:center}
   <tbody id="audit-body"></tbody>
 </table>
 
-<p class="note">💡 Tip: "Mismatch" rows (red) need attention. Click any image to open the full CDN URL in a new tab for visual verification.</p>
+<p class="note">ðŸ’¡ Tip: "Mismatch" rows (red) need attention. Click any image to open the full CDN URL in a new tab for visual verification.</p>
 
 <script>
-/* ── Pull PRODUCTS from index.html — paste the array inline for portability ── */
+/* â”€â”€ Pull PRODUCTS from index.html â€” paste the array inline for portability â”€â”€ */
 
-/* Card images — from index.html PRODUCTS array */
+/* Card images â€” from index.html PRODUCTS array */
 var CARD_PRODUCTS = [
   {id:1,brand:'Beretta',name:'APX A1 Tactical 9mm',cat:'handgun',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/570865/images/535927/BRJAXA1F921TAC_1_HR__71404.1700068806.380.380.jpg?c=2'},
   {id:2,brand:'Daniel Defense',name:'H9 Pistol',cat:'handgun',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629464/images/575386/Daniel-Defense-H9-Package-Deal__13011.1755277956.380.380.jpg?c=2'},
@@ -161,7 +161,7 @@ var CARD_PRODUCTS = [
   {id:71,brand:'Steyr',name:'A2 MF 9mm Magazine',cat:'magazine',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/582318/images/575324/Steyr__33210.1755020700.380.380.gif?c=2'},
 ];
 
-/* Product page images — from product.html ALL_PRODUCTS array (imgs[0]) */
+/* Product page images â€” from product.html ALL_PRODUCTS array (imgs[0]) */
 var PAGE_PRODUCTS = [
   {name:'APX A1 Tactical 9mm',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/570865/images/535927/BRJAXA1F921TAC_1_HR__71404.1700068806.380.380.jpg?c=2'},
   {name:'H9 Pistol',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629464/images/575386/Daniel-Defense-H9-Package-Deal__13011.1755277956.380.380.jpg?c=2'},
@@ -241,9 +241,9 @@ var pageMap = {};
 PAGE_PRODUCTS.forEach(function(p){ pageMap[p.name] = p.img; });
 
 function fname(url){
-  if(!url) return '—';
+  if(!url) return 'â€”';
   var p = url.split('/').pop().split('?')[0];
-  return p.length > 40 ? p.slice(0,38)+'…' : p;
+  return p.length > 40 ? p.slice(0,38)+'â€¦' : p;
 }
 
 function status(cardImg, pageImg){
@@ -289,10 +289,10 @@ function renderRows(list){
     var pageFnClass = r.st==='diff' ? 'filename mismatch-txt' : 'filename';
 
     var badgeHtml = r.st==='match'
-      ? '<span class="badge match">✓ Match</span>'
+      ? '<span class="badge match">âœ“ Match</span>'
       : r.st==='diff'
-        ? '<span class="badge diff">✗ Mismatch</span>'
-        : '<span class="badge missing">⚠ Missing</span>';
+        ? '<span class="badge diff">âœ— Mismatch</span>'
+        : '<span class="badge missing">âš  Missing</span>';
 
     var cardImgHtml = p.img
       ? '<img src="'+p.img+'" alt="'+p.name+'" title="Click to open" style="cursor:pointer" onclick="window.open(\''+p.img+'\',\'_blank\')">'
