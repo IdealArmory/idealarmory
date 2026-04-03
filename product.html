@@ -7,6 +7,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Product | Ideal Armory</title>
 <meta name="description" id="page-desc" content="Compare prices from licensed retailers on Ideal Armory.">
+<meta property="og:title" id="og-title" content="Ideal Armory – Find the Best Deals on Guns &amp; Ammo">
+<meta property="og:description" id="og-desc" content="Compare prices from licensed retailers on Ideal Armory.">
+<meta property="og:image" id="og-image" content="https://idealarmory.com/favicon.svg">
+<meta property="og:type" content="product">
+<meta property="og:url" id="og-url" content="https://idealarmory.com/product.html">
+<meta property="og:site_name" content="Ideal Armory">
+<script type="application/ld+json" id="product-schema">{}</script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-G6YQ408CMT">/* ── UNIVERSAL NAV JS ── */
 function toggleDrawer(){
   var d=document.getElementById('mobile-drawer');
@@ -1338,9 +1345,30 @@ function renderProduct(p){
   var catHref  = CAT_PAGES[p.category] || '/';
 
   // Update page title + meta
-  document.title = p.name + ' — Compare Prices | Ideal Armory';
+  var numSellers = p.sellers ? p.sellers.length : 1;
+  var lowestSeller = p.sellers ? p.sellers.slice().sort(function(a,b){return a.price-b.price;})[0] : null;
+  var retailerName = lowestSeller ? lowestSeller.name : 'licensed retailers';
+  document.title = (p.brand ? p.brand+' ' : '') + p.name + ' – $'+low.toFixed(2)+' | Best Price | Ideal Armory';
+  var descText = 'Best price on the '+(p.brand?p.brand+' ':'')+p.name+' is $'+low.toFixed(2)+' at '+retailerName+'. Compare prices from '+numSellers+' retailer'+(numSellers>1?'s':'')+' on Ideal Armory — free.';
   var metaDesc = document.getElementById('page-desc');
-  if (metaDesc) metaDesc.content = 'Compare prices on the '+p.name+' from licensed retailers on Ideal Armory. Best price: $'+low.toFixed(2)+'.';
+  if (metaDesc) metaDesc.content = descText;
+  var ogTitle = document.getElementById('og-title');
+  if (ogTitle) ogTitle.content = document.title;
+  var ogDesc = document.getElementById('og-desc');
+  if (ogDesc) ogDesc.content = descText;
+  var ogImg = document.getElementById('og-image');
+  if (ogImg && (p.img || (p.imgs && p.imgs[0]))) ogImg.content = p.img || p.imgs[0];
+  var ogUrl = document.getElementById('og-url');
+  if (ogUrl) ogUrl.content = window.location.href;
+  // Product schema (JSON-LD)
+  var schemaEl = document.getElementById('product-schema');
+  if (schemaEl) {
+    var offers = (p.sellers||[]).slice().sort(function(a,b){return a.price-b.price;}).map(function(s){
+      return {'@type':'Offer','name':s.name,'price':s.price.toFixed(2),'priceCurrency':'USD','availability':s.stock==='in'?'https://schema.org/InStock':'https://schema.org/OutOfStock','url':s.url||window.location.href,'seller':{'@type':'Organization','name':s.name}};
+    });
+    var prices = (p.sellers||[]).map(function(s){return s.price;});
+    schemaEl.textContent = JSON.stringify({'@context':'https://schema.org','@type':'Product','name':p.name,'brand':{'@type':'Brand','name':p.brand||''},'image':p.img||(p.imgs&&p.imgs[0])||'','description':p.description||descText,'offers':{'@type':'AggregateOffer','lowPrice':Math.min.apply(null,prices).toFixed(2),'highPrice':Math.max.apply(null,prices).toFixed(2),'priceCurrency':'USD','offerCount':offers.length,'offers':offers}});
+  }
 
   // Breadcrumb
   document.getElementById('bc-cat-link').textContent = catLabel;
