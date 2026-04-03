@@ -88,6 +88,19 @@ export default {
       return handleSubscribe(request, env);
     }
 
+    // Sitemap — fetch from assets and force correct XML content-type
+    // (SPA fallback can otherwise intercept .xml and return index.html)
+    if (url.pathname === '/sitemap.xml') {
+      const asset = await env.ASSETS.fetch(request);
+      return new Response(asset.body, {
+        status: asset.status,
+        headers: {
+          'Content-Type': 'application/xml; charset=utf-8',
+          'Cache-Control': 'public, max-age=3600',
+        },
+      });
+    }
+
     // Everything else → serve static assets
     return env.ASSETS.fetch(request);
   },
