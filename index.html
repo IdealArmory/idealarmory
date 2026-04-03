@@ -2771,34 +2771,24 @@ async function searchFFL(){
 
 async function submitNewsletter(){
   const emailEl=document.getElementById('nl-email');
+  const btn=emailEl?emailEl.closest('.newsletter-form')?.querySelector('button'):null;
   const email=(emailEl?.value||'').trim();
   if(!email||!email.includes('@')){showToast('Please enter a valid email address.');return;}
-  // reCAPTCHA verification
-  try {
-    const rcToken=await grecaptcha.enterprise.execute('6LfmAIQsAAAAAKa0wtP56CPLObXiKGpqeP5DNV6P',{action:'newsletter'});
-    const rcRes=await fetch('https://recaptcha-verify.idealarmory.workers.dev/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:rcToken,action:'newsletter'})});
-    const rcData=await rcRes.json();
-    if(!rcData.success){showToast('Security check failed. Please try again.');return;}
-  } catch(e){ console.warn('reCAPTCHA check skipped:',e.message); }
-  if(!sb){
-    // Fallback if Supabase unavailable
-    if(emailEl) emailEl.value='';
-    showToast('You\'re subscribed! Welcome to Ideal Armory.');
-    return;
-  }
-  const {error}=await sb.from('subscribers').insert({email});
-  if(error){
-    // Postgres unique violation code = 23505
-    if(error.code==='23505'||error.message?.toLowerCase().includes('duplicate')){
-      if(emailEl) emailEl.value='';
-      showToast('You\'re already subscribed — thanks!');
+  if(btn){btn.disabled=true;btn.textContent='...';}
+  try{
+    const res=await fetch('/api/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,source:'newsletter'})});
+    const data=await res.json();
+    if(data.ok){
+      if(emailEl)emailEl.value='';
+      showToast('You\'re subscribed! Welcome to Ideal Armory.');
     } else {
-      showToast('Something went wrong. Please try again.');
+      showToast(data.error||'Something went wrong. Please try again.');
     }
-    return;
+  }catch(e){
+    showToast('Something went wrong. Please try again.');
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent='Subscribe';}
   }
-  if(emailEl) emailEl.value='';
-  showToast('You\'re subscribed! Welcome to Ideal Armory.');
 }
 
 // Default carousel shows best sellers sorted by review count

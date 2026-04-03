@@ -182,6 +182,26 @@ footer{background:var(--navy-deep);color:rgba(255,255,255,.6);padding:40px 24px 
 .nav-wm{display:block}
 .nav-wm span{color:var(--gold-light)}
 
+
+/* ── Kit Price Alert Section ── */
+.kit-alert-sec{background:var(--off-white);border-top:1px solid var(--gray-100);border-bottom:1px solid var(--gray-100);padding:40px 24px}
+.kit-alert-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.kit-alert-icon{width:48px;height:48px;background:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.kit-alert-text{flex:1;min-width:200px}
+.kit-alert-heading{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.kit-alert-sub{font-size:13px;color:var(--gray-500);line-height:1.5}
+.kit-alert-form-wrap{flex-shrink:0}
+.kit-alert-form{display:flex;border:2px solid var(--navy);overflow:hidden;width:380px;max-width:100%}
+.kit-alert-form input{flex:1;border:none;padding:12px 14px;font-family:'Inter',sans-serif;font-size:14px;outline:none;color:var(--gray-800)}
+.kit-alert-form input::placeholder{color:var(--gray-400)}
+.kit-alert-form button{background:var(--navy);color:#fff;border:none;padding:12px 20px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;letter-spacing:.5px;text-transform:uppercase;transition:background .15s;flex-shrink:0}
+.kit-alert-form button:hover{background:#2a3f57}
+.kit-alert-form button:disabled{opacity:.6;cursor:not-allowed}
+.kit-alert-note{font-size:11px;color:var(--gray-400);margin-top:6px}
+/* Toast */
+.ia-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--navy);color:#fff;padding:12px 22px;border-radius:3px;font-size:13px;font-weight:600;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;z-index:9999;white-space:nowrap}
+.ia-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:768px){.kit-alert-inner{flex-direction:column;align-items:flex-start}.kit-alert-form{width:100%}}
 </style>
 </head>
 <body>
@@ -277,6 +297,26 @@ footer{background:var(--navy-deep);color:rgba(255,255,255,.6);padding:40px 24px 
     <!-- populated by JS -->
   </div>
 </div>
+
+<!-- ═══ KIT EMAIL ALERT ═══ -->
+<section class="kit-alert-sec">
+  <div class="kit-alert-inner">
+    <div class="kit-alert-icon">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+    </div>
+    <div class="kit-alert-text">
+      <div class="kit-alert-heading">Get Price Drop Alerts</div>
+      <div class="kit-alert-sub">Enter your email and we'll notify you when prices fall on items in your kit.</div>
+    </div>
+    <div class="kit-alert-form-wrap">
+      <div class="kit-alert-form">
+        <input type="email" id="kit-alert-email" placeholder="Enter your email address" autocomplete="email">
+        <button onclick="submitKitAlert()">Notify Me</button>
+      </div>
+      <div class="kit-alert-note">No spam. Unsubscribe anytime.</div>
+    </div>
+  </div>
+</section>
 
 <footer>
   <div class="foot-grid">
@@ -563,6 +603,37 @@ function escAttr(s) {
 }
 
 render();
+
+function showToast(msg){
+  var t=document.querySelector('.ia-toast');
+  if(!t){t=document.createElement('div');t.className='ia-toast';document.body.appendChild(t);}
+  t.textContent=msg;
+  t.classList.add('show');
+  clearTimeout(t._tid);
+  t._tid=setTimeout(function(){t.classList.remove('show');},3200);
+}
+
+async function submitKitAlert(){
+  var emailEl=document.getElementById('kit-alert-email');
+  var btn=emailEl?emailEl.closest('.kit-alert-form')?.querySelector('button'):null;
+  var email=(emailEl?.value||'').trim();
+  if(!email||!email.includes('@')){showToast('Please enter a valid email address.');return;}
+  if(btn){btn.disabled=true;btn.textContent='...';}
+  try{
+    var res=await fetch('/api/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,source:'kit-alert',attributes:{KIT_ITEMS:(JSON.parse(localStorage.getItem('ia_kit')||'[]')).length}})});
+    var data=await res.json();
+    if(data.ok){
+      if(emailEl)emailEl.value='';
+      showToast('Got it! We\'ll alert you when prices drop on your kit.');
+    } else {
+      showToast(data.error||'Something went wrong. Please try again.');
+    }
+  }catch(e){
+    showToast('Something went wrong. Please try again.');
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent='Notify Me';}
+  }
+}
 </script>
 </body>
 </html>
