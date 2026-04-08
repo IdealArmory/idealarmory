@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Click Stats — Ideal Armory</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{--navy:#1b2a3b;--navy-mid:#243447;--gold:#c49a2a;--white:#f7f6f3;--red:#b8311f;--gray-100:#e8e6e1;--gray-400:#9a9690;--gray-800:#2a2825}
+  body{background:var(--white);font-family:'Inter',sans-serif;color:var(--gray-800);min-height:100vh}
+  /* Header */
+  .hdr{background:var(--navy);padding:18px 32px;display:flex;align-items:center;gap:16px}
+  .hdr-logo{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#fff}
+  .hdr-logo span{color:var(--gold)}
+  .hdr-sub{font-size:12px;color:rgba(255,255,255,.5);letter-spacing:.5px;text-transform:uppercase;margin-left:auto}
+  /* Login gate */
+  .gate{max-width:380px;margin:100px auto;background:#fff;border:1px solid var(--gray-100);padding:40px;text-align:center}
+  .gate h2{font-family:'Playfair Display',serif;font-size:22px;color:var(--navy);margin-bottom:8px}
+  .gate p{font-size:13px;color:var(--gray-400);margin-bottom:24px}
+  .gate input{width:100%;border:2px solid var(--navy);padding:11px 14px;font-family:'Inter',sans-serif;font-size:14px;outline:none;margin-bottom:12px}
+  .gate button{width:100%;background:var(--navy);color:#fff;border:none;padding:12px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.5px}
+  .gate button:hover{background:var(--navy-mid)}
+  .gate-err{font-size:12px;color:var(--red);margin-top:8px}
+  /* Dashboard */
+  .dash{max-width:1200px;margin:0 auto;padding:32px 24px;display:none}
+  /* KPI cards */
+  .kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:32px}
+  .kpi{background:#fff;border:1px solid var(--gray-100);padding:20px 24px}
+  .kpi-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gray-400);margin-bottom:6px}
+  .kpi-val{font-size:32px;font-weight:700;color:var(--navy)}
+  .kpi-sub{font-size:11px;color:var(--gray-400);margin-top:4px}
+  /* Sections */
+  .section{background:#fff;border:1px solid var(--gray-100);margin-bottom:24px}
+  .section-hdr{padding:16px 24px;border-bottom:1px solid var(--gray-100);display:flex;align-items:center;justify-content:space-between}
+  .section-title{font-size:13px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--navy)}
+  .section-body{padding:24px}
+  /* Tables */
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{text-align:left;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray-400);padding:8px 12px;border-bottom:2px solid var(--gray-100)}
+  td{padding:10px 12px;border-bottom:1px solid var(--gray-100)}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:#fafaf8}
+  .badge-retailer{background:var(--navy);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;letter-spacing:.5px;text-transform:uppercase}
+  .badge-cat{background:var(--gray-100);color:var(--gray-800);font-size:10px;font-weight:600;padding:2px 8px}
+  .price-cell{color:var(--gold);font-weight:700}
+  /* Bar chart */
+  .bar-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+  .bar-label{font-size:12px;font-weight:600;color:var(--navy);width:140px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bar-track{flex:1;background:var(--gray-100);height:8px}
+  .bar-fill{background:var(--gold);height:8px;transition:width .4s}
+  .bar-count{font-size:12px;font-weight:700;color:var(--navy);width:40px;text-align:right;flex-shrink:0}
+  /* Daily chart */
+  .day-grid{display:flex;align-items:flex-end;gap:6px;height:120px;padding-bottom:4px}
+  .day-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+  .day-bar-wrap{flex:1;display:flex;align-items:flex-end;width:100%}
+  .day-bar{width:100%;background:var(--navy);min-height:2px;transition:height .4s}
+  .day-label{font-size:9px;color:var(--gray-400);text-align:center;white-space:nowrap}
+  .day-count{font-size:9px;font-weight:700;color:var(--navy)}
+  /* Recent table mobile */
+  @media(max-width:600px){.dash{padding:16px}.kpi-val{font-size:24px}.bar-label{width:90px}}
+  /* Loading state */
+  .loading{padding:60px;text-align:center;color:var(--gray-400);font-size:13px}
+  .spinner{width:24px;height:24px;border:3px solid var(--gray-100);border-top-color:var(--navy);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 12px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="hdr">
+  <div class="hdr-logo">Ideal <span>Armory</span></div>
+  <div class="hdr-sub">Click Analytics</div>
+</div>
+
+<!-- Login gate -->
+<div class="gate" id="gate">
+  <h2>Analytics Login</h2>
+  <p>Enter your stats password to view click data.</p>
+  <input type="password" id="pw-input" placeholder="Password" onkeydown="if(event.key==='Enter')login()">
+  <button onclick="login()">View Stats</button>
+  <div class="gate-err" id="gate-err"></div>
+</div>
+
+<!-- Dashboard (hidden until login) -->
+<div class="dash" id="dash">
+  <div class="loading" id="loading"><div class="spinner"></div>Loading click data…</div>
+
+  <!-- KPI row -->
+  <div class="kpi-row" id="kpi-row" style="display:none"></div>
+
+  <!-- Charts row -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px" id="charts-row" style="display:none">
+    <!-- By retailer -->
+    <div class="section">
+      <div class="section-hdr"><span class="section-title">Clicks by Retailer</span></div>
+      <div class="section-body" id="retailer-bars"></div>
+    </div>
+    <!-- By category -->
+    <div class="section">
+      <div class="section-hdr"><span class="section-title">Clicks by Category</span></div>
+      <div class="section-body" id="cat-bars"></div>
+    </div>
+  </div>
+
+  <!-- Daily chart -->
+  <div class="section" id="daily-section" style="display:none;margin-bottom:24px">
+    <div class="section-hdr"><span class="section-title">Daily Clicks — Last 30 Days</span></div>
+    <div class="section-body" id="daily-chart"></div>
+  </div>
+
+  <!-- Recent clicks table -->
+  <div class="section" id="recent-section" style="display:none">
+    <div class="section-hdr">
+      <span class="section-title">Recent Clicks</span>
+      <span style="font-size:11px;color:var(--gray-400)" id="recent-count"></span>
+    </div>
+    <div class="section-body" style="padding:0;overflow-x:auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Retailer</th>
+            <th>Product</th>
+            <th>Category</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody id="recent-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+var _pw = '';
+
+function login() {
+  var pw = document.getElementById('pw-input').value.trim();
+  if (!pw) return;
+  _pw = pw;
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('dash').style.display = 'block';
+  loadStats();
+}
+
+function loadStats() {
+  fetch('/api/stats?pw=' + encodeURIComponent(_pw))
+    .then(function(r) {
+      if (r.status === 401) {
+        document.getElementById('gate').style.display = 'block';
+        document.getElementById('dash').style.display = 'none';
+        document.getElementById('gate-err').textContent = 'Incorrect password.';
+        return null;
+      }
+      return r.json();
+    })
+    .then(function(data) {
+      if (!data) return;
+      document.getElementById('loading').style.display = 'none';
+      renderDash(data);
+    })
+    .catch(function(e) {
+      document.getElementById('loading').innerHTML = '<p style="color:var(--red)">Failed to load data. Make sure the KV namespace is set up.</p>';
+    });
+}
+
+function renderDash(data) {
+  // KPIs
+  var today = new Date().toISOString().slice(0, 10);
+  var todayClicks = data.byDay[today] || 0;
+  var days7 = 0;
+  for (var d in data.byDay) {
+    var diff = (new Date(today) - new Date(d)) / 86400000;
+    if (diff < 7) days7 += data.byDay[d];
+  }
+  var numRetailers = Object.keys(data.byRetailer).length;
+
+  var kpiEl = document.getElementById('kpi-row');
+  kpiEl.innerHTML =
+    kpi('Total Clicks', data.totalClicks, 'all time') +
+    kpi('Today', todayClicks, new Date().toLocaleDateString('en-US', {month:'short',day:'numeric'})) +
+    kpi('Last 7 Days', days7, 'rolling') +
+    kpi('Retailers', numRetailers, 'tracked');
+  kpiEl.style.display = 'grid';
+
+  // Retailer bars
+  var retailers = Object.entries(data.byRetailer).sort(function(a,b){return b[1]-a[1];});
+  var maxR = retailers.length ? retailers[0][1] : 1;
+  document.getElementById('retailer-bars').innerHTML = retailers.map(function(r) {
+    var pct = Math.round(r[1] / maxR * 100);
+    return '<div class="bar-row">'
+      + '<div class="bar-label" title="'+r[0]+'">'+r[0]+'</div>'
+      + '<div class="bar-track"><div class="bar-fill" style="width:'+pct+'%"></div></div>'
+      + '<div class="bar-count">'+r[1]+'</div>'
+      + '</div>';
+  }).join('') || '<p style="color:var(--gray-400);font-size:13px">No clicks yet.</p>';
+
+  // Category bars
+  var cats = Object.entries(data.byCategory).sort(function(a,b){return b[1]-a[1];});
+  var maxC = cats.length ? cats[0][1] : 1;
+  document.getElementById('cat-bars').innerHTML = cats.map(function(c) {
+    var pct = Math.round(c[1] / maxC * 100);
+    return '<div class="bar-row">'
+      + '<div class="bar-label" title="'+c[0]+'">'+c[0]+'</div>'
+      + '<div class="bar-track"><div class="bar-fill" style="width:'+pct+'%"></div></div>'
+      + '<div class="bar-count">'+c[1]+'</div>'
+      + '</div>';
+  }).join('') || '<p style="color:var(--gray-400);font-size:13px">No data yet.</p>';
+
+  document.getElementById('charts-row').style.display = 'grid';
+
+  // Daily chart — last 30 days
+  var dayEntries = [];
+  for (var i = 29; i >= 0; i--) {
+    var d = new Date(); d.setDate(d.getDate() - i);
+    var ds = d.toISOString().slice(0, 10);
+    dayEntries.push({ label: d.toLocaleDateString('en-US',{month:'short',day:'numeric'}), count: data.byDay[ds] || 0 });
+  }
+  var maxDay = Math.max.apply(null, dayEntries.map(function(d){return d.count;})) || 1;
+  document.getElementById('daily-chart').innerHTML =
+    '<div class="day-grid">' +
+    dayEntries.map(function(d) {
+      var h = Math.max(Math.round(d.count / maxDay * 100), d.count ? 4 : 0);
+      return '<div class="day-col">'
+        + '<div class="day-count">'+(d.count||'')+'</div>'
+        + '<div class="day-bar-wrap"><div class="day-bar" style="height:'+h+'%"></div></div>'
+        + '<div class="day-label">'+d.label+'</div>'
+        + '</div>';
+    }).join('') +
+    '</div>';
+  document.getElementById('daily-section').style.display = 'block';
+
+  // Recent clicks table
+  var tbody = document.getElementById('recent-tbody');
+  document.getElementById('recent-count').textContent = 'showing ' + data.recentClicks.length + ' most recent';
+  tbody.innerHTML = data.recentClicks.map(function(c) {
+    var t = new Date(c.ts);
+    var timeStr = t.toLocaleDateString('en-US',{month:'short',day:'numeric'}) + ' '
+      + t.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+    return '<tr>'
+      + '<td style="white-space:nowrap;font-size:12px;color:var(--gray-400)">'+timeStr+'</td>'
+      + '<td><span class="badge-retailer">'+escHtml(c.retailer)+'</span></td>'
+      + '<td style="max-width:280px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px">'+escHtml(c.product)+'</td>'
+      + '<td><span class="badge-cat">'+escHtml(c.cat)+'</span></td>'
+      + '<td class="price-cell">'+(c.price ? '$'+parseFloat(c.price).toFixed(2) : '—')+'</td>'
+      + '</tr>';
+  }).join('') || '<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--gray-400);font-size:13px">No clicks recorded yet.</td></tr>';
+  document.getElementById('recent-section').style.display = 'block';
+}
+
+function kpi(label, val, sub) {
+  return '<div class="kpi">'
+    + '<div class="kpi-label">'+label+'</div>'
+    + '<div class="kpi-val">'+val+'</div>'
+    + '<div class="kpi-sub">'+sub+'</div>'
+    + '</div>';
+}
+
+function escHtml(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+</script>
+</body>
+</html>

@@ -1402,7 +1402,7 @@ function renderProduct(p){
       +'<div class="pd-seller-meta">'+(s.fflRequired ? '&#9737; FFL Transfer Required' : '&#10003; Ships Direct')+'</div></div>'
       +'<span class="pd-seller-price'+(i===0?' lowest':'')+'">$'+s.price.toFixed(2)+'</span>'
       +stockBadge(s.stock)
-      +'<a class="pd-goto-btn" href="'+(s.url||'#')+'" target="_blank" rel="nofollow sponsored">Go to Retailer &rarr;</a>'
+      +'<a class="pd-goto-btn" href="/api/click?url='+encodeURIComponent(s.url||'')+'&retailer='+encodeURIComponent(s.name)+'&product='+encodeURIComponent(p.name)+'&cat='+encodeURIComponent(p.cat||p.src||'')+'&price='+encodeURIComponent(s.price||'')+'" target="_blank" rel="nofollow sponsored">Go to Retailer &rarr;</a>'
       +'</div>';
   }).join('');
 
