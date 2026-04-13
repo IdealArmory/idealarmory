@@ -40,16 +40,16 @@ function decodeXml(str) {
     .replace(/&#39;/g,  "'");
 }
 
-// Extract a namespaced tag: <g:field>value</g:field>
+// Extract a namespaced tag: <g:field>value</g:field> or <g:field><![CDATA[value]]></g:field>
 function getG(block, name) {
-  const re = new RegExp(`<g:${name}[^>]*>([\\s\\S]*?)<\\/g:${name}>`, '');
+  const re = new RegExp(`<g:${name}[^>]*>(?:<!\\[CDATA\\[)?([\\s\\S]*?)(?:\\]\\]>)?<\\/g:${name}>`, '');
   const m  = block.match(re);
   return m ? decodeXml(m[1].trim()) : '';
 }
 
-// Extract a plain tag: <title>value</title>  (skips RSS channel <title>)
+// Extract a plain tag: <title>value</title> or <title><![CDATA[value]]></title>
 function getTag(block, name) {
-  const re = new RegExp(`<${name}[^>]*>([\\s\\S]*?)<\\/${name}>`, '');
+  const re = new RegExp(`<${name}[^>]*>(?:<!\\[CDATA\\[)?([\\s\\S]*?)(?:\\]\\]>)?<\\/${name}>`, '');
   const m  = block.match(re);
   return m ? decodeXml(m[1].trim()) : '';
 }
