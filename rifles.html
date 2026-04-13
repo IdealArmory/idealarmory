@@ -328,6 +328,11 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
         <div class="fopt"><input type="checkbox" value="Bergara" onchange="filterProducts()"><label>Bergara</label></div>
         <div class="fopt"><input type="checkbox" value="Steyr" onchange="filterProducts()"><label>Steyr Arms</label></div>
         <div class="fopt"><input type="checkbox" value="Tikka" onchange="filterProducts()"><label>Tikka</label></div>
+        <div class="fopt"><input type="checkbox" value="Christensen Arms" onchange="filterProducts()"><label>Christensen Arms</label></div>
+        <div class="fopt"><input type="checkbox" value="Barrett" onchange="filterProducts()"><label>Barrett</label></div>
+        <div class="fopt"><input type="checkbox" value="LWRC" onchange="filterProducts()"><label>LWRC International</label></div>
+        <div class="fopt"><input type="checkbox" value="FN America" onchange="filterProducts()"><label>FN America</label></div>
+        <div class="fopt"><input type="checkbox" value="Mossberg" onchange="filterProducts()"><label>Mossberg</label></div>
       </div>
     </div>
 
@@ -544,7 +549,7 @@ function filterProducts(){
   var calibers=Object.keys(checks).filter(function(v){return ['.223','5.56','.308/7.62','.300 BLK','6.5 Creedmoor','.22 LR','.30-06','.243 Win','7.62x39','.338 Lapua','6mm ARC'].indexOf(v)>=0;});
   var actions=Object.keys(checks).filter(function(v){return ['Semi-Auto','Bolt-Action','Lever-Action','Single Shot','Pump-Action'].indexOf(v)>=0;});
   var platforms=Object.keys(checks).filter(function(v){return ['AR-15','AK','Precision','Hunting','Rimfire'].indexOf(v)>=0;});
-  var brands=Object.keys(checks).filter(function(v){return ['Aero Precision','Daniel Defense','PSA','Ruger','Savage','Winchester','Remington','CMMG','Smith & Wesson','Sig Sauer','Springfield Armory','IWI','Colt','Henry','Bergara','Steyr','Tikka'].indexOf(v)>=0;});
+  var brands=Object.keys(checks).filter(function(v){return ['Aero Precision','Daniel Defense','PSA','Ruger','Savage','Winchester','Remington','CMMG','Smith & Wesson','Sig Sauer','Springfield Armory','IWI','Colt','Henry','Bergara','Steyr','Tikka','Christensen Arms','Barrett','LWRC','FN America','Mossberg'].indexOf(v)>=0;});
   var barrels=Object.keys(checks).filter(function(v){return ['barrel-u16','barrel-16-18','barrel-18-20','barrel-20-24','barrel-o24'].indexOf(v)>=0;});
   var feats=Object.keys(checks).filter(function(v){return ['optic-ready','threaded','folding','free-float'].indexOf(v)>=0;});
 

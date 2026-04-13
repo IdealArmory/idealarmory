@@ -302,6 +302,9 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
         <div class="fopt"><input type="checkbox" value="Hornady" onchange="filterProducts()"><label>Hornady</label></div>
         <div class="fopt"><input type="checkbox" value="V-Line" onchange="filterProducts()"><label>V-Line</label></div>
         <div class="fopt"><input type="checkbox" value="Stack-On" onchange="filterProducts()"><label>Stack-On</label></div>
+        <div class="fopt"><input type="checkbox" value="Pelican" onchange="filterProducts()"><label>Pelican</label></div>
+        <div class="fopt"><input type="checkbox" value="SnapSafe" onchange="filterProducts()"><label>SnapSafe</label></div>
+        <div class="fopt"><input type="checkbox" value="BulletSafe" onchange="filterProducts()"><label>BulletSafe</label></div>
       </div>
     </div>
   </aside>
@@ -433,7 +436,7 @@ function filterProducts(){
   var caps=Object.keys(checks).filter(function(v){return ['cap-1-2','cap-3-5','cap-6-12','cap-13-24','cap-25p'].indexOf(v)>=0;});
   var locks=Object.keys(checks).filter(function(v){return ['Electronic','Biometric','Mechanical','Key Lock'].indexOf(v)>=0;});
   var fires=Object.keys(checks).filter(function(v){return ['No Rating','30 min','60 min','90 min'].indexOf(v)>=0;});
-  var brands=Object.keys(checks).filter(function(v){return ['Liberty','Fort Knox','Browning','Cannon','Vaultek','Hornady','V-Line','Stack-On'].indexOf(v)>=0;});
+  var brands=Object.keys(checks).filter(function(v){return ['Liberty','Fort Knox','Browning','Cannon','Vaultek','Hornady','V-Line','Stack-On','Pelican','SnapSafe','BulletSafe'].indexOf(v)>=0;});
   visibleCount=PAGE_SIZE;filteredProducts=ALL_PRODUCTS.filter(function(p){
     var low=getLowestPrice(p);
     if(low<priceMin||low>priceMax)return false;

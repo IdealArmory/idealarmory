@@ -312,6 +312,9 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
         <div class="fopt"><input type="checkbox" value="Beretta" onchange="filterProducts()"><label>Beretta</label></div>
         <div class="fopt"><input type="checkbox" value="H&amp;K" onchange="filterProducts()"><label>H&amp;K</label></div>
         <div class="fopt"><input type="checkbox" value="Daniel Defense" onchange="filterProducts()"><label>Daniel Defense</label></div>
+        <div class="fopt"><input type="checkbox" value="Kimber" onchange="filterProducts()"><label>Kimber</label></div>
+        <div class="fopt"><input type="checkbox" value="Nighthawk" onchange="filterProducts()"><label>Nighthawk Custom</label></div>
+        <div class="fopt"><input type="checkbox" value="FN America" onchange="filterProducts()"><label>FN America</label></div>
       </div>
     </div>
 
@@ -617,7 +620,7 @@ function filterProducts() {
   });
   var calibers = Object.keys(checks).filter(function(v){return ['9mm','.45 ACP','.40 SW','.380 ACP','10mm','.357 Mag','.44 Mag','.22 LR','5.7x28mm'].indexOf(v)>=0;});
   var actions = Object.keys(checks).filter(function(v){return ['Striker-Fired','Revolver','Single Action','DA/SA','DAO'].indexOf(v)>=0;});
-  var brands = Object.keys(checks).filter(function(v){return ['Glock','Sig Sauer','Smith & Wesson','Springfield Armory','Ruger','CZ','Walther','Taurus','Beretta','H&K','Daniel Defense'].indexOf(v)>=0;});
+  var brands = Object.keys(checks).filter(function(v){return ['Glock','Sig Sauer','Smith & Wesson','Springfield Armory','Ruger','CZ','Walther','Taurus','Beretta','H&K','Daniel Defense','Kimber','Nighthawk','FN America'].indexOf(v)>=0;});
   var frames = Object.keys(checks).filter(function(v){return ['Subcompact','Compact','Full-Size','Long Slide'].indexOf(v)>=0;});
   var safeties = Object.keys(checks).filter(function(v){return ['Manual Safety','No Manual Safety','Thumb Safety','Decocker'].indexOf(v)>=0;});
   var hands = Object.keys(checks).filter(function(v){return ['Ambidextrous','Right','Left'].indexOf(v)>=0;});

@@ -292,6 +292,12 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
         <div class="fopt"><input type="checkbox" value="Radian Weapons" onchange="filterProducts()"><label>Radian Weapons</label></div>
         <div class="fopt"><input type="checkbox" value="Grip Pod" onchange="filterProducts()"><label>Grip Pod Systems</label></div>
         <div class="fopt"><input type="checkbox" value="Rugged" onchange="filterProducts()"><label>Rugged Suppressors</label></div>
+        <div class="fopt"><input type="checkbox" value="Seekins" onchange="filterProducts()"><label>Seekins Precision</label></div>
+        <div class="fopt"><input type="checkbox" value="Silencerco" onchange="filterProducts()"><label>SilencerCo</label></div>
+        <div class="fopt"><input type="checkbox" value="LWRC" onchange="filterProducts()"><label>LWRC International</label></div>
+        <div class="fopt"><input type="checkbox" value="SureFire" onchange="filterProducts()"><label>SureFire</label></div>
+        <div class="fopt"><input type="checkbox" value="RISE Armament" onchange="filterProducts()"><label>RISE Armament</label></div>
+        <div class="fopt"><input type="checkbox" value="Noveske" onchange="filterProducts()"><label>Noveske Rifleworks</label></div>
       </div>
     </div>
   </aside>
@@ -422,7 +428,7 @@ function filterProducts(){
   var checks={};document.querySelectorAll('.filter-body input[type=checkbox]:checked').forEach(function(cb){checks[cb.value]=true;});
   var ptypes=Object.keys(checks).filter(function(v){return ['Complete Upper','Complete Lower','Barrel','BCG','Handguard','Trigger','Stock','Buffer','Muzzle Device','Lower Parts Kit'].indexOf(v)>=0;});
   var calibers=Object.keys(checks).filter(function(v){return ['.223/5.56','.300 BLK','6.5 Creedmoor','Multi'].indexOf(v)>=0;});
-  var brands=Object.keys(checks).filter(function(v){return ['Aero Precision','BCM','PSA','Daniel Defense','Geissele','LaRue','Magpul','Faxon','Ballistic Advantage','Radian Weapons','Grip Pod','Rugged'].indexOf(v)>=0;});
+  var brands=Object.keys(checks).filter(function(v){return ['Aero Precision','BCM','PSA','Daniel Defense','Geissele','LaRue','Magpul','Faxon','Ballistic Advantage','Radian Weapons','Grip Pod','Rugged','Seekins','Silencerco','LWRC','SureFire','RISE Armament','Noveske'].indexOf(v)>=0;});
   visibleCount=PAGE_SIZE;filteredProducts=ALL_PRODUCTS.filter(function(p){
     var low=getLowestPrice(p);
     if(low<priceMin||low>priceMax)return false;

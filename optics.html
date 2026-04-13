@@ -279,6 +279,15 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
         <div class="fopt"><input type="checkbox" value="Nightforce" onchange="filterProducts()"><label>Nightforce</label></div>
         <div class="fopt"><input type="checkbox" value="Burris" onchange="filterProducts()"><label>Burris</label></div>
         <div class="fopt"><input type="checkbox" value="Holosun" onchange="filterProducts()"><label>Holosun</label></div>
+        <div class="fopt"><input type="checkbox" value="Schmidt &amp; Bender" onchange="filterProducts()"><label>Schmidt &amp; Bender</label></div>
+        <div class="fopt"><input type="checkbox" value="Swarovski" onchange="filterProducts()"><label>Swarovski Optik</label></div>
+        <div class="fopt"><input type="checkbox" value="Kahles" onchange="filterProducts()"><label>Kahles</label></div>
+        <div class="fopt"><input type="checkbox" value="Steiner" onchange="filterProducts()"><label>Steiner</label></div>
+        <div class="fopt"><input type="checkbox" value="Zeiss" onchange="filterProducts()"><label>Zeiss Sport Optics</label></div>
+        <div class="fopt"><input type="checkbox" value="March" onchange="filterProducts()"><label>March Scopes</label></div>
+        <div class="fopt"><input type="checkbox" value="Nikon" onchange="filterProducts()"><label>Nikon</label></div>
+        <div class="fopt"><input type="checkbox" value="Athlon" onchange="filterProducts()"><label>Athlon Scopes</label></div>
+        <div class="fopt"><input type="checkbox" value="Crimson Trace" onchange="filterProducts()"><label>Crimson Trace</label></div>
       </div>
     </div>
     <div class="filter-sec">
@@ -465,7 +474,7 @@ function filterProducts(){
   var search=(document.getElementById('nav-srch').value||'').toLowerCase();
   var checks={};document.querySelectorAll('.filter-body input[type=checkbox]:checked').forEach(function(cb){checks[cb.value]=true;});
   var types=Object.keys(checks).filter(function(v){return ['Red Dot','Holographic','LPVO','Prism','Scope','Iron Sights','Night Vision'].indexOf(v)>=0;});
-  var brands=Object.keys(checks).filter(function(v){return ['Vortex','Leupold','Trijicon','Aimpoint','EOTech','Primary Arms','Sig Sauer','Nightforce','Burris','Holosun'].indexOf(v)>=0;});
+  var brands=Object.keys(checks).filter(function(v){return ['Vortex','Leupold','Trijicon','Aimpoint','EOTech','Primary Arms','Sig Sauer','Nightforce','Burris','Holosun','Schmidt & Bender','Swarovski','Kahles','Steiner','Zeiss','March','Nikon','Athlon','Crimson Trace'].indexOf(v)>=0;});
   var mags=Object.keys(checks).filter(function(v){return ['1x','lpvo','3-10x','10x+'].indexOf(v)>=0;});
   var platforms=Object.keys(checks).filter(function(v){return ['AR-15','Pistol','Bolt-Action','Universal'].indexOf(v)>=0;});
   visibleCount=PAGE_SIZE;filteredProducts=ALL_PRODUCTS.filter(function(p){
