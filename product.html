@@ -1633,6 +1633,35 @@ function doSearch(){
     return;
   }
 
+  // 0c. Lucky Gunner product — routed via ?src=luckygunner&id=xxx&cat=ammunition
+  if (sp.get('src') === 'luckygunner') {
+    var lgId = sp.get('id');
+    try {
+      var raw = sessionStorage.getItem('ia_pv');
+      if (raw) {
+        var cached = JSON.parse(raw);
+        var cachedRawId = String(cached.id || '').replace(/^lg_/, '');
+        if (cachedRawId === lgId) { renderProduct(cached); return; }
+      }
+    } catch(e){}
+    fetch('/data/luckygunner-ammunition.json')
+      .then(function(r){ return r.ok ? r.json() : []; })
+      .then(function(items){
+        var item = items.find(function(x){
+          return String(x.id || '').replace(/^lg_/, '') === String(lgId);
+        });
+        if (item) {
+          var pd = Object.assign({}, item);
+          if (!pd.imgs || !pd.imgs.length) pd.imgs = pd.img ? [pd.img] : [];
+          pd.sellers = pd.sellers || [{name:'Lucky Gunner', price:pd.price, stock:'in', url:pd.url}];
+          try{ sessionStorage.setItem('ia_pv', JSON.stringify(pd)); }catch(e){}
+          renderProduct(pd);
+        } else { renderNotFound(); }
+      })
+      .catch(function(){ renderNotFound(); });
+    return;
+  }
+
   // 1. URL slug match — most reliable, works for direct links, bookmarks, shares
   if (slug && slug !== 'product' && slug !== 'product.html') {
     product = ALL_PRODUCTS.find(function(p){
