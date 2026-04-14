@@ -1281,6 +1281,19 @@ function stockBadge(s){
   if (s==='low') return '<span class="stk stk-low">Low Stock</span>';
   return '<span class="stk stk-out">Out of Stock</span>';
 }
+// Fire background click-tracking beacon; link navigates directly to retailer
+function iaTrackClick(el){
+  try {
+    var u='/api/click'
+      +'?url='+(el.getAttribute('data-cu')||'')
+      +'&retailer='+(el.getAttribute('data-cr')||'')
+      +'&product='+(el.getAttribute('data-cp')||'')
+      +'&cat='+(el.getAttribute('data-cc')||'')
+      +'&price='+(el.getAttribute('data-cv')||'');
+    if(navigator.sendBeacon){navigator.sendBeacon(u);}
+    else{fetch(u,{keepalive:true}).catch(function(){});}
+  }catch(e){}
+}
 var CAT_PAGES = {
   handguns:'/handguns.html', rifles:'/rifles.html', shotguns:'/shotguns.html',
   ammunition:'/ammunition.html', optics:'/optics.html', holsters:'/holsters.html',
@@ -1402,7 +1415,7 @@ function renderProduct(p){
       +'<div class="pd-seller-meta">'+(s.fflRequired ? '&#9737; FFL Transfer Required' : '&#10003; Ships Direct')+'</div></div>'
       +'<span class="pd-seller-price'+(i===0?' lowest':'')+'">$'+s.price.toFixed(2)+'</span>'
       +stockBadge(s.stock)
-      +'<a class="pd-goto-btn" href="/api/click?url='+encodeURIComponent(s.url||'')+'&retailer='+encodeURIComponent(s.name)+'&product='+encodeURIComponent(p.name)+'&cat='+encodeURIComponent(p.cat||p.src||'')+'&price='+encodeURIComponent(s.price||'')+'" target="_blank" rel="nofollow sponsored">Go to Retailer &rarr;</a>'
+      +'<a class="pd-goto-btn" href="'+(s.url||'#')+'" target="_blank" rel="nofollow sponsored" onclick="iaTrackClick(this)" data-cu="'+encodeURIComponent(s.url||'')+'" data-cr="'+encodeURIComponent(s.name)+'" data-cp="'+encodeURIComponent(p.name)+'" data-cc="'+encodeURIComponent(p.cat||p.src||'')+'" data-cv="'+encodeURIComponent(s.price||'')+'">Go to Retailer &rarr;</a>'
       +'</div>';
   }).join('');
 
