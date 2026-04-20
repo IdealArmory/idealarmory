@@ -161,8 +161,9 @@ function parseListingPage(html) {
 
   // ── Method A: BigCommerce CDN image URLs ────────────────────────────────────
   // Image src embeds product ID: .../products/12345/variant_id/filename
-  // This is the most reliable anchor — always present, never encoded
-  const imgRe = /src="(https:\/\/cdn\d+\.bigcommerce\.com\/s-[^/]+\/images\/[^/]+\/products\/(\d+)\/[^"]+)"/g;
+  // Actual URL: cdn11.bigcommerce.com/s-ID/images/stencil/500x659/products/12345/...
+  // Use [^"]* to match any number of path segments between bigcommerce.com domain and /products/
+  const imgRe = /src="(https:\/\/cdn\d+\.bigcommerce\.com\/[^"]*\/products\/(\d+)\/[^"]+)"/g;
   let im;
   while ((im = imgRe.exec(html)) !== null) {
     const imgUrl    = im[1].split('?')[0];
@@ -319,6 +320,27 @@ async function scrapeCategory(slug, ourCat, seenIds) {
     } catch (err) {
       console.warn(`  /${slug}?page=${page} failed: ${err.message} — stopping this category`);
       break;
+    }
+
+    // ── Debug: log page diagnostics on first page of first category ────────────
+    if (page === 1 && slug === CATEGORIES[0].slug) {
+      const hasBC    = html.includes('bigcommerce.com');
+      const hasProd  = (html.match(/\/products\/\d+\//g) || []).length;
+      const hasCart  = (html.match(/product_id=/g) || []).length;
+      const hasImg   = (html.match(/<img/g) || []).length;
+      console.log(`  [DEBUG] Page size: ${html.length} chars`);
+      console.log(`  [DEBUG] bigcommerce.com mentions: ${hasBC}`);
+      console.log(`  [DEBUG] /products/ID/ patterns: ${hasProd}`);
+      console.log(`  [DEBUG] product_id= occurrences: ${hasCart}`);
+      console.log(`  [DEBUG] <img tags: ${hasImg}`);
+      // Show a snippet around the first product_id mention
+      const pidIdx = html.indexOf('product_id=');
+      if (pidIdx >= 0) {
+        console.log(`  [DEBUG] First product_id context: ${html.slice(Math.max(0,pidIdx-100), pidIdx+150).replace(/\n/g,' ')}`);
+      } else {
+        console.log(`  [DEBUG] No product_id= found — showing first 500 chars of body:`);
+        console.log(`  [DEBUG] ${html.slice(0,500).replace(/\n/g,' ')}`);
+      }
     }
 
     // Parse products from this page
