@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+# API endpoints — not indexable content
+Disallow: /api/
+
+# Internal utility pages — not for public search indexing
+Disallow: /stats
+Disallow: /kit
+Disallow: /image-audit
+
+Sitemap: https://idealarmory.com/sitemap.xml

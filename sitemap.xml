@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://idealarmory.com/</loc><priority>1.0</priority><changefreq>daily</changefreq></url>
-  <url><loc>https://idealarmory.com/handguns.html</loc><priority>0.9</priority><changefreq>daily</changefreq></url>
-  <url><loc>https://idealarmory.com/rifles.html</loc><priority>0.9</priority><changefreq>daily</changefreq></url>
-  <url><loc>https://idealarmory.com/shotguns.html</loc><priority>0.9</priority><changefreq>daily</changefreq></url>
-  <url><loc>https://idealarmory.com/ammunition.html</loc><priority>0.9</priority><changefreq>daily</changefreq></url>
-  <url><loc>https://idealarmory.com/optics.html</loc><priority>0.9</priority><changefreq>daily</changefreq></url>
-  <url><loc>https://idealarmory.com/holsters.html</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
-  <url><loc>https://idealarmory.com/ar-parts.html</loc><priority>0.8</priority><changefreq>daily</changefreq></url>
-  <url><loc>https://idealarmory.com/magazines.html</loc><priority>0.8</priority><changefreq>daily</changefreq></url>
-  <url><loc>https://idealarmory.com/cleaning.html</loc><priority>0.7</priority><changefreq>weekly</changefreq></url>
-  <url><loc>https://idealarmory.com/gun-safes.html</loc><priority>0.7</priority><changefreq>weekly</changefreq></url>
-  <url><loc>https://idealarmory.com/all-products.html</loc><priority>0.8</priority><changefreq>daily</changefreq></url>
-  <url><loc>https://idealarmory.com/about.html</loc><priority>0.5</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://idealarmory.com/contact.html</loc><priority>0.5</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://idealarmory.com/handguns</loc><priority>0.9</priority><changefreq>daily</changefreq></url>
+  <url><loc>https://idealarmory.com/rifles</loc><priority>0.9</priority><changefreq>daily</changefreq></url>
+  <url><loc>https://idealarmory.com/shotguns</loc><priority>0.9</priority><changefreq>daily</changefreq></url>
+  <url><loc>https://idealarmory.com/ammunition</loc><priority>0.9</priority><changefreq>daily</changefreq></url>
+  <url><loc>https://idealarmory.com/optics</loc><priority>0.9</priority><changefreq>daily</changefreq></url>
+  <url><loc>https://idealarmory.com/holsters</loc><priority>0.8</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://idealarmory.com/ar-parts</loc><priority>0.8</priority><changefreq>daily</changefreq></url>
+  <url><loc>https://idealarmory.com/magazines</loc><priority>0.8</priority><changefreq>daily</changefreq></url>
+  <url><loc>https://idealarmory.com/cleaning</loc><priority>0.7</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://idealarmory.com/gun-safes</loc><priority>0.7</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://idealarmory.com/all-products</loc><priority>0.8</priority><changefreq>daily</changefreq></url>
+  <url><loc>https://idealarmory.com/about</loc><priority>0.5</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://idealarmory.com/contact</loc><priority>0.5</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://idealarmory.com/privacy</loc><priority>0.3</priority><changefreq>yearly</changefreq></url>
+  <url><loc>https://idealarmory.com/terms</loc><priority>0.3</priority><changefreq>yearly</changefreq></url>
 </urlset>
