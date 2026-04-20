@@ -43,7 +43,7 @@ const BRAND_WHITELIST = {
 // ── Price floors per category ─────────────────────────────────────────────────
 const PRICE_FLOORS = {
   'handguns':   400,
-  'rifles':     800,
+  'rifles':     500,
   'optics':     250,
   'ammunition':  40,
   'holsters':    20,
@@ -56,7 +56,7 @@ const PRICE_FLOORS = {
 // ── Max products per category (sorted by price desc) ─────────────────────────
 const CAT_CAPS = {
   'handguns':   500,
-  'rifles':     400,
+  'rifles':     600,
   'optics':     600,
   'ammunition': 400,
   'holsters':   200,
@@ -222,16 +222,40 @@ async function fetchViaFiles() {
 }
 
 // ── Strategy 2: Paginated Items with robust retry handling ────────────────────
+
+// Try to advance to the next page when a page is skipped.
+// Impact.com uses URLs like: /Mediapartners/XXX/Catalogs/YYY/Items?PageSize=1000&Page=58
+// or offset-style: ?PageSize=1000&Offset=57000
+function tryAdvancePage(url, currentPageNum) {
+  // Page-number style: ?Page=N or &Page=N
+  const pageMatch = url.match(/([?&]Page=)(\d+)/i);
+  if (pageMatch) {
+    return url.replace(/([?&]Page=)\d+/i, `${pageMatch[1]}${currentPageNum + 1}`);
+  }
+  // Offset style: ?Offset=N or &Offset=N
+  const offsetMatch = url.match(/([?&]Offset=)(\d+)/i);
+  if (offsetMatch) {
+    const newOffset = parseInt(offsetMatch[2]) + 1000;
+    return url.replace(/([?&]Offset=)\d+/i, `${offsetMatch[1]}${newOffset}`);
+  }
+  return null; // cursor-based pagination — cannot reconstruct next URL
+}
+
+// Escalating backoff: 30s, 60s, 90s, 120s, 120s, 120s, …
+function netRetryWait(attempt) {
+  const steps = [30000, 60000, 90000, 120000, 120000, 120000];
+  return steps[Math.min(attempt - 1, steps.length - 1)];
+}
+
 async function fetchViaItems() {
   console.log('--- Strategy 2: Paginated Items ---');
-  const PAGE_SIZE      = 1000;  // doubled from 500 → ~156 pages instead of ~312
-  const DELAY_MS       = 3000;  // 3s between pages
+  const PAGE_SIZE      = 1000;  // 1 000 items per page
+  const DELAY_MS       = 3000;  // 3 s between successful pages
   const BATCH_SIZE     = 15;    // pause every 15 pages
-  const BATCH_PAUSE_MS = 15000; // 15s batch pause
-  const MAX_RETRIES    = 8;
-  const WAIT_401_MS    = 60000; // 60s on 401
-  const WAIT_NET_MS    = 20000; // 20s on network/timeout error
-  const FETCH_TIMEOUT  = 45000; // abort individual fetch after 45s
+  const BATCH_PAUSE_MS = 15000; // 15 s batch pause
+  const MAX_RETRIES    = 12;    // raised from 8 → 12
+  const WAIT_401_MS    = 60000; // 60 s on 401
+  const FETCH_TIMEOUT  = 90000; // raised from 45 s → 90 s
 
   let allItems = [];
   let pageNum  = 1;
@@ -246,7 +270,8 @@ async function fetchViaItems() {
 
     console.log(`Fetching page ${pageNum}...`);
     let data;
-    let retried = false;
+    let retried   = false;
+    let skipPage  = false;
 
     while (true) {
       const controller = new AbortController();
@@ -270,26 +295,43 @@ async function fetchViaItems() {
         break;
       } catch (err) {
         clearTimeout(timer);
-        const is401    = err.message.startsWith('401');
-        const isAbort  = err.name === 'AbortError';
-        const isNet    = isAbort ||
-                         err.message.includes('fetch failed') ||
-                         err.message.includes('ECONNRESET') ||
-                         err.message.includes('ETIMEDOUT') ||
-                         err.message.includes('ENOTFOUND');
+        const is401   = err.message.startsWith('401');
+        const isAbort = err.name === 'AbortError';
+        const isNet   = isAbort ||
+                        err.message.includes('fetch failed') ||
+                        err.message.includes('ECONNRESET') ||
+                        err.message.includes('ETIMEDOUT') ||
+                        err.message.includes('ENOTFOUND');
 
         if ((is401 || isNet) && retries < MAX_RETRIES) {
           retries++;
-          const waitMs = is401 ? WAIT_401_MS : WAIT_NET_MS;
+          const waitMs = is401 ? WAIT_401_MS : netRetryWait(retries);
           const reason = is401 ? '401' : (isAbort ? 'timeout' : 'network error');
           console.warn(`  ${reason} (retry ${retries}/${MAX_RETRIES}) — waiting ${waitMs / 1000}s...`);
           await sleep(waitMs);
           retried = true;
         } else {
-          throw err; // exhausted retries or unrecognised error
+          // Retries exhausted — attempt to skip this page and continue
+          const skippedUrl = tryAdvancePage(nextUrl, pageNum);
+          if (skippedUrl && allItems.length > 5000) {
+            console.warn(`  Retries exhausted on page ${pageNum} — skipping to next page (${allItems.length} items so far).`);
+            nextUrl  = skippedUrl;
+            retries  = 0;
+            skipPage = true;
+            break;
+          }
+          // Cannot reconstruct next URL and/or not enough data yet — fail hard
+          if (allItems.length > 100000) {
+            // We have a substantial portion of the catalog; save and proceed
+            console.warn(`  Retries exhausted on page ${pageNum} with ${allItems.length} raw items — treating as end of catalog.`);
+            return allItems;
+          }
+          throw err;
         }
       }
     }
+
+    if (skipPage) { pageNum++; continue; }
 
     const items = data.Items || data.CatalogItems || [];
     if (!items.length) { console.log('No more items.'); break; }
