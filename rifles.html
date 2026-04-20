@@ -193,18 +193,18 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
   <button class="mob-drawer-close" onclick="toggleDrawer()" aria-label="Close menu">&times;</button>
   <div>
     <a class="mob-nav-item" href="/">Home</a>
-    <a class="mob-nav-item" href="/all-products.html">All Products</a>
-    <a class="mob-nav-item" href="/handguns.html">Handguns</a>
-    <a class="mob-nav-item active" href="/rifles.html">Rifles</a>
-    <a class="mob-nav-item" href="/shotguns.html">Shotguns</a>
-    <a class="mob-nav-item" href="/ammunition.html">Ammunition</a>
-    <a class="mob-nav-item" href="/optics.html">Optics</a>
-    <a class="mob-nav-item" href="/holsters.html">Holsters</a>
-    <a class="mob-nav-item" href="/ar-parts.html">AR Parts</a>
-    <a class="mob-nav-item" href="/magazines.html">Magazines</a>
-    <a class="mob-nav-item" href="/cleaning.html">Cleaning & Accessories</a>
-    <a class="mob-nav-item" href="/gun-safes.html">Gun Safes</a>
-    <a class="mob-nav-item" href="/kit.html">My Kit</a>
+    <a class="mob-nav-item" href="/all-products">All Products</a>
+    <a class="mob-nav-item" href="/handguns">Handguns</a>
+    <a class="mob-nav-item active" href="/rifles">Rifles</a>
+    <a class="mob-nav-item" href="/shotguns">Shotguns</a>
+    <a class="mob-nav-item" href="/ammunition">Ammunition</a>
+    <a class="mob-nav-item" href="/optics">Optics</a>
+    <a class="mob-nav-item" href="/holsters">Holsters</a>
+    <a class="mob-nav-item" href="/ar-parts">AR Parts</a>
+    <a class="mob-nav-item" href="/magazines">Magazines</a>
+    <a class="mob-nav-item" href="/cleaning">Cleaning & Accessories</a>
+    <a class="mob-nav-item" href="/gun-safes">Gun Safes</a>
+    <a class="mob-nav-item" href="/kit">My Kit</a>
     <a class="mob-nav-item" href="/#ffl-sec">FFL Finder</a>
   </div>
 </div>
@@ -221,41 +221,41 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
     </a>
     <div class="nav-search">
       <svg viewBox="0 0 16 16"><circle cx="6.5" cy="6.5" r="5" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke-width="1.5" stroke-linecap="square"/></svg>
-      <input type="text" placeholder="Search firearms, ammo, optics, brands&hellip;" id="nav-srch" oninput="liveSearch(this.value)" onkeydown="if(event.key==='Enter'&&this.value.trim()){window.location.href='/all-products.html?q='+encodeURIComponent(this.value.trim())}" autocomplete="off">
-      <button class="nav-srch-btn" onclick="var v=(document.getElementById('nav-srch').value||'').trim()||(document.getElementById('mob-srch').value||'').trim();if(v)window.location.href='/all-products.html?q='+encodeURIComponent(v)">Find Best Price</button>
+      <input type="text" placeholder="Search firearms, ammo, optics, brands&hellip;" id="nav-srch" oninput="liveSearch(this.value)" onkeydown="if(event.key==='Enter'&&this.value.trim()){window.location.href='/all-products?q='+encodeURIComponent(this.value.trim())}" autocomplete="off">
+      <button class="nav-srch-btn" onclick="var v=(document.getElementById('nav-srch').value||'').trim()||(document.getElementById('mob-srch').value||'').trim();if(v)window.location.href='/all-products?q='+encodeURIComponent(v)">Find Best Price</button>
     </div>
     <div class="nav-actions">
       <a class="nav-btn hide-mob" href="/#ffl-sec" style="text-decoration:none">FFL Finder</a>
-      <a class="nav-btn hide-mob" href="/kit.html" style="text-decoration:none">My Kit <span id="nav-kit-count" style="display:none;background:var(--gold-light);color:var(--navy-deep);font-size:10px;font-weight:700;padding:1px 5px;margin-left:4px;line-height:1;border-radius:2px"></span></a>
+      <a class="nav-btn hide-mob" href="/kit" style="text-decoration:none">My Kit <span id="nav-kit-count" style="display:none;background:var(--gold-light);color:var(--navy-deep);font-size:10px;font-weight:700;padding:1px 5px;margin-left:4px;line-height:1;border-radius:2px"></span></a>
       <a class="nav-btn accent" href="/" style="text-decoration:none">Sign In</a>
     </div>
   </div>
   <div class="mobile-search-bar">
     <div class="mobile-search-wrap">
       <svg viewBox="0 0 16 16"><circle cx="6.5" cy="6.5" r="5" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke-width="1.5" stroke-linecap="square"/></svg>
-      <input type="text" placeholder="Search firearms, ammo, optics&hellip;" id="mob-srch" oninput="liveSearch(this.value)" onkeydown="if(event.key==='Enter'&&this.value.trim()){window.location.href='/all-products.html?q='+encodeURIComponent(this.value.trim())}">
+      <input type="text" placeholder="Search firearms, ammo, optics&hellip;" id="mob-srch" oninput="liveSearch(this.value)" onkeydown="if(event.key==='Enter'&&this.value.trim()){window.location.href='/all-products?q='+encodeURIComponent(this.value.trim())}">
     </div>
   </div>
   <div class="nav-cats-bar">
     <div class="nav-cats-inner">
-      <a class="nav-cat" href="/all-products.html">All</a>
-      <a class="nav-cat" href="/handguns.html">Handguns</a>
-      <a class="nav-cat active" href="/rifles.html">Rifles</a>
-      <a class="nav-cat" href="/shotguns.html">Shotguns</a>
-      <a class="nav-cat" href="/ammunition.html">Ammo</a>
-      <a class="nav-cat" href="/optics.html">Optics</a>
-      <a class="nav-cat" href="/holsters.html">Holsters</a>
-      <a class="nav-cat" href="/ar-parts.html">AR Parts</a>
-      <a class="nav-cat" href="/magazines.html">Magazines</a>
-      <a class="nav-cat" href="/cleaning.html">Accessories</a>
-      <a class="nav-cat" href="/gun-safes.html">Safes</a>
+      <a class="nav-cat" href="/all-products">All</a>
+      <a class="nav-cat" href="/handguns">Handguns</a>
+      <a class="nav-cat active" href="/rifles">Rifles</a>
+      <a class="nav-cat" href="/shotguns">Shotguns</a>
+      <a class="nav-cat" href="/ammunition">Ammo</a>
+      <a class="nav-cat" href="/optics">Optics</a>
+      <a class="nav-cat" href="/holsters">Holsters</a>
+      <a class="nav-cat" href="/ar-parts">AR Parts</a>
+      <a class="nav-cat" href="/magazines">Magazines</a>
+      <a class="nav-cat" href="/cleaning">Accessories</a>
+      <a class="nav-cat" href="/gun-safes">Safes</a>
     </div>
   </div>
 </nav>
 
 <div class="page-header">
   <div class="page-header-inner">
-    <div class="breadcrumb"><a href="index.html">Home</a> &rsaquo; <span>Rifles</span></div>
+    <div class="breadcrumb"><a href="/">Home</a> &rsaquo; <span>Rifles</span></div>
     <h1>Rifles</h1>
     <p>Compare prices from licensed retailers &mdash; AR-15s, bolt-actions, hunting rifles, and more</p>
   </div>
@@ -399,24 +399,24 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
       <p class="foot-p">Ideal Armory is a firearm price discovery platform. We do not sell firearms. All purchases made directly with licensed retailers.</p>
     </div>
     <div class="foot-col"><h4>Categories</h4><ul>
-      <li><a href="handguns.html">Handguns</a></li>
-      <li><a href="rifles.html">Rifles</a></li>
-      <li><a href="shotguns.html">Shotguns</a></li>
-      <li><a href="ammunition.html">Ammunition</a></li>
-      <li><a href="optics.html">Optics</a></li>
+      <li><a href="/handguns">Handguns</a></li>
+      <li><a href="/rifles">Rifles</a></li>
+      <li><a href="/shotguns">Shotguns</a></li>
+      <li><a href="/ammunition">Ammunition</a></li>
+      <li><a href="/optics">Optics</a></li>
     </ul></div>
     <div class="foot-col"><h4>More</h4><ul>
-      <li><a href="holsters.html">Holsters</a></li>
-      <li><a href="ar-parts.html">AR Parts</a></li>
-      <li><a href="magazines.html">Magazines</a></li>
-      <li><a href="cleaning.html">Cleaning</a></li>
-      <li><a href="gun-safes.html">Gun Safes</a></li>
+      <li><a href="/holsters">Holsters</a></li>
+      <li><a href="/ar-parts">AR Parts</a></li>
+      <li><a href="/magazines">Magazines</a></li>
+      <li><a href="/cleaning">Cleaning</a></li>
+      <li><a href="/gun-safes">Gun Safes</a></li>
     </ul></div>
     <div class="foot-col"><h4>Company</h4><ul>
-      <li><a href="about.html">About Us</a></li>
-      <li><a href="privacy.html">Privacy Policy</a></li>
-      <li><a href="terms.html">Terms of Service</a></li>
-      <li><a href="contact.html">Contact</a></li>
+      <li><a href="/about">About Us</a></li>
+      <li><a href="/privacy">Privacy Policy</a></li>
+      <li><a href="/terms">Terms of Service</a></li>
+      <li><a href="/contact">Contact</a></li>
     </ul></div>
   </div>
   <div class="foot-bottom">

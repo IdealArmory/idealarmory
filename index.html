@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <!-- AvantLink affiliate verification -->
@@ -944,7 +944,7 @@ footer{background:var(--navy-deep);border-top:1px solid rgba(255,255,255,.06)}
     </div>
     <div class="nav-actions">
       <button class="nav-btn hide-mob" onclick="goTo('ffl-sec')">FFL Finder</button>
-      <a class="nav-btn hide-mob" href="/kit.html" style="text-decoration:none">My Kit <span id="nav-kit-count" style="display:none;background:var(--gold-light);color:var(--navy-deep);font-size:10px;font-weight:700;padding:1px 5px;margin-left:4px;line-height:1;border-radius:2px"></span></a>
+      <a class="nav-btn hide-mob" href="/kit" style="text-decoration:none">My Kit <span id="nav-kit-count" style="display:none;background:var(--gold-light);color:var(--navy-deep);font-size:10px;font-weight:700;padding:1px 5px;margin-left:4px;line-height:1;border-radius:2px"></span></a>
       <div class="user-menu">
         <button class="nav-btn accent user-btn" id="user-nav-btn" onclick="toggleUserMenu()">Sign In</button>
         <div class="user-dropdown" id="user-dropdown"></div>
@@ -1133,7 +1133,7 @@ footer{background:var(--navy-deep);border-top:1px solid rgba(255,255,255,.06)}
           <button class="btn-o" onclick="openSavedKits()" id="my-kits-btn" style="display:none">My Saved Kits</button>
           <button class="btn-o" onclick="shareKit()">Share Kit</button>
           <button class="btn-o" onclick="clearKit()">Clear Kit</button>
-          <a class="btn-o" href="/kit.html" style="text-decoration:none;display:inline-flex;align-items:center;gap:5px">View Full Kit &#8594;</a>
+          <a class="btn-o" href="/kit" style="text-decoration:none;display:inline-flex;align-items:center;gap:5px">View Full Kit &#8594;</a>
           <button class="btn-p" style="background:var(--red);margin-left:auto" onclick="exportKit()">Shop My Kit</button>
         </div>
       </div>
@@ -1195,9 +1195,9 @@ footer{background:var(--navy-deep);border-top:1px solid rgba(255,255,255,.06)}
       <span class="foot-logo"><svg width="30" height="30" viewBox="0 0 66 66" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="33" cy="33" r="29" fill="#ffffff" stroke="#1b2a3b" stroke-width="2"/><path d="M33 6 L37 21 L33 17 L29 21 Z" fill="#d4a82e"/><path d="M33 60 L37 45 L33 49 L29 45 Z" fill="#1b2a3b"/><path d="M60 33 L45 29 L49 33 L45 37 Z" fill="#1b2a3b"/><path d="M6 33 L21 29 L17 33 L21 37 Z" fill="#1b2a3b"/><circle cx="33" cy="33" r="6" fill="#1b2a3b"/><circle cx="33" cy="33" r="3" fill="#d4a82e"/></svg><span class="foot-wm">Ideal <span>Armory</span></span></span>
       <p class="foot-p">Ideal Armory is a firearm price discovery platform. We do not sell firearms or accessories. All purchases are made directly with licensed retailers. Prices are aggregated and may vary.</p>
     </div>
-    <div class="foot-col"><h4>Discover</h4><ul><li><a>Handguns</a></li><li><a>Rifles</a></li><li><a>Shotguns</a></li><li><a>Ammunition</a></li><li><a>Optics</a></li><li><a>Accessories</a></li></ul></div>
+    <div class="foot-col"><h4>Discover</h4><ul><li><a href="/handguns">Handguns</a></li><li><a href="/rifles">Rifles</a></li><li><a href="/shotguns">Shotguns</a></li><li><a href="/ammunition">Ammunition</a></li><li><a href="/optics">Optics</a></li><li><a href="/holsters">Holsters</a></li><li><a href="/magazines">Magazines</a></li><li><a href="/ar-parts">AR Parts</a></li><li><a href="/cleaning">Cleaning</a></li><li><a href="/gun-safes">Gun Safes</a></li></ul></div>
     <div class="foot-col"><h4>Tools</h4><ul><li><a onclick="goTo('kit-sec')">Kit Builder</a></li><li><a onclick="goTo('ffl-sec')">FFL Finder</a></li><li><a onclick="goTo('deals-sec')">Hot Deals</a></li></ul></div>
-    <div class="foot-col"><h4>Company</h4><ul><li><a href="about.html">About Us</a></li><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Service</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+    <div class="foot-col"><h4>Company</h4><ul><li><a href="/about">About Us</a></li><li><a href="/privacy">Privacy Policy</a></li><li><a href="/terms">Terms of Service</a></li><li><a href="/contact">Contact</a></li></ul></div>
   </div>
   <div class="foot-bottom">
     <p>© 2025 Ideal Armory LLC. We do not sell firearms. Prices from third-party retailers. All purchases subject to applicable federal/state law and retailer terms.</p>
@@ -1939,16 +1939,16 @@ function updateNavKitCount(){
 (function(){
   var CATS=[
     {l:'All',h:'/all-products.html'},
-    {l:'Handguns',h:'/handguns.html'},
-    {l:'Rifles',h:'/rifles.html'},
-    {l:'Shotguns',h:'/shotguns.html'},
-    {l:'Ammo',h:'/ammunition.html'},
-    {l:'Optics',h:'/optics.html'},
-    {l:'Holsters',h:'/holsters.html'},
-    {l:'AR Parts',h:'/ar-parts.html'},
-    {l:'Magazines',h:'/magazines.html'},
-    {l:'Accessories',h:'/cleaning.html'},
-    {l:'Safes',h:'/gun-safes.html'},
+    {l:'Handguns',h:'/handguns'},
+    {l:'Rifles',h:'/rifles'},
+    {l:'Shotguns',h:'/shotguns'},
+    {l:'Ammo',h:'/ammunition'},
+    {l:'Optics',h:'/optics'},
+    {l:'Holsters',h:'/holsters'},
+    {l:'AR Parts',h:'/ar-parts'},
+    {l:'Magazines',h:'/magazines'},
+    {l:'Accessories',h:'/cleaning'},
+    {l:'Safes',h:'/gun-safes'},
   ];
   var _nc=document.getElementById('nav-cats');
   if(!_nc)return;
@@ -2034,7 +2034,7 @@ function navSearch(srcInput) {
     v = (ms && ms.value.trim()) || (ns && ns.value.trim()) || '';
   }
   if (v) {
-    window.location.href = '/all-products.html?q=' + encodeURIComponent(v);
+    window.location.href = '/all-products?q=' + encodeURIComponent(v);
   } else {
     window.location.href = '/all-products.html';
   }
@@ -2180,7 +2180,7 @@ function prodCardHTML(p){
     trustHTML+
     '<div class="pc-body">'+
       '<div class="pc-brand">'+p.brand+'</div>'+
-      '<a class="pc-name" href="/product.html?p='+slugify(p.name)+'" onclick="event.stopPropagation()">'+p.name+'</a>'+
+      '<a class="pc-name" href="/product?p='+slugify(p.name)+'" onclick="event.stopPropagation()">'+p.name+'</a>'+
       '<div class="pc-sub">'+p.sub+'</div>'+
       '<div class="pc-price-row"><span class="pc-from-lbl">From</span><span class="pc-low">$'+low.toFixed(2)+'</span>'+(high>low?'<span class="pc-high">$'+high.toFixed(2)+'</span>':'')+
       '</div>'+
@@ -2205,7 +2205,7 @@ function openProdModal(id){
       <div class="pd-img">${p.img ? '<img src="'+p.img+'" alt="'+p.name+'" style="max-width:90%;max-height:90%;object-fit:contain">' : '<span>'+p.brand+'</span>'}</div>
       <div class="pd-info">
         <div class="pd-brand">${p.brand}</div>
-        <a class="pd-name" href="/product.html?p=${slugify(p.name)}" style="text-decoration:none;color:inherit;display:block;cursor:pointer" onclick="(function(){var pd=Object.assign({},p);pd.imgs=pd.img?[pd.img]:[];try{sessionStorage.setItem('ia_pv',JSON.stringify(pd));}catch(e){}})();">${p.name}</a>
+        <a class="pd-name" href="/product?p=${slugify(p.name)}" style="text-decoration:none;color:inherit;display:block;cursor:pointer" onclick="(function(){var pd=Object.assign({},p);pd.imgs=pd.img?[pd.img]:[];try{sessionStorage.setItem('ia_pv',JSON.stringify(pd));}catch(e){}})();">${p.name}</a>
         <div class="pd-sub">${p.sub}</div>
         <div class="pd-low-price">$${low.price.toFixed(2)}</div>
         <div class="pd-from-label">Lowest price · ${low.name} · ${low.ship===0?'Free Shipping':'$'+low.ship.toFixed(2)+' shipping'}</div>
@@ -2265,7 +2265,7 @@ function openDealModal(id){
       <div class="pd-img">${p.img ? '<img src="'+p.img+'" alt="'+p.name+'" style="max-width:90%;max-height:90%;object-fit:contain">' : '<span>'+p.brand+'</span>'}</div>
       <div class="pd-info">
         <div class="pd-brand">${d.brand}</div>
-        <a class="pd-name" href="/product.html?p=${slugify(d.name)}" style="text-decoration:none;color:inherit;display:block;cursor:pointer" onclick="(function(){var pd=Object.assign({},d);pd.imgs=pd.img?[pd.img]:[];try{sessionStorage.setItem('ia_pv',JSON.stringify(pd));}catch(e){}})();">${d.name}</a>
+        <a class="pd-name" href="/product?p=${slugify(d.name)}" style="text-decoration:none;color:inherit;display:block;cursor:pointer" onclick="(function(){var pd=Object.assign({},d);pd.imgs=pd.img?[pd.img]:[];try{sessionStorage.setItem('ia_pv',JSON.stringify(pd));}catch(e){}})();">${d.name}</a>
         <div class="pd-sub">${d.sub}</div>
         <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px">
           <div class="pd-low-price">$${low.p.toFixed(2)}</div>
@@ -2355,7 +2355,7 @@ var _dg=document.getElementById('deals-grid');if(_dg)_dg.innerHTML=DEALS.map(d=>
     <div class="deal-img">${d.img?'<img src="'+d.img+'" alt="'+d.name+'" loading="lazy" style="max-width:90%;max-height:90%;object-fit:contain">':'<span class="deal-img-placeholder">'+d.brand+'</span>'}</div>
     <div class="deal-body">
       <div class="deal-tag">Limited-Time Deal · ${d.pct}% Off</div>
-      <a class="deal-name" href="/product.html?p=${slugify(d.name)}" onclick="event.stopPropagation()">${d.name}</a>
+      <a class="deal-name" href="/product?p=${slugify(d.name)}" onclick="event.stopPropagation()">${d.name}</a>
       <div class="deal-sub">${d.brand} · ${d.sub}</div>
       <div class="deal-pr">
         <span class="deal-price">$${d.sellers[0].p.toFixed(2)}</span>
