@@ -2291,6 +2291,28 @@ function openDealModal(id){
 }
 
 /* ══════════════════════════════════════════════
+   DAILY BEST SELLERS ROTATION
+   Seed changes each calendar day so every visitor
+   sees the same picks today, different ones tomorrow.
+══════════════════════════════════════════════ */
+function _dailySeed(){var d=new Date();return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate();}
+function _seededRand(seed){var s=seed>>>0;return function(){s=(s*1664525+1013904223)>>>0;return s/4294967296;};}
+function _seededShuffle(arr,rand){var a=arr.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(rand()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function _buildDailyBest(){
+  var rand=_seededRand(_dailySeed());
+  // Quota per category — adjust counts to change carousel composition
+  var quota={handgun:3,rifle:2,shotgun:1,ammo:2,optic:2,holster:1,accessory:1};
+  var order=['handgun','rifle','shotgun','ammo','optic','holster','accessory'];
+  var result=[];
+  order.forEach(function(cat){
+    var pool=PRODUCTS.filter(function(p){return p.cat===cat;});
+    var picks=_seededShuffle(pool,rand).slice(0,quota[cat]||1);
+    result=result.concat(picks);
+  });
+  return result;
+}
+
+/* ══════════════════════════════════════════════
    CAROUSEL — BEST SELLERS DEFAULT
 ══════════════════════════════════════════════ */
 const FEAT_CHIPS=[
@@ -2303,9 +2325,9 @@ var _fc=document.getElementById('feat-chips');if(_fc)_fc.innerHTML=FEAT_CHIPS.ma
 function filterFeat(v,el){
   document.querySelectorAll('#feat-chips .chip').forEach(c=>c.classList.remove('active'));
   el.classList.add('active');
-  // Best sellers = products with badge:'best', sorted by review count desc
+  // Best Sellers = daily-rotating mix across all categories
   cItems = v==='best'
-    ? [...PRODUCTS].filter(p=>p.badge==='best').sort((a,b)=>b.reviews-a.reviews)
+    ? _buildDailyBest()
     : PRODUCTS.filter(p=>p.cat===v);
   if(!cItems.length) cItems=[...PRODUCTS];
   buildCarousel();
@@ -2802,10 +2824,10 @@ async function submitNewsletter(){
   }
 }
 
-// Default carousel shows best sellers sorted by review count
+// Default carousel shows daily-rotating best sellers
 // Wrap in DOMContentLoaded to guarantee all elements exist before JS touches them
 function _initPage(){
-  cItems=[...PRODUCTS].filter(p=>p.badge==='best').sort((a,b)=>b.reviews-a.reviews);
+  cItems=_buildDailyBest();
   buildCarousel();
   buildKit();
   // FFL grid starts empty — user must enter a ZIP and click Search Dealers
