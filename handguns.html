@@ -752,47 +752,16 @@ function closeDrawer() {
 
 function slugify(s){return(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');}
 function viewProduct(id) {
-  // Handle EuroOptic products (string IDs prefixed with 'eo_')
-  if (typeof id === 'string' && id.indexOf('eo_') === 0) {
-    var eoId = id.slice(3);
-    var eoP = ALL_PRODUCTS.find(function(x){return x.id===id;});
-    if (eoP) {
-      var pd = Object.assign({}, eoP);
-      if (!pd.imgs || !pd.imgs.length) pd.imgs = pd.img ? [pd.img] : [];
-      try{sessionStorage.setItem('ia_pv',JSON.stringify(pd));}catch(e){}
-    }
-    window.location.href = '/product.html?src=eurooptic&id=' + encodeURIComponent(eoId) + '&cat=handguns';
-    return;
-  }
-  if (typeof id === 'string' && id.indexOf('bereli_') === 0) {
-    var beId = id.slice(7);
-    var beP = ALL_PRODUCTS.find(function(x){return x.id===id;});
-    if (beP) {
-      var pd = Object.assign({}, beP);
-      if (!pd.imgs || !pd.imgs.length) pd.imgs = pd.img ? [pd.img] : [];
-      try{sessionStorage.setItem('ia_pv',JSON.stringify(pd));}catch(e){}
-    }
-    window.location.href = '/product.html?src=bereli&id=' + encodeURIComponent(beId) + '&cat=handguns';
-    return;
-  }
-  if (typeof id === 'string' && id.indexOf('ig_') === 0) {
-    var igId = id.slice(3);
-    var igP = ALL_PRODUCTS.find(function(x){return x.id===id;});
-    if (igP) {
-      var pd = Object.assign({}, igP);
-      if (!pd.imgs || !pd.imgs.length) pd.imgs = pd.img ? [pd.img] : [];
-      try{sessionStorage.setItem('ia_pv',JSON.stringify(pd));}catch(e){}
-    }
-    window.location.href = '/product.html?src=impactguns&id=' + encodeURIComponent(igId) + '&cat=handguns';
-    return;
-  }
-  var p = PRODUCTS.find(function(x){return x.id===id;});
+  var p = ALL_PRODUCTS.find(function(x){return x.id===id||x.id===String(id);});
   if (!p) return;
-  // Normalize img → imgs[] so product.html renderProduct always has imgs array
-  var pd = Object.assign({}, p);
-  if (!pd.imgs || !pd.imgs.length) pd.imgs = pd.img ? [pd.img] : [];
+  var pd = Object.assign({},p);
+  if (!pd.imgs||!pd.imgs.length) pd.imgs = pd.img?[pd.img]:[];
   try{sessionStorage.setItem('ia_pv',JSON.stringify(pd));}catch(e){}
-  window.location.href = '/product.html?p=' + slugify(p.name);
+  if (p.src==='eurooptic') { window.location.href='/product.html?src=eurooptic&id='+encodeURIComponent(String(p.id).replace('eo_',''))+'&cat=handguns'; }
+  else if (p.src==='bereli') { window.location.href='/product.html?src=bereli&id='+encodeURIComponent(String(p.id).replace('bereli_',''))+'&cat=handguns'; }
+  else if (p.src==='impactguns') { window.location.href='/product.html?src=impactguns&id='+encodeURIComponent(String(p.id).replace('ig_',''))+'&cat=handguns'; }
+  else if (p.src==='luckygunner') { window.location.href='/product.html?src=luckygunner&id='+encodeURIComponent(String(p.id).replace('lg_',''))+'&cat=handguns'; }
+  else { window.location.href='/product.html?p='+slugify(p.name); }
 }
 
 var _IA_KIT_KEY='ia_kit_v1',_IA_KIT_MAX=20;
