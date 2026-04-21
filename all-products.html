@@ -541,6 +541,10 @@ var EO_FILES = [
   'handguns','rifles','ammunition','optics',
   'ar-parts','magazines','cleaning'
 ];
+var IG_FILES = [
+  'handguns','rifles','shotguns','ammunition','optics',
+  'holsters','magazines','cleaning','gun-safes'
+];
 
 async function loadAllEuroOptic() {
   document.getElementById('result-count').innerHTML = 'Loading products...';
@@ -642,6 +646,58 @@ async function loadAllBereli() {
   }
 }
 
+async function loadAllImpactGuns() {
+  try {
+    var results = await Promise.all(
+      IG_FILES.map(function(cat) {
+        return fetch('/data/impactguns-'+cat+'.json')
+          .then(function(r){ return r.ok ? r.json() : []; })
+          .catch(function(){ return []; });
+      })
+    );
+    var upcMap = {};
+    ALL_PRODUCTS.forEach(function(p) {
+      if (p.upc) upcMap[p.upc] = p;
+    });
+    results.forEach(function(items, i) {
+      var cat = IG_FILES[i];
+      items.forEach(function(p) {
+        if (!p.price || p.price <= 0 || !p.img) return;
+        if (p.upc && upcMap[p.upc]) {
+          var existing = upcMap[p.upc];
+          if (!existing.sellers.some(function(s){ return s.name === 'Impact Guns'; })) {
+            existing.sellers.push({name:'Impact Guns', price:p.price, stock:p.inStock?'in':'out', url:p.url});
+            existing.sellers.sort(function(a,b){ return a.price - b.price; });
+          }
+        } else {
+          var newProd = {
+            id: p.id,
+            upc: p.upc || '',
+            brand: p.brand || '',
+            name: p.name,
+            sub: '',
+            img: p.img || '',
+            price: p.price,
+            orig: p.orig || p.price,
+            inStock: p.inStock,
+            stars: 0,
+            reviews: 0,
+            badge: '',
+            src: 'impactguns',
+            category: cat,
+            sellers: [{name:'Impact Guns', price:p.price, stock:p.inStock?'in':'out', url:p.url}]
+          };
+          ALL_PRODUCTS.push(newProd);
+          if (p.upc) upcMap[p.upc] = newProd;
+        }
+      });
+    });
+    filterProducts();
+  } catch(e) {
+    console.warn('Impact Guns load failed:', e.message);
+  }
+}
+
 function getLowestPrice(p) {
   return Math.min(...p.sellers.map(function(s){return s.price;}));
 }
@@ -666,7 +722,7 @@ function renderGrid() {
     var idStr = typeof p.id === 'string' ? "'"+p.id+"'" : p.id;
     var low = getLowestPrice(p);
     var img = p.img ? '<img src="'+p.img+'" alt="'+p.name+'" loading="lazy">' : '<span class="img-ph">Image from retailer feed</span>';
-    var href = p.src==='eurooptic' ? '/product.html?src=eurooptic&id='+p.id.replace('eo_','')+'&cat='+(p.category||'') : p.src==='bereli' ? '/product.html?src=bereli&id='+encodeURIComponent(p.id.replace('bereli_',''))+'&cat='+(p.category||'') : '/product.html?p='+slugify(p.name);
+    var href = p.src==='eurooptic' ? '/product.html?src=eurooptic&id='+p.id.replace('eo_','')+'&cat='+(p.category||'') : p.src==='bereli' ? '/product.html?src=bereli&id='+encodeURIComponent(p.id.replace('bereli_',''))+'&cat='+(p.category||'') : p.src==='impactguns' ? '/product.html?src=impactguns&id='+encodeURIComponent(p.id.replace('ig_',''))+'&cat='+(p.category||'') : '/product.html?p='+slugify(p.name);
     var catTag = p.category ? '<span class="cat-tag">'+p.category.replace(/-/g,' ')+'</span>' : '';
     return '<div class="prod-card" onclick="viewProduct('+idStr+')">'
       +(p.badge==='best'?'<span class="badge-best">Best Seller</span>':'')
@@ -954,6 +1010,18 @@ function viewProduct(id) {
     window.location.href = '/product.html?src=bereli&id=' + encodeURIComponent(rawId) + '&cat=' + cat;
     return;
   }
+  if (typeof id === 'string' && id.indexOf('ig_') === 0) {
+    var igId = id.slice(3);
+    var igP = ALL_PRODUCTS.find(function(x){return x.id===id;});
+    if (igP) {
+      var igpd = Object.assign({}, igP);
+      if (!igpd.imgs || !igpd.imgs.length) igpd.imgs = igpd.img ? [igpd.img] : [];
+      try{sessionStorage.setItem('ia_pv',JSON.stringify(igpd));}catch(e){}
+    }
+    var igCat = igP ? (igP.category||'') : '';
+    window.location.href = '/product.html?src=impactguns&id=' + encodeURIComponent(igId) + '&cat=' + igCat;
+    return;
+  }
   // Manual affiliate products â€” store in sessionStorage and route via slug
   var manP = ALL_PRODUCTS.find(function(x){return x.id===id||x.id===String(id);});
   if (manP) {
@@ -997,6 +1065,7 @@ function saveItem(id){
 })();
 loadAllEuroOptic();
 loadAllBereli();
+loadAllImpactGuns();
 </script>
 <script src="/js/search-autocomplete.js"></script>
 </body>
