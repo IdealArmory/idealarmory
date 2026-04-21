@@ -2270,7 +2270,7 @@ function openDealModal(id){
         <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px">
           <div class="pd-low-price">$${low.p.toFixed(2)}</div>
           <div style="font-size:13px;color:var(--gray-400);text-decoration:line-through">$${d.orig}</div>
-          <div style="font-size:12px;font-weight:700;color:var(--red)">${d.pct}% OFF</div>
+          <div style="font-size:12px;font-weight:700;color:var(--red)">${Math.round((d.orig-d.sellers[0].p)/d.orig*100)}% OFF</div>
         </div>
         <div class="pd-from-label">Lowest price · ${low.n} · ${low.url?'<a href="'+low.url+'" target="_blank" rel="noopener" style="color:var(--navy)">Go to retailer</a>':'Ships direct'}</div>
         <button class="btn-kit-lg" onclick="addDealToKit(${d.id});closeOverlay('prod-modal')">+ Add to My Kit</button>
@@ -2376,13 +2376,13 @@ var _dg=document.getElementById('deals-grid');if(_dg)_dg.innerHTML=DEALS.map(d=>
   <div class="deal-card" onclick="openDealModal(${d.id})">
     <div class="deal-img">${d.img?'<img src="'+d.img+'" alt="'+d.name+'" loading="lazy" style="max-width:90%;max-height:90%;object-fit:contain">':'<span class="deal-img-placeholder">'+d.brand+'</span>'}</div>
     <div class="deal-body">
-      <div class="deal-tag">Limited-Time Deal · ${d.pct}% Off</div>
+      <div class="deal-tag">Limited-Time Deal · ${Math.round((d.orig-d.sellers[0].p)/d.orig*100)}% Off</div>
       <a class="deal-name" href="/product?p=${slugify(d.name)}" onclick="event.stopPropagation()">${d.name}</a>
       <div class="deal-sub">${d.brand} · ${d.sub}</div>
       <div class="deal-pr">
         <span class="deal-price">$${d.sellers[0].p.toFixed(2)}</span>
         <span class="deal-orig">$${d.orig}</span>
-        <span class="deal-pct">-${d.pct}%</span>
+        <span class="deal-pct">-${Math.round((d.orig-d.sellers[0].p)/d.orig*100)}%</span>
       </div>
       <div class="deal-via">Lowest: <strong>${d.sellers[0].n}</strong> · ${d.sellers.length} seller${d.sellers.length>1?'s':''}</div>
       <div class="deal-timer">Ends in: <span class="deal-tv" data-time="${d.timer}">${d.timer}</span></div>
@@ -3141,9 +3141,9 @@ function renderDOTD() {
     '<div class="hc-from">Via ' + d.via + ' &mdash; licensed retailer</div>' +
     '<div class="hc-price-wrap">' +
       '<div class="hc-price">$' + d.price.toFixed(2) + '</div>' +
-      (d.orig > d.price ? '<div class="hc-price-orig">$' + d.orig.toFixed(2) + '</div><div class="hc-price-badge">' + d.pct + '% OFF</div>' : '') +
+      (d.orig > d.price ? '<div class="hc-price-orig">$' + d.orig.toFixed(2) + '</div><div class="hc-price-badge">' + Math.round((d.orig-d.price)/d.orig*100) + '% OFF</div>' : '') +
     '</div>' +
-    (d.orig > d.price ? '<div class="hc-price-sub">You save $' + d.save.toFixed(2) + '</div>' : '') +
+    (d.orig > d.price ? '<div class="hc-price-sub">You save $' + (d.orig-d.price).toFixed(2) + '</div>' : '') +
     '<div class="hc-sellers"><div class="hc-row"><span class="hc-seller-name">' + d.via + '</span><span class="hc-seller-price low">$' + d.price.toFixed(2) + ' &mdash; In Stock</span></div></div>' +
     '<a class="hc-cta" href="' + d.url + '" target="_blank" rel="noopener">View Deal &rarr;</a>';
 }
