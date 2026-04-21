@@ -1,20 +1,11 @@
 // fetch-impactguns.js
-// Scrapes Impact Guns (impactguns.com) product catalog from category listing pages.
-// No external dependencies — uses built-in fetch (Node 18+).
+// Scrapes Impact Guns (impactguns.com) product catalog.
+// Phase 1: parse category listing pages for productId, URL, name, image.
+// Phase 2: call BigCommerce JSON API for live price + stock on each product.
 // Writes data/impactguns-{category}.json + data/impactguns-last-run.json
 //
-// Site: BigCommerce — product IDs in cart links, prices in listing HTML
 // Affiliate: #a_aid=IdealArmory&a_cid=71c03b38 appended to every product URL
-//
-// Category pages paginate via ?page=N (BigCommerce standard)
-// Product card HTML (simplified):
-//   <li>
-//     <a href="/category/product-name-UPC-SKU"><img src="..." alt="Name"></a>
-//     <h4><a href="/category/product-name-UPC-SKU">Full Product Name</a></h4>
-//     <p>$799.99 $719.99</p>
-//     <p>In Stock</p>
-//     <a href="/cart.php?action=add&product_id=125988">Add to Cart</a>
-//   </li>
+// Price API: GET /remote/v1/product-attributes/{productId}
 
 'use strict';
 
@@ -22,16 +13,16 @@ const fs   = require('fs');
 const path = require('path');
 
 // ── Config ────────────────────────────────────────────────────────────────────
-const BASE_URL      = 'https://www.impactguns.com';
-const AFF_HASH      = '#a_aid=IdealArmory&a_cid=71c03b38';
-const PAGE_DELAY_MS = 3000;    // polite delay between requests (ms)
-const FETCH_TIMEOUT = 35000;   // 35s per request
-const MAX_PAGES     = 60;      // max pages per category slug
-const MAX_RETRIES   = 3;
-const USER_AGENT    = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
+const BASE_URL       = 'https://www.impactguns.com';
+const AFF_HASH       = '#a_aid=IdealArmory&a_cid=71c03b38';
+const PAGE_DELAY_MS  = 2500;   // delay between listing page fetches
+const API_DELAY_MS   = 800;    // delay between price API calls
+const FETCH_TIMEOUT  = 35000;
+const MAX_PAGES      = 80;
+const MAX_RETRIES    = 3;
+const USER_AGENT     = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
 
-// ── Category map: Impact Guns slug → our category ─────────────────────────────
-// Top-level categories include all sub-category products on BigCommerce
+// ── Category map ──────────────────────────────────────────────────────────────
 const CATEGORIES = [
   { slug: 'handguns',      ourCat: 'handguns'   },
   { slug: 'rifles',        ourCat: 'rifles'     },
@@ -44,49 +35,36 @@ const CATEGORIES = [
   { slug: 'safes-storage', ourCat: 'gun-safes'  },
 ];
 
-// ── Per-category product caps (sorted by price desc) ─────────────────────────
+// ── Per-category product caps ─────────────────────────────────────────────────
 const CAT_CAPS = {
-  'handguns':   600,
-  'rifles':     600,
-  'shotguns':   300,
-  'ammunition': 800,
-  'optics':     500,
-  'holsters':   300,
-  'magazines':  300,
-  'cleaning':   150,
-  'gun-safes':  200,
+  'handguns':   600, 'rifles': 600, 'shotguns': 300,
+  'ammunition': 800, 'optics': 500, 'holsters': 300,
+  'magazines':  300, 'cleaning': 150, 'gun-safes': 200,
 };
 
-// ── Price floors per category ─────────────────────────────────────────────────
+// ── Price floors ──────────────────────────────────────────────────────────────
 const PRICE_FLOORS = {
-  'handguns':   150,
-  'rifles':     250,
-  'shotguns':   150,
-  'ammunition':   5,
-  'optics':      30,
-  'holsters':    15,
-  'magazines':    8,
-  'cleaning':     5,
-  'gun-safes':   80,
+  'handguns': 150, 'rifles': 250, 'shotguns': 150,
+  'ammunition': 5, 'optics': 30,  'holsters': 15,
+  'magazines': 8,  'cleaning': 5, 'gun-safes': 80,
 };
 
-// ── Items to skip (accessories, apparel, misc) ────────────────────────────────
+// ── Name exclusions ───────────────────────────────────────────────────────────
 const NAME_EXCLUDE = [
-  'shirt','pants','hat','cap','glove','boot','shoe','sock','apparel',
-  'backpack','vest','hoodie','fleece','jacket','lanyard','patch',
-  'sticker','flag','poster','book','dvd','video','manual',
+  'shirt','pants','hat ','cap ','glove','boot','shoe','sock','apparel',
+  'backpack','vest ','hoodie','fleece','jacket','lanyard','patch',
+  'sticker','flag','poster','book','dvd','video',
 ];
 
-// ── Brand extraction ──────────────────────────────────────────────────────────
-// Impact Guns product names start with brand name (e.g. "Glock 17 Gen5 ...")
+// ── Known brands for extraction ───────────────────────────────────────────────
 const KNOWN_BRANDS = [
   'Aimpoint','Aero Precision','Alien Gear','Ballistol','BCM','Benelli','Bergara',
   'Beretta','Blackhawk','Blazer','Break-Free','Browning','Bulldog','Burris',
   'Caldwell','Cannon','CCI','CMMG','Colt','CrossBreed','CZ','Daniel Defense',
   'DeSantis','EOTech','ETS','Federal','Fiocchi','Fort Knox','Galco','Geissele',
   'Girsan','Glock','Henry','Heritage','Holosun','Hornady','H&K','Heckler',
-  'IWI','Kimber','LaRue','Leupold','Liberty','Magpul','Marlin','Maserin',
-  'Mossberg','Nightforce','Otis','PMC','Primary Arms','ProMag','PSA','Radical',
+  'IWI','Kimber','LaRue','Leupold','Liberty','Magpul','Marlin',
+  'Mossberg','Nightforce','Otis','PMC','Primary Arms','ProMag','PSA',
   'Radian','Real Avid','Remington','Rossi','Ruger','Safariland','Savage',
   'Sig Sauer','SIG','Smith & Wesson','Speer','Springfield','Stack-On','Steyr',
   'Stoeger','Streamlight','Taurus','Tikka','Trijicon','Uberti','Vaultek',
@@ -96,23 +74,18 @@ const KNOWN_BRANDS = [
 function extractBrand(name) {
   if (!name) return '';
   const n = name.trim();
-  // Try multi-word brands first (longest match)
   const sorted = [...KNOWN_BRANDS].sort((a, b) => b.length - a.length);
   for (const b of sorted) {
     if (n.toLowerCase().startsWith(b.toLowerCase())) return b;
   }
-  // Fall back to first word
   return n.split(/[\s,]/)[0] || '';
 }
 
-// ── UPC / SKU extraction from URL slug ────────────────────────────────────────
-// URL pattern: /category/product-name-UPCSEGMENT-SKU
-// UPC is a 12–13 digit number embedded in the slug
+// ── UPC / SKU from URL slug ───────────────────────────────────────────────────
 function extractUpcSku(productUrl) {
-  const slug = productUrl.split('/').filter(Boolean).pop() || '';
+  const slug  = (productUrl.split('/').filter(Boolean).pop() || '').split('#')[0];
   const parts = slug.split('-');
   let upc = '', sku = '';
-  // Work backward — last numeric segment is SKU, 12-13 digit segment before is UPC
   for (let i = parts.length - 1; i >= 0; i--) {
     if (/^\d{12,13}$/.test(parts[i])) {
       upc = parts[i];
@@ -120,172 +93,34 @@ function extractUpcSku(productUrl) {
       break;
     }
   }
-  if (!sku && /^\d+$/.test(parts[parts.length - 1])) {
+  if (!sku && /^\d{3,8}$/.test(parts[parts.length - 1])) {
     sku = parts[parts.length - 1];
   }
   return { upc, sku };
 }
 
-// ── HTML entity decoder ───────────────────────────────────────────────────────
 function decodeHtml(str) {
   return (str || '')
-    .replace(/&amp;/g,   '&')
-    .replace(/&lt;/g,    '<')
-    .replace(/&gt;/g,    '>')
-    .replace(/&quot;/g,  '"')
-    .replace(/&#39;/g,   "'")
-    .replace(/&nbsp;/g,  ' ')
-    .replace(/&#x27;/g,  "'")
-    .replace(/&#x2F;/g,  '/');
+    .replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>')
+    .replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&nbsp;/g,' ')
+    .replace(/&#x27;/g,"'").replace(/&#x2F;/g,'/');
 }
 
-// ── Affiliate URL builder ─────────────────────────────────────────────────────
 function addAffiliate(url) {
-  if (!url) return '';
-  // Strip any existing fragment, add ours
-  const base = url.split('#')[0];
-  return base + AFF_HASH;
+  return url ? url.split('#')[0] + AFF_HASH : '';
 }
 
-// ── Parse a single listing page into raw product records ─────────────────────
-// Returns array of { productId, productUrl, name, img, price, msrp, inStock }
-//
-// BigCommerce product pages expose product IDs in multiple places:
-//   1. Cart links:   href="/cart.php?action=add&product_id=12345"
-//   2. Image paths:  cdn*.bigcommerce.com/.../products/12345/...
-//   3. Data attrs:   data-product-id="12345"  (Stencil theme standard)
-// We collect from all three sources then deduplicate by product ID.
-function parseListingPage(html) {
-  const seen     = new Set();
-  const products = [];
+// ── Fetch helpers ─────────────────────────────────────────────────────────────
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-  // ── Method A: BigCommerce CDN image URLs ────────────────────────────────────
-  // Image src embeds product ID: .../products/12345/variant_id/filename
-  // Actual URL: cdn11.bigcommerce.com/s-ID/images/stencil/500x659/products/12345/...
-  // Use [^"]* to match any number of path segments between bigcommerce.com domain and /products/
-  const imgRe = /src="(https:\/\/cdn\d+\.bigcommerce\.com\/[^"]*\/products\/(\d+)\/[^"]+)"/g;
-  let im;
-  while ((im = imgRe.exec(html)) !== null) {
-    const imgUrl    = im[1].split('?')[0];
-    const productId = im[2];
-    if (seen.has(productId)) continue;
-
-    const pos = im.index;
-    // Window: 500 chars before image (for the wrapping <a> link) and 4000 after (for name, price, stock, cart)
-    const winStart = Math.max(0, pos - 500);
-    const winEnd   = Math.min(html.length, pos + 4000);
-    const win      = html.slice(winStart, winEnd);
-
-    // ── Product URL ───────────────────────────────────────────────────────────
-    // Find all internal product links (not cart/account/utility pages)
-    const urlRe  = /href="((?:https:\/\/www\.impactguns\.com)?\/(?!cart|account|login|checkout|compare|brands|sitemap|wishlist|blog|contact|about|search|wishlist)[a-z0-9][a-z0-9-]+\/[a-z0-9][a-z0-9-]{5,})"/g;
-    let um, lastUrl = null;
-    while ((um = urlRe.exec(win)) !== null) lastUrl = um[1];
-    if (!lastUrl) continue;
-    const productUrl = lastUrl.startsWith('http') ? lastUrl : BASE_URL + lastUrl;
-
-    // ── Product name ──────────────────────────────────────────────────────────
-    // Try last <h2>/<h3>/<h4> with an anchor inside, fall back to <img alt>
-    const hRe = /<h[2-5][^>]*>\s*<a[^>]*>([^<]{8,})<\/a>\s*<\/h[2-5]>/gi;
-    let hm, lastH = null;
-    while ((hm = hRe.exec(win)) !== null) lastH = hm;
-    let name = lastH ? decodeHtml(lastH[1].trim()) : '';
-
-    if (!name) {
-      // alt text on this specific image
-      const altM = im[1] ? win.match(/alt="([^"]{8,})"/) : null;
-      name = altM ? decodeHtml(altM[1].trim()) : '';
-    }
-    if (!name || name.length < 6) continue;
-
-    // ── Prices ────────────────────────────────────────────────────────────────
-    // Grab $ amounts in a 2000-char window around the image; last 1–4 are relevant
-    const pWin = html.slice(Math.max(0, pos - 200), Math.min(html.length, pos + 2000));
-    const pRe  = /\$\s*([\d,]+(?:\.\d{1,2})?)/g;
-    const vals = [];
-    let pm;
-    while ((pm = pRe.exec(pWin)) !== null) {
-      const v = parseFloat(pm[1].replace(/,/g, ''));
-      if (v > 0.5 && v < 50000) vals.push(v);
-    }
-    const recent = vals.slice(-4);
-    const price  = recent.length ? Math.min(...recent) : 0;
-    const msrp   = recent.length > 1 ? Math.max(...recent) : price;
-    if (price <= 0) continue;
-
-    // ── Stock status ──────────────────────────────────────────────────────────
-    const sWin    = html.slice(Math.max(0, pos - 200), Math.min(html.length, pos + 2000));
-    const inStock = /in[\s-]?stock/i.test(sWin) &&
-                    !/out[\s-]?of[\s-]?stock/i.test(sWin) &&
-                    !/pre[\s-]?order/i.test(sWin);
-
-    seen.add(productId);
-    products.push({ productId, productUrl, name, img: imgUrl, price, msrp, inStock });
-  }
-
-  // ── Method B: Cart links (fallback for any missed by image method) ──────────
-  const cartRe = /href="[^"]*cart\.php\?action=add&(?:amp;)?product_id=(\d+)"/g;
-  let cm;
-  while ((cm = cartRe.exec(html)) !== null) {
-    const productId = cm[1];
-    if (seen.has(productId)) continue;   // already captured above
-
-    const pos      = cm.index;
-    const winStart = Math.max(0, pos - 3000);
-    const win      = html.slice(winStart, pos + 200);
-
-    const urlRe  = /href="((?:https:\/\/www\.impactguns\.com)?\/(?!cart|account|login|checkout|compare|brands|sitemap|wishlist|blog|contact|about|search)[a-z0-9][a-z0-9-]+\/[a-z0-9][a-z0-9-]{5,})"/g;
-    let um, lastUrl = null;
-    while ((um = urlRe.exec(win)) !== null) lastUrl = um[1];
-    if (!lastUrl) continue;
-    const productUrl = lastUrl.startsWith('http') ? lastUrl : BASE_URL + lastUrl;
-
-    const hRe = /<h[2-5][^>]*>\s*<a[^>]*>([^<]{8,})<\/a>\s*<\/h[2-5]>/gi;
-    let hm, lastH = null;
-    while ((hm = hRe.exec(win)) !== null) lastH = hm;
-    const name = lastH ? decodeHtml(lastH[1].trim()) : '';
-    if (!name) continue;
-
-    const imgM = win.match(/src="(https:\/\/cdn\d+\.bigcommerce\.com\/[^"]+\.(?:jpg|jpeg|png|webp))"/i);
-    const img  = imgM ? imgM[1].split('?')[0] : '';
-
-    const pRe = /\$\s*([\d,]+(?:\.\d{1,2})?)/g;
-    const vals = [];
-    let pm;
-    while ((pm = pRe.exec(win)) !== null) {
-      const v = parseFloat(pm[1].replace(/,/g, ''));
-      if (v > 0.5 && v < 50000) vals.push(v);
-    }
-    const recent = vals.slice(-4);
-    const price  = recent.length ? Math.min(...recent) : 0;
-    const msrp   = recent.length > 1 ? Math.max(...recent) : price;
-    if (price <= 0) continue;
-
-    const inStock = /in[\s-]?stock/i.test(win) && !/out[\s-]?of[\s-]?stock/i.test(win);
-
-    seen.add(productId);
-    products.push({ productId, productUrl, name, img, price, msrp, inStock });
-  }
-
-  return products;
-}
-
-// ── Check if more pages exist ─────────────────────────────────────────────────
-function hasNextPage(html, currentPage) {
-  // BigCommerce shows page links; look for a link to page N+1
-  const next = currentPage + 1;
-  return html.includes(`page=${next}`) || html.includes(`>Next<`) || html.includes(`>Next &`) ;
-}
-
-// ── Fetch with retry ──────────────────────────────────────────────────────────
-async function fetchWithRetry(url, retries = MAX_RETRIES) {
+async function fetchHtml(url, retries = MAX_RETRIES) {
   for (let attempt = 1; attempt <= retries; attempt++) {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
+    const ctrl  = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT);
     try {
       const res = await fetch(url, {
         headers: { 'User-Agent': USER_AGENT, 'Accept-Language': 'en-US,en;q=0.9' },
-        signal: controller.signal,
+        signal: ctrl.signal,
       });
       clearTimeout(timer);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -294,18 +129,146 @@ async function fetchWithRetry(url, retries = MAX_RETRIES) {
       clearTimeout(timer);
       if (attempt === retries) throw err;
       const wait = attempt * 5000;
-      console.warn(`  Retry ${attempt}/${retries} for ${url}: ${err.message} — waiting ${wait/1000}s`);
-      await new Promise(r => setTimeout(r, wait));
+      console.warn(`  Retry ${attempt}/${retries} for ${url}: ${err.message} — wait ${wait/1000}s`);
+      await sleep(wait);
     }
   }
 }
 
-// ── Delay helper ─────────────────────────────────────────────────────────────
-function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+async function fetchJson(url) {
+  const ctrl  = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 15000);
+  try {
+    const res = await fetch(url, {
+      headers: { 'User-Agent': USER_AGENT, 'X-Requested-With': 'XMLHttpRequest',
+                 'Accept': 'application/json' },
+      signal: ctrl.signal,
+    });
+    clearTimeout(timer);
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    clearTimeout(timer);
+    return null;
+  }
+}
+
+// ── Parse listing page → raw product stubs (no price) ────────────────────────
+// Anchors on BigCommerce CDN image URLs which embed product ID in path.
+// URL:  /category/product-slug  ← look BACKWARD from image (wrapping <a>)
+// Name: <h2-5><a>Name</a>       ← look FORWARD from image
+function parseListingPage(html) {
+  const seen     = new Set();
+  const products = [];
+
+  // BigCommerce CDN images embed product ID: .../products/{ID}/...
+  const imgRe = /src="(https?:\/\/cdn\d+\.bigcommerce\.com\/[^"]*\/products\/(\d+)\/[^"]+)"/g;
+  let im;
+
+  while ((im = imgRe.exec(html)) !== null) {
+    const imgUrl    = im[1].split('?')[0];
+    const productId = im[2];
+    if (seen.has(productId)) continue;
+
+    const pos = im.index;
+
+    // Product URL — the <a> that wraps this image is BEFORE it in the HTML
+    const preWin = html.slice(Math.max(0, pos - 1200), pos);
+    const urlRe  = /href="((?:https?:\/\/www\.impactguns\.com)?\/(?!cart|account|login|checkout|compare|brands|sitemap|wishlist|blog|contact|about|search|gift|rss|subscribe)[a-z0-9][a-z0-9-]+\/[a-z0-9][a-z0-9-]{3,}[^"#?]*)"/g;
+    let um, lastUrl = null;
+    while ((um = urlRe.exec(preWin)) !== null) lastUrl = um[1];
+    if (!lastUrl) continue;
+    const productUrl = lastUrl.startsWith('http') ? lastUrl : BASE_URL + lastUrl;
+
+    // Product name — heading link comes AFTER the image in BigCommerce card layout
+    const postWin = html.slice(pos, Math.min(html.length, pos + 3000));
+
+    // Try <h2>–<h5> containing an anchor
+    const hRe = /<h[2-5][^>]*>\s*<a[^>]*>([^<]{6,})<\/a>/gi;
+    let hm, firstH = null;
+    while ((hm = hRe.exec(postWin)) !== null) { firstH = hm; break; }
+    let name = firstH ? decodeHtml(firstH[1].trim()) : '';
+
+    // Fallback: aria-label or title attribute on a nearby link
+    if (!name) {
+      const ariaM = postWin.match(/aria-label="([^"]{8,})"/);
+      name = ariaM ? decodeHtml(ariaM[1].trim()) : '';
+    }
+    // Fallback: alt text on this image
+    if (!name) {
+      const altM = im[0].match(/alt="([^"]{8,})"/);
+      name = altM ? decodeHtml(altM[1].trim()) : '';
+    }
+    if (!name || name.length < 6) continue;
+
+    seen.add(productId);
+    // Price and stock will be filled in by the JSON API (Phase 2)
+    products.push({ productId, productUrl, name, img: imgUrl, price: 0, msrp: 0, inStock: false });
+  }
+
+  return products;
+}
+
+// ── Detect pagination ─────────────────────────────────────────────────────────
+function hasNextPage(html, currentPage) {
+  const next = currentPage + 1;
+  // BigCommerce Stencil pagination: ?page=N or &page=N in href attributes
+  // Also check for aria-label="Next page" or class="pagination-item--next"
+  return html.includes(`page=${next}`)
+    || html.includes(`pagination-item--next`)
+    || /aria-label="[Nn]ext/.test(html)
+    || html.includes('>Next<')
+    || html.includes('>Next ');
+}
+
+// ── Fetch price + stock via BigCommerce JSON API ──────────────────────────────
+// GET /remote/v1/product-attributes/{productId}
+// Returns: { data: { instock, sku, upc, price: { without_tax: { value } }, ... } }
+async function enrichWithApi(products) {
+  const API_BATCH = 20;   // log every N API calls
+  let enriched = 0, failed = 0;
+
+  for (let i = 0; i < products.length; i++) {
+    const p   = products[i];
+    const url = `${BASE_URL}/remote/v1/product-attributes/${p.productId}`;
+    const data = await fetchJson(url);
+
+    if (data && data.data) {
+      const d = data.data;
+      // Price: prefer sale_price_without_tax, fall back to price_without_tax
+      const priceObj = d.price || {};
+      const saleP  = priceObj.sale_price_without_tax  || priceObj.sale_price_with_tax;
+      const baseP  = priceObj.price_without_tax        || priceObj.price_with_tax
+                  || priceObj.without_tax               || priceObj.with_tax;
+      const rrp    = priceObj.rrp_without_tax           || priceObj.rrp_with_tax;
+
+      const saleVal = saleP  ? (saleP.value  || parseFloat(saleP.formatted  || '0')) : 0;
+      const baseVal = baseP  ? (baseP.value  || parseFloat(baseP.formatted  || '0')) : 0;
+      const rrpVal  = rrp    ? (rrp.value    || parseFloat(rrp.formatted    || '0')) : 0;
+
+      p.price   = saleVal || baseVal || 0;
+      p.msrp    = rrpVal  || baseVal || p.price;
+      p.inStock = !!(d.instock);
+
+      // Enrich SKU/UPC from API if available
+      if (d.sku) p.apiSku = d.sku;
+      if (d.upc) p.apiUpc = d.upc;
+      enriched++;
+    } else {
+      failed++;
+    }
+
+    if ((i + 1) % API_BATCH === 0 || i === products.length - 1) {
+      process.stdout.write(`    API: ${i+1}/${products.length} (ok:${enriched} fail:${failed})\r`);
+    }
+    await sleep(API_DELAY_MS);
+  }
+  console.log(`\n    API done: ${enriched} enriched, ${failed} failed`);
+}
 
 // ── Scrape one category (all pages) ──────────────────────────────────────────
 async function scrapeCategory(slug, ourCat, seenIds) {
-  console.log(`\n  [${ourCat}] Scraping /${slug} ...`);
+  console.log(`\n  [${ourCat}] /${slug}`);
   const products = [];
   let page = 1;
 
@@ -316,56 +279,44 @@ async function scrapeCategory(slug, ourCat, seenIds) {
 
     let html;
     try {
-      html = await fetchWithRetry(url);
+      html = await fetchHtml(url);
     } catch (err) {
-      console.warn(`  /${slug}?page=${page} failed: ${err.message} — stopping this category`);
+      console.warn(`    Page ${page} fetch failed: ${err.message}`);
       break;
     }
 
-    // ── Debug: log page diagnostics on first page of first category ────────────
-    if (page === 1 && slug === CATEGORIES[0].slug) {
-      const hasBC    = html.includes('bigcommerce.com');
-      const hasProd  = (html.match(/\/products\/\d+\//g) || []).length;
-      const hasCart  = (html.match(/product_id=/g) || []).length;
-      const hasImg   = (html.match(/<img/g) || []).length;
-      console.log(`  [DEBUG] Page size: ${html.length} chars`);
-      console.log(`  [DEBUG] bigcommerce.com mentions: ${hasBC}`);
-      console.log(`  [DEBUG] /products/ID/ patterns: ${hasProd}`);
-      console.log(`  [DEBUG] product_id= occurrences: ${hasCart}`);
-      console.log(`  [DEBUG] <img tags: ${hasImg}`);
-      // Show a snippet around the first product_id mention
-      const pidIdx = html.indexOf('product_id=');
-      if (pidIdx >= 0) {
-        console.log(`  [DEBUG] First product_id context: ${html.slice(Math.max(0,pidIdx-100), pidIdx+150).replace(/\n/g,' ')}`);
+    // Pagination debug on page 1
+    if (page === 1) {
+      const pageLinks = [...new Set((html.match(/page=\d+/g) || []))].sort();
+      console.log(`    Page 1: size=${html.length}, pageLinks=[${pageLinks.join(',')}], next=${hasNextPage(html,1)}`);
+      // First product debug
+      const firstProd = parseListingPage(html)[0];
+      if (firstProd) {
+        console.log(`    First product: id=${firstProd.productId} name="${firstProd.name.slice(0,60)}" url="${firstProd.productUrl.slice(0,80)}"`);
       } else {
-        console.log(`  [DEBUG] No product_id= found — showing first 500 chars of body:`);
-        console.log(`  [DEBUG] ${html.slice(0,500).replace(/\n/g,' ')}`);
+        console.log(`    First product: NONE FOUND`);
+        // Show a snippet to diagnose
+        const cdnIdx = html.indexOf('bigcommerce.com');
+        if (cdnIdx >= 0) console.log(`    CDN snippet: ${html.slice(cdnIdx, cdnIdx+200).replace(/\n/g,' ')}`);
       }
     }
 
-    // Parse products from this page
     const pageProducts = parseListingPage(html);
-
     if (pageProducts.length === 0) {
-      console.log(`  /${slug} page ${page}: 0 products — end of category`);
+      console.log(`    Page ${page}: 0 products — stopping`);
       break;
     }
 
     let newCount = 0;
     for (const p of pageProducts) {
-      if (seenIds.has(p.productId)) continue;  // global dedup across categories
+      if (seenIds.has(p.productId)) continue;
       seenIds.add(p.productId);
       products.push(p);
       newCount++;
     }
+    console.log(`    Page ${page}: ${pageProducts.length} parsed, ${newCount} new (total: ${products.length})`);
 
-    console.log(`  /${slug} page ${page}: ${pageProducts.length} parsed, ${newCount} new (total: ${products.length})`);
-
-    if (!hasNextPage(html, page)) {
-      console.log(`  /${slug}: no more pages after page ${page}`);
-      break;
-    }
-
+    if (!hasNextPage(html, page)) break;
     page++;
     await sleep(PAGE_DELAY_MS);
   }
@@ -373,22 +324,20 @@ async function scrapeCategory(slug, ourCat, seenIds) {
   return products;
 }
 
-// ── Transform raw record to our product schema ────────────────────────────────
+// ── Transform to our product schema ──────────────────────────────────────────
 function transformProduct(raw, ourCat) {
   const { upc, sku } = extractUpcSku(raw.productUrl);
-  const brand = extractBrand(raw.name);
-
   return {
     id:       'ig_' + raw.productId,
-    brand,
+    brand:    extractBrand(raw.name),
     name:     raw.name,
     price:    raw.price,
     orig:     raw.msrp,
     img:      raw.img,
     url:      addAffiliate(raw.productUrl),
     category: ourCat,
-    upc,
-    sku,
+    upc:      raw.apiUpc  || upc,
+    sku:      raw.apiSku  || sku,
     inStock:  raw.inStock,
     src:      'impactguns',
   };
@@ -396,92 +345,99 @@ function transformProduct(raw, ourCat) {
 
 // ── Relevance filter ──────────────────────────────────────────────────────────
 function isRelevant(raw, ourCat) {
-  if (!raw.img)            return false;   // must have image
-  if (raw.price <= 0)      return false;   // must have price
-  if (!raw.inStock)        return false;   // in-stock only
-
-  const floor = PRICE_FLOORS[ourCat] || 0;
-  if (raw.price < floor)   return false;
-
+  if (!raw.img)            return false;
+  if (raw.price <= 0)      return false;
+  if (!raw.inStock)        return false;
+  if (raw.price < (PRICE_FLOORS[ourCat] || 0)) return false;
   const n = raw.name.toLowerCase();
   if (NAME_EXCLUDE.some(kw => n.includes(kw))) return false;
-
   return true;
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 async function main() {
   console.log('=== Impact Guns Catalog Fetch ===');
-  console.log(`Base URL : ${BASE_URL}`);
-  console.log(`Started  : ${new Date().toISOString()}\n`);
+  console.log(`Started: ${new Date().toISOString()}\n`);
 
-  const seenIds   = new Set();   // global dedup across all categories
-  const allByCategory = {};      // ourCat → products[]
-  let totalRaw = 0;
+  const seenIds        = new Set();
+  const allProducts    = [];
+  const catMap         = {};   // productId → ourCat
 
+  // ── Phase 1: Scrape listing pages ────────────────────────────────────────
+  console.log('Phase 1: Scraping category pages...');
   for (const { slug, ourCat } of CATEGORIES) {
     const raw = await scrapeCategory(slug, ourCat, seenIds);
-    totalRaw += raw.length;
-
-    const relevant = raw.filter(r => isRelevant(r, ourCat)).map(r => transformProduct(r, ourCat));
-    console.log(`  /${slug}: ${raw.length} scraped → ${relevant.length} relevant`);
-
-    if (!allByCategory[ourCat]) allByCategory[ourCat] = [];
-    allByCategory[ourCat].push(...relevant);
+    for (const p of raw) {
+      catMap[p.productId] = ourCat;
+      allProducts.push(p);
+    }
+    console.log(`  /${slug}: ${raw.length} products collected`);
   }
+  console.log(`\nPhase 1 done: ${allProducts.length} total unique products\n`);
 
-  // ── Quality gate ──────────────────────────────────────────────────────────
-  const totalRelevant = Object.values(allByCategory).reduce((s, a) => s + a.length, 0);
-  console.log(`\nTotal scraped : ${totalRaw}`);
-  console.log(`Total relevant: ${totalRelevant}`);
-
-  if (totalRelevant < 100) {
-    console.error(`QUALITY GATE FAILED: Only ${totalRelevant} relevant products — possible scrape failure or site structure change.`);
+  if (allProducts.length < 50) {
+    console.error(`QUALITY GATE (phase 1): Only ${allProducts.length} products — likely a scrape failure.`);
     process.exit(1);
   }
 
-  // ── Write output files ────────────────────────────────────────────────────
-  const dataDir = path.join(__dirname, '..', '..', 'data');
+  // ── Phase 2: Enrich with live price + stock via JSON API ─────────────────
+  console.log('Phase 2: Fetching prices from BigCommerce API...');
+  await enrichWithApi(allProducts);
+
+  // ── Phase 3: Filter, group, write ────────────────────────────────────────
+  console.log('\nPhase 3: Filtering and writing output...');
+  const byCategory = {};
+  let totalRelevant = 0;
+
+  for (const raw of allProducts) {
+    const ourCat = catMap[raw.productId];
+    if (!isRelevant(raw, ourCat)) continue;
+    if (!byCategory[ourCat]) byCategory[ourCat] = [];
+    byCategory[ourCat].push(transformProduct(raw, ourCat));
+    totalRelevant++;
+  }
+
+  // Category breakdown
+  console.log('\nCategory breakdown:');
+  for (const [cat, prods] of Object.entries(byCategory)) {
+    console.log(`  ${cat}: ${prods.length}`);
+  }
+
+  if (totalRelevant < 100) {
+    console.error(`QUALITY GATE (phase 3): Only ${totalRelevant} relevant products after filtering.`);
+    process.exit(1);
+  }
+
+  const dataDir      = path.join(__dirname, '..', '..', 'data');
   if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
 
-  const catCounts  = {};
+  const catCounts    = {};
   const filesWritten = [];
 
-  for (const [cat, products] of Object.entries(allByCategory)) {
+  for (const [cat, products] of Object.entries(byCategory)) {
     if (products.length === 0) continue;
-
-    // Sort by price descending, apply cap
     products.sort((a, b) => b.price - a.price);
     const cap   = CAT_CAPS[cat];
     const final = cap && products.length > cap ? products.slice(0, cap) : products;
-    if (cap && products.length > cap) {
-      console.log(`  [cap] ${cat}: ${products.length} → ${cap}`);
-    }
+    if (cap && products.length > cap) console.log(`  [cap] ${cat}: ${products.length} → ${cap}`);
 
     catCounts[cat] = final.length;
-    const fname = `impactguns-${cat}.json`;
+    const fname    = `impactguns-${cat}.json`;
     fs.writeFileSync(path.join(dataDir, fname), JSON.stringify(final));
     const kb = Math.round(fs.statSync(path.join(dataDir, fname)).size / 1024);
     console.log(`  Wrote ${fname}: ${final.length} products (${kb} KB)`);
     filesWritten.push(fname);
   }
 
-  // Write last-run metadata
   fs.writeFileSync(
     path.join(dataDir, 'impactguns-last-run.json'),
-    JSON.stringify({
-      lastRun:      new Date().toISOString(),
-      productCount: totalRelevant,
-      rawCount:     totalRaw,
-      categories:   catCounts,
-      files:        filesWritten,
-      status:       'success',
-    }, null, 2)
+    JSON.stringify({ lastRun: new Date().toISOString(), productCount: totalRelevant,
+                     rawCount: allProducts.length, categories: catCounts,
+                     files: filesWritten, status: 'success' }, null, 2)
   );
 
   console.log(`\n========================================`);
-  console.log(` SUCCESS`);
-  console.log(` ${totalRelevant} products across ${filesWritten.length} categories`);
+  console.log(` SUCCESS — ${totalRelevant} products across ${filesWritten.length} categories`);
   console.log(`========================================`);
 }
 
