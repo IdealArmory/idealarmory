@@ -11,6 +11,7 @@ env:
 jobs:
   fetch-catalog:
     runs-on: ubuntu-latest
+    timeout-minutes: 55
     permissions:
       contents: write
 
