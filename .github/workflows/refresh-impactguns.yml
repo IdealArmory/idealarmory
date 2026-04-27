@@ -31,7 +31,7 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name  "github-actions[bot]"
-          git add data/impactguns-*.json data/impactguns-last-run.json
+          git add data/impactguns-*.json data/impactguns-last-run.json data/static-products.json
           git diff --staged --quiet || git commit -m "Auto-update Impact Guns catalog [$(date -u '+%Y-%m-%d %H:%M UTC')]"
           git pull --rebase origin ${{ github.ref_name }}
           git push origin ${{ github.ref_name }}

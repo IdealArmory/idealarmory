@@ -430,6 +430,94 @@ function isRelevant(raw, ourCat) {
   return true;
 }
 
+// ── Phase 4: Update static product prices from live IG data ──────────────────
+// Reads data/static-products.json, finds entries that have an Impact Guns seller
+// URL, matches them to the live scrape by UPC or numeric product ID embedded in
+// the URL, and updates price + stock if they differ. Writes file back in-place.
+function updateStaticPrices(allProducts) {
+  const staticPath = path.join(__dirname, '..', '..', 'data', 'static-products.json');
+  if (!fs.existsSync(staticPath)) {
+    console.log('  static-products.json not found — skipping');
+    return 0;
+  }
+
+  const staticProducts = JSON.parse(fs.readFileSync(staticPath, 'utf8'));
+
+  // Build lookup maps from all Phase-1 scraped products (pre-cap)
+  const igByUpc    = {};
+  const igByProdId = {};
+  for (const p of allProducts) {
+    const upc = p.apiUpc || p.upc;
+    if (upc) igByUpc[upc] = p;
+    igByProdId[p.productId] = p;
+  }
+
+  let updatedCount = 0;
+
+  for (const sp of staticProducts) {
+    if (!sp.sellers) continue;
+    for (const seller of sp.sellers) {
+      if (seller.name !== 'Impact Guns') continue;
+
+      // Extract UPC (12–13 digits) and optional numeric product ID from URL slug
+      const cleanUrl  = (seller.url || '').split('#')[0];
+      const slug      = (cleanUrl.split('/').filter(Boolean).pop() || '');
+      const slugParts = slug.split('-');
+
+      let upc = '', numericId = '';
+      for (let i = slugParts.length - 1; i >= 0; i--) {
+        if (/^\d{12,13}$/.test(slugParts[i])) {
+          upc = slugParts[i];
+          // Part right after UPC might be numeric product ID
+          if (i + 1 < slugParts.length && /^\d{4,6}$/.test(slugParts[i + 1])) {
+            numericId = slugParts[i + 1];
+          }
+          break;
+        }
+      }
+
+      // Match to live data — UPC preferred, fall back to numeric product ID
+      const liveProduct = (upc && igByUpc[upc]) || (numericId && igByProdId[numericId]) || null;
+      if (!liveProduct) continue;
+
+      const changes = [];
+
+      // Update price if the live price is valid and different
+      if (liveProduct.price > 0 && Math.abs(liveProduct.price - seller.price) >= 0.01) {
+        changes.push(`price $${seller.price} → $${liveProduct.price}`);
+        seller.price = liveProduct.price;
+      }
+
+      // Update stock status
+      const liveStock = liveProduct.inStock ? 'in' : 'out';
+      if (liveStock !== seller.stock) {
+        changes.push(`stock ${seller.stock} → ${liveStock}`);
+        seller.stock = liveStock;
+      }
+
+      // Fix old affiliate URL format (#IdealArmory → PAP hash)
+      if (seller.url && !seller.url.includes('a_aid=')) {
+        seller.url = cleanUrl + '#a_aid=IdealArmory&a_cid=71c03b38';
+        changes.push('affiliate URL updated');
+      }
+
+      if (changes.length > 0) {
+        console.log(`  ${sp.id} "${sp.name}": ${changes.join(', ')}`);
+        updatedCount++;
+      }
+    }
+  }
+
+  if (updatedCount > 0) {
+    fs.writeFileSync(staticPath, JSON.stringify(staticProducts, null, 4));
+    console.log(`  ${updatedCount} static product(s) updated`);
+  } else {
+    console.log('  No static product prices changed');
+  }
+
+  return updatedCount;
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 async function main() {
   console.log('=== Impact Guns Catalog Fetch ===');
@@ -502,7 +590,13 @@ async function main() {
 
   for (const [cat, products] of Object.entries(byCategory)) {
     if (products.length === 0) continue;
-    products.sort((a, b) => b.price - a.price);
+    // Sort in-stock before out-of-stock; preserve Impact Guns' listing order within each group.
+    // Their default listing order reflects featured/popularity — a better quality signal
+    // than price-descending, which would artificially discard affordable products.
+    products.sort((a, b) => {
+      if (a.inStock === b.inStock) return 0;
+      return a.inStock ? -1 : 1;
+    });
     const cap   = CAT_CAPS[cat];
     const final = cap && products.length > cap ? products.slice(0, cap) : products;
     if (cap && products.length > cap) console.log(`  [cap] ${cat}: ${products.length} → ${cap}`);
@@ -515,22 +609,28 @@ async function main() {
     filesWritten.push(fname);
   }
 
+  // ── Phase 4: Sync static product prices from live scrape data ───────────
+  console.log('\nPhase 4: Updating static product prices from live data...');
+  const staticUpdates = updateStaticPrices(allProducts);
+
   fs.writeFileSync(
     path.join(dataDir, 'impactguns-last-run.json'),
     JSON.stringify({
-      lastRun:      new Date().toISOString(),
-      productCount: totalRelevant,
-      rawCount:     allProducts.length,
-      htmlPriced:   htmlPricedTotal,
-      apiEnriched:  allProducts.filter(p => !p.htmlPriceFound && p.price > 0).length,
-      categories:   catCounts,
-      files:        filesWritten,
-      status:       'success',
+      lastRun:        new Date().toISOString(),
+      productCount:   totalRelevant,
+      rawCount:       allProducts.length,
+      htmlPriced:     htmlPricedTotal,
+      apiEnriched:    allProducts.filter(p => !p.htmlPriceFound && p.price > 0).length,
+      staticUpdated:  staticUpdates,
+      categories:     catCounts,
+      files:          filesWritten,
+      status:         'success',
     }, null, 2)
   );
 
   console.log(`\n========================================`);
   console.log(` SUCCESS — ${totalRelevant} products across ${filesWritten.length} categories`);
+  if (staticUpdates > 0) console.log(` Static prices updated: ${staticUpdates}`);
   console.log(`========================================`);
 }
 

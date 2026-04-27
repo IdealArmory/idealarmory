@@ -302,11 +302,12 @@
         "name":  "RXM 9mm 4.5\" Black",
         "action":  "Striker-Fired",
         "id":  "static_handguns_11",
+        "upc":  "736676194445",
         "sellers":  [
                         {
                             "name":  "Impact Guns",
                             "price":  399.99,
-                            "url":  "https://www.impactguns.com/semi-auto-handguns/ruger-rxm-9mm-4-5-barrel-nitride-black-magpul-ehg-optics-ready-night-sight-2x17rd-magpul-pmag-17-gl9-mags-736676194445-19444#IdealArmory",
+                            "url":  "https://www.impactguns.com/semi-auto-handguns/ruger-rxm-9mm-4-5-barrel-nitride-black-magpul-ehg-optics-ready-night-sight-2x17rd-magpul-pmag-17-gl9-mags-736676194445-19444#a_aid=IdealArmory&a_cid=71c03b38",
                             "stock":  "in"
                         }
                     ],
@@ -322,7 +323,7 @@
         "sellers":  [
                         {
                             "stock":  "in",
-                            "url":  "https://www.impactguns.com/semi-auto-handguns/smith-wesson-m-p-m2-0-metal-heavy-duty-9mm-5-barrel-armornite-black-front-night-sight-black-rear-sight-thumb-safety-optics-ready-2x17rd-mags-022188904895-14672#IdealArmory",
+                            "url":  "https://www.impactguns.com/semi-auto-handguns/smith-wesson-m-p-m2-0-metal-heavy-duty-9mm-5-barrel-armornite-black-front-night-sight-black-rear-sight-thumb-safety-optics-ready-2x17rd-mags-022188904895-14672#a_aid=IdealArmory&a_cid=71c03b38",
                             "price":  1049,
                             "name":  "Impact Guns"
                         }
@@ -330,6 +331,7 @@
         "name":  "M\u0026P M2.0 Metal HD 9mm 5\"",
         "action":  "Striker-Fired",
         "id":  "static_handguns_12",
+        "upc":  "022188904895",
         "frameSize":  "Full-Size",
         "sub":  "9mm • 17+1 • 5\" Barrel • Night Sight • Metal Frame",
         "opticReady":  true,
@@ -351,11 +353,12 @@
         "name":  "RXM 9mm 4\" Gray",
         "action":  "Striker-Fired",
         "id":  "static_handguns_13",
+        "upc":  "736676194414",
         "sellers":  [
                         {
                             "name":  "Impact Guns",
                             "price":  419.99,
-                            "url":  "https://www.impactguns.com/semi-auto-handguns/ruger-rxm-9mm-4-barrel-nitride-finish-black-slide-magpul-ehg-gray-frame-optics-ready-front-night-sight-2x17rd-magpul-pmag-17-gl9-mags-736676194414-19441#IdealArmory",
+                            "url":  "https://www.impactguns.com/semi-auto-handguns/ruger-rxm-9mm-4-barrel-nitride-finish-black-slide-magpul-ehg-gray-frame-optics-ready-front-night-sight-2x17rd-magpul-pmag-17-gl9-mags-736676194414-19441#a_aid=IdealArmory&a_cid=71c03b38",
                             "stock":  "in"
                         }
                     ],
@@ -379,12 +382,13 @@
     {
         "name":  "M\u0026P PC Carry Comp 10mm",
         "id":  "static_handguns_14",
+        "upc":  "022188901795",
         "action":  "Striker-Fired",
         "sellers":  [
                         {
                             "name":  "Impact Guns",
                             "price":  749,
-                            "url":  "https://www.impactguns.com/semi-auto-handguns/smith-wesson-m-p-2-0-performance-center-carry-comp-10mm-4-ported-barrel-armornite-black-optics-ready-front-night-sight-2x15rd-mags-022188901795-14413#IdealArmory",
+                            "url":  "https://www.impactguns.com/semi-auto-handguns/smith-wesson-m-p-2-0-performance-center-carry-comp-10mm-4-ported-barrel-armornite-black-optics-ready-front-night-sight-2x15rd-mags-022188901795-14413#a_aid=IdealArmory&a_cid=71c03b38",
                             "stock":  "in"
                         }
                     ],
@@ -416,12 +420,13 @@
         "sellers":  [
                         {
                             "stock":  "in",
-                            "url":  "https://www.impactguns.com/semi-auto-handguns/smith-wesson-m-p-m2-0-performance-center-10mm-5-6-ported-barrel-night-sights-optics-ready-2x10rd-mags-022188900163-13916#IdealArmory",
+                            "url":  "https://www.impactguns.com/semi-auto-handguns/smith-wesson-m-p-m2-0-performance-center-10mm-5-6-ported-barrel-night-sights-optics-ready-2x10rd-mags-022188900163-13916#a_aid=IdealArmory&a_cid=71c03b38",
                             "price":  819.99,
                             "name":  "Impact Guns"
                         }
                     ],
         "id":  "static_handguns_15",
+        "upc":  "022188900163",
         "action":  "Striker-Fired",
         "name":  "M\u0026P M2.0 PC 10mm 5.6\"",
         "category":  "handguns",
@@ -454,13 +459,14 @@
         "sellers":  [
                         {
                             "price":  709.99,
-                            "url":  "https://www.impactguns.com/semi-auto-handguns/springfield-echelon-9mm-4-5-barrel-black-manual-safety-optic-ready-20rd-706397982195-ec9459bmsu#IdealArmory",
+                            "url":  "https://www.impactguns.com/semi-auto-handguns/springfield-echelon-9mm-4-5-barrel-black-manual-safety-optic-ready-20rd-706397982195-ec9459bmsu#a_aid=IdealArmory&a_cid=71c03b38",
                             "name":  "Impact Guns",
                             "stock":  "in"
                         }
                     ],
         "name":  "Echelon 9mm Manual Safety 20rd",
         "id":  "static_handguns_16",
+        "upc":  "706397982195",
         "action":  "Striker-Fired"
     },
     {
@@ -748,10 +754,11 @@
         "name":  "H12 Protector Carbine .357 Mag",
         "action":  "Lever-Action",
         "id":  "static_rifles_11",
+        "upc":  "619835200532",
         "sellers":  [
                         {
                             "stock":  "in",
-                            "url":  "https://www.impactguns.com/lever-action-rifles/henry-h12-provider-carbine-357-magnum-38-special-16-5-threaded-barrel-blued-american-walnut-checkered-adj-semi-buckhorn-diamond-insert-brass-bead-front-7rd-619835200532-h012pgr357#IdealArmory",
+                            "url":  "https://www.impactguns.com/lever-action-rifles/henry-h12-provider-carbine-357-magnum-38-special-16-5-threaded-barrel-blued-american-walnut-checkered-adj-semi-buckhorn-diamond-insert-brass-bead-front-7rd-619835200532-h012pgr357#a_aid=IdealArmory&a_cid=71c03b38",
                             "price":  920.29,
                             "name":  "Impact Guns"
                         }
@@ -775,10 +782,11 @@
         "name":  "B-14 HMR Carbon Wilderness 6.5 Creedmoor",
         "action":  "Bolt-Action",
         "id":  "static_rifles_12",
+        "upc":  "043125016167",
         "sellers":  [
                         {
                             "price":  1699.99,
-                            "url":  "https://www.impactguns.com/bolt-action-rifles/bergara-b-14-hmr-carbon-wilderness-6-5-creedmoor-24-cf-barrel-omni-muzzle-brake-5rd-043125016167-b14s382cf#IdealArmory",
+                            "url":  "https://www.impactguns.com/bolt-action-rifles/bergara-b-14-hmr-carbon-wilderness-6-5-creedmoor-24-cf-barrel-omni-muzzle-brake-5rd-043125016167-b14s382cf#a_aid=IdealArmory&a_cid=71c03b38",
                             "name":  "Impact Guns",
                             "stock":  "in"
                         }
