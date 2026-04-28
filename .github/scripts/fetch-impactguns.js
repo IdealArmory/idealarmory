@@ -441,7 +441,7 @@ function updateStaticPrices(allProducts) {
     return 0;
   }
 
-  const staticProducts = JSON.parse(fs.readFileSync(staticPath, 'utf8'));
+  const staticProducts = JSON.parse(fs.readFileSync(staticPath, 'utf8').replace(/^\uFEFF/, ''));
 
   // Build lookup maps from all Phase-1 scraped products (pre-cap)
   const igByUpc    = {};
