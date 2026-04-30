@@ -1,13 +1,13 @@
 {
-  "lastRun": "2026-04-29T09:06:00.545Z",
-  "productCount": 1992,
-  "rawCount": 7660,
+  "lastRun": "2026-04-30T09:07:40.204Z",
+  "productCount": 1974,
+  "rawCount": 7648,
   "categories": {
-    "ammunition": 930,
-    "magazines": 686,
+    "ammunition": 919,
+    "magazines": 677,
     "rifles": 48,
     "handguns": 143,
-    "optics": 121,
+    "optics": 123,
     "ar-parts": 41,
     "cleaning": 23
   },
