@@ -1630,7 +1630,7 @@ function doSearch(){
 
   // 0b. Bereli product — routed via ?src=bereli&id=xxx&cat=CATEGORY
   if (sp.get('src') === 'bereli') {
-    var beId = sp.get('id');
+    var beId = String(sp.get('id') || '').replace(/^bereli_/, '');
     var beCat = sp.get('cat') || 'handguns';
     try {
       var raw = sessionStorage.getItem('ia_pv');

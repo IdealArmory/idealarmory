@@ -619,7 +619,7 @@ async function loadAllBereli() {
           }
         } else {
           var newProd = {
-            id: 'bereli_' + b.id,
+            id: b.id,
             upc: b.upc || '',
             brand: b.brand,
             name: b.name,
@@ -1063,9 +1063,7 @@ function saveItem(id){
     if (ms) ms.value = q;
   }
 })();
-loadAllEuroOptic();
-loadAllBereli();
-loadAllImpactGuns();
+loadAllEuroOptic().then(function(){ return loadAllBereli(); }).then(function(){ return loadAllImpactGuns(); });
 </script>
 <script src="/js/search-autocomplete.js"></script>
 </body>
