@@ -5,9 +5,13 @@ on:
     - cron: '0 6 * * *'   # Daily at 06:00 UTC
   workflow_dispatch:        # Manual trigger from GitHub Actions tab
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   fetch-catalog:
     runs-on: ubuntu-latest
+    timeout-minutes: 55
     permissions:
       contents: write
 
@@ -18,7 +22,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Fetch EuroOptic catalog from Impact.com
         env:
