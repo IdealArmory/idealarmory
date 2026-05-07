@@ -503,7 +503,7 @@ function renderGrid(){
     var isLg=p.src==='luckygunner';
     var isIg=p.src==='impactguns';
     var idAttr=(isEo||isBereli||isLg||isIg)?("'"+p.id+"'"):p.id;
-    var href=isEo?'/product.html?src=eurooptic&id='+p.id.replace('eo_','')+'&cat=ammunition':isBereli?'/product.html?src=bereli&id='+encodeURIComponent(p.id.replace('bereli_',''))+'&cat=ammunition':isLg?'/product.html?src=luckygunner&id='+encodeURIComponent(p.id.replace('lg_',''))+'&cat=ammunition':isIg?'/product.html?src=impactguns&id='+encodeURIComponent(p.id.replace('ig_',''))+'&cat=ammunition':'/product.html?p='+slugify(p.name);
+    var href=isEo?'/product?src=eurooptic&id='+p.id.replace('eo_','')+'&cat=ammunition':isBereli?'/product?src=bereli&id='+encodeURIComponent(p.id.replace('bereli_',''))+'&cat=ammunition':isLg?'/product?src=luckygunner&id='+encodeURIComponent(p.id.replace('lg_',''))+'&cat=ammunition':isIg?'/product?src=impactguns&id='+encodeURIComponent(p.id.replace('ig_',''))+'&cat=ammunition':'/product?p='+slugify(p.name);
     return '<div class="prod-card" onclick="viewProduct('+idAttr+')">'
       +(p.badge==='best'?'<span class="badge-best">Best Seller</span>':'')
 
@@ -586,11 +586,11 @@ function viewProduct(id) {
   var pd = Object.assign({},p);
   if (!pd.imgs||!pd.imgs.length) pd.imgs = pd.img?[pd.img]:[];
   try{sessionStorage.setItem('ia_pv',JSON.stringify(pd));}catch(e){}
-  if (p.src==='eurooptic') { window.location.href='/product.html?src=eurooptic&id='+encodeURIComponent(String(p.id).replace('eo_',''))+'&cat=ammunition'; }
-  else if (p.src==='bereli') { window.location.href='/product.html?src=bereli&id='+encodeURIComponent(String(p.id).replace('bereli_',''))+'&cat=ammunition'; }
-  else if (p.src==='impactguns') { window.location.href='/product.html?src=impactguns&id='+encodeURIComponent(String(p.id).replace('ig_',''))+'&cat=ammunition'; }
-  else if (p.src==='luckygunner') { window.location.href='/product.html?src=luckygunner&id='+encodeURIComponent(String(p.id).replace('lg_',''))+'&cat=ammunition'; }
-  else { window.location.href='/product.html?p='+slugify(p.name); }
+  if (p.src==='eurooptic') { window.location.href='/product?src=eurooptic&id='+encodeURIComponent(String(p.id).replace('eo_',''))+'&cat=ammunition'; }
+  else if (p.src==='bereli') { window.location.href='/product?src=bereli&id='+encodeURIComponent(String(p.id).replace('bereli_',''))+'&cat=ammunition'; }
+  else if (p.src==='impactguns') { window.location.href='/product?src=impactguns&id='+encodeURIComponent(String(p.id).replace('ig_',''))+'&cat=ammunition'; }
+  else if (p.src==='luckygunner') { window.location.href='/product?src=luckygunner&id='+encodeURIComponent(String(p.id).replace('lg_',''))+'&cat=ammunition'; }
+  else { window.location.href='/product?p='+slugify(p.name); }
 }
 filteredProducts=ALL_PRODUCTS.slice();sortAndRender();renderSuggested();loadEuroOptic().then(function(){return loadBereli();}).then(function(){return loadLuckyGunner();}).then(function(){return loadImpactGuns();});
 </script>

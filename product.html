@@ -10,8 +10,9 @@
 <meta property="og:title" id="og-title" content="Ideal Armory – Find the Best Deals on Guns &amp; Ammo">
 <meta property="og:description" id="og-desc" content="Compare prices from licensed retailers on Ideal Armory.">
 <meta property="og:image" id="og-image" content="https://idealarmory.com/favicon.svg">
+<link rel="canonical" id="page-canonical" href="https://idealarmory.com/product">
 <meta property="og:type" content="product">
-<meta property="og:url" id="og-url" content="https://idealarmory.com/product.html">
+<meta property="og:url" id="og-url" content="https://idealarmory.com/product">
 <meta property="og:site_name" content="Ideal Armory">
 <script type="application/ld+json" id="product-schema">{}</script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-G6YQ408CMT">/* ── UNIVERSAL NAV JS ── */
@@ -1238,16 +1239,16 @@ var ALL_PRODUCTS = [
 ══════════════════════════════════════════════════════════════════════════════ */
 var NAV_CATS = [
   {label:'All',href:'/'},
-  {label:'Handguns',href:'/handguns.html'},
-  {label:'Rifles',href:'/rifles.html'},
-  {label:'Shotguns',href:'/shotguns.html'},
-  {label:'Ammo',href:'/ammunition.html'},
-  {label:'Optics',href:'/optics.html'},
-  {label:'Holsters',href:'/holsters.html'},
-  {label:'AR Parts',href:'/ar-parts.html'},
-  {label:'Magazines',href:'/magazines.html'},
-  {label:'Cleaning',href:'/cleaning.html'},
-  {label:'Safes',href:'/gun-safes.html'}
+  {label:'Handguns',href:'/handguns'},
+  {label:'Rifles',href:'/rifles'},
+  {label:'Shotguns',href:'/shotguns'},
+  {label:'Ammo',href:'/ammunition'},
+  {label:'Optics',href:'/optics'},
+  {label:'Holsters',href:'/holsters'},
+  {label:'AR Parts',href:'/ar-parts'},
+  {label:'Magazines',href:'/magazines'},
+  {label:'Cleaning',href:'/cleaning'},
+  {label:'Safes',href:'/gun-safes'}
 ];
 (function(){
   var nc = document.getElementById('nav-cats');
@@ -1295,10 +1296,10 @@ function iaTrackClick(el){
   }catch(e){}
 }
 var CAT_PAGES = {
-  handguns:'/handguns.html', rifles:'/rifles.html', shotguns:'/shotguns.html',
-  ammunition:'/ammunition.html', optics:'/optics.html', holsters:'/holsters.html',
-  'ar-parts':'/ar-parts.html', magazines:'/magazines.html',
-  cleaning:'/cleaning.html', 'gun-safes':'/gun-safes.html'
+  handguns:'/handguns', rifles:'/rifles', shotguns:'/shotguns',
+  ammunition:'/ammunition', optics:'/optics', holsters:'/holsters',
+  'ar-parts':'/ar-parts', magazines:'/magazines',
+  cleaning:'/cleaning', 'gun-safes':'/gun-safes'
 };
 
 /* ══════════════════════════════════════════════════════════════════════════════
@@ -1373,6 +1374,8 @@ function renderProduct(p){
   if (ogImg && (p.img || (p.imgs && p.imgs[0]))) ogImg.content = p.img || p.imgs[0];
   var ogUrl = document.getElementById('og-url');
   if (ogUrl) ogUrl.content = window.location.href;
+  var canonicalEl = document.getElementById('page-canonical');
+  if (canonicalEl) canonicalEl.href = window.location.href;
   // Product schema (JSON-LD)
   var schemaEl = document.getElementById('product-schema');
   if (schemaEl) {
@@ -1499,6 +1502,10 @@ function renderProduct(p){
 
 /* ── Helpers ──────────────────────────────────────────────────────────────── */
 function renderNotFound(){
+  // Tell crawlers not to index empty product pages
+  var rm = document.querySelector('meta[name="robots"]');
+  if (!rm) { rm = document.createElement('meta'); rm.name = 'robots'; document.head.appendChild(rm); }
+  rm.content = 'noindex,nofollow';
   document.getElementById('bc-name').textContent = 'Not Found';
   document.getElementById('pd-page').innerHTML =
     '<div class="pd-not-found">'
@@ -1557,6 +1564,13 @@ function doSearch(){
   var product = null;
   var sp = new URLSearchParams(location.search);
   var slug = getSlug();
+
+  // Redirect bare /product (no src, no p param, no real slug) to browse page
+  // This prevents a soft-404 that Google would otherwise index as a dead end.
+  if (!sp.get('src') && !sp.get('p') && (!slug || slug === 'product' || slug === 'product.html')) {
+    window.location.replace('/all-products');
+    return;
+  }
 
   // 0. EuroOptic product — routed via ?src=eurooptic&id=xxx&cat=CATEGORY
   if (sp.get('src') === 'eurooptic') {

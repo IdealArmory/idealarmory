@@ -1,3 +1,24 @@
-# Ideal Armory — Cloudflare Pages
-# No redirect rules needed — Cloudflare Pretty URLs handles product.html natively.
-# Links use /product.html?p=slug → CF redirects to /product?p=slug → serves product.html
+# Ideal Armory — Cloudflare Pages redirects
+# 301s from .html URLs to clean URLs eliminate "Page with redirect" and
+# "Alternate page with proper canonical tag" entries in Google Search Console.
+
+/index.html          /              301
+/handguns.html       /handguns      301
+/rifles.html         /rifles        301
+/shotguns.html       /shotguns      301
+/ammunition.html     /ammunition    301
+/optics.html         /optics        301
+/holsters.html       /holsters      301
+/ar-parts.html       /ar-parts      301
+/magazines.html      /magazines     301
+/cleaning.html       /cleaning      301
+/gun-safes.html      /gun-safes     301
+/all-products.html   /all-products  301
+/about.html          /about         301
+/contact.html        /contact       301
+/privacy.html        /privacy       301
+/terms.html          /terms         301
+/product.html        /product       301
+/kit.html            /kit           301
+/stats.html          /stats         301
+/image-audit.html    /image-audit   301

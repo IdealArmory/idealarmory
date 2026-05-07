@@ -722,7 +722,7 @@ function renderGrid() {
     var idStr = typeof p.id === 'string' ? "'"+p.id+"'" : p.id;
     var low = getLowestPrice(p);
     var img = p.img ? '<img src="'+p.img+'" alt="'+p.name+'" loading="lazy">' : '<span class="img-ph">Image from retailer feed</span>';
-    var href = p.src==='eurooptic' ? '/product.html?src=eurooptic&id='+p.id.replace('eo_','')+'&cat='+(p.category||'') : p.src==='bereli' ? '/product.html?src=bereli&id='+encodeURIComponent(p.id.replace('bereli_',''))+'&cat='+(p.category||'') : p.src==='impactguns' ? '/product.html?src=impactguns&id='+encodeURIComponent(p.id.replace('ig_',''))+'&cat='+(p.category||'') : '/product.html?p='+slugify(p.name);
+    var href = p.src==='eurooptic' ? '/product?src=eurooptic&id='+p.id.replace('eo_','')+'&cat='+(p.category||'') : p.src==='bereli' ? '/product?src=bereli&id='+encodeURIComponent(p.id.replace('bereli_',''))+'&cat='+(p.category||'') : p.src==='impactguns' ? '/product?src=impactguns&id='+encodeURIComponent(p.id.replace('ig_',''))+'&cat='+(p.category||'') : '/product?p='+slugify(p.name);
     var catTag = p.category ? '<span class="cat-tag">'+p.category.replace(/-/g,' ')+'</span>' : '';
     return '<div class="prod-card" onclick="viewProduct('+idStr+')">'
       +(p.badge==='best'?'<span class="badge-best">Best Seller</span>':'')
@@ -995,7 +995,7 @@ function viewProduct(id) {
       try{sessionStorage.setItem('ia_pv',JSON.stringify(pd));}catch(e){}
     }
     var eoP2 = ALL_PRODUCTS.find(function(x){return x.id==='eo_'+eoId;});
-    window.location.href = '/product.html?src=eurooptic&id=' + encodeURIComponent(eoId) + '&cat=' + (eoP2 ? (eoP2.category||'') : '');
+    window.location.href = '/product?src=eurooptic&id=' + encodeURIComponent(eoId) + '&cat=' + (eoP2 ? (eoP2.category||'') : '');
     return;
   }
   if (typeof id === 'string' && id.indexOf('bereli_') === 0) {
@@ -1007,7 +1007,7 @@ function viewProduct(id) {
       try{sessionStorage.setItem('ia_pv',JSON.stringify(bpd));}catch(e){}
     }
     var cat = bP ? (bP.category||'') : '';
-    window.location.href = '/product.html?src=bereli&id=' + encodeURIComponent(rawId) + '&cat=' + cat;
+    window.location.href = '/product?src=bereli&id=' + encodeURIComponent(rawId) + '&cat=' + cat;
     return;
   }
   if (typeof id === 'string' && id.indexOf('ig_') === 0) {
@@ -1019,7 +1019,7 @@ function viewProduct(id) {
       try{sessionStorage.setItem('ia_pv',JSON.stringify(igpd));}catch(e){}
     }
     var igCat = igP ? (igP.category||'') : '';
-    window.location.href = '/product.html?src=impactguns&id=' + encodeURIComponent(igId) + '&cat=' + igCat;
+    window.location.href = '/product?src=impactguns&id=' + encodeURIComponent(igId) + '&cat=' + igCat;
     return;
   }
   // Manual affiliate products â€” store in sessionStorage and route via slug
@@ -1028,10 +1028,10 @@ function viewProduct(id) {
     var mpd = Object.assign({},manP);
     if (!mpd.imgs || !mpd.imgs.length) mpd.imgs = mpd.img ? [mpd.img] : [];
     try{sessionStorage.setItem('ia_pv',JSON.stringify(mpd));}catch(e){}
-    window.location.href = '/product.html?p=' + slugify(manP.name);
+    window.location.href = '/product?p=' + slugify(manP.name);
     return;
   }
-  window.location.href = '/product.html?p=' + slugify(String(id));
+  window.location.href = '/product?p=' + slugify(String(id));
 }
 
 var _IA_KIT_KEY='ia_kit_v1',_IA_KIT_MAX=20;

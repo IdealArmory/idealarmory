@@ -17,9 +17,9 @@
 
   function getUrl(p) {
     if (p.src === 'eurooptic') {
-      return '/product.html?src=eurooptic&id=' + p.id.replace('eo_', '') + '&cat=' + (p.category || '');
+      return '/product?src=eurooptic&id=' + p.id.replace('eo_', '') + '&cat=' + (p.category || '');
     }
-    return '/product.html?p=' + slugify(p.name);
+    return '/product?p=' + slugify(p.name);
   }
 
   function escape(s) {
@@ -179,7 +179,7 @@
           + '</div>';
       }).join('');
 
-      var allUrl = '/all-products.html?q=' + encodeURIComponent(q);
+      var allUrl = '/all-products?q=' + encodeURIComponent(q);
       html += '<div class="ia-drop-footer" data-href="' + escape(allUrl) + '">'
         + 'See all results for &ldquo;' + escape(q) + '&rdquo; &rarr;</div>';
 
