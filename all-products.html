@@ -545,6 +545,7 @@ var IG_FILES = [
   'handguns','rifles','shotguns','ammunition','optics',
   'holsters','magazines','cleaning','gun-safes'
 ];
+var CYA_FILES = ['holsters'];  // expands automatically as fetch-cyasupply.js adds more categories
 
 async function loadAllEuroOptic() {
   document.getElementById('result-count').innerHTML = 'Loading products...';
@@ -698,6 +699,44 @@ async function loadAllImpactGuns() {
   }
 }
 
+async function loadAllCyaSupply() {
+  try {
+    var results = await Promise.all(
+      CYA_FILES.map(function(cat) {
+        return fetch('/data/cyasupply-' + cat + '.json')
+          .then(function(r){ return r.ok ? r.json() : []; })
+          .catch(function(){ return []; });
+      })
+    );
+    results.forEach(function(items, i) {
+      var cat = CYA_FILES[i];
+      items.forEach(function(p) {
+        if (!p.price || p.price <= 0 || !p.img) return;
+        ALL_PRODUCTS.push({
+          id:       p.id,
+          upc:      '',
+          brand:    p.brand || 'CYA Supply Co.',
+          name:     p.name,
+          sub:      '',
+          img:      p.img,
+          price:    p.price,
+          orig:     p.orig || p.price,
+          inStock:  p.inStock,
+          stars:    0,
+          reviews:  0,
+          badge:    '',
+          src:      'cyasupply',
+          category: cat,
+          sellers:  [{name:'CYA Supply Co.', price:p.price, stock:p.inStock?'in':'out', url:p.url}]
+        });
+      });
+    });
+    filterProducts();
+  } catch(e) {
+    console.warn('CYA Supply load failed:', e.message);
+  }
+}
+
 function getLowestPrice(p) {
   return Math.min(...p.sellers.map(function(s){return s.price;}));
 }
@@ -722,7 +761,7 @@ function renderGrid() {
     var idStr = typeof p.id === 'string' ? "'"+p.id+"'" : p.id;
     var low = getLowestPrice(p);
     var img = p.img ? '<img src="'+p.img+'" alt="'+p.name+'" loading="lazy">' : '<span class="img-ph">Image from retailer feed</span>';
-    var href = p.src==='eurooptic' ? '/product?src=eurooptic&id='+p.id.replace('eo_','')+'&cat='+(p.category||'') : p.src==='bereli' ? '/product?src=bereli&id='+encodeURIComponent(p.id.replace('bereli_',''))+'&cat='+(p.category||'') : p.src==='impactguns' ? '/product?src=impactguns&id='+encodeURIComponent(p.id.replace('ig_',''))+'&cat='+(p.category||'') : '/product?p='+slugify(p.name);
+    var href = p.src==='eurooptic' ? '/product?src=eurooptic&id='+p.id.replace('eo_','')+'&cat='+(p.category||'') : p.src==='bereli' ? '/product?src=bereli&id='+encodeURIComponent(p.id.replace('bereli_',''))+'&cat='+(p.category||'') : p.src==='impactguns' ? '/product?src=impactguns&id='+encodeURIComponent(p.id.replace('ig_',''))+'&cat='+(p.category||'') : p.src==='cyasupply' ? '/product?src=cyasupply&id='+encodeURIComponent(p.id.replace('cya_',''))+'&cat='+(p.category||'holsters') : '/product?p='+slugify(p.name);
     var catTag = p.category ? '<span class="cat-tag">'+p.category.replace(/-/g,' ')+'</span>' : '';
     return '<div class="prod-card" onclick="viewProduct('+idStr+')">'
       +(p.badge==='best'?'<span class="badge-best">Best Seller</span>':'')
@@ -1022,6 +1061,18 @@ function viewProduct(id) {
     window.location.href = '/product?src=impactguns&id=' + encodeURIComponent(igId) + '&cat=' + igCat;
     return;
   }
+  if (typeof id === 'string' && id.indexOf('cya_') === 0) {
+    var cyaId = id.slice(4);
+    var cyaP = ALL_PRODUCTS.find(function(x){return x.id===id;});
+    if (cyaP) {
+      var cyapd = Object.assign({}, cyaP);
+      if (!cyapd.imgs || !cyapd.imgs.length) cyapd.imgs = cyapd.img ? [cyapd.img] : [];
+      try{sessionStorage.setItem('ia_pv',JSON.stringify(cyapd));}catch(e){}
+    }
+    var cyaCat = cyaP ? (cyaP.category||'holsters') : 'holsters';
+    window.location.href = '/product?src=cyasupply&id=' + encodeURIComponent(cyaId) + '&cat=' + cyaCat;
+    return;
+  }
   // Manual affiliate products â€” store in sessionStorage and route via slug
   var manP = ALL_PRODUCTS.find(function(x){return x.id===id||x.id===String(id);});
   if (manP) {
@@ -1063,7 +1114,7 @@ function saveItem(id){
     if (ms) ms.value = q;
   }
 })();
-loadAllEuroOptic().then(function(){ return loadAllBereli(); }).then(function(){ return loadAllImpactGuns(); });
+loadAllEuroOptic().then(function(){ return loadAllBereli(); }).then(function(){ return loadAllImpactGuns(); }).then(function(){ return loadAllCyaSupply(); });
 </script>
 <script src="/js/search-autocomplete.js"></script>
 </body>

@@ -1807,6 +1807,38 @@ function doSearch(){
     return;
   }
 
+  // 0e. CYA Supply Co. product — routed via ?src=cyasupply&id=xxx&cat=CATEGORY
+  if (sp.get('src') === 'cyasupply') {
+    var cyaId  = String(sp.get('id') || '').replace(/^cya_/, '');
+    var cyaCat = sp.get('cat') || 'holsters';
+    try {
+      var raw = sessionStorage.getItem('ia_pv');
+      if (raw) {
+        var cached = JSON.parse(raw);
+        var cachedRawId = String(cached.id || '').replace(/^cya_/, '');
+        if (cachedRawId === cyaId) { renderProduct(cached); return; }
+      }
+    } catch(e){}
+    // Fallback: fetch the appropriate CYA catalog file
+    fetch('/data/cyasupply-' + cyaCat + '.json')
+      .then(function(r){ return r.ok ? r.json() : []; })
+      .catch(function(){ return []; })
+      .then(function(items){
+        var item = items.find(function(x){
+          return String(x.id || '').replace(/^cya_/, '') === String(cyaId);
+        });
+        if (item) {
+          var pd = Object.assign({}, item);
+          if (!pd.imgs || !pd.imgs.length) pd.imgs = pd.img ? [pd.img] : [];
+          pd.sellers = pd.sellers || [{name:'CYA Supply Co.', price:pd.price, stock:pd.inStock?'in':'out', url:pd.url}];
+          try{ sessionStorage.setItem('ia_pv', JSON.stringify(pd)); }catch(e){}
+          renderProduct(pd);
+        } else { renderNotFound(); }
+      })
+      .catch(function(){ renderNotFound(); });
+    return;
+  }
+
   // 1. URL slug match — most reliable, works for direct links, bookmarks, shares
   if (slug && slug !== 'product' && slug !== 'product.html') {
     product = ALL_PRODUCTS.find(function(p){
