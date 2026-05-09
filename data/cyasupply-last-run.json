@@ -1,12 +1,16 @@
 {
-  "lastRun": "2026-05-07T00:00:00.000Z",
-  "rawCount": 7,
-  "totalWritten": 6,
+  "lastRun": "2026-05-09T10:05:02.683Z",
+  "rawCount": 333,
+  "totalWritten": 333,
   "categories": {
-    "holsters": 6
+    "cleaning": 2,
+    "holsters": 326,
+    "magazines": 5
   },
   "files": [
-    "cyasupply-holsters.json"
+    "cyasupply-cleaning.json",
+    "cyasupply-holsters.json",
+    "cyasupply-magazines.json"
   ],
   "status": "success"
 }
