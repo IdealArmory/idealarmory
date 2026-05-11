@@ -818,11 +818,45 @@ var CALIBER_CATS_ALL=['handguns','rifles','ammunition','magazines','ar-parts','s
 var ACTION_CATS_ALL=['handguns','rifles','shotguns'];
 
 /* Build a word-boundary regex so "sig" doesn't match "sights", "signal", etc. */
-function _buildSearchRe(q) {
-  var e = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  if (/^\w/.test(q)) e = '\\b' + e;
-  if (/\w$/.test(q)) e = e + '\\b';
-  return new RegExp(e, 'i');
+/* ── Smart search helpers ────────────────────────────────────────────────
+   Category-intent keywords: when these appear in a query, the user wants
+   a specific product TYPE, not just any product mentioning the word.
+   E.g. "Glock holster" → show only holsters that mention Glock.
+       "Glock"           → show ALL products that mention Glock (pistols first).
+   ──────────────────────────────────────────────────────────────────────── */
+var _CAT_INTENT_MAP = {
+  'holster':'holsters','holsters':'holsters',
+  'ammo':'ammunition','ammunition':'ammunition','rounds':'ammunition','cartridges':'ammunition',
+  'scope':'optics','scopes':'optics','optic':'optics','optics':'optics',
+  'sight':'optics','sights':'optics','reticle':'optics',
+  'magazine':'magazines','magazines':'magazines',
+  'safe':'gun-safes','vault':'gun-safes','safes':'gun-safes',
+  'cleaning':'cleaning','cleaner':'cleaning','solvent':'cleaning'
+};
+
+function _parseQuery(q) {
+  var tokens = q.toLowerCase().trim().split(/\s+/).filter(function(t){ return t.length >= 2; });
+  var categoryHint = null, subjectTokens = [];
+  tokens.forEach(function(t) {
+    if (_CAT_INTENT_MAP[t]) { categoryHint = _CAT_INTENT_MAP[t]; }
+    else { subjectTokens.push(t); }
+  });
+  return { raw: q, tokens: tokens, categoryHint: categoryHint, subjectTokens: subjectTokens };
+}
+
+function _productMatchesQuery(p, parsed) {
+  var haystack = [p.name, p.brand, p.sub, p.caliber, p.carry, p.category]
+    .filter(Boolean).join(' ').toLowerCase();
+  if (parsed.categoryHint) {
+    // Category-specific search: product must be in that category
+    if ((p.category || '') !== parsed.categoryHint) return false;
+    // …AND all non-category tokens must appear somewhere in the product text
+    return parsed.subjectTokens.length === 0 ||
+           parsed.subjectTokens.every(function(t){ return haystack.indexOf(t) >= 0; });
+  }
+  // General search: every token must appear somewhere in the product text (any order)
+  return parsed.tokens.length === 0 ||
+         parsed.tokens.every(function(t){ return haystack.indexOf(t) >= 0; });
 }
 
 /* Popularity score â€” used for default sort and as secondary signal in search.
@@ -840,22 +874,33 @@ function _popularityScore(p) {
   return score;
 }
 
-/* Search relevance: brand match is primary, popularity is secondary tie-breaker.
-   Firearms rank above accessories for brand searches. */
-function _searchScore(p, ql) {
+/* Search relevance: brand match is primary, popularity is secondary.
+   For brand-only queries (“Glock”), firearms rank above accessories.
+   For category-intent queries (“Glock holster”), category match is rewarded. */
+function _searchScore(p, parsed) {
   var brand = (p.brand || '').toLowerCase();
   var name  = (p.name  || '').toLowerCase();
   var cat   = p.category || '';
-  var score = _popularityScore(p) * 0.4; // popularity as secondary (max ~40 pts)
-  // Brand relevance (primary â€” max 100 pts)
-  if (brand === ql)                           score += 100;
-  else if (brand.indexOf(ql) === 0)           score +=  80;
-  else if (/^\w/.test(ql) && new RegExp('\\b' + ql.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), 'i').test(brand)) score += 60;
-  // Name starts with query
-  if (name.indexOf(ql) === 0)                 score +=  30;
-  // Category priority: firearms first, then accessories
-  if (_FIREARM_CATS.indexOf(cat) >= 0)        score +=  15;
-  else if (_ACCESSORY_CATS.indexOf(cat) >= 0) score +=   5;
+  var score = _popularityScore(p) * 0.4;
+  // Use subject tokens (non-category words) for brand/name matching
+  var matchTokens = parsed.subjectTokens.length > 0 ? parsed.subjectTokens : parsed.tokens;
+  if (matchTokens.length > 0) {
+    var subj = matchTokens[0]; // primary subject word
+    if (brand === subj)                 score += 100;
+    else if (brand.indexOf(subj) === 0) score +=  80;
+    else if (brand.indexOf(subj) >= 0)  score +=  55;
+    if (name.indexOf(subj) === 0)       score +=  40;
+    else if (name.indexOf(subj) >= 0)   score +=  20;
+  }
+  // Category priority
+  if (parsed.categoryHint) {
+    // Category-intent search: products in the target category get a big boost
+    if (cat === parsed.categoryHint) score += 30;
+  } else {
+    // Brand/general search: show firearms before accessories (“Glock” → pistols first)
+    if (_FIREARM_CATS.indexOf(cat) >= 0)        score += 25;
+    else if (_ACCESSORY_CATS.indexOf(cat) >= 0) score +=  8;
+  }
   return score;
 }
 
@@ -879,7 +924,7 @@ function filterProducts() {
   var partTypes    = _getChecked('fc-parttype');
 
   visibleCount = PAGE_SIZE;
-  var _searchRe = search ? _buildSearchRe(search) : null;
+  var _parsed = search ? _parseQuery(search) : null;
   filteredProducts = ALL_PRODUCTS.filter(function(p) {
     var cat = p.category || '';
     var low = getLowestPrice(p);
@@ -887,8 +932,8 @@ function filterProducts() {
     // Price
     if (low < priceMin || low > priceMax) return false;
 
-    // Search â€” word-boundary match so "sig" doesn't match "sights"
-    if (_searchRe && !_searchRe.test(p.name + ' ' + p.brand + ' ' + (p.sub||'') + ' ' + (p.caliber||''))) return false;
+    // Smart token-based search with category-intent detection
+    if (_parsed && !_productMatchesQuery(p, _parsed)) return false;
 
     // Category
     if (selectedCats.length && selectedCats.indexOf(cat) < 0) return false;
@@ -932,11 +977,10 @@ function filterProducts() {
 
     return true;
   });
-  // When search is active, sort by relevance (brand match â†’ firearms â†’ popularity).
-  // P320/P365 appear before Sig-compatible holsters/cleaning for a "Sig" search.
-  if (search && _searchRe) {
+  // When search is active, sort by relevance score; otherwise use the sort dropdown.
+  if (search && _parsed) {
     filteredProducts.sort(function(a, b) {
-      return _searchScore(b, search) - _searchScore(a, search);
+      return _searchScore(b, _parsed) - _searchScore(a, _parsed);
     });
     renderGrid();
   } else {

@@ -2,6 +2,14 @@
    Ideal Armory — Global Search Autocomplete
    Attaches to #nav-srch and #mob-srch on every page.
    Lazily loads /data/search-index.json on first focus.
+
+   Search strategy (mirrors all-products.html):
+   • Multi-word queries use token-based AND matching (not phrase)
+     so "Glock holster" matches "Glock 19 IWB Holster" correctly.
+   • Category-intent keywords (holster, scope, magazine, ammo…)
+     narrow results to that category. "Glock holster" → holsters only.
+   • Brand-only searches ("Glock", "Weatherby") return all product types,
+     with firearms ranked first.
    ============================================================ */
 (function () {
   'use strict';
@@ -10,19 +18,47 @@
   var INDEX_LOADING = false;
   var INDEX_CALLBACKS = [];
 
+  /* ── Category-intent map (same as all-products.html) ── */
+  var CAT_INTENT = {
+    'holster':'holsters','holsters':'holsters',
+    'ammo':'ammunition','ammunition':'ammunition','rounds':'ammunition','cartridges':'ammunition',
+    'scope':'optics','scopes':'optics','optic':'optics','optics':'optics',
+    'sight':'optics','sights':'optics','reticle':'optics',
+    'magazine':'magazines','magazines':'magazines',
+    'safe':'gun-safes','vault':'gun-safes','safes':'gun-safes',
+    'cleaning':'cleaning','cleaner':'cleaning','solvent':'cleaning'
+  };
+
+  var FIREARM_CATS = ['handguns','rifles','shotguns'];
+
+  /* ── Query parser ── */
+  function parseQuery(q) {
+    var tokens = q.toLowerCase().trim().split(/\s+/).filter(function(t){ return t.length >= 2; });
+    var categoryHint = null, subjectTokens = [];
+    tokens.forEach(function(t) {
+      if (CAT_INTENT[t]) { categoryHint = CAT_INTENT[t]; }
+      else { subjectTokens.push(t); }
+    });
+    return { tokens: tokens, categoryHint: categoryHint, subjectTokens: subjectTokens };
+  }
+
   /* ── Utilities ── */
   function slugify(s) {
     return (s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
   }
 
   function getUrl(p) {
-    if (p.src === 'eurooptic') {
-      return '/product?src=eurooptic&id=' + p.id.replace('eo_', '') + '&cat=' + (p.category || '');
-    }
+    var src = p.src || '';
+    var id  = p.id  || '';
+    var cat = p.category || '';
+    if (src === 'eurooptic')   return '/product?src=eurooptic&id='   + id.replace('eo_','')      + '&cat=' + cat;
+    if (src === 'bereli')      return '/product?src=bereli&id='      + encodeURIComponent(id.replace('bereli_','')) + '&cat=' + cat;
+    if (src === 'impactguns')  return '/product?src=impactguns&id='  + encodeURIComponent(id.replace('ig_',''))     + '&cat=' + cat;
+    if (src === 'cyasupply')   return '/product?src=cyasupply&id='   + encodeURIComponent(id.replace('cya_',''))    + '&cat=' + cat;
     return '/product?p=' + slugify(p.name);
   }
 
-  function escape(s) {
+  function esc(s) {
     return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
@@ -49,33 +85,57 @@
   }
 
   /* ── Search ── */
-  function buildRe(ql) {
-    var e = ql.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    if (/^\w/.test(ql)) e = '\\b' + e;
-    if (/\w$/.test(ql)) e = e + '\\b';
-    return new RegExp(e, 'i');
-  }
-
   function search(q, limit) {
     if (!q || !INDEX || !INDEX.length) return [];
-    var ql = q.toLowerCase().trim();
-    var re = buildRe(ql);
-    var brandExact = [], nameStart = [], partial = [];
+    var parsed = parseQuery(q);
+    if (parsed.tokens.length === 0) return [];
+    var lim = (limit || 10);
+
+    var matched = [];
     for (var i = 0; i < INDEX.length; i++) {
       var p = INDEX[i];
-      var name = (p.name || '').toLowerCase();
-      var brand = (p.brand || '').toLowerCase();
-      var haystack = p.name + ' ' + p.brand + ' ' + (p.sub || '');
-      if (brand === ql) {
-        brandExact.push(p);
-      } else if (name.indexOf(ql) === 0 || brand.indexOf(ql) === 0) {
-        nameStart.push(p);
-      } else if (re.test(haystack)) {
-        partial.push(p);
+      var haystack = [p.name, p.brand, p.sub, p.caliber, p.carry, p.category]
+        .filter(Boolean).join(' ').toLowerCase();
+      var cat = p.category || '';
+
+      if (parsed.categoryHint) {
+        // Category-intent: must be in the hinted category
+        if (cat !== parsed.categoryHint) continue;
+        // …AND all subject tokens must be in the haystack
+        if (parsed.subjectTokens.length > 0 &&
+            !parsed.subjectTokens.every(function(t){ return haystack.indexOf(t) >= 0; })) continue;
+      } else {
+        // General: every token must appear somewhere in the haystack
+        if (!parsed.tokens.every(function(t){ return haystack.indexOf(t) >= 0; })) continue;
       }
-      if (brandExact.length + nameStart.length + partial.length >= (limit || 10) * 4) break;
+      matched.push(p);
+      if (matched.length >= lim * 4) break; // collect 4× then sort down
     }
-    return brandExact.concat(nameStart).concat(partial).slice(0, limit || 10);
+
+    /* Score and rank */
+    var matchTokens = parsed.subjectTokens.length > 0 ? parsed.subjectTokens : parsed.tokens;
+    var subj = matchTokens.length > 0 ? matchTokens[0] : '';
+
+    matched.sort(function(a, b) {
+      function score(p) {
+        var brand = (p.brand || '').toLowerCase();
+        var name  = (p.name  || '').toLowerCase();
+        var s = 0;
+        if (subj) {
+          if (brand === subj)                s += 100;
+          else if (brand.indexOf(subj) === 0) s +=  80;
+          else if (brand.indexOf(subj) >= 0)  s +=  50;
+          if (name.indexOf(subj) === 0)       s +=  40;
+          else if (name.indexOf(subj) >= 0)   s +=  20;
+        }
+        // For brand-only queries, firearms rank above accessories
+        if (!parsed.categoryHint && FIREARM_CATS.indexOf(p.category || '') >= 0) s += 20;
+        return s;
+      }
+      return score(b) - score(a);
+    });
+
+    return matched.slice(0, lim);
   }
 
   /* ── CSS (injected once) ── */
@@ -121,7 +181,6 @@
   function attach(input) {
     injectCSS();
 
-    /* find the wrapper that holds the input for absolute positioning */
     var wrap = input.closest('.nav-search') ||
                input.closest('.mobile-search-wrap') ||
                input.parentElement;
@@ -163,16 +222,16 @@
         var price = (p.price != null) ? '$' + Number(p.price).toFixed(2) : '';
         var cat = (p.category || '').replace(/-/g, ' ');
         var imgEl = p.img
-          ? '<img class="ia-sug-img" src="' + escape(p.img) + '" alt="" loading="lazy">'
+          ? '<img class="ia-sug-img" src="' + esc(p.img) + '" alt="" loading="lazy">'
           : '<div class="ia-sug-ph"></div>';
         var url = getUrl(p);
-        return '<div class="ia-sug" data-href="' + escape(url) + '">'
+        return '<div class="ia-sug" data-href="' + esc(url) + '">'
           + imgEl
           + '<div class="ia-sug-body">'
-          + '<div class="ia-sug-name">' + escape(p.name) + '</div>'
+          + '<div class="ia-sug-name">' + esc(p.name) + '</div>'
           + '<div class="ia-sug-meta">'
-          + '<span>' + escape(p.brand) + '</span>'
-          + (cat ? '<span class="ia-sug-cat">' + escape(cat) + '</span>' : '')
+          + '<span>' + esc(p.brand) + '</span>'
+          + (cat ? '<span class="ia-sug-cat">' + esc(cat) + '</span>' : '')
           + '</div>'
           + '</div>'
           + (price ? '<div class="ia-sug-price">' + price + '</div>' : '')
@@ -180,14 +239,14 @@
       }).join('');
 
       var allUrl = '/all-products?q=' + encodeURIComponent(q);
-      html += '<div class="ia-drop-footer" data-href="' + escape(allUrl) + '">'
-        + 'See all results for &ldquo;' + escape(q) + '&rdquo; &rarr;</div>';
+      html += '<div class="ia-drop-footer" data-href="' + esc(allUrl) + '">'
+        + 'See all results for &ldquo;' + esc(q) + '&rdquo; &rarr;</div>';
 
       drop.innerHTML = html;
 
       drop.querySelectorAll('[data-href]').forEach(function (el) {
         el.addEventListener('mousedown', function (e) {
-          e.preventDefault(); /* prevent input blur before click */
+          e.preventDefault();
           navigate(el.getAttribute('data-href'));
         });
       });
@@ -229,7 +288,6 @@
           e.stopPropagation();
           navigate(items[activeIdx].getAttribute('data-href'));
         }
-        /* if no item highlighted, let page's own Enter handler run */
         close();
       } else if (e.key === 'Escape') {
         close();
