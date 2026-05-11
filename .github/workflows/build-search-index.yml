@@ -1,0 +1,46 @@
+name: Build Search Index
+
+on:
+  # Rebuild after any feed refresh completes
+  workflow_run:
+    workflows:
+      - "Refresh EuroOptic Catalog"
+      - "Refresh Bereli Catalog"
+      - "Refresh Impact Guns Catalog"
+      - "Refresh CYA Supply Catalog"
+    types: [completed]
+  # Allow manual rebuild from the Actions tab
+  workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Pull latest so we get updated feed files from the triggering workflow
+          ref: main
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Build search index
+        run: node .github/scripts/build-search-index.js
+
+      - name: Commit and push updated index
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name  "github-actions[bot]"
+          git add data/search-index.json
+          git diff --staged --quiet || git commit -m "Auto-rebuild search index [$(date -u '+%Y-%m-%d %H:%M UTC')]"
+          git pull --rebase origin main
+          git push origin main
