@@ -2,6 +2,9 @@
 # 301s from .html URLs to clean URLs eliminate "Page with redirect" and
 # "Alternate page with proper canonical tag" entries in Google Search Console.
 
+# Browsers and crawlers request .ico — serve our .svg instead (fixes 4xx in GSC)
+/favicon.ico             /favicon.svg   301
+
 /index.html          /              301
 /handguns.html       /handguns      301
 /rifles.html         /rifles        301

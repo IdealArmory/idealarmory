@@ -1,8 +1,10 @@
 User-agent: *
 Allow: /
 
-# API endpoints — not indexable content
-Disallow: /api/
+# Data files — JSON product feeds and FFL datasets, not web content
+Disallow: /data/
+Disallow: /feeds/
+Disallow: /tools/
 
 # Internal utility pages — not for public search indexing
 Disallow: /stats

@@ -11,6 +11,15 @@
 <meta property="og:description" id="og-desc" content="Compare prices from licensed retailers on Ideal Armory.">
 <meta property="og:image" id="og-image" content="https://idealarmory.com/favicon.svg">
 <link rel="canonical" id="page-canonical" href="https://idealarmory.com/product">
+<meta name="robots" id="page-robots" content="noindex,nofollow">
+<script>
+// Set canonical to actual URL immediately (sync, before any async ops) so
+// Google sees the correct canonical even without full JS rendering.
+(function(){
+  var c=document.getElementById('page-canonical');
+  if(c)c.href=location.href;
+})();
+</script>
 <meta property="og:type" content="product">
 <meta property="og:url" id="og-url" content="https://idealarmory.com/product">
 <meta property="og:site_name" content="Ideal Armory">
@@ -1376,6 +1385,8 @@ function renderProduct(p){
   if (ogUrl) ogUrl.content = window.location.href;
   var canonicalEl = document.getElementById('page-canonical');
   if (canonicalEl) canonicalEl.href = window.location.href;
+  var robotsEl = document.getElementById('page-robots');
+  if (robotsEl) robotsEl.content = 'index,follow';
   // Product schema (JSON-LD)
   var schemaEl = document.getElementById('product-schema');
   if (schemaEl) {
