@@ -30,7 +30,7 @@ const NAME_EXCLUDE_KEYWORDS = [
 // ── Brand whitelist (major brands only per category) ──────────────────────────
 const BRAND_WHITELIST = {
   'handguns':    ['glock','sig sauer','sig','smith & wesson','smith and wesson','springfield','ruger','cz','walther','heckler','h&k','taurus','beretta','kimber','daniel defense','canik','fn america','fn herst','shadow systems','kahr','nighthawk','wilson combat','staccato','magnum research','heritage','charter','rock island','kel-tec','keltec'],
-  'rifles':      ['ruger','smith & wesson','sig sauer','springfield','daniel defense','cmmg','fn america','fn herst','savage','mossberg','remington','winchester','henry','browning','tikka','bergara','barrett','christensen','stag arms','windham','bushmaster','dpms','armalite','palmetto','psa','lwrc','bcm','bravo company'],
+  'rifles':      ['ruger','tikka','weatherby','cva','browning','remington','winchester','bergara','cz','savage','smith & wesson','sig sauer','springfield','daniel defense','cmmg','fn america','fn herst','mossberg','henry','barrett','christensen','howa','stag arms','windham','bushmaster','dpms','armalite','palmetto','psa','lwrc','bcm','bravo company'],
   'optics':      ['leupold','vortex','nightforce','trijicon','eotech','aimpoint','bushnell','crimson trace','sig sauer','burris','swarovski','primary arms','steiner','holosun','zeiss','maven','tract','schmidt','kahles','march','minox','hawke','nikon','weaver','mepro','meprolight','atibal','riton','swampfox','athlon','arken'],
   'ammunition':  ['federal','hornady','winchester','remington','cci','speer','nosler','barnes','pmc','magtech','fiocchi','wolf','sellier','blazer','american eagle','corbon','buffalo bore','liberty','black hills','aguila','nato','prvi','tulammo'],
   'holsters':    ['alien gear','blackhawk','safariland','galco','desantis','crossbreed','bianchi','uncle','vedder','we the people','blackpoint','fobus','serpa','tulster','tier 1','t1c','hidden hybrid','cloak','bravo concealment','concealment express','rounded','gun daddy','mod 1','1791','craft holsters','tagua','leather','nylon','kydex','iwb','owb','shoulder','ankle','drop leg'],
@@ -43,7 +43,7 @@ const BRAND_WHITELIST = {
 // ── Price floors per category ─────────────────────────────────────────────────
 const PRICE_FLOORS = {
   'handguns':   400,
-  'rifles':     500,
+  'rifles':     300,  // lowered 500→300 to catch budget hunting/rimfire rifles
   'optics':     250,
   'ammunition':  40,
   'holsters':    20,
@@ -53,10 +53,17 @@ const PRICE_FLOORS = {
   'gun-safes':  100
 };
 
-// ── Max products per category (sorted by price desc) ─────────────────────────
+// ── Price CEILINGS per category (products above this are excluded) ────────────
+// Rifles $3,000+ are ultra-premium/custom and searched far less than
+// popular hunting/sporting rifles in the $300–$2,999 range.
+const PRICE_CEILINGS = {
+  'rifles': 3000
+};
+
+// ── Max products per category ─────────────────────────────────────────────────
 const CAT_CAPS = {
   'handguns':   500,
-  'rifles':     800,  // raised 600→800 to accommodate priority-brand hunting rifles (Tikka, Ruger, etc.)
+  'rifles':     800,  // priority brands fill first (price asc), then non-priority fill
   'optics':     600,
   'ammunition': 400,
   'holsters':   200,
@@ -126,9 +133,10 @@ function isRelevant(item) {
   // Must map to a known category (holsters and gun-safes excluded from EuroOptic)
   const cat = mapCategory(item.Category || '', item.Name || '');
   if (cat === 'other' || cat === 'holsters' || cat === 'gun-safes') return false;
-  // Must meet price floor for category
+  // Must meet price floor and be under the ceiling for this category
   const price = parseFloat(item.CurrentPrice || item.SalePrice || 0);
   if (price < (PRICE_FLOORS[cat] || 0)) return false;
+  if (PRICE_CEILINGS[cat] && price > PRICE_CEILINGS[cat]) return false;
   // Must be a major brand for this category
   const brand = item.Manufacturer || item.BrandName || item.Brand || '';
   if (!isMajorBrand(brand, cat)) return false;
@@ -401,15 +409,19 @@ async function main() {
     byCategory[p.category].push(p);
   });
 
-  // Popular hunting/sporting brands that must be represented even if not the priciest.
-  // For rifles specifically, pure price-desc would discard Tikka T3x, Ruger American,
-  // Savage Axis, etc. in favour of ultra-premium custom builds nobody searches for.
+  // Priority brands for rifles: popular hunting/sporting manufacturers that people
+  // actually search for and buy. These are sorted price-ASCENDING (most affordable
+  // first) so a $499 Ruger American ranks above a $2,800 custom build.
+  // Ultra-premium ($3,000+) are already excluded by PRICE_CEILINGS above.
   const PRIORITY_BRANDS = {
-    rifles: ['tikka','ruger','savage','browning','winchester','mossberg','henry','cz','bergara',
-             'remington','weatherby','sig sauer','springfield','fn','howa','christensen','kimber']
+    rifles: ['ruger','tikka','weatherby','cva','browning','remington','winchester',
+             'bergara','cz','savage','mossberg','henry','howa','rossi','traditions',
+             'christensen','fn','sig sauer','springfield','daniel defense']
   };
 
-  // Apply per-category caps — priority brands first, then fill by price
+  // Apply per-category caps:
+  //   • Priority brands → sorted price ASC (affordable + popular first)
+  //   • Remaining brands → sorted price ASC (fill remaining slots, still affordable-first)
   for (const cat of Object.keys(byCategory)) {
     const cap = CAT_CAPS[cat];
     if (!cap || byCategory[cat].length <= cap) continue;
@@ -417,10 +429,11 @@ async function main() {
     const priorityBrands = PRIORITY_BRANDS[cat] || [];
     if (priorityBrands.length) {
       const isPriority = p => priorityBrands.some(br => (p.brand || '').toLowerCase().includes(br));
-      const priority = byCategory[cat].filter(isPriority).sort((a, b) => b.price - a.price);
-      const rest     = byCategory[cat].filter(p => !isPriority(p)).sort((a, b) => b.price - a.price);
+      const priority = byCategory[cat].filter(isPriority).sort((a, b) => a.price - b.price);  // asc
+      const rest     = byCategory[cat].filter(p => !isPriority(p)).sort((a, b) => a.price - b.price); // asc
+      const before   = priority.length + rest.length;
       byCategory[cat] = [...priority, ...rest].slice(0, cap);
-      console.log(`  [cap] ${cat}: ${priority.length + rest.length} → ${cap} (${priority.length} priority-brand, ${byCategory[cat].length - priority.length} premium fill)`);
+      console.log(`  [cap] ${cat}: ${before} → ${cap} (${priority.length} priority-brand affordable-first, ${byCategory[cat].length - priority.length} other fill)`);
     } else {
       byCategory[cat].sort((a, b) => b.price - a.price);
       console.log(`  [cap] ${cat}: ${byCategory[cat].length} → ${cap}`);
