@@ -241,21 +241,22 @@ function tryAdvancePage(url, currentPageNum) {
   return null; // cursor-based pagination — cannot reconstruct next URL
 }
 
-// Escalating backoff: 30s, 60s, 90s, 120s, 120s, 120s, …
+// Escalating backoff for network errors/timeouts: 5s, 10s, 20s, 30s, 30s, …
+// (401 rate-limit errors use WAIT_401_MS = 60s — kept separate)
 function netRetryWait(attempt) {
-  const steps = [30000, 60000, 90000, 120000, 120000, 120000];
+  const steps = [5000, 10000, 20000, 30000, 30000, 30000];
   return steps[Math.min(attempt - 1, steps.length - 1)];
 }
 
 async function fetchViaItems() {
   console.log('--- Strategy 2: Paginated Items ---');
   const PAGE_SIZE      = 1000;  // 1 000 items per page
-  const DELAY_MS       = 3000;  // 3 s between successful pages
-  const BATCH_SIZE     = 15;    // pause every 15 pages
-  const BATCH_PAUSE_MS = 15000; // 15 s batch pause
-  const MAX_RETRIES    = 12;    // raised from 8 → 12
+  const DELAY_MS       = 1000;  // 1 s between successful pages (reduced from 3 s)
+  const BATCH_SIZE     = 20;    // pause every 20 pages
+  const BATCH_PAUSE_MS = 5000;  // 5 s batch pause (reduced from 15 s)
+  const MAX_RETRIES    = 12;
   const WAIT_401_MS    = 60000; // 60 s on 401
-  const FETCH_TIMEOUT  = 90000; // raised from 45 s → 90 s
+  const FETCH_TIMEOUT  = 45000; // 45 s per request (reduced from 90 s — fail fast, retry sooner)
 
   let allItems = [];
   let pageNum  = 1;
