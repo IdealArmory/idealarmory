@@ -56,7 +56,7 @@ const PRICE_FLOORS = {
 // ── Max products per category (sorted by price desc) ─────────────────────────
 const CAT_CAPS = {
   'handguns':   500,
-  'rifles':     600,
+  'rifles':     800,  // raised 600→800 to accommodate priority-brand hunting rifles (Tikka, Ruger, etc.)
   'optics':     600,
   'ammunition': 400,
   'holsters':   200,
@@ -401,11 +401,28 @@ async function main() {
     byCategory[p.category].push(p);
   });
 
-  // Apply per-category caps — keep highest-priced products
+  // Popular hunting/sporting brands that must be represented even if not the priciest.
+  // For rifles specifically, pure price-desc would discard Tikka T3x, Ruger American,
+  // Savage Axis, etc. in favour of ultra-premium custom builds nobody searches for.
+  const PRIORITY_BRANDS = {
+    rifles: ['tikka','ruger','savage','browning','winchester','mossberg','henry','cz','bergara',
+             'remington','weatherby','sig sauer','springfield','fn','howa','christensen','kimber']
+  };
+
+  // Apply per-category caps — priority brands first, then fill by price
   for (const cat of Object.keys(byCategory)) {
-    byCategory[cat].sort((a, b) => b.price - a.price);
     const cap = CAT_CAPS[cat];
-    if (cap && byCategory[cat].length > cap) {
+    if (!cap || byCategory[cat].length <= cap) continue;
+
+    const priorityBrands = PRIORITY_BRANDS[cat] || [];
+    if (priorityBrands.length) {
+      const isPriority = p => priorityBrands.some(br => (p.brand || '').toLowerCase().includes(br));
+      const priority = byCategory[cat].filter(isPriority).sort((a, b) => b.price - a.price);
+      const rest     = byCategory[cat].filter(p => !isPriority(p)).sort((a, b) => b.price - a.price);
+      byCategory[cat] = [...priority, ...rest].slice(0, cap);
+      console.log(`  [cap] ${cat}: ${priority.length + rest.length} → ${cap} (${priority.length} priority-brand, ${byCategory[cat].length - priority.length} premium fill)`);
+    } else {
+      byCategory[cat].sort((a, b) => b.price - a.price);
       console.log(`  [cap] ${cat}: ${byCategory[cat].length} → ${cap}`);
       byCategory[cat] = byCategory[cat].slice(0, cap);
     }
