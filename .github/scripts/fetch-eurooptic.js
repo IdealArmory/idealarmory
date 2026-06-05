@@ -124,6 +124,8 @@ function mapCategory(cat, name) {
 }
 
 function isRelevant(item) {
+  // Must be in stock — exclude clearance, discontinued, and unavailable items
+  if (item.StockAvailability !== 'InStock') return false;
   // Must have an image
   const img = item.ImageUrl || (item.AdditionalImageUrls && item.AdditionalImageUrls[0]) || '';
   if (!img) return false;
