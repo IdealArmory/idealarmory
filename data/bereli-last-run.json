@@ -1,15 +1,15 @@
 {
-  "lastRun": "2026-06-10T10:48:52.623Z",
-  "productCount": 2202,
-  "rawCount": 8368,
+  "lastRun": "2026-06-11T11:17:30.459Z",
+  "productCount": 2192,
+  "rawCount": 8334,
   "categories": {
-    "ammunition": 931,
-    "magazines": 867,
-    "rifles": 38,
-    "handguns": 148,
-    "optics": 140,
-    "ar-parts": 57,
-    "cleaning": 21
+    "ammunition": 928,
+    "magazines": 861,
+    "rifles": 37,
+    "handguns": 149,
+    "optics": 139,
+    "ar-parts": 56,
+    "cleaning": 22
   },
   "files": [
     "bereli-ammunition.json",
