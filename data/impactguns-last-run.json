@@ -1,20 +1,20 @@
 {
-  "lastRun": "2026-06-12T12:17:36.058Z",
-  "productCount": 3234,
-  "rawCount": 3583,
-  "htmlPriced": 1777,
-  "apiEnriched": 1806,
+  "lastRun": "2026-06-13T11:04:26.457Z",
+  "productCount": 3255,
+  "rawCount": 3609,
+  "htmlPriced": 1705,
+  "apiEnriched": 1904,
   "staticUpdated": 0,
   "categories": {
     "handguns": 600,
     "rifles": 600,
     "shotguns": 300,
-    "ammunition": 216,
-    "optics": 216,
+    "ammunition": 217,
+    "optics": 215,
     "holsters": 300,
-    "magazines": 271,
-    "cleaning": 39,
-    "gun-safes": 34
+    "magazines": 273,
+    "cleaning": 38,
+    "gun-safes": 51
   },
   "files": [
     "impactguns-handguns.json",
