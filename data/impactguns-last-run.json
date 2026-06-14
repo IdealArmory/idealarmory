@@ -1,9 +1,9 @@
 {
-  "lastRun": "2026-06-13T11:04:26.457Z",
-  "productCount": 3255,
-  "rawCount": 3609,
+  "lastRun": "2026-06-14T11:22:39.531Z",
+  "productCount": 3252,
+  "rawCount": 3607,
   "htmlPriced": 1705,
-  "apiEnriched": 1904,
+  "apiEnriched": 1902,
   "staticUpdated": 0,
   "categories": {
     "handguns": 600,
@@ -12,7 +12,7 @@
     "ammunition": 217,
     "optics": 215,
     "holsters": 300,
-    "magazines": 273,
+    "magazines": 270,
     "cleaning": 38,
     "gun-safes": 51
   },
