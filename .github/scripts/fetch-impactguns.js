@@ -39,14 +39,24 @@ const CATEGORIES = [
 
 // ── Per-category product caps ─────────────────────────────────────────────────
 const CAT_CAPS = {
-  'handguns':   600, 'rifles': 600, 'shotguns': 300,
-  'ammunition': 800, 'optics': 500, 'holsters': 300,
+  'handguns':   600, 'rifles': 1000, 'shotguns': 300,
+  'ammunition': 800, 'optics': 500,  'holsters': 300,
   'magazines':  300, 'cleaning': 150, 'gun-safes': 200,
 };
 
 // Phase 1 stops collecting once this multiple of the cap is reached.
-// Provides a buffer for Phase 3 filtering while avoiding excess API calls.
-const CAP_COLLECT_MULTIPLIER = 1.4;
+// Raised to 1.6 so the priority-brand sort has a large pool to draw from.
+const CAP_COLLECT_MULTIPLIER = 1.6;
+
+// ── Priority brands per category ──────────────────────────────────────────────
+// These brands are surfaced first (before cap) so popular hunting/sporting
+// manufacturers don't get pushed out by Impact Guns' "featured" listing order.
+const PRIORITY_BRANDS = {
+  rifles: ['ruger','tikka','weatherby','cva','browning','remington','winchester',
+           'bergara','cz','savage','mossberg','henry','howa','rossi','traditions',
+           'christensen','fn america','sig sauer','springfield','daniel defense',
+           'barrett','lwrc','steyr','kel-tec']
+};
 
 // ── Price floors ──────────────────────────────────────────────────────────────
 const PRICE_FLOORS = {
@@ -590,12 +600,16 @@ async function main() {
 
   for (const [cat, products] of Object.entries(byCategory)) {
     if (products.length === 0) continue;
-    // Sort in-stock before out-of-stock; preserve Impact Guns' listing order within each group.
-    // Their default listing order reflects featured/popularity — a better quality signal
-    // than price-descending, which would artificially discard affordable products.
+    // Sort: in-stock first, then priority brands before others, then preserve listing order.
+    // Priority brands ensure popular hunting/sporting manufacturers (Tikka, Ruger, etc.)
+    // aren't pushed out by Impact Guns' "featured" listing when the cap is applied.
+    const prioBrands = PRIORITY_BRANDS[cat] || [];
+    const isPrio = p => prioBrands.some(br => (p.brand || p.name || '').toLowerCase().includes(br));
     products.sort((a, b) => {
-      if (a.inStock === b.inStock) return 0;
-      return a.inStock ? -1 : 1;
+      if (a.inStock !== b.inStock) return a.inStock ? -1 : 1;
+      const ap = isPrio(a), bp = isPrio(b);
+      if (ap !== bp) return ap ? -1 : 1;
+      return 0;
     });
     const cap   = CAT_CAPS[cat];
     const final = cap && products.length > cap ? products.slice(0, cap) : products;
