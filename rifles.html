@@ -348,6 +348,22 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
         <div class="fopt"><input type="checkbox" value="LWRC" onchange="filterProducts()"><label>LWRC International</label></div>
         <div class="fopt"><input type="checkbox" value="FN America" onchange="filterProducts()"><label>FN America</label></div>
         <div class="fopt"><input type="checkbox" value="Mossberg" onchange="filterProducts()"><label>Mossberg</label></div>
+        <div class="fopt"><input type="checkbox" value="Benelli" onchange="filterProducts()"><label>Benelli</label></div>
+        <div class="fopt"><input type="checkbox" value="Browning" onchange="filterProducts()"><label>Browning</label></div>
+        <div class="fopt"><input type="checkbox" value="CVA" onchange="filterProducts()"><label>CVA</label></div>
+        <div class="fopt"><input type="checkbox" value="CZ" onchange="filterProducts()"><label>CZ / CZ-USA</label></div>
+        <div class="fopt"><input type="checkbox" value="Diamondback" onchange="filterProducts()"><label>Diamondback</label></div>
+        <div class="fopt"><input type="checkbox" value="Fierce" onchange="filterProducts()"><label>Fierce Firearms</label></div>
+        <div class="fopt"><input type="checkbox" value="Heritage" onchange="filterProducts()"><label>Heritage</label></div>
+        <div class="fopt"><input type="checkbox" value="HK" onchange="filterProducts()"><label>H&amp;K</label></div>
+        <div class="fopt"><input type="checkbox" value="Howa" onchange="filterProducts()"><label>Howa</label></div>
+        <div class="fopt"><input type="checkbox" value="Kel-Tec" onchange="filterProducts()"><label>Kel-Tec</label></div>
+        <div class="fopt"><input type="checkbox" value="Marlin" onchange="filterProducts()"><label>Marlin</label></div>
+        <div class="fopt"><input type="checkbox" value="Mauser" onchange="filterProducts()"><label>Mauser</label></div>
+        <div class="fopt"><input type="checkbox" value="Rossi" onchange="filterProducts()"><label>Rossi</label></div>
+        <div class="fopt"><input type="checkbox" value="Traditions" onchange="filterProducts()"><label>Traditions</label></div>
+        <div class="fopt"><input type="checkbox" value="Weatherby" onchange="filterProducts()"><label>Weatherby</label></div>
+        <div class="fopt"><input type="checkbox" value="Zastava" onchange="filterProducts()"><label>Zastava</label></div>
       </div>
     </div>
 
@@ -582,7 +598,7 @@ function filterProducts(){
   var calibers=Object.keys(checks).filter(function(v){return ['.223','5.56','.308/7.62','.300 BLK','6.5 Creedmoor','6.5 PRC','.270 Win','.30-06','.243 Win','7mm-08','7mm PRC','.300 Win Mag','.350 Legend','.450 Bushmaster','.45-70','.44 Mag','.357 Mag','.38 Spl','.22-250','.22 WMR','.22 LR','7.62x39','.338 Lapua','6mm ARC','9mm'].indexOf(v)>=0;});
   var actions=Object.keys(checks).filter(function(v){return ['Semi-Auto','Bolt-Action','Lever-Action','Single Shot','Pump-Action'].indexOf(v)>=0;});
   var platforms=Object.keys(checks).filter(function(v){return ['AR-15','AK','Precision','Hunting','Rimfire'].indexOf(v)>=0;});
-  var brands=Object.keys(checks).filter(function(v){return ['Aero Precision','Daniel Defense','PSA','Ruger','Savage','Winchester','Remington','CMMG','Smith & Wesson','Sig Sauer','Springfield Armory','IWI','Colt','Henry','Bergara','Steyr','Tikka','Christensen Arms','Barrett','LWRC','FN America','Mossberg'].indexOf(v)>=0;});
+  var brands=Object.keys(checks).filter(function(v){return ['Aero Precision','Daniel Defense','PSA','Ruger','Savage','Winchester','Remington','CMMG','Smith & Wesson','Sig Sauer','Springfield Armory','IWI','Colt','Henry','Bergara','Steyr','Tikka','Christensen Arms','Barrett','LWRC','FN America','Mossberg','Benelli','Browning','CVA','CZ','Diamondback','Fierce','Heritage','HK','Howa','Kel-Tec','Marlin','Mauser','Rossi','Traditions','Weatherby','Zastava'].indexOf(v)>=0;});
   var barrels=Object.keys(checks).filter(function(v){return ['barrel-u16','barrel-16-18','barrel-18-20','barrel-20-24','barrel-o24'].indexOf(v)>=0;});
   var feats=Object.keys(checks).filter(function(v){return ['optic-ready','threaded','folding','free-float'].indexOf(v)>=0;});
 
@@ -591,7 +607,7 @@ function filterProducts(){
     if(low<priceMin||low>priceMax)return false;
     if(search&&(p.name+' '+(p.brand||'')+' '+(p.sub||'')+' '+(p.caliber||'')).toLowerCase().indexOf(search)<0)return false;
     if(calibers.length&&!calibers.some(function(cal){return _caliberMatch(p,cal);}))return false;
-    if(brands.length&&brands.indexOf(p.brand)<0)return false;
+    if(brands.length&&!brands.some(function(b){var pb=(p.brand||'').toLowerCase(),bv=b.toLowerCase();return pb.includes(bv)||bv.includes(pb);}))return false;
     if(actions.length&&actions.indexOf(p.action)<0)return false;
     if(platforms.length&&platforms.indexOf(p.platform)<0)return false;
     if(feats.length&&!feats.every(function(f){return (p.features||[]).indexOf(f)>=0;}))return false;

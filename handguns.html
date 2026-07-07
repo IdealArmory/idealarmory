@@ -640,7 +640,7 @@ function filterProducts() {
     if (low < priceMin || low > priceMax) return false;
     if (search && (p.name+p.brand+(p.sub||'')+(p.caliber||'')).toLowerCase().indexOf(search) < 0) return false;
     if (calibers.length && !calibers.some(function(cal){return _caliberMatch(p,cal);})) return false;
-    if (brands.length && brands.indexOf(p.brand) < 0) return false;
+    if(brands.length&&!brands.some(function(b){var pb=(p.brand||'').toLowerCase(),bv=b.toLowerCase();return pb.includes(bv)||bv.includes(pb);}))return false;
     if (actions.length && actions.indexOf(p.action) < 0) return false;
     if (frames.length && frames.indexOf(p.frameSize) < 0) return false;
     if (safeties.length && safeties.indexOf(p.safety) < 0) return false;
