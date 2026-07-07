@@ -76,7 +76,7 @@ const PRICE_FLOORS = {
   'cleaning':     5,
 };
 
-// ── Per-category product caps (sorted by price desc) ─────────────────────────
+// ── Per-category product caps ─────────────────────────────────────────────────
 const CAT_CAPS = {
   'handguns':   500,
   'rifles':     500,
@@ -87,13 +87,120 @@ const CAT_CAPS = {
   'cleaning':   150,
 };
 
-// ── Caliber sets for Guns sub-classification ──────────────────────────────────
-const RIFLE_CALIBERS = [
-  '5.56','223 rem','308','7.62x39','6.5 creedmoor','6.5creedmoor',
-  '300 blackout','300blk','.338','338 lapua','30-06','6mm arc',
-  '6.5 prc','450 bushmaster','350 legend','45-70','.308'
+// ── Priority brands per category ──────────────────────────────────────────────
+// Applied before the cap: popular brands sort first (price asc) so affordable
+// hunting/sporting rifles/handguns are never pushed out by obscure listings.
+const PRIORITY_BRANDS = {
+  rifles:   ['ruger','tikka','weatherby','cva','browning','remington','winchester',
+             'bergara','cz','savage','mossberg','henry','howa','rossi','traditions',
+             'christensen','fn america','sig sauer','springfield','daniel defense',
+             'barrett','lwrc','steyr','kel-tec'],
+  handguns: ['glock','sig sauer','smith & wesson','springfield','ruger','cz',
+             'walther','heckler','h&k','taurus','beretta','kimber','canik',
+             'fn america','shadow systems','wilson combat','staccato'],
+};
+
+// ── Caliber normalization ─────────────────────────────────────────────────────
+// Maps every common variant to a canonical string stored in the product JSON.
+// Ensures "270 Win", "270 Winchester", and ".270 Win" all become ".270 Win".
+const CALIBER_MAP = [
+  [['.270 win','.270 winchester','270 win','270 winchester','270win'],              '.270 Win'],
+  [['.308 win','.308 winchester','308 win','308 winchester','.308',
+    '7.62x51mm','7.62x51','7.62 nato'],                                             '.308 Win'],
+  [['.223 rem','.223 remington','223 rem','223 remington','223rem','.223'],         '.223 Rem'],
+  [['5.56 nato','5.56x45','5.56x45mm','5.56mm','5.56'],                            '5.56 NATO'],
+  [['.300 blackout','.300 blk','300 blackout','300blk','300 blk','7.62x35mm'],      '.300 BLK'],
+  [['6.5 creedmoor','6.5creedmoor','6.5 cm','6.5cm'],                              '6.5 Creedmoor'],
+  [['6.5 prc'],                                                                      '6.5 PRC'],
+  [['7mm prc','7 prc'],                                                              '7mm PRC'],
+  [['7mm-08 rem','7mm-08 remington','7mm-08','7mm/08','7mm08'],                     '7mm-08'],
+  [['7mm rem mag','7mm remington mag','7mm rem. mag','7mm remington magnum',
+    '7mm magnum'],                                                                   '7mm Rem Mag'],
+  [['.300 win mag','.300wm','300 win mag','300wm','300 winchester mag'],             '.300 Win Mag'],
+  [['.30-06 springfield','.30-06','30-06 springfield','30-06','30 06'],             '.30-06'],
+  [['.243 win','.243 winchester','243 win','243 winchester','.243'],                '.243 Win'],
+  [['.22 lr','.22 long rifle','22 lr','22lr','22 long rifle'],                      '.22 LR'],
+  [['.22 wmr','.22 mag','.22 magnum','22 wmr','22 mag','22 magnum'],                '.22 WMR'],
+  [['.22-250 rem','.22-250','22-250','22-250 rem'],                                 '.22-250'],
+  [['.338 lapua mag','.338 lapua','338 lapua mag','338 lapua'],                     '.338 Lapua'],
+  [['.350 legend','350 legend'],                                                    '.350 Legend'],
+  [['.450 bushmaster','450 bushmaster'],                                            '.450 Bushmaster'],
+  [['.45-70 govt','.45-70','45-70 govt','45-70','45/70','45 70'],                  '.45-70'],
+  [['.44 mag','.44 magnum','44 mag','44 magnum'],                                  '.44 Mag'],
+  [['.357 mag','.357 magnum','357 mag','357 magnum'],                              '.357 Mag'],
+  [['.38 special','.38 spl','38 special','38 spl'],                               '.38 Spl'],
+  [['9mm luger','9x19mm','9mm para','9mm'],                                        '9mm'],
+  [['.45 acp','45 acp','45acp','.45acp'],                                          '.45 ACP'],
+  [['.40 s&w','.40sw','40 s&w','40sw'],                                            '.40 S&W'],
+  [['.380 acp','.380 auto','380 acp','380 auto','380'],                            '.380 ACP'],
+  [['10mm auto','10 mm auto','10mm'],                                               '10mm'],
+  [['6mm arc','6mm advanced rifle cartridge'],                                      '6mm ARC'],
+  [['7.62x39mm','7.62x39'],                                                         '7.62x39'],
+  [['12 gauge','12ga','12 ga'],                                                     '12 Gauge'],
+  [['20 gauge','20ga','20 ga'],                                                     '20 Gauge'],
+  [['.410 bore','.410','410 bore','410'],                                           '.410'],
+  [['28 gauge','28ga','28 ga'],                                                     '28 Gauge'],
+  [['5.7x28mm','5.7x28','5.7 x 28'],                                               '5.7x28mm'],
 ];
-const SHOTGUN_CALIBERS = ['12 gauge','20 gauge','.410','16 gauge'];
+
+function normalizeCalber(raw) {
+  if (!raw) return '';
+  const lc = raw.toLowerCase().replace(/\.$/, '').trim();
+  for (const [variants, canonical] of CALIBER_MAP) {
+    if (variants.includes(lc)) return canonical;
+  }
+  return raw;
+}
+
+// ── Caliber sets for Guns sub-classification ──────────────────────────────────
+// Used to decide if an ammofeeds "Guns" type product is a rifle vs. handgun.
+// Include all spelling variants so ".270 Win" and "270 Winchester" both match.
+const RIFLE_CALIBERS = [
+  // NATO / tactical
+  '5.56','5.56 nato','5.56x45','5.56x45mm','5.56mm',
+  '223 rem','.223 rem','.223 remington','223 remington','.223',
+  '7.62x39','7.62x39mm',
+  '300 blackout','300blk','300 blk','.300 blk','7.62x35mm',
+  '6.8 spc','6.8x43',
+  // .308 / 7.62 NATO
+  '308','308 win','.308 win','308 winchester','.308 winchester','.308',
+  '7.62x51','7.62x51mm','7.62 nato',
+  // 6.5mm / 7mm family
+  '6.5 creedmoor','6.5creedmoor','6.5 cm','6.5cm',
+  '6.5 prc',
+  '7mm-08','7mm-08 rem','7mm-08 remington','7mm/08','7mm08',
+  '7mm prc','7 prc',
+  '7mm rem mag','7mm remington mag','7mm remington magnum','7mm magnum','7mm remington',
+  '7mm-08 remington',
+  // .270 family
+  '.270 win','.270 winchester','270 win','270 winchester','270win',
+  // .30 caliber
+  '30-06','.30-06','30-06 springfield','.30-06 springfield','30 06',
+  '300 win mag','.300 win mag','.300wm','300wm','300 winchester mag',
+  '.300 win',
+  // .243 / varmint
+  '243 win','.243 win','.243 winchester','243 winchester','.243',
+  '22-250','.22-250','22-250 rem','.22-250 rem',
+  '204 ruger','.204',
+  '6mm arc','6mm advanced rifle cartridge',
+  '25-06','.25-06','25 06',
+  '260 rem','.260 rem',
+  '280 rem','.280 rem','280 ackley',
+  // Big-bore / lever
+  '.338','.338 lapua','338 lapua','.338 lapua mag','338 lapua mag',
+  '.45-70','45-70','45/70','45 70','.45-70 govt','45-70 govt',
+  '.450 bushmaster','450 bushmaster',
+  '.350 legend','350 legend',
+  '30-30','.30-30','30-30 win',
+  '444 marlin','.444 marlin',
+  '458 socom','.458 socom',
+  '50 bmg','.50 bmg',
+  // Rimfire rifles
+  '22 lr','.22 lr','22lr','22 long rifle','.22 long rifle',
+  '22 wmr','.22 wmr','22 magnum','.22 magnum',
+  '17 hmr','.17 hmr','17hmr',
+];
+const SHOTGUN_CALIBERS = ['12 gauge','20 gauge','.410','410','16 gauge','28 gauge'];
 
 // ── Category mapper ───────────────────────────────────────────────────────────
 function mapCategory(type, title, caliber) {
@@ -228,7 +335,7 @@ function transformProduct(p) {
     img:       p.image,
     url:       addAffiliate(p.url),
     category,
-    caliber:   p.caliber   || '',
+    caliber:   normalizeCalber(p.caliber),
     numrounds: p.numrounds || 0,
     inStock:   p.qty_available > 0,
     src:       'bereli',
@@ -288,7 +395,7 @@ async function main() {
   const dataDir = path.join(__dirname, '..', '..', 'data');
   if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
 
-  // Group by category, sort by price desc, apply caps
+  // Group by category, apply priority-brand sort, apply caps
   const byCategory = {};
   allProducts.forEach(p => {
     if (!byCategory[p.category]) byCategory[p.category] = [];
@@ -297,7 +404,18 @@ async function main() {
 
   const filesWritten = [];
   for (const [cat, products] of Object.entries(byCategory)) {
-    products.sort((a, b) => b.price - a.price);
+    // Priority brands first (price asc), then fill remaining slots with others (price asc).
+    // This ensures popular hunting/sporting brands survive the cap regardless of listing order.
+    const prioBrands = PRIORITY_BRANDS[cat] || [];
+    if (prioBrands.length) {
+      const isPrio   = p => prioBrands.some(br => (p.brand || '').toLowerCase().includes(br));
+      const priority = products.filter(isPrio).sort((a, b) => a.price - b.price);
+      const rest     = products.filter(p => !isPrio(p)).sort((a, b) => a.price - b.price);
+      products.length = 0;
+      products.push(...priority, ...rest);
+    } else {
+      products.sort((a, b) => b.price - a.price);
+    }
     const cap   = CAT_CAPS[cat];
     const final = cap && products.length > cap ? products.slice(0, cap) : products;
     if (cap && products.length > cap) {
