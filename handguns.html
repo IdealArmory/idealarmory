@@ -282,6 +282,7 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
         <div class="fopt"><input type="checkbox" value=".380 ACP" onchange="filterProducts()"><label>.380 ACP</label></div>
         <div class="fopt"><input type="checkbox" value="10mm" onchange="filterProducts()"><label>10mm</label></div>
         <div class="fopt"><input type="checkbox" value=".357 Mag" onchange="filterProducts()"><label>.357 Mag</label></div>
+        <div class="fopt"><input type="checkbox" value=".38 Spl" onchange="filterProducts()"><label>.38 Special</label></div>
         <div class="fopt"><input type="checkbox" value=".44 Mag" onchange="filterProducts()"><label>.44 Mag</label></div>
         <div class="fopt"><input type="checkbox" value=".22 LR" onchange="filterProducts()"><label>.22 LR</label></div>
         <div class="fopt"><input type="checkbox" value="5.7x28mm" onchange="filterProducts()"><label>5.7x28mm</label></div>
@@ -612,7 +613,7 @@ function loadMoreProducts() {
   document.getElementById('load-more-wrap').scrollIntoView({behavior:'smooth', block:'center'});
 }
 
-var CALIBER_KEYS={'9mm':['9mm'],'10mm':['10mm'],'.45 ACP':['.45 acp','45 acp'],'.40 SW':['.40 s&w','.40sw','40 s&w','40sw'],'.380 ACP':['.380','380 acp'],'.357 Mag':['.357 mag','357 mag'],'.44 Mag':['.44 mag','44 mag'],'.22 LR':['.22 lr','22lr','22 lr'],'5.7x28mm':['5.7x28']};
+var CALIBER_KEYS={'9mm':['9mm'],'10mm':['10mm'],'.45 ACP':['.45 acp','45 acp'],'.40 SW':['.40 s&w','.40sw','40 s&w','40sw'],'.380 ACP':['.380','380 acp','380 auto'],'.357 Mag':['.357 mag','357 mag','.357 magnum'],'.38 Spl':['.38 special','38 special','.38 spl','38 spl'],'.44 Mag':['.44 mag','44 mag','.44 magnum'],'.22 LR':['.22 lr','22lr','22 lr'],'5.7x28mm':['5.7x28','5.7 x 28']};
 function _caliberMatch(p,cal){var s=(p.name+' '+(p.sub||'')+' '+(p.caliber||'')).toLowerCase();var keys=CALIBER_KEYS[cal]||[cal.toLowerCase()];return keys.some(function(k){return s.indexOf(k)>=0;});}
 
 function filterProducts() {
@@ -623,7 +624,7 @@ function filterProducts() {
   document.querySelectorAll('.filter-body input[type=checkbox]:checked').forEach(function(cb) {
     checks[cb.value] = true;
   });
-  var calibers = Object.keys(checks).filter(function(v){return ['9mm','.45 ACP','.40 SW','.380 ACP','10mm','.357 Mag','.44 Mag','.22 LR','5.7x28mm'].indexOf(v)>=0;});
+  var calibers = Object.keys(checks).filter(function(v){return ['9mm','.45 ACP','.40 SW','.380 ACP','10mm','.357 Mag','.38 Spl','.44 Mag','.22 LR','5.7x28mm'].indexOf(v)>=0;});
   var actions = Object.keys(checks).filter(function(v){return ['Striker-Fired','Revolver','Single Action','DA/SA','DAO'].indexOf(v)>=0;});
   var brands = Object.keys(checks).filter(function(v){return ['Glock','Sig Sauer','Smith & Wesson','Springfield Armory','Ruger','CZ','Walther','Taurus','Beretta','H&K','Daniel Defense','Kimber','Nighthawk','FN America'].indexOf(v)>=0;});
   var frames = Object.keys(checks).filter(function(v){return ['Subcompact','Compact','Full-Size','Long Slide'].indexOf(v)>=0;});

@@ -278,12 +278,26 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
         <div class="fopt"><input type="checkbox" value=".308/7.62" onchange="filterProducts()"><label>.308 / 7.62 NATO</label></div>
         <div class="fopt"><input type="checkbox" value=".300 BLK" onchange="filterProducts()"><label>.300 Blackout</label></div>
         <div class="fopt"><input type="checkbox" value="6.5 Creedmoor" onchange="filterProducts()"><label>6.5 Creedmoor</label></div>
-        <div class="fopt"><input type="checkbox" value=".22 LR" onchange="filterProducts()"><label>.22 LR</label></div>
+        <div class="fopt"><input type="checkbox" value="6.5 PRC" onchange="filterProducts()"><label>6.5 PRC</label></div>
+        <div class="fopt"><input type="checkbox" value=".270 Win" onchange="filterProducts()"><label>.270 Winchester</label></div>
         <div class="fopt"><input type="checkbox" value=".30-06" onchange="filterProducts()"><label>.30-06 Springfield</label></div>
         <div class="fopt"><input type="checkbox" value=".243 Win" onchange="filterProducts()"><label>.243 Winchester</label></div>
+        <div class="fopt"><input type="checkbox" value="7mm-08" onchange="filterProducts()"><label>7mm-08 Remington</label></div>
+        <div class="fopt"><input type="checkbox" value="7mm PRC" onchange="filterProducts()"><label>7mm PRC</label></div>
+        <div class="fopt"><input type="checkbox" value=".300 Win Mag" onchange="filterProducts()"><label>.300 Win Mag</label></div>
+        <div class="fopt"><input type="checkbox" value=".350 Legend" onchange="filterProducts()"><label>.350 Legend</label></div>
+        <div class="fopt"><input type="checkbox" value=".450 Bushmaster" onchange="filterProducts()"><label>.450 Bushmaster</label></div>
+        <div class="fopt"><input type="checkbox" value=".45-70" onchange="filterProducts()"><label>.45-70 Government</label></div>
+        <div class="fopt"><input type="checkbox" value=".44 Mag" onchange="filterProducts()"><label>.44 Magnum</label></div>
+        <div class="fopt"><input type="checkbox" value=".357 Mag" onchange="filterProducts()"><label>.357 Magnum</label></div>
+        <div class="fopt"><input type="checkbox" value=".38 Spl" onchange="filterProducts()"><label>.38 Special</label></div>
+        <div class="fopt"><input type="checkbox" value=".22-250" onchange="filterProducts()"><label>.22-250 Remington</label></div>
+        <div class="fopt"><input type="checkbox" value=".22 WMR" onchange="filterProducts()"><label>.22 WMR</label></div>
+        <div class="fopt"><input type="checkbox" value=".22 LR" onchange="filterProducts()"><label>.22 LR</label></div>
         <div class="fopt"><input type="checkbox" value="7.62x39" onchange="filterProducts()"><label>7.62x39mm</label></div>
         <div class="fopt"><input type="checkbox" value=".338 Lapua" onchange="filterProducts()"><label>.338 Lapua Mag</label></div>
         <div class="fopt"><input type="checkbox" value="6mm ARC" onchange="filterProducts()"><label>6mm ARC</label></div>
+        <div class="fopt"><input type="checkbox" value="9mm" onchange="filterProducts()"><label>9mm (Carbine/PCC)</label></div>
       </div>
     </div>
 
@@ -536,12 +550,26 @@ var CALIBER_KEYS={
   '.308/7.62':['.308','308 win','7.62x51','7.62 nato'],
   '.300 BLK':['300 blk','300 blackout'],
   '6.5 Creedmoor':['6.5 creedmoor','6.5cm'],
-  '.22 LR':['.22 lr','22lr','22 lr'],
-  '.30-06':['30-06'],
+  '6.5 PRC':['6.5 prc'],
+  '.270 Win':['.270 win','270 win','270 winchester','.270 winchester'],
+  '.30-06':['30-06','.30-06'],
   '.243 Win':['.243 win','243 win','.243 winchester'],
+  '7mm-08':['7mm-08','7mm/08'],
+  '7mm PRC':['7mm prc'],
+  '.300 Win Mag':['300 win mag','.300 win mag','.300wm'],
+  '.350 Legend':['350 legend','.350 legend'],
+  '.450 Bushmaster':['450 bushmaster','.450 bushmaster'],
+  '.45-70':['.45-70','45-70','45 70 govt','45/70'],
+  '.44 Mag':['.44 mag','44 mag','.44 magnum','44 magnum'],
+  '.357 Mag':['.357 mag','357 mag','.357 magnum'],
+  '.38 Spl':['.38 special','38 special','.38 spl','38 spl'],
+  '.22-250':['22-250','.22-250'],
+  '.22 WMR':['.22 wmr','22 wmr','.22 mag','22 wmr','22 magnum'],
+  '.22 LR':['.22 lr','22lr','22 lr'],
   '7.62x39':['7.62x39'],
   '.338 Lapua':['338 lapua','338 lm'],
-  '6mm ARC':['6mm arc']
+  '6mm ARC':['6mm arc'],
+  '9mm':['9mm']
 };
 function _caliberMatch(p,cal){var s=(p.name+' '+(p.sub||'')+' '+(p.caliber||'')).toLowerCase();var keys=CALIBER_KEYS[cal]||[cal.toLowerCase()];return keys.some(function(k){return s.indexOf(k)>=0;});}
 
@@ -551,7 +579,7 @@ function filterProducts(){
   var search=(document.getElementById('nav-srch').value||'').toLowerCase();
   var checks={};
   document.querySelectorAll('.filter-body input[type=checkbox]:checked').forEach(function(cb){checks[cb.value]=true;});
-  var calibers=Object.keys(checks).filter(function(v){return ['.223','5.56','.308/7.62','.300 BLK','6.5 Creedmoor','.22 LR','.30-06','.243 Win','7.62x39','.338 Lapua','6mm ARC'].indexOf(v)>=0;});
+  var calibers=Object.keys(checks).filter(function(v){return ['.223','5.56','.308/7.62','.300 BLK','6.5 Creedmoor','6.5 PRC','.270 Win','.30-06','.243 Win','7mm-08','7mm PRC','.300 Win Mag','.350 Legend','.450 Bushmaster','.45-70','.44 Mag','.357 Mag','.38 Spl','.22-250','.22 WMR','.22 LR','7.62x39','.338 Lapua','6mm ARC','9mm'].indexOf(v)>=0;});
   var actions=Object.keys(checks).filter(function(v){return ['Semi-Auto','Bolt-Action','Lever-Action','Single Shot','Pump-Action'].indexOf(v)>=0;});
   var platforms=Object.keys(checks).filter(function(v){return ['AR-15','AK','Precision','Hunting','Rimfire'].indexOf(v)>=0;});
   var brands=Object.keys(checks).filter(function(v){return ['Aero Precision','Daniel Defense','PSA','Ruger','Savage','Winchester','Remington','CMMG','Smith & Wesson','Sig Sauer','Springfield Armory','IWI','Colt','Henry','Bergara','Steyr','Tikka','Christensen Arms','Barrett','LWRC','FN America','Mossberg'].indexOf(v)>=0;});
