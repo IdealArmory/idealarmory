@@ -172,9 +172,17 @@ async function apiFetch(url) {
 }
 
 async function downloadText(url) {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Download failed: ${res.status}`);
-  return res.text();
+  const ctrl  = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 120000); // 2-minute timeout
+  try {
+    const res = await fetch(url, { signal: ctrl.signal });
+    clearTimeout(timer);
+    if (!res.ok) throw new Error(`Download failed: ${res.status}`);
+    return res.text();
+  } catch (err) {
+    clearTimeout(timer);
+    throw err;
+  }
 }
 
 // ── CSV parser (simple, handles quoted fields) ────────────────────────────────
@@ -252,7 +260,6 @@ function tryAdvancePage(url, currentPageNum) {
 }
 
 // Escalating backoff for network errors/timeouts: 5s, 10s, 20s, 30s, 30s, …
-// (401 rate-limit errors use WAIT_401_MS = 60s — kept separate)
 function netRetryWait(attempt) {
   const steps = [5000, 10000, 20000, 30000, 30000, 30000];
   return steps[Math.min(attempt - 1, steps.length - 1)];
@@ -261,11 +268,12 @@ function netRetryWait(attempt) {
 async function fetchViaItems() {
   console.log('--- Strategy 2: Paginated Items ---');
   const PAGE_SIZE      = 1000;  // 1 000 items per page
-  const DELAY_MS       = 1000;  // 1 s between successful pages (reduced from 3 s)
+  const DELAY_MS       = 1000;  // 1 s between successful pages
   const BATCH_SIZE     = 20;    // pause every 20 pages
-  const BATCH_PAUSE_MS = 5000;  // 5 s batch pause (reduced from 15 s)
-  const MAX_RETRIES    = 12;
-  const WAIT_401_MS    = 60000; // 60 s on 401
+  const BATCH_PAUSE_MS = 5000;  // 5 s batch pause
+  const MAX_RETRIES    = 12;    // max retries for network errors
+  const MAX_401_RETRIES = 2;    // 401 = likely expired/invalid credentials; fail fast
+  const WAIT_401_MS    = 15000; // 15 s wait between 401 retries (3 tries × 15s = 45s max)
   const FETCH_TIMEOUT  = 45000; // 45 s per request (reduced from 90 s — fail fast, retry sooner)
 
   let allItems = [];
@@ -314,10 +322,22 @@ async function fetchViaItems() {
                         err.message.includes('ETIMEDOUT') ||
                         err.message.includes('ENOTFOUND');
 
-        if ((is401 || isNet) && retries < MAX_RETRIES) {
+        if (is401) {
+          // 401 Unauthorized — likely expired/invalid credentials, not a transient rate limit.
+          // Fail fast: 2 retries at 15s each. If still 401, credentials need attention.
+          if (retries < MAX_401_RETRIES) {
+            retries++;
+            console.warn(`  401 Unauthorized (attempt ${retries}/${MAX_401_RETRIES}) — waiting ${WAIT_401_MS / 1000}s. Check IMPACT_ACCOUNT_SID / IMPACT_AUTH_TOKEN secrets if this persists.`);
+            await sleep(WAIT_401_MS);
+            retried = true;
+          } else {
+            console.error(`  401 Unauthorized after ${MAX_401_RETRIES} retries — credentials appear invalid or expired. Aborting.`);
+            throw err;
+          }
+        } else if (isNet && retries < MAX_RETRIES) {
           retries++;
-          const waitMs = is401 ? WAIT_401_MS : netRetryWait(retries);
-          const reason = is401 ? '401' : (isAbort ? 'timeout' : 'network error');
+          const waitMs = netRetryWait(retries);
+          const reason = isAbort ? 'timeout' : 'network error';
           console.warn(`  ${reason} (retry ${retries}/${MAX_RETRIES}) — waiting ${waitMs / 1000}s...`);
           await sleep(waitMs);
           retried = true;
@@ -333,7 +353,6 @@ async function fetchViaItems() {
           }
           // Cannot reconstruct next URL and/or not enough data yet — fail hard
           if (allItems.length > 100000) {
-            // We have a substantial portion of the catalog; save and proceed
             console.warn(`  Retries exhausted on page ${pageNum} with ${allItems.length} raw items — treating as end of catalog.`);
             return allItems;
           }
@@ -371,6 +390,13 @@ async function main() {
   try {
     rawItems = await fetchViaFiles();
   } catch (err) {
+    // 401 from Files = credentials are bad; don't waste time retrying via Items
+    if (err.message.includes('401')) {
+      console.error(`FATAL: Impact.com API returned 401 Unauthorized on the Files endpoint.`);
+      console.error(`Check that IMPACT_ACCOUNT_SID, IMPACT_AUTH_TOKEN, and IMPACT_CATALOG_ID`);
+      console.error(`GitHub secrets are correct and have not expired.`);
+      process.exit(1);
+    }
     console.warn(`Files strategy failed: ${err.message}`);
   }
 
