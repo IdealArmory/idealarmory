@@ -45,6 +45,8 @@ const FEEDS = [
   { src:'cyasupply',   idPfx:'cya_',     cat:'holsters',   file:'cyasupply-holsters.json'   },
   { src:'cyasupply',   idPfx:'cya_',     cat:'magazines',  file:'cyasupply-magazines.json'  },
   { src:'cyasupply',   idPfx:'cya_',     cat:'cleaning',   file:'cyasupply-cleaning.json'   },
+  // Lucky Gunner
+  { src:'luckygunner', idPfx:'lg_',      cat:'ammunition', file:'luckygunner-ammunition.json' },
 ];
 
 // ── Minimum price guard — skip obviously bogus / freebie entries ──────────────
@@ -184,7 +186,7 @@ function build() {
   });
 
   // 3. Sort: static/manual first, then by source, then by category, then price asc
-  const SRC_ORDER = { static:0, manual:0, eurooptic:1, bereli:2, impactguns:3, cyasupply:4 };
+  const SRC_ORDER = { static:0, manual:0, eurooptic:1, bereli:2, impactguns:3, cyasupply:4, luckygunner:5 };
   index.sort((a, b) => {
     const so = (SRC_ORDER[a.src]||9) - (SRC_ORDER[b.src]||9);
     if (so !== 0) return so;

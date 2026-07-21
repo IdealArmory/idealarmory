@@ -8,6 +8,7 @@ on:
       - "Refresh Bereli Catalog"
       - "Refresh Impact Guns Catalog"
       - "Refresh CYA Supply Catalog"
+      - "Refresh Lucky Gunner Catalog"
     types: [completed]
   # Allow manual rebuild from the Actions tab
   workflow_dispatch:

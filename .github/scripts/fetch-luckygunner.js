@@ -26,7 +26,11 @@
 const fs   = require('fs');
 const path = require('path');
 
-const FEED_URL = 'https://www.luckygunner.com/media/feeds/lg_feed_in_stock_only.xml';
+const FEED_URL    = 'https://www.luckygunner.com/media/feeds/lg_feed_in_stock_only.xml';
+const MAX_RETRIES = 3;
+const RETRY_MS    = 30_000;
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 // ── XML helpers ──────────────────────────────────────────────────────────────
 
@@ -140,21 +144,38 @@ async function main() {
   console.log(`Feed URL : ${FEED_URL}`);
   console.log(`Started  : ${new Date().toISOString()}\n`);
 
-  // Download feed
+  // Download feed (with retries for transient network errors)
   console.log('Downloading XML feed...');
   let xml;
-  try {
-    const res = await fetch(FEED_URL, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; IdealArmory/1.0; +https://idealarmory.com)',
-        'Accept': 'text/xml,application/xml,application/rss+xml,*/*',
-      },
-    });
-    if (!res.ok) throw new Error(`HTTP ${res.status} — ${res.statusText}`);
-    xml = await res.text();
-    console.log(`Downloaded: ${(xml.length / 1024).toFixed(1)} KB`);
-  } catch (err) {
-    console.error(`Feed download failed: ${err.message}`);
+  let lastErr;
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 120_000); // 2-min timeout
+      const res = await fetch(FEED_URL, {
+        signal: controller.signal,
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (compatible; IdealArmory/1.0; +https://idealarmory.com)',
+          'Accept': 'text/xml,application/xml,application/rss+xml,*/*',
+        },
+      });
+      clearTimeout(timer);
+      if (!res.ok) throw new Error(`HTTP ${res.status} — ${res.statusText}`);
+      xml = await res.text();
+      console.log(`Downloaded: ${(xml.length / 1024).toFixed(1)} KB`);
+      lastErr = null;
+      break;
+    } catch (err) {
+      lastErr = err;
+      console.warn(`  Attempt ${attempt}/${MAX_RETRIES} failed: ${err.message}`);
+      if (attempt < MAX_RETRIES) {
+        console.log(`  Retrying in ${RETRY_MS / 1000}s...`);
+        await sleep(RETRY_MS);
+      }
+    }
+  }
+  if (lastErr) {
+    console.error(`Feed download failed after ${MAX_RETRIES} attempts: ${lastErr.message}`);
     process.exit(1);
   }
 
