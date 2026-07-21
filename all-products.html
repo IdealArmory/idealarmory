@@ -874,6 +874,54 @@ async function loadAllCyaSupply() {
   }
 }
 
+async function loadAllLuckyGunner() {
+  try {
+    var items = await fetch('/data/luckygunner-ammunition.json')
+      .then(function(r){ return r.ok ? r.json() : []; })
+      .catch(function(){ return []; });
+    var upcMap = {};
+    ALL_PRODUCTS.forEach(function(p) { if (p.upc) upcMap[p.upc] = p; });
+    items.forEach(function(item) {
+      if (!item.price || item.price < 5 || !item.img) return;
+      var nu = item.upc ? String(parseInt(item.upc, 10)) : '';
+      if (nu && upcMap[nu]) {
+        var existing = upcMap[nu];
+        if (!existing.sellers.some(function(s){ return s.name === 'Lucky Gunner'; })) {
+          existing.sellers.push({name:'Lucky Gunner', price:item.price, stock:'in', url:item.url});
+          existing.sellers.sort(function(a,b){ return a.price - b.price; });
+        }
+        if (item.reviews > (existing.reviews || 0)) {
+          existing.stars = item.stars;
+          existing.reviews = item.reviews;
+        }
+      } else {
+        var newProd = {
+          id:       item.id,
+          upc:      item.upc || '',
+          brand:    item.brand,
+          name:     item.name,
+          sub:      item.caliber || '',
+          img:      item.img,
+          price:    item.price,
+          orig:     item.price,
+          inStock:  true,
+          stars:    item.stars || 0,
+          reviews:  item.reviews || 0,
+          badge:    '',
+          src:      'luckygunner',
+          category: 'ammunition',
+          sellers:  [{name:'Lucky Gunner', price:item.price, stock:'in', url:item.url}]
+        };
+        ALL_PRODUCTS.push(newProd);
+        if (nu) upcMap[nu] = newProd;
+      }
+    });
+    filterProducts();
+  } catch(e) {
+    console.warn('Lucky Gunner load failed:', e.message);
+  }
+}
+
 function getLowestPrice(p) {
   return Math.min(...p.sellers.map(function(s){return s.price;}));
 }
@@ -898,7 +946,7 @@ function renderGrid() {
     var idStr = typeof p.id === 'string' ? "'"+p.id+"'" : p.id;
     var low = getLowestPrice(p);
     var img = p.img ? '<img src="'+p.img+'" alt="'+p.name+'" loading="lazy">' : '<span class="img-ph">Image from retailer feed</span>';
-    var href = p.src==='eurooptic' ? '/product?src=eurooptic&id='+p.id.replace('eo_','')+'&cat='+(p.category||'') : p.src==='bereli' ? '/product?src=bereli&id='+encodeURIComponent(p.id.replace('bereli_',''))+'&cat='+(p.category||'') : p.src==='impactguns' ? '/product?src=impactguns&id='+encodeURIComponent(p.id.replace('ig_',''))+'&cat='+(p.category||'') : p.src==='cyasupply' ? '/product?src=cyasupply&id='+encodeURIComponent(p.id.replace('cya_',''))+'&cat='+(p.category||'holsters') : '/product?p='+slugify(p.name);
+    var href = p.src==='eurooptic' ? '/product?src=eurooptic&id='+p.id.replace('eo_','')+'&cat='+(p.category||'') : p.src==='bereli' ? '/product?src=bereli&id='+encodeURIComponent(p.id.replace('bereli_',''))+'&cat='+(p.category||'') : p.src==='impactguns' ? '/product?src=impactguns&id='+encodeURIComponent(p.id.replace('ig_',''))+'&cat='+(p.category||'') : p.src==='cyasupply' ? '/product?src=cyasupply&id='+encodeURIComponent(p.id.replace('cya_',''))+'&cat='+(p.category||'holsters') : p.src==='luckygunner' ? '/product?src=luckygunner&id='+encodeURIComponent(p.id.replace('lg_',''))+'&cat=ammunition' : '/product?p='+slugify(p.name);
     var catTag = p.category ? '<span class="cat-tag">'+p.category.replace(/-/g,' ')+'</span>' : '';
     return '<div class="prod-card" onclick="viewProduct('+idStr+')">'
       +(p.badge==='best'?'<span class="badge-best">Best Seller</span>':'')
@@ -1407,7 +1455,7 @@ function saveItem(id){
     if (ms) ms.value = q;
   }
 })();
-loadAllEuroOptic().then(function(){ return loadAllBereli(); }).then(function(){ return loadAllImpactGuns(); }).then(function(){ return loadAllCyaSupply(); });
+loadAllEuroOptic().then(function(){ return loadAllBereli(); }).then(function(){ return loadAllImpactGuns(); }).then(function(){ return loadAllCyaSupply(); }).then(function(){ return loadAllLuckyGunner(); });
 </script>
 <script src="/js/search-autocomplete.js"></script>
 </body>
