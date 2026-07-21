@@ -14,10 +14,12 @@ const path = require('path');
 // ── Config ────────────────────────────────────────────────────────────────────
 const BASE_URL    = 'https://www.cyasupply.com';
 const AFF_PARAM   = '?bg_ref=6mIW8B3buQ';
-const PAGE_LIMIT  = 250;      // Shopify max per page
+const PAGE_LIMIT    = 250;    // Shopify max per page
 const FETCH_TIMEOUT = 20000;
 const PAGE_DELAY_MS = 1000;   // polite delay between pages
-const USER_AGENT  = 'Mozilla/5.0 (compatible; IdealArmory/1.0; +https://idealarmory.com)';
+const MAX_RETRIES   = 3;
+const RETRY_MS      = 20000;
+const USER_AGENT    = 'Mozilla/5.0 (compatible; IdealArmory/1.0; +https://idealarmory.com)';
 
 // Category detection keywords (checked against title + product_type + tags)
 const CAT_RULES = [
@@ -48,20 +50,28 @@ function affiliateUrl(handle) {
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 async function fetchJson(url) {
-  const ctrl  = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT);
-  try {
-    const res = await fetch(url, {
-      headers: { 'User-Agent': USER_AGENT, 'Accept': 'application/json' },
-      signal: ctrl.signal,
-    });
-    clearTimeout(timer);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return await res.json();
-  } catch (err) {
-    clearTimeout(timer);
-    throw err;
+  let lastErr;
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    const ctrl  = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT);
+    try {
+      const res = await fetch(url, {
+        headers: { 'User-Agent': USER_AGENT, 'Accept': 'application/json' },
+        signal: ctrl.signal,
+      });
+      clearTimeout(timer);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.json();
+    } catch (err) {
+      clearTimeout(timer);
+      lastErr = err;
+      if (attempt < MAX_RETRIES) {
+        console.warn(`  Attempt ${attempt}/${MAX_RETRIES} failed: ${err.message} — retrying in ${RETRY_MS / 1000}s...`);
+        await sleep(RETRY_MS);
+      }
+    }
   }
+  throw lastErr;
 }
 
 // ── Transform a Shopify product → our schema ──────────────────────────────────

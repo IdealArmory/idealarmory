@@ -7,7 +7,7 @@ on:
       - "Refresh EuroOptic Catalog"
       - "Refresh Bereli Catalog"
       - "Refresh Impact Guns Catalog"
-      - "Refresh CYA Supply Catalog"
+      - "Refresh CYA Supply Co. Catalog"
       - "Refresh Lucky Gunner Catalog"
     types: [completed]
   # Allow manual rebuild from the Actions tab
