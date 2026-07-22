@@ -597,7 +597,7 @@ function viewProduct(id) {
   else if (p.src==='luckygunner') { window.location.href='/product?src=luckygunner&id='+encodeURIComponent(String(p.id).replace('lg_',''))+'&cat=ammunition'; }
   else { window.location.href='/product?p='+slugify(p.name); }
 }
-filteredProducts=ALL_PRODUCTS.slice();sortAndRender();renderSuggested();loadEuroOptic().then(function(){return loadBereli();}).then(function(){return loadLuckyGunner();}).then(function(){return loadImpactGuns();});
+filteredProducts=ALL_PRODUCTS.slice();sortAndRender();loadEuroOptic().then(function(){return loadBereli();}).then(function(){return loadLuckyGunner();}).then(function(){return loadImpactGuns();});
 </script>
 <script src="/js/search-autocomplete.js"></script>
 </body>
