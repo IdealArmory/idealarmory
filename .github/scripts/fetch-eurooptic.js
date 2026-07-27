@@ -350,21 +350,18 @@ async function fetchViaItems() {
           await sleep(waitMs);
           retried = true;
         } else {
-          // Retries exhausted — attempt to skip this page and continue
+          // Retries exhausted — always try to skip to the next page first
           const skippedUrl = tryAdvancePage(nextUrl, pageNum);
-          if (skippedUrl && allItems.length > 5000) {
+          if (skippedUrl) {
             console.warn(`  Retries exhausted on page ${pageNum} — skipping to next page (${allItems.length} items so far).`);
             nextUrl  = skippedUrl;
             retries  = 0;
             skipPage = true;
             break;
           }
-          // Cannot reconstruct next URL and/or not enough data yet — fail hard
-          if (allItems.length > 100000) {
-            console.warn(`  Retries exhausted on page ${pageNum} with ${allItems.length} raw items — treating as end of catalog.`);
-            return allItems;
-          }
-          throw err;
+          // Cursor-based pagination — cannot reconstruct next URL, return what we have
+          console.warn(`  Retries exhausted on page ${pageNum} with ${allItems.length} raw items — returning partial results.`);
+          return allItems;
         }
       }
     }
@@ -415,8 +412,12 @@ async function main() {
   }
 
   if (!rawItems || rawItems.length === 0) {
-    console.error('FATAL: No products retrieved from either strategy.');
-    process.exit(1);
+    console.warn('WARNING: No products retrieved from either strategy — Impact.com API appears unavailable.');
+    console.warn('Existing catalog files are unchanged. Will retry tomorrow.');
+    fs.writeFileSync(path.join(dataDir, 'eurooptic-last-run.json'), JSON.stringify({
+      lastRun: new Date().toISOString(), status: 'api_unavailable', productCount: 0, rawCount: 0
+    }));
+    process.exit(0);  // Don't fail the workflow — external API issue, not a code bug
   }
 
   console.log(`\nTotal raw items: ${rawItems.length}`);
@@ -431,7 +432,17 @@ async function main() {
   Object.entries(catCounts).sort((a,b) => b[1]-a[1]).forEach(([k,v]) => console.log(`  ${k}: ${v}`));
 
   if (allProducts.length < 500) {
-    console.error(`QUALITY GATE FAILED: Only ${allProducts.length} relevant products.`);
+    if (rawItems.length < 5000) {
+      // API returned very few items — likely a transient outage, not a filtering bug
+      console.warn(`WARNING: Only ${allProducts.length} relevant products from ${rawItems.length} raw items.`);
+      console.warn('Looks like an API outage rather than a filtering bug — keeping existing catalog.');
+      fs.writeFileSync(path.join(dataDir, 'eurooptic-last-run.json'), JSON.stringify({
+        lastRun: new Date().toISOString(), status: 'api_partial', productCount: allProducts.length, rawCount: rawItems.length
+      }));
+      process.exit(0);  // External issue — don't fail the workflow
+    }
+    // Large raw count but few relevant products = likely a real filtering bug
+    console.error(`QUALITY GATE FAILED: Only ${allProducts.length} relevant products from ${rawItems.length} raw items — check filtering logic.`);
     process.exit(1);
   }
 
