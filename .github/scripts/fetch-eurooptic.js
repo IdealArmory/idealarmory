@@ -271,10 +271,12 @@ async function fetchViaItems() {
   const DELAY_MS       = 1000;  // 1 s between successful pages
   const BATCH_SIZE     = 20;    // pause every 20 pages
   const BATCH_PAUSE_MS = 5000;  // 5 s batch pause
-  const MAX_RETRIES    = 12;    // max retries for network errors
+  const MAX_RETRIES    = 6;     // max retries for network errors (reduced: 6×backoff ≈ 2 min/page max)
   const MAX_401_RETRIES = 2;    // 401 = likely expired/invalid credentials; fail fast
   const WAIT_401_MS    = 15000; // 15 s wait between 401 retries (3 tries × 15s = 45s max)
   const FETCH_TIMEOUT  = 45000; // 45 s per request (reduced from 90 s — fail fast, retry sooner)
+  const TIME_BUDGET_MS = 55 * 60 * 1000; // 55 min hard ceiling — exit gracefully before 90-min Actions kill
+  const startTime      = Date.now();
 
   let allItems = [];
   let pageNum  = 1;
@@ -282,6 +284,12 @@ async function fetchViaItems() {
   let retries  = 0;
 
   while (nextUrl) {
+    const elapsed = Date.now() - startTime;
+    if (elapsed > TIME_BUDGET_MS) {
+      console.warn(`  [Time budget] 55 min reached on page ${pageNum} (${allItems.length} raw items) — stopping pagination to write partial results.`);
+      break;
+    }
+
     if (pageNum > 1 && (pageNum - 1) % BATCH_SIZE === 0) {
       console.log(`  [Batch pause] Waiting ${BATCH_PAUSE_MS / 1000}s...`);
       await sleep(BATCH_PAUSE_MS);
