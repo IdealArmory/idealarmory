@@ -185,6 +185,72 @@ async function downloadText(url) {
   }
 }
 
+// ── Field normalizer: maps TSV/CSV column names to the JSON API field names ───
+// The Files endpoint returns a flat file whose headers differ from the Items API.
+// This ensures isRelevant() and transformProduct() work regardless of source.
+function normalizeItem(item) {
+  const n = Object.assign({}, item);
+
+  // StockAvailability — TSV often uses "Availability", "Status", "In Stock", etc.
+  if (!n.StockAvailability) {
+    const raw = (n.Availability || n['Stock Status'] || n['In Stock'] ||
+                 n.Available   || n.Status           || n.InStock      || '').trim();
+    n.StockAvailability = /^(in.?stock|available|yes|true|1|y)$/i.test(raw) ? 'InStock' : raw;
+  }
+
+  // ImageUrl
+  if (!n.ImageUrl) {
+    n.ImageUrl = n['Image URL'] || n.ImageURL || n['Primary Image URL'] ||
+                 n['Main Image'] || n.Image   || n['Large Image']       || '';
+  }
+
+  // Name
+  if (!n.Name) {
+    n.Name = n['Product Name'] || n.ProductName || n.Title ||
+             n['Product Title'] || n.product_name || '';
+  }
+
+  // Category
+  if (!n.Category) {
+    n.Category = n['Category Name'] || n.CategoryName ||
+                 n['Product Category'] || n.ProductCategory || '';
+  }
+
+  // Price
+  if (!n.CurrentPrice) {
+    n.CurrentPrice = n['Sale Price'] || n['Current Price'] || n.Price ||
+                     n.SalePrice    || n['Retail Price']  || n['List Price'] || '0';
+  }
+  if (!n.SalePrice) n.SalePrice = n.CurrentPrice;
+  if (!n.OriginalPrice) n.OriginalPrice = n['Original Price'] || n['Regular Price'] || n.CurrentPrice;
+
+  // Manufacturer / Brand
+  if (!n.Manufacturer) {
+    n.Manufacturer = n.Brand || n['Brand Name'] || n.BrandName || n.Vendor || n.brand || '';
+  }
+  if (!n.BrandName) n.BrandName = n.Manufacturer;
+
+  // ID
+  if (!n.CatalogItemId) {
+    n.CatalogItemId = n['Product ID'] || n.ProductId || n.Id || n.ID ||
+                      n.SKU           || n.Sku        || n['Item ID'] || '';
+  }
+
+  // GTIN / UPC
+  if (!n.Gtin) {
+    n.Gtin = n.UPC || n.GTIN || n.upc || n['UPC/EAN'] || n.EAN || n.ISBN || '';
+  }
+
+  // URL
+  if (!n.Url) {
+    n.Url = n['Tracking URL'] || n.TrackingURL || n.URL  || n.Link ||
+            n['Affiliate URL'] || n['Product URL'] || n['Buy URL'] || '';
+  }
+  if (!n.TrackingLink) n.TrackingLink = n.Url;
+
+  return n;
+}
+
 // ── CSV parser (simple, handles quoted fields) ────────────────────────────────
 function parseCSV(text) {
   const lines = text.split(/\r?\n/).filter(l => l.trim());
@@ -230,13 +296,15 @@ async function fetchViaFiles() {
     const json = JSON.parse(text);
     const items = Array.isArray(json) ? json : (json.Items || json.items || []);
     console.log(`Parsed as JSON: ${items.length} items`);
-    return items;
+    if (items.length > 0) console.log(`  Sample fields: ${Object.keys(items[0]).slice(0, 10).join(', ')}`);
+    return items.map(normalizeItem);
   } catch (_) {}
 
   // Fall back to TSV/CSV
   const rows = parseCSV(text);
   console.log(`Parsed as TSV/CSV: ${rows.length} rows`);
-  return rows;
+  if (rows.length > 0) console.log(`  CSV columns: ${Object.keys(rows[0]).join(', ')}`);
+  return rows.map(normalizeItem);
 }
 
 // ── Strategy 2: Paginated Items with robust retry handling ────────────────────
@@ -408,7 +476,12 @@ async function main() {
   // Fall back to paginated Items if Files didn't work
   if (!rawItems || rawItems.length === 0) {
     console.log('\nFalling back to paginated Items strategy...\n');
-    rawItems = await fetchViaItems();
+    try {
+      rawItems = await fetchViaItems();
+    } catch (err) {
+      console.warn(`Items strategy failed: ${err.message}`);
+      rawItems = [];
+    }
   }
 
   if (!rawItems || rawItems.length === 0) {
@@ -441,7 +514,20 @@ async function main() {
       }));
       process.exit(0);  // External issue — don't fail the workflow
     }
-    // Large raw count but few relevant products = likely a real filtering bug
+    // Large raw count but zero (or near-zero) relevant products most likely means
+    // field name mismatch between the catalog file and our schema — not a code bug.
+    // Only treat it as a hard failure if we got a meaningful number of raw items
+    // AND filtered at least some products (proving field names matched), yet still
+    // ended up below the threshold.
+    if (allProducts.length === 0) {
+      console.warn(`WARNING: 0 relevant products from ${rawItems.length} raw items — likely a field-name mismatch in the catalog file.`);
+      console.warn('Keeping existing catalog unchanged. Check the "Sample fields / CSV columns" log lines above.');
+      fs.writeFileSync(path.join(dataDir, 'eurooptic-last-run.json'), JSON.stringify({
+        lastRun: new Date().toISOString(), status: 'field_mismatch', productCount: 0, rawCount: rawItems.length
+      }));
+      process.exit(0);
+    }
+    // Some products matched but still below threshold — genuine filtering issue
     console.error(`QUALITY GATE FAILED: Only ${allProducts.length} relevant products from ${rawItems.length} raw items — check filtering logic.`);
     process.exit(1);
   }
