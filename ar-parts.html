@@ -172,6 +172,7 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
 .load-more-btn{background:var(--white);border:2px solid var(--navy);color:var(--navy);font-family:'Inter',sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:11px 32px;cursor:pointer;transition:all .15s}
 .load-more-btn:hover{background:var(--navy);color:var(--white)}
 .eo-badge{position:absolute;top:8px;right:8px;background:var(--gold);color:var(--navy-deep);font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;padding:2px 6px}
+.fopt-disabled{display:none}
 </style>
 </head>
 <body>
@@ -256,22 +257,22 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
     </div>
     <div class="filter-sec">
       <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Part Type</span><span class="ftog open">&#8964;</span></div>
-      <div class="filter-body">
-        <div class="fopt"><input type="checkbox" value="Complete Upper" onchange="filterProducts()"><label>Complete Upper Receiver</label></div>
-        <div class="fopt"><input type="checkbox" value="Complete Lower" onchange="filterProducts()"><label>Complete Lower Receiver</label></div>
+      <div class="filter-body" data-group="parttype">
         <div class="fopt"><input type="checkbox" value="Barrel" onchange="filterProducts()"><label>Barrel</label></div>
         <div class="fopt"><input type="checkbox" value="BCG" onchange="filterProducts()"><label>Bolt Carrier Group (BCG)</label></div>
-        <div class="fopt"><input type="checkbox" value="Handguard" onchange="filterProducts()"><label>Handguard / Rail</label></div>
-        <div class="fopt"><input type="checkbox" value="Trigger" onchange="filterProducts()"><label>Trigger Group</label></div>
-        <div class="fopt"><input type="checkbox" value="Stock" onchange="filterProducts()"><label>Stock / Brace</label></div>
         <div class="fopt"><input type="checkbox" value="Buffer" onchange="filterProducts()"><label>Buffer / Buffer Tube</label></div>
-        <div class="fopt"><input type="checkbox" value="Muzzle Device" onchange="filterProducts()"><label>Muzzle Device</label></div>
+        <div class="fopt"><input type="checkbox" value="Complete Lower" onchange="filterProducts()"><label>Complete Lower Receiver</label></div>
+        <div class="fopt"><input type="checkbox" value="Complete Upper" onchange="filterProducts()"><label>Complete Upper Receiver</label></div>
+        <div class="fopt"><input type="checkbox" value="Handguard" onchange="filterProducts()"><label>Handguard / Rail</label></div>
         <div class="fopt"><input type="checkbox" value="Lower Parts Kit" onchange="filterProducts()"><label>Lower Parts Kit</label></div>
+        <div class="fopt"><input type="checkbox" value="Muzzle Device" onchange="filterProducts()"><label>Muzzle Device</label></div>
+        <div class="fopt"><input type="checkbox" value="Stock" onchange="filterProducts()"><label>Stock / Brace</label></div>
+        <div class="fopt"><input type="checkbox" value="Trigger" onchange="filterProducts()"><label>Trigger Group</label></div>
       </div>
     </div>
     <div class="filter-sec">
       <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Caliber</span><span class="ftog open">&#8964;</span></div>
-      <div class="filter-body">
+      <div class="filter-body" data-group="caliber">
         <div class="fopt"><input type="checkbox" value=".223/5.56" onchange="filterProducts()"><label>.223 / 5.56 NATO</label></div>
         <div class="fopt"><input type="checkbox" value=".300 BLK" onchange="filterProducts()"><label>.300 Blackout</label></div>
         <div class="fopt"><input type="checkbox" value="6.5 Creedmoor" onchange="filterProducts()"><label>6.5 Creedmoor</label></div>
@@ -280,25 +281,25 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
     </div>
     <div class="filter-sec" style="border-bottom:none">
       <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Manufacturer</span><span class="ftog open">&#8964;</span></div>
-      <div class="filter-body">
+      <div class="filter-body" data-group="brand">
         <div class="fopt"><input type="checkbox" value="Aero Precision" onchange="filterProducts()"><label>Aero Precision</label></div>
-        <div class="fopt"><input type="checkbox" value="BCM" onchange="filterProducts()"><label>Bravo Company (BCM)</label></div>
-        <div class="fopt"><input type="checkbox" value="PSA" onchange="filterProducts()"><label>Palmetto State (PSA)</label></div>
-        <div class="fopt"><input type="checkbox" value="Daniel Defense" onchange="filterProducts()"><label>Daniel Defense</label></div>
-        <div class="fopt"><input type="checkbox" value="Geissele" onchange="filterProducts()"><label>Geissele Automatics</label></div>
-        <div class="fopt"><input type="checkbox" value="LaRue" onchange="filterProducts()"><label>LaRue Tactical</label></div>
-        <div class="fopt"><input type="checkbox" value="Magpul" onchange="filterProducts()"><label>Magpul</label></div>
-        <div class="fopt"><input type="checkbox" value="Faxon" onchange="filterProducts()"><label>Faxon Firearms</label></div>
         <div class="fopt"><input type="checkbox" value="Ballistic Advantage" onchange="filterProducts()"><label>Ballistic Advantage</label></div>
-        <div class="fopt"><input type="checkbox" value="Radian Weapons" onchange="filterProducts()"><label>Radian Weapons</label></div>
+        <div class="fopt"><input type="checkbox" value="BCM" onchange="filterProducts()"><label>Bravo Company (BCM)</label></div>
+        <div class="fopt"><input type="checkbox" value="Daniel Defense" onchange="filterProducts()"><label>Daniel Defense</label></div>
+        <div class="fopt"><input type="checkbox" value="Faxon" onchange="filterProducts()"><label>Faxon Firearms</label></div>
+        <div class="fopt"><input type="checkbox" value="Geissele" onchange="filterProducts()"><label>Geissele Automatics</label></div>
         <div class="fopt"><input type="checkbox" value="Grip Pod" onchange="filterProducts()"><label>Grip Pod Systems</label></div>
+        <div class="fopt"><input type="checkbox" value="LaRue" onchange="filterProducts()"><label>LaRue Tactical</label></div>
+        <div class="fopt"><input type="checkbox" value="LWRC" onchange="filterProducts()"><label>LWRC International</label></div>
+        <div class="fopt"><input type="checkbox" value="Magpul" onchange="filterProducts()"><label>Magpul</label></div>
+        <div class="fopt"><input type="checkbox" value="Noveske" onchange="filterProducts()"><label>Noveske Rifleworks</label></div>
+        <div class="fopt"><input type="checkbox" value="PSA" onchange="filterProducts()"><label>Palmetto State (PSA)</label></div>
+        <div class="fopt"><input type="checkbox" value="Radian Weapons" onchange="filterProducts()"><label>Radian Weapons</label></div>
+        <div class="fopt"><input type="checkbox" value="RISE Armament" onchange="filterProducts()"><label>RISE Armament</label></div>
         <div class="fopt"><input type="checkbox" value="Rugged" onchange="filterProducts()"><label>Rugged Suppressors</label></div>
         <div class="fopt"><input type="checkbox" value="Seekins" onchange="filterProducts()"><label>Seekins Precision</label></div>
         <div class="fopt"><input type="checkbox" value="Silencerco" onchange="filterProducts()"><label>SilencerCo</label></div>
-        <div class="fopt"><input type="checkbox" value="LWRC" onchange="filterProducts()"><label>LWRC International</label></div>
         <div class="fopt"><input type="checkbox" value="SureFire" onchange="filterProducts()"><label>SureFire</label></div>
-        <div class="fopt"><input type="checkbox" value="RISE Armament" onchange="filterProducts()"><label>RISE Armament</label></div>
-        <div class="fopt"><input type="checkbox" value="Noveske" onchange="filterProducts()"><label>Noveske Rifleworks</label></div>
       </div>
     </div>
   </aside>
@@ -440,6 +441,42 @@ function filterProducts(){
     return true;
   });
   sortAndRender();renderActiveFilters();
+  updateFilterAvailability();
+}
+function productMatchesState(p,state,priceMin,priceMax){
+  var low=getLowestPrice(p);
+  if(low<priceMin||low>priceMax)return false;
+  var ptypes=state.parttype||[];
+  var calibers=state.caliber||[];
+  var brands=state.brand||[];
+  if(calibers.length&&!calibers.some(function(cal){return _caliberMatch(p,cal);}))return false;
+  if(brands.length&&brands.indexOf(p.brand)<0)return false;
+  if(ptypes.length&&ptypes.indexOf(p.ptype)<0)return false;
+  return true;
+}
+function getActiveFilterState(){
+  var state={};
+  document.querySelectorAll('.filter-body[data-group] input[type=checkbox]:checked').forEach(function(cb){
+    var group=cb.closest('[data-group]').dataset.group;
+    if(!state[group])state[group]=[];
+    state[group].push(cb.value);
+  });
+  return state;
+}
+function updateFilterAvailability(){
+  var priceMin=parseFloat(document.getElementById('price-min').value)||0;
+  var priceMax=parseFloat(document.getElementById('price-max').value)||Infinity;
+  var activeState=getActiveFilterState();
+  document.querySelectorAll('.filter-body[data-group] input[type=checkbox]').forEach(function(cb){
+    if(cb.checked){cb.closest('.fopt').classList.remove('fopt-disabled');return;}
+    var group=cb.closest('[data-group]').dataset.group;
+    var testState={};
+    Object.keys(activeState).forEach(function(g){testState[g]=activeState[g].slice();});
+    if(!testState[group])testState[group]=[];
+    testState[group]=testState[group].concat([cb.value]);
+    var count=ALL_PRODUCTS.filter(function(p){return productMatchesState(p,testState,priceMin,priceMax);}).length;
+    cb.closest('.fopt').classList.toggle('fopt-disabled',count===0);
+  });
 }
 function liveSearch(v) {
   var ns=document.getElementById('nav-srch');
@@ -464,7 +501,7 @@ function _kitToast(msg){var t=document.getElementById('_ia_kt');if(!t){t=documen
 function _kitBadge(){try{var n=_kitLoad().length;var el=document.getElementById('nav-kit-count');if(el){el.textContent=n;el.style.display=n>0?'inline-flex':'none';}}catch(e){}}
 function saveItem(id){var p=(typeof ALL_PRODUCTS!=='undefined'?ALL_PRODUCTS:PRODUCTS).find(function(x){return x.id===id;});if(!p)return;var kit=_kitLoad(),pid=String(p.id);if(kit.some(function(i){return i.productId===pid;})){_kitToast('\u2714 Already in your kit');return;}if(kit.length>=_IA_KIT_MAX){_kitToast('Kit full \u2014 max '+_IA_KIT_MAX+' items');return;}var low=p.sellers&&p.sellers.length?p.sellers.reduce(function(a,b){return a.price<=b.price?a:b;}):{price:p.price||0,name:'Retailer',url:''};kit.push({uid:Date.now().toString(36)+Math.random().toString(36).substr(2,9),productId:pid,productName:p.name,brand:p.brand||'',sub:p.sub||'',img:p.img||'',price:low.price,retailer:low.name,label:'AR Parts',cat:'ar-parts',badge:p.badge||'',sellers:(p.sellers||[]).map(function(s){return{name:s.name,price:s.price,ship:s.ship||0,stock:s.stock||'in',url:s.url||''};})});_kitSave(kit);_kitBadge();_kitToast('\u2714 '+p.name+' added to kit');}
 function renderSuggested(){var pool=PRODUCTS.filter(function(p){return p.badge==='best';}).slice(0,6);document.getElementById('sugg-grid').innerHTML=pool.map(function(p){var low=getLowestPrice(p);return '<div class="sugg-card" onclick="viewProduct('+p.id+')">'+'<div class="sugg-brand">'+p.brand+'</div><div class="sugg-name">'+p.name+'</div><div class="sugg-price">$'+low.toFixed(2)+'</div><div class="sugg-reason">'+p.ptype+'</div></div>';}).join('');}
-filteredProducts=ALL_PRODUCTS.slice();sortAndRender();renderSuggested();loadEuroOptic().then(function(){loadBereli();});
+filteredProducts=ALL_PRODUCTS.slice();sortAndRender();updateFilterAvailability();renderSuggested();loadEuroOptic().then(function(){loadBereli();});
 </script>
 <script src="/js/search-autocomplete.js"></script>
 </body>

@@ -173,6 +173,7 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
   a.nav-logo svg{width:28px;height:28px;margin-right:6px}
   .nav-cat{padding:12px 14px;font-size:12px}
 }
+.fopt-disabled{display:none}
 </style>
 </head>
 <body>
@@ -259,28 +260,28 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
     </div>
     <div class="filter-sec">
       <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Gauge</span><span class="ftog open">&#8964;</span></div>
-      <div class="filter-body">
-        <div class="fopt"><input type="checkbox" value="12 Gauge" onchange="filterProducts()"><label>12 Gauge</label></div>
-        <div class="fopt"><input type="checkbox" value="20 Gauge" onchange="filterProducts()"><label>20 Gauge</label></div>
+      <div class="filter-body" data-group="caliber">
         <div class="fopt"><input type="checkbox" value=".410" onchange="filterProducts()"><label>.410 Bore</label></div>
-        <div class="fopt"><input type="checkbox" value="28 Gauge" onchange="filterProducts()"><label>28 Gauge</label></div>
+        <div class="fopt"><input type="checkbox" value="12 Gauge" onchange="filterProducts()"><label>12 Gauge</label></div>
         <div class="fopt"><input type="checkbox" value="16 Gauge" onchange="filterProducts()"><label>16 Gauge</label></div>
+        <div class="fopt"><input type="checkbox" value="20 Gauge" onchange="filterProducts()"><label>20 Gauge</label></div>
+        <div class="fopt"><input type="checkbox" value="28 Gauge" onchange="filterProducts()"><label>28 Gauge</label></div>
       </div>
     </div>
     <div class="filter-sec">
       <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Action Type</span><span class="ftog open">&#8964;</span></div>
-      <div class="filter-body">
+      <div class="filter-body" data-group="action">
+        <div class="fopt"><input type="checkbox" value="Lever-Action" onchange="filterProducts()"><label>Lever-Action</label></div>
+        <div class="fopt"><input type="checkbox" value="Over-Under" onchange="filterProducts()"><label>Over / Under</label></div>
         <div class="fopt"><input type="checkbox" value="Pump-Action" onchange="filterProducts()"><label>Pump-Action</label></div>
         <div class="fopt"><input type="checkbox" value="Semi-Auto" onchange="filterProducts()"><label>Semi-Automatic</label></div>
-        <div class="fopt"><input type="checkbox" value="Over-Under" onchange="filterProducts()"><label>Over / Under</label></div>
         <div class="fopt"><input type="checkbox" value="Side-by-Side" onchange="filterProducts()"><label>Side-by-Side</label></div>
         <div class="fopt"><input type="checkbox" value="Single Shot" onchange="filterProducts()"><label>Single Shot</label></div>
-        <div class="fopt"><input type="checkbox" value="Lever-Action" onchange="filterProducts()"><label>Lever-Action</label></div>
       </div>
     </div>
     <div class="filter-sec">
       <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Intended Use</span><span class="ftog open">&#8964;</span></div>
-      <div class="filter-body">
+      <div class="filter-body" data-group="use">
         <div class="fopt"><input type="checkbox" value="Home Defense" onchange="filterProducts()"><label>Home Defense</label></div>
         <div class="fopt"><input type="checkbox" value="Hunting" onchange="filterProducts()"><label>Hunting / Field</label></div>
         <div class="fopt"><input type="checkbox" value="Sport Shooting" onchange="filterProducts()"><label>Sport / Clay Shooting</label></div>
@@ -289,23 +290,23 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
     </div>
     <div class="filter-sec">
       <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Manufacturer</span><span class="ftog open">&#8964;</span></div>
-      <div class="filter-body">
-        <div class="fopt"><input type="checkbox" value="Mossberg" onchange="filterProducts()"><label>Mossberg</label></div>
-        <div class="fopt"><input type="checkbox" value="Remington" onchange="filterProducts()"><label>Remington</label></div>
-        <div class="fopt"><input type="checkbox" value="Winchester" onchange="filterProducts()"><label>Winchester</label></div>
-        <div class="fopt"><input type="checkbox" value="Browning" onchange="filterProducts()"><label>Browning</label></div>
-        <div class="fopt"><input type="checkbox" value="Beretta" onchange="filterProducts()"><label>Beretta</label></div>
+      <div class="filter-body" data-group="brand">
         <div class="fopt"><input type="checkbox" value="Benelli" onchange="filterProducts()"><label>Benelli</label></div>
+        <div class="fopt"><input type="checkbox" value="Beretta" onchange="filterProducts()"><label>Beretta</label></div>
+        <div class="fopt"><input type="checkbox" value="Browning" onchange="filterProducts()"><label>Browning</label></div>
         <div class="fopt"><input type="checkbox" value="CZ" onchange="filterProducts()"><label>CZ</label></div>
-        <div class="fopt"><input type="checkbox" value="Stoeger" onchange="filterProducts()"><label>Stoeger</label></div>
-        <div class="fopt"><input type="checkbox" value="Savage" onchange="filterProducts()"><label>Savage Stevens</label></div>
         <div class="fopt"><input type="checkbox" value="IWI" onchange="filterProducts()"><label>IWI</label></div>
         <div class="fopt"><input type="checkbox" value="JTS" onchange="filterProducts()"><label>JTS Group</label></div>
+        <div class="fopt"><input type="checkbox" value="Mossberg" onchange="filterProducts()"><label>Mossberg</label></div>
+        <div class="fopt"><input type="checkbox" value="Remington" onchange="filterProducts()"><label>Remington</label></div>
+        <div class="fopt"><input type="checkbox" value="Savage" onchange="filterProducts()"><label>Savage Stevens</label></div>
+        <div class="fopt"><input type="checkbox" value="Stoeger" onchange="filterProducts()"><label>Stoeger</label></div>
+        <div class="fopt"><input type="checkbox" value="Winchester" onchange="filterProducts()"><label>Winchester</label></div>
       </div>
     </div>
     <div class="filter-sec">
       <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Barrel Length</span><span class="ftog open">&#8964;</span></div>
-      <div class="filter-body">
+      <div class="filter-body" data-group="barrel">
         <div class="fopt"><input type="checkbox" value="barrel-u18" onchange="filterProducts()"><label>Under 18&quot; (Tactical)</label></div>
         <div class="fopt"><input type="checkbox" value="barrel-18-20" onchange="filterProducts()"><label>18&quot; &ndash; 20&quot;</label></div>
         <div class="fopt"><input type="checkbox" value="barrel-22-24" onchange="filterProducts()"><label>22&quot; &ndash; 24&quot;</label></div>
@@ -314,7 +315,7 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
     </div>
     <div class="filter-sec" style="border-bottom:none">
       <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Capacity</span><span class="ftog open">&#8964;</span></div>
-      <div class="filter-body">
+      <div class="filter-body" data-group="capacity">
         <div class="fopt"><input type="checkbox" value="cap-2" onchange="filterProducts()"><label>2 rounds (O/U, SxS)</label></div>
         <div class="fopt"><input type="checkbox" value="cap-3-4" onchange="filterProducts()"><label>3&ndash;4 rounds</label></div>
         <div class="fopt"><input type="checkbox" value="cap-5-6" onchange="filterProducts()"><label>5&ndash;6 rounds</label></div>
@@ -472,6 +473,48 @@ function filterProducts(){
     return true;
   });
   sortAndRender();renderActiveFilters();
+  updateFilterAvailability();
+}
+function productMatchesState(p,state,priceMin,priceMax){
+  var low=getLowestPrice(p);
+  if(low<priceMin||low>priceMax)return false;
+  var calibers=state.caliber||[];
+  var actions=state.action||[];
+  var uses=state.use||[];
+  var brands=state.brand||[];
+  var barrels=state.barrel||[];
+  var caps=state.capacity||[];
+  if(calibers.length&&calibers.indexOf(p.caliber)<0)return false;
+  if(actions.length&&actions.indexOf(p.action)<0)return false;
+  if(uses.length&&uses.indexOf(p.use)<0)return false;
+  if(brands.length&&brands.indexOf(p.brand)<0)return false;
+  if(barrels.length){var b=p.barrelIn;if(!barrels.some(function(v){if(v==='barrel-u18')return b<18;if(v==='barrel-18-20')return b>=18&&b<=20;if(v==='barrel-22-24')return b>=22&&b<=24;if(v==='barrel-o26')return b>=26;return false;}))return false;}
+  if(caps.length){var c=p.capacity;if(!caps.some(function(v){if(v==='cap-2')return c<=2;if(v==='cap-3-4')return c>=3&&c<=4;if(v==='cap-5-6')return c>=5&&c<=6;if(v==='cap-7p')return c>=7;return false;}))return false;}
+  return true;
+}
+function getActiveFilterState(){
+  var state={};
+  document.querySelectorAll('.filter-body[data-group] input[type=checkbox]:checked').forEach(function(cb){
+    var group=cb.closest('[data-group]').dataset.group;
+    if(!state[group])state[group]=[];
+    state[group].push(cb.value);
+  });
+  return state;
+}
+function updateFilterAvailability(){
+  var priceMin=parseFloat(document.getElementById('price-min').value)||0;
+  var priceMax=parseFloat(document.getElementById('price-max').value)||Infinity;
+  var activeState=getActiveFilterState();
+  document.querySelectorAll('.filter-body[data-group] input[type=checkbox]').forEach(function(cb){
+    if(cb.checked){cb.closest('.fopt').classList.remove('fopt-disabled');return;}
+    var group=cb.closest('[data-group]').dataset.group;
+    var testState={};
+    Object.keys(activeState).forEach(function(g){testState[g]=activeState[g].slice();});
+    if(!testState[group])testState[group]=[];
+    testState[group]=testState[group].concat([cb.value]);
+    var count=ALL_PRODUCTS.filter(function(p){return productMatchesState(p,testState,priceMin,priceMax);}).length;
+    cb.closest('.fopt').classList.toggle('fopt-disabled',count===0);
+  });
 }
 function liveSearch(v) {
   var ns=document.getElementById('nav-srch');
@@ -506,7 +549,7 @@ function saveItem(id){var p=ALL_PRODUCTS.find(function(x){return x.id===id;});if
 function renderSuggested(){var pool=PRODUCTS.filter(function(p){return p.badge==='best';}).slice(0,6);document.getElementById('sugg-grid').innerHTML=pool.map(function(p){var low=getLowestPrice(p);return '<div class="sugg-card" onclick="viewProduct('+p.id+')">'+'<div class="sugg-brand">'+p.brand+'</div>'+'<div class="sugg-name">'+p.name+'</div>'+'<div class="sugg-price">$'+low.toFixed(2)+'</div>'+'<div class="sugg-reason">'+p.action+' &bull; '+p.use+'</div></div>';}).join('');}
 function adaptImpactGunsProduct(p){var n=p.name.toLowerCase();var action='Pump-Action';if(/semi[\-\s]?auto/.test(n))action='Semi-Auto';else if(/over[\-\s]under|o\/u/.test(n))action='Over-Under';else if(/side[\-\s]by[\-\s]side|sxs/.test(n))action='Side-by-Side';else if(/single[\-\s]shot/.test(n))action='Single Shot';else if(/lever/.test(n))action='Lever-Action';var barrelIn=0;var bm=n.match(/(\d+(?:\.\d+)?)["\u201d]?\s*(?:inch|in\b)/);if(bm)barrelIn=parseFloat(bm[1]);var capacity=0;var cm=n.match(/(\d+)[\-\s]?(?:rd|round|shot)\b/);if(cm)capacity=parseInt(cm[1]);return{id:p.id,upc:p.upc||'',brand:p.brand||'',name:p.name,sub:'',img:p.img||'',price:p.price,orig:p.orig||p.price,inStock:p.inStock,stars:0,reviews:0,badge:'',src:'impactguns',action:action,barrelIn:barrelIn,capacity:capacity,sellers:[{name:'Impact Guns',price:p.price,stock:p.inStock?'in':'out',url:p.url}]};}
 async function loadImpactGuns(){try{var res=await fetch('/data/impactguns-shotguns.json');if(!res.ok)return;var items=await res.json();items=items.filter(function(p){return p.price>0&&p.img;});var upcMap={};ALL_PRODUCTS.forEach(function(p){if(p.upc)upcMap[p.upc]=p;});items.forEach(function(p){if(p.upc&&upcMap[p.upc]){var ep=upcMap[p.upc];if(!ep.sellers.some(function(s){return s.name==='Impact Guns';})){ep.sellers.push({name:'Impact Guns',price:p.price,stock:p.inStock?'in':'out',url:p.url});ep.sellers.sort(function(a,b){return a.price-b.price;});}}else{var np=adaptImpactGunsProduct(p);IG_PRODUCTS.push(np);if(p.upc)upcMap[p.upc]=np;}});ALL_PRODUCTS=PRODUCTS.concat(IG_PRODUCTS);filterProducts();}catch(e){console.warn('Impact Guns load failed:',e.message);}}
-filteredProducts=ALL_PRODUCTS.slice();sortAndRender();renderSuggested();loadImpactGuns();
+filteredProducts=ALL_PRODUCTS.slice();sortAndRender();updateFilterAvailability();renderSuggested();loadImpactGuns();
 </script>
 <script src="/js/search-autocomplete.js"></script>
 </body>

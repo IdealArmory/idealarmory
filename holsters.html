@@ -172,6 +172,7 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
 .load-more-btn{background:var(--white);border:2px solid var(--navy);color:var(--navy);font-family:'Inter',sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:11px 32px;cursor:pointer;transition:all .15s}
 .load-more-btn:hover{background:var(--navy);color:var(--white)}
 .eo-badge{position:absolute;top:8px;right:8px;background:var(--gold);color:var(--navy-deep);font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;padding:2px 6px}
+.fopt-disabled{display:none}
 </style>
 </head>
 <body>
@@ -256,50 +257,50 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
     </div>
     <div class="filter-sec">
       <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Carry Position</span><span class="ftog open">&#8964;</span></div>
-      <div class="filter-body">
-        <div class="fopt"><input type="checkbox" value="IWB" onchange="filterProducts()"><label>IWB (Inside Waistband)</label></div>
-        <div class="fopt"><input type="checkbox" value="OWB" onchange="filterProducts()"><label>OWB (Outside Waistband)</label></div>
+      <div class="filter-body" data-group="carry">
         <div class="fopt"><input type="checkbox" value="AIWB" onchange="filterProducts()"><label>AIWB (Appendix)</label></div>
         <div class="fopt"><input type="checkbox" value="Ankle" onchange="filterProducts()"><label>Ankle Holster</label></div>
-        <div class="fopt"><input type="checkbox" value="Shoulder" onchange="filterProducts()"><label>Shoulder Holster</label></div>
-        <div class="fopt"><input type="checkbox" value="Pocket" onchange="filterProducts()"><label>Pocket Holster</label></div>
         <div class="fopt"><input type="checkbox" value="Duty" onchange="filterProducts()"><label>Duty / Level II-III</label></div>
+        <div class="fopt"><input type="checkbox" value="IWB" onchange="filterProducts()"><label>IWB (Inside Waistband)</label></div>
+        <div class="fopt"><input type="checkbox" value="OWB" onchange="filterProducts()"><label>OWB (Outside Waistband)</label></div>
+        <div class="fopt"><input type="checkbox" value="Pocket" onchange="filterProducts()"><label>Pocket Holster</label></div>
+        <div class="fopt"><input type="checkbox" value="Shoulder" onchange="filterProducts()"><label>Shoulder Holster</label></div>
       </div>
     </div>
     <div class="filter-sec">
       <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Material</span><span class="ftog open">&#8964;</span></div>
-      <div class="filter-body">
+      <div class="filter-body" data-group="material">
+        <div class="fopt"><input type="checkbox" value="Hybrid" onchange="filterProducts()"><label>Hybrid (Kydex + Leather)</label></div>
         <div class="fopt"><input type="checkbox" value="Kydex" onchange="filterProducts()"><label>Kydex</label></div>
         <div class="fopt"><input type="checkbox" value="Leather" onchange="filterProducts()"><label>Leather</label></div>
-        <div class="fopt"><input type="checkbox" value="Hybrid" onchange="filterProducts()"><label>Hybrid (Kydex + Leather)</label></div>
         <div class="fopt"><input type="checkbox" value="Nylon" onchange="filterProducts()"><label>Nylon / Soft Shell</label></div>
         <div class="fopt"><input type="checkbox" value="Polymer" onchange="filterProducts()"><label>Polymer / ABS</label></div>
       </div>
     </div>
     <div class="filter-sec">
       <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Compatible Firearm</span><span class="ftog open">&#8964;</span></div>
-      <div class="filter-body">
-        <div class="fopt"><input type="checkbox" value="Glock" onchange="filterProducts()"><label>Glock (17/19/43)</label></div>
-        <div class="fopt"><input type="checkbox" value="Sig P365" onchange="filterProducts()"><label>SIG P365 / P320</label></div>
-        <div class="fopt"><input type="checkbox" value="S&amp;W" onchange="filterProducts()"><label>S&amp;W M&amp;P / Shield</label></div>
-        <div class="fopt"><input type="checkbox" value="Springfield" onchange="filterProducts()"><label>Springfield Hellcat / XD</label></div>
+      <div class="filter-body" data-group="type">
         <div class="fopt"><input type="checkbox" value="1911" onchange="filterProducts()"><label>1911 Platform</label></div>
+        <div class="fopt"><input type="checkbox" value="Glock" onchange="filterProducts()"><label>Glock (17/19/43)</label></div>
+        <div class="fopt"><input type="checkbox" value="S&amp;W" onchange="filterProducts()"><label>S&amp;W M&amp;P / Shield</label></div>
+        <div class="fopt"><input type="checkbox" value="Sig P365" onchange="filterProducts()"><label>SIG P365 / P320</label></div>
+        <div class="fopt"><input type="checkbox" value="Springfield" onchange="filterProducts()"><label>Springfield Hellcat / XD</label></div>
         <div class="fopt"><input type="checkbox" value="Universal" onchange="filterProducts()"><label>Universal Fit</label></div>
       </div>
     </div>
     <div class="filter-sec" style="border-bottom:none">
       <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Brand</span><span class="ftog open">&#8964;</span></div>
-      <div class="filter-body">
-        <div class="fopt"><input type="checkbox" value="Safariland" onchange="filterProducts()"><label>Safariland</label></div>
-        <div class="fopt"><input type="checkbox" value="Blackhawk" onchange="filterProducts()"><label>Blackhawk</label></div>
+      <div class="filter-body" data-group="brand">
         <div class="fopt"><input type="checkbox" value="Alien Gear" onchange="filterProducts()"><label>Alien Gear</label></div>
-        <div class="fopt"><input type="checkbox" value="Vedder" onchange="filterProducts()"><label>Vedder Holsters</label></div>
+        <div class="fopt"><input type="checkbox" value="Blackhawk" onchange="filterProducts()"><label>Blackhawk</label></div>
         <div class="fopt"><input type="checkbox" value="Bravo Concealment" onchange="filterProducts()"><label>Bravo Concealment</label></div>
         <div class="fopt"><input type="checkbox" value="CrossBreed" onchange="filterProducts()"><label>CrossBreed</label></div>
-        <div class="fopt"><input type="checkbox" value="Galco" onchange="filterProducts()"><label>Galco</label></div>
         <div class="fopt"><input type="checkbox" value="DeSantis" onchange="filterProducts()"><label>DeSantis</label></div>
-        <div class="fopt"><input type="checkbox" value="Houdini Holsters" onchange="filterProducts()"><label>Houdini Holsters</label></div>
         <div class="fopt"><input type="checkbox" value="Eclipse Holsters" onchange="filterProducts()"><label>Eclipse Holsters</label></div>
+        <div class="fopt"><input type="checkbox" value="Galco" onchange="filterProducts()"><label>Galco</label></div>
+        <div class="fopt"><input type="checkbox" value="Houdini Holsters" onchange="filterProducts()"><label>Houdini Holsters</label></div>
+        <div class="fopt"><input type="checkbox" value="Safariland" onchange="filterProducts()"><label>Safariland</label></div>
+        <div class="fopt"><input type="checkbox" value="Vedder" onchange="filterProducts()"><label>Vedder Holsters</label></div>
       </div>
     </div>
   </aside>
@@ -575,6 +576,44 @@ function filterProducts(){
     return true;
   });
   sortAndRender();renderActiveFilters();
+  updateFilterAvailability();
+}
+function productMatchesState(p,state,priceMin,priceMax){
+  var low=getLowestPrice(p);
+  if(low<priceMin||low>priceMax)return false;
+  var carries=state.carry||[];
+  var mats=state.material||[];
+  var fits=state.type||[];
+  var brands=state.brand||[];
+  if(fits.length&&!fits.some(function(f){return (p.name+' '+(p.sub||'')+' '+(p.fit||'')).toLowerCase().indexOf(f.toLowerCase())>=0;}))return false;
+  if(brands.length&&brands.indexOf(p.brand)<0)return false;
+  if(carries.length&&carries.indexOf(p.carry)<0)return false;
+  if(mats.length&&mats.indexOf(p.mat)<0)return false;
+  return true;
+}
+function getActiveFilterState(){
+  var state={};
+  document.querySelectorAll('.filter-body[data-group] input[type=checkbox]:checked').forEach(function(cb){
+    var group=cb.closest('[data-group]').dataset.group;
+    if(!state[group])state[group]=[];
+    state[group].push(cb.value);
+  });
+  return state;
+}
+function updateFilterAvailability(){
+  var priceMin=parseFloat(document.getElementById('price-min').value)||0;
+  var priceMax=parseFloat(document.getElementById('price-max').value)||Infinity;
+  var activeState=getActiveFilterState();
+  document.querySelectorAll('.filter-body[data-group] input[type=checkbox]').forEach(function(cb){
+    if(cb.checked){cb.closest('.fopt').classList.remove('fopt-disabled');return;}
+    var group=cb.closest('[data-group]').dataset.group;
+    var testState={};
+    Object.keys(activeState).forEach(function(g){testState[g]=activeState[g].slice();});
+    if(!testState[group])testState[group]=[];
+    testState[group]=testState[group].concat([cb.value]);
+    var count=ALL_PRODUCTS.filter(function(p){return productMatchesState(p,testState,priceMin,priceMax);}).length;
+    cb.closest('.fopt').classList.toggle('fopt-disabled',count===0);
+  });
 }
 function liveSearch(v) {
   var ns=document.getElementById('nav-srch');
@@ -599,7 +638,7 @@ function _kitToast(msg){var t=document.getElementById('_ia_kt');if(!t){t=documen
 function _kitBadge(){try{var n=_kitLoad().length;var el=document.getElementById('nav-kit-count');if(el){el.textContent=n;el.style.display=n>0?'inline-flex':'none';}}catch(e){}}
 function saveItem(id){var p=(typeof ALL_PRODUCTS!=='undefined'?ALL_PRODUCTS:PRODUCTS).find(function(x){return x.id===id;});if(!p)return;var kit=_kitLoad(),pid=String(p.id);if(kit.some(function(i){return i.productId===pid;})){_kitToast('\u2714 Already in your kit');return;}if(kit.length>=_IA_KIT_MAX){_kitToast('Kit full \u2014 max '+_IA_KIT_MAX+' items');return;}var low=p.sellers&&p.sellers.length?p.sellers.reduce(function(a,b){return a.price<=b.price?a:b;}):{price:p.price||0,name:'Retailer',url:''};kit.push({uid:Date.now().toString(36)+Math.random().toString(36).substr(2,9),productId:pid,productName:p.name,brand:p.brand||'',sub:p.sub||'',img:p.img||'',price:low.price,retailer:low.name,label:'Holsters',cat:'holsters',badge:p.badge||'',sellers:(p.sellers||[]).map(function(s){return{name:s.name,price:s.price,ship:s.ship||0,stock:s.stock||'in',url:s.url||''};})});_kitSave(kit);_kitBadge();_kitToast('\u2714 '+p.name+' added to kit');}
 function renderSuggested(){var pool=PRODUCTS.filter(function(p){return p.badge==='best';}).slice(0,6);document.getElementById('sugg-grid').innerHTML=pool.map(function(p){var low=getLowestPrice(p);return '<div class="sugg-card" onclick="viewProduct('+p.id+')">'+'<div class="sugg-brand">'+p.brand+'</div><div class="sugg-name">'+p.name+'</div><div class="sugg-price">$'+low.toFixed(2)+'</div><div class="sugg-reason">'+p.carry+' \u2022 '+p.mat+'</div></div>';}).join('');}
-filteredProducts=ALL_PRODUCTS.slice();sortAndRender();renderSuggested();loadEuroOptic().then(function(){return loadImpactGuns();}).then(function(){return loadCyaSupply();});
+filteredProducts=ALL_PRODUCTS.slice();sortAndRender();updateFilterAvailability();renderSuggested();loadEuroOptic().then(function(){return loadImpactGuns();}).then(function(){return loadCyaSupply();});
 </script>
 <script src="/js/search-autocomplete.js"></script>
 </body>

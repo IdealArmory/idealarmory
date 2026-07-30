@@ -187,6 +187,7 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
   a.nav-logo svg{width:28px;height:28px;margin-right:6px}
   .nav-cat{padding:12px 14px;font-size:12px}
 }
+.fopt-disabled{display:none}
 </style>
 </head>
 <body>
@@ -275,54 +276,54 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
 
     <div class="filter-sec">
       <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Caliber</span><span class="ftog open">&#8964;</span></div>
-      <div class="filter-body" id="fc-caliber">
-        <div class="fopt"><input type="checkbox" value="9mm" onchange="filterProducts()"><label>9mm</label></div>
-        <div class="fopt"><input type="checkbox" value=".45 ACP" onchange="filterProducts()"><label>.45 ACP</label></div>
-        <div class="fopt"><input type="checkbox" value=".40 SW" onchange="filterProducts()"><label>.40 S&amp;W</label></div>
-        <div class="fopt"><input type="checkbox" value=".380 ACP" onchange="filterProducts()"><label>.380 ACP</label></div>
-        <div class="fopt"><input type="checkbox" value="10mm" onchange="filterProducts()"><label>10mm</label></div>
+      <div class="filter-body" id="fc-caliber" data-group="caliber">
+        <div class="fopt"><input type="checkbox" value=".22 LR" onchange="filterProducts()"><label>.22 LR</label></div>
         <div class="fopt"><input type="checkbox" value=".357 Mag" onchange="filterProducts()"><label>.357 Mag</label></div>
         <div class="fopt"><input type="checkbox" value=".38 Spl" onchange="filterProducts()"><label>.38 Special</label></div>
+        <div class="fopt"><input type="checkbox" value=".380 ACP" onchange="filterProducts()"><label>.380 ACP</label></div>
+        <div class="fopt"><input type="checkbox" value=".40 SW" onchange="filterProducts()"><label>.40 S&amp;W</label></div>
         <div class="fopt"><input type="checkbox" value=".44 Mag" onchange="filterProducts()"><label>.44 Mag</label></div>
-        <div class="fopt"><input type="checkbox" value=".22 LR" onchange="filterProducts()"><label>.22 LR</label></div>
+        <div class="fopt"><input type="checkbox" value=".45 ACP" onchange="filterProducts()"><label>.45 ACP</label></div>
+        <div class="fopt"><input type="checkbox" value="10mm" onchange="filterProducts()"><label>10mm</label></div>
         <div class="fopt"><input type="checkbox" value="5.7x28mm" onchange="filterProducts()"><label>5.7x28mm</label></div>
+        <div class="fopt"><input type="checkbox" value="9mm" onchange="filterProducts()"><label>9mm</label></div>
       </div>
     </div>
 
     <div class="filter-sec">
       <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Action Type</span><span class="ftog open">&#8964;</span></div>
-      <div class="filter-body">
-        <div class="fopt"><input type="checkbox" value="Striker-Fired" onchange="filterProducts()"><label>Striker-Fired</label></div>
-        <div class="fopt"><input type="checkbox" value="Revolver" onchange="filterProducts()"><label>Revolver</label></div>
-        <div class="fopt"><input type="checkbox" value="Single Action" onchange="filterProducts()"><label>Single Action</label></div>
+      <div class="filter-body" data-group="action">
         <div class="fopt"><input type="checkbox" value="DA/SA" onchange="filterProducts()"><label>DA/SA</label></div>
         <div class="fopt"><input type="checkbox" value="DAO" onchange="filterProducts()"><label>Double Action Only</label></div>
+        <div class="fopt"><input type="checkbox" value="Revolver" onchange="filterProducts()"><label>Revolver</label></div>
+        <div class="fopt"><input type="checkbox" value="Single Action" onchange="filterProducts()"><label>Single Action</label></div>
+        <div class="fopt"><input type="checkbox" value="Striker-Fired" onchange="filterProducts()"><label>Striker-Fired</label></div>
       </div>
     </div>
 
     <div class="filter-sec">
       <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Manufacturer</span><span class="ftog open">&#8964;</span></div>
-      <div class="filter-body">
+      <div class="filter-body" data-group="brand">
+        <div class="fopt"><input type="checkbox" value="Beretta" onchange="filterProducts()"><label>Beretta</label></div>
+        <div class="fopt"><input type="checkbox" value="CZ" onchange="filterProducts()"><label>CZ</label></div>
+        <div class="fopt"><input type="checkbox" value="Daniel Defense" onchange="filterProducts()"><label>Daniel Defense</label></div>
+        <div class="fopt"><input type="checkbox" value="FN America" onchange="filterProducts()"><label>FN America</label></div>
         <div class="fopt"><input type="checkbox" value="Glock" onchange="filterProducts()"><label>Glock</label></div>
+        <div class="fopt"><input type="checkbox" value="H&amp;K" onchange="filterProducts()"><label>H&amp;K</label></div>
+        <div class="fopt"><input type="checkbox" value="Kimber" onchange="filterProducts()"><label>Kimber</label></div>
+        <div class="fopt"><input type="checkbox" value="Nighthawk" onchange="filterProducts()"><label>Nighthawk Custom</label></div>
+        <div class="fopt"><input type="checkbox" value="Ruger" onchange="filterProducts()"><label>Ruger</label></div>
         <div class="fopt"><input type="checkbox" value="Sig Sauer" onchange="filterProducts()"><label>Sig Sauer</label></div>
         <div class="fopt"><input type="checkbox" value="Smith &amp; Wesson" onchange="filterProducts()"><label>Smith &amp; Wesson</label></div>
         <div class="fopt"><input type="checkbox" value="Springfield Armory" onchange="filterProducts()"><label>Springfield Armory</label></div>
-        <div class="fopt"><input type="checkbox" value="Ruger" onchange="filterProducts()"><label>Ruger</label></div>
-        <div class="fopt"><input type="checkbox" value="CZ" onchange="filterProducts()"><label>CZ</label></div>
-        <div class="fopt"><input type="checkbox" value="Walther" onchange="filterProducts()"><label>Walther</label></div>
         <div class="fopt"><input type="checkbox" value="Taurus" onchange="filterProducts()"><label>Taurus</label></div>
-        <div class="fopt"><input type="checkbox" value="Beretta" onchange="filterProducts()"><label>Beretta</label></div>
-        <div class="fopt"><input type="checkbox" value="H&amp;K" onchange="filterProducts()"><label>H&amp;K</label></div>
-        <div class="fopt"><input type="checkbox" value="Daniel Defense" onchange="filterProducts()"><label>Daniel Defense</label></div>
-        <div class="fopt"><input type="checkbox" value="Kimber" onchange="filterProducts()"><label>Kimber</label></div>
-        <div class="fopt"><input type="checkbox" value="Nighthawk" onchange="filterProducts()"><label>Nighthawk Custom</label></div>
-        <div class="fopt"><input type="checkbox" value="FN America" onchange="filterProducts()"><label>FN America</label></div>
+        <div class="fopt"><input type="checkbox" value="Walther" onchange="filterProducts()"><label>Walther</label></div>
       </div>
     </div>
 
     <div class="filter-sec">
       <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Optics Ready</span><span class="ftog open">&#8964;</span></div>
-      <div class="filter-body">
+      <div class="filter-body" data-group="feature">
         <div class="fopt"><input type="checkbox" value="optic-yes" onchange="filterProducts()"><label>Optics Ready / MOS / RDO</label></div>
         <div class="fopt"><input type="checkbox" value="optic-no" onchange="filterProducts()"><label>Standard (No Cut)</label></div>
       </div>
@@ -330,16 +331,16 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
 
     <div class="filter-sec">
       <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Dominant Hand</span><span class="ftog open">&#8964;</span></div>
-      <div class="filter-body">
+      <div class="filter-body" data-group="hand">
         <div class="fopt"><input type="checkbox" value="Ambidextrous" onchange="filterProducts()"><label>Ambidextrous</label></div>
-        <div class="fopt"><input type="checkbox" value="Right" onchange="filterProducts()"><label>Right-Hand</label></div>
         <div class="fopt"><input type="checkbox" value="Left" onchange="filterProducts()"><label>Left-Hand</label></div>
+        <div class="fopt"><input type="checkbox" value="Right" onchange="filterProducts()"><label>Right-Hand</label></div>
       </div>
     </div>
 
     <div class="filter-sec">
       <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Capacity</span><span class="ftog open">&#8964;</span></div>
-      <div class="filter-body">
+      <div class="filter-body" data-group="capacity">
         <div class="fopt"><input type="checkbox" value="1-6" onchange="filterProducts()"><label>1&ndash;6 rounds</label></div>
         <div class="fopt"><input type="checkbox" value="7-10" onchange="filterProducts()"><label>7&ndash;10 rounds</label></div>
         <div class="fopt"><input type="checkbox" value="11-15" onchange="filterProducts()"><label>11&ndash;15 rounds</label></div>
@@ -350,7 +351,7 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
 
     <div class="filter-sec">
       <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Barrel Length</span><span class="ftog open">&#8964;</span></div>
-      <div class="filter-body">
+      <div class="filter-body" data-group="barrel">
         <div class="fopt"><input type="checkbox" value="barrel-u3" onchange="filterProducts()"><label>Under 3&quot;</label></div>
         <div class="fopt"><input type="checkbox" value="barrel-3-4" onchange="filterProducts()"><label>3&quot; &ndash; 3.9&quot;</label></div>
         <div class="fopt"><input type="checkbox" value="barrel-4-5" onchange="filterProducts()"><label>4&quot; &ndash; 4.9&quot;</label></div>
@@ -360,21 +361,21 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
 
     <div class="filter-sec">
       <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Frame Size</span><span class="ftog open">&#8964;</span></div>
-      <div class="filter-body">
-        <div class="fopt"><input type="checkbox" value="Subcompact" onchange="filterProducts()"><label>Subcompact</label></div>
+      <div class="filter-body" data-group="framesize">
         <div class="fopt"><input type="checkbox" value="Compact" onchange="filterProducts()"><label>Compact</label></div>
         <div class="fopt"><input type="checkbox" value="Full-Size" onchange="filterProducts()"><label>Full-Size</label></div>
         <div class="fopt"><input type="checkbox" value="Long Slide" onchange="filterProducts()"><label>Long Slide / Competition</label></div>
+        <div class="fopt"><input type="checkbox" value="Subcompact" onchange="filterProducts()"><label>Subcompact</label></div>
       </div>
     </div>
 
     <div class="filter-sec" style="border-bottom:none">
       <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Safety Type</span><span class="ftog open">&#8964;</span></div>
-      <div class="filter-body">
+      <div class="filter-body" data-group="safety">
+        <div class="fopt"><input type="checkbox" value="Decocker" onchange="filterProducts()"><label>Decocker</label></div>
         <div class="fopt"><input type="checkbox" value="Manual Safety" onchange="filterProducts()"><label>Manual Safety</label></div>
         <div class="fopt"><input type="checkbox" value="No Manual Safety" onchange="filterProducts()"><label>No Manual Safety</label></div>
         <div class="fopt"><input type="checkbox" value="Thumb Safety" onchange="filterProducts()"><label>Thumb Safety</label></div>
-        <div class="fopt"><input type="checkbox" value="Decocker" onchange="filterProducts()"><label>Decocker</label></div>
       </div>
     </div>
   </aside>
@@ -674,6 +675,79 @@ function filterProducts() {
   });
   sortAndRender();
   renderActiveFilters();
+  updateFilterAvailability();
+}
+
+function productMatchesState(p,state,priceMin,priceMax){
+  var low=getLowestPrice(p);
+  if(low<priceMin||low>priceMax)return false;
+  var calibers=state.caliber||[];
+  var actions=state.action||[];
+  var brands=state.brand||[];
+  var frames=state.framesize||[];
+  var safeties=state.safety||[];
+  var hands=state.hand||[];
+  var caps=state.capacity||[];
+  var barrels=state.barrel||[];
+  var feats=state.feature||[];
+  var opticYes=feats.indexOf('optic-yes')>=0;
+  var opticNo=feats.indexOf('optic-no')>=0;
+  if(calibers.length&&!calibers.some(function(cal){return _caliberMatch(p,cal);}))return false;
+  if(brands.length&&!brands.some(function(b){var pb=(p.brand||'').toLowerCase(),bv=b.toLowerCase();return pb.includes(bv)||bv.includes(pb);}))return false;
+  if(actions.length&&actions.indexOf(p.action)<0)return false;
+  if(frames.length&&frames.indexOf(p.frameSize)<0)return false;
+  if(safeties.length&&safeties.indexOf(p.safety)<0)return false;
+  if(hands.length&&hands.indexOf(p.hand)<0)return false;
+  if(opticYes&&!opticNo&&!p.opticReady)return false;
+  if(opticNo&&!opticYes&&p.opticReady)return false;
+  if(caps.length){
+    var c=p.capacity;
+    var capMatch=caps.some(function(v){
+      if(v==='1-6')return c>=1&&c<=6;
+      if(v==='7-10')return c>=7&&c<=10;
+      if(v==='11-15')return c>=11&&c<=15;
+      if(v==='16-20')return c>=16&&c<=20;
+      if(v==='21+')return c>=21;
+      return false;
+    });
+    if(!capMatch)return false;
+  }
+  if(barrels.length&&p.barrelIn){
+    var b=p.barrelIn;
+    var bm=barrels.some(function(v){
+      if(v==='barrel-u3')return b<3;
+      if(v==='barrel-3-4')return b>=3&&b<4;
+      if(v==='barrel-4-5')return b>=4&&b<5;
+      if(v==='barrel-5p')return b>=5;
+      return false;
+    });
+    if(!bm)return false;
+  }
+  return true;
+}
+function getActiveFilterState(){
+  var state={};
+  document.querySelectorAll('.filter-body[data-group] input[type=checkbox]:checked').forEach(function(cb){
+    var group=cb.closest('[data-group]').dataset.group;
+    if(!state[group])state[group]=[];
+    state[group].push(cb.value);
+  });
+  return state;
+}
+function updateFilterAvailability(){
+  var priceMin=parseFloat(document.getElementById('price-min').value)||0;
+  var priceMax=parseFloat(document.getElementById('price-max').value)||Infinity;
+  var activeState=getActiveFilterState();
+  document.querySelectorAll('.filter-body[data-group] input[type=checkbox]').forEach(function(cb){
+    if(cb.checked){cb.closest('.fopt').classList.remove('fopt-disabled');return;}
+    var group=cb.closest('[data-group]').dataset.group;
+    var testState={};
+    Object.keys(activeState).forEach(function(g){testState[g]=activeState[g].slice();});
+    if(!testState[group])testState[group]=[];
+    testState[group]=testState[group].concat([cb.value]);
+    var count=ALL_PRODUCTS.filter(function(p){return productMatchesState(p,testState,priceMin,priceMax);}).length;
+    cb.closest('.fopt').classList.toggle('fopt-disabled',count===0);
+  });
 }
 
 function liveSearch(v) {
@@ -805,6 +879,7 @@ function renderSuggested() {
 // ── INIT ──
 filteredProducts = [...PRODUCTS];
 sortAndRender();
+updateFilterAvailability();
 renderSuggested();
 loadEuroOptic().then(function(){return loadBereli();}).then(function(){return loadImpactGuns();});
 </script>

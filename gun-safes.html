@@ -172,6 +172,7 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
 .load-more-btn{background:var(--white);border:2px solid var(--navy);color:var(--navy);font-family:'Inter',sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:11px 32px;cursor:pointer;transition:all .15s}
 .load-more-btn:hover{background:var(--navy);color:var(--white)}
 .eo-badge{position:absolute;top:8px;right:8px;background:var(--gold);color:var(--navy-deep);font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;padding:2px 6px}
+.fopt-disabled{display:none}
 </style>
 </head>
 <body>
@@ -256,17 +257,17 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
     </div>
     <div class="filter-sec">
       <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Safe Type</span><span class="ftog open">&#8964;</span></div>
-      <div class="filter-body">
-        <div class="fopt"><input type="checkbox" value="Handgun Vault" onchange="filterProducts()"><label>Handgun Safe / Vault</label></div>
-        <div class="fopt"><input type="checkbox" value="Long Gun Safe" onchange="filterProducts()"><label>Long-Gun Safe (Rifle/Shotgun)</label></div>
-        <div class="fopt"><input type="checkbox" value="Large Floor Safe" onchange="filterProducts()"><label>Large Floor Safe (25+ guns)</label></div>
+      <div class="filter-body" data-group="safetype">
         <div class="fopt"><input type="checkbox" value="Biometric Pistol Safe" onchange="filterProducts()"><label>Biometric Pistol Safe</label></div>
+        <div class="fopt"><input type="checkbox" value="Handgun Vault" onchange="filterProducts()"><label>Handgun Safe / Vault</label></div>
+        <div class="fopt"><input type="checkbox" value="Large Floor Safe" onchange="filterProducts()"><label>Large Floor Safe (25+ guns)</label></div>
+        <div class="fopt"><input type="checkbox" value="Long Gun Safe" onchange="filterProducts()"><label>Long-Gun Safe (Rifle/Shotgun)</label></div>
         <div class="fopt"><input type="checkbox" value="Under-Desk Safe" onchange="filterProducts()"><label>Under-Desk / Portable Safe</label></div>
       </div>
     </div>
     <div class="filter-sec">
       <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Gun Capacity</span><span class="ftog open">&#8964;</span></div>
-      <div class="filter-body">
+      <div class="filter-body" data-group="capacity">
         <div class="fopt"><input type="checkbox" value="cap-1-2" onchange="filterProducts()"><label>1&ndash;2 guns (Pistol Box)</label></div>
         <div class="fopt"><input type="checkbox" value="cap-3-5" onchange="filterProducts()"><label>3&ndash;5 guns</label></div>
         <div class="fopt"><input type="checkbox" value="cap-6-12" onchange="filterProducts()"><label>6&ndash;12 guns</label></div>
@@ -276,16 +277,16 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
     </div>
     <div class="filter-sec">
       <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Lock Type</span><span class="ftog open">&#8964;</span></div>
-      <div class="filter-body">
-        <div class="fopt"><input type="checkbox" value="Electronic" onchange="filterProducts()"><label>Electronic Keypad</label></div>
+      <div class="filter-body" data-group="locktype">
         <div class="fopt"><input type="checkbox" value="Biometric" onchange="filterProducts()"><label>Biometric (Fingerprint)</label></div>
-        <div class="fopt"><input type="checkbox" value="Mechanical" onchange="filterProducts()"><label>Mechanical / Dial</label></div>
+        <div class="fopt"><input type="checkbox" value="Electronic" onchange="filterProducts()"><label>Electronic Keypad</label></div>
         <div class="fopt"><input type="checkbox" value="Key Lock" onchange="filterProducts()"><label>Key Lock</label></div>
+        <div class="fopt"><input type="checkbox" value="Mechanical" onchange="filterProducts()"><label>Mechanical / Dial</label></div>
       </div>
     </div>
     <div class="filter-sec">
       <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Fire Rating</span><span class="ftog open">&#8964;</span></div>
-      <div class="filter-body">
+      <div class="filter-body" data-group="firerating">
         <div class="fopt"><input type="checkbox" value="No Rating" onchange="filterProducts()"><label>No Fire Rating</label></div>
         <div class="fopt"><input type="checkbox" value="30 min" onchange="filterProducts()"><label>30 Minutes @ 1200&deg;F</label></div>
         <div class="fopt"><input type="checkbox" value="60 min" onchange="filterProducts()"><label>60 Minutes @ 1200&deg;F</label></div>
@@ -294,18 +295,18 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
     </div>
     <div class="filter-sec" style="border-bottom:none">
       <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Brand</span><span class="ftog open">&#8964;</span></div>
-      <div class="filter-body">
-        <div class="fopt"><input type="checkbox" value="Liberty" onchange="filterProducts()"><label>Liberty Safe</label></div>
-        <div class="fopt"><input type="checkbox" value="Fort Knox" onchange="filterProducts()"><label>Fort Knox</label></div>
+      <div class="filter-body" data-group="brand">
         <div class="fopt"><input type="checkbox" value="Browning" onchange="filterProducts()"><label>Browning Safe</label></div>
+        <div class="fopt"><input type="checkbox" value="BulletSafe" onchange="filterProducts()"><label>BulletSafe</label></div>
         <div class="fopt"><input type="checkbox" value="Cannon" onchange="filterProducts()"><label>Cannon Safe</label></div>
-        <div class="fopt"><input type="checkbox" value="Vaultek" onchange="filterProducts()"><label>Vaultek</label></div>
+        <div class="fopt"><input type="checkbox" value="Fort Knox" onchange="filterProducts()"><label>Fort Knox</label></div>
         <div class="fopt"><input type="checkbox" value="Hornady" onchange="filterProducts()"><label>Hornady</label></div>
-        <div class="fopt"><input type="checkbox" value="V-Line" onchange="filterProducts()"><label>V-Line</label></div>
-        <div class="fopt"><input type="checkbox" value="Stack-On" onchange="filterProducts()"><label>Stack-On</label></div>
+        <div class="fopt"><input type="checkbox" value="Liberty" onchange="filterProducts()"><label>Liberty Safe</label></div>
         <div class="fopt"><input type="checkbox" value="Pelican" onchange="filterProducts()"><label>Pelican</label></div>
         <div class="fopt"><input type="checkbox" value="SnapSafe" onchange="filterProducts()"><label>SnapSafe</label></div>
-        <div class="fopt"><input type="checkbox" value="BulletSafe" onchange="filterProducts()"><label>BulletSafe</label></div>
+        <div class="fopt"><input type="checkbox" value="Stack-On" onchange="filterProducts()"><label>Stack-On</label></div>
+        <div class="fopt"><input type="checkbox" value="V-Line" onchange="filterProducts()"><label>V-Line</label></div>
+        <div class="fopt"><input type="checkbox" value="Vaultek" onchange="filterProducts()"><label>Vaultek</label></div>
       </div>
     </div>
   </aside>
@@ -454,6 +455,46 @@ function filterProducts(){
     return true;
   });
   sortAndRender();renderActiveFilters();
+  updateFilterAvailability();
+}
+function productMatchesState(p,state,priceMin,priceMax){
+  var low=getLowestPrice(p);
+  if(low<priceMin||low>priceMax)return false;
+  var stypes=state.safetype||[];
+  var caps=state.capacity||[];
+  var locks=state.locktype||[];
+  var fires=state.firerating||[];
+  var brands=state.brand||[];
+  if(brands.length&&brands.indexOf(p.brand)<0)return false;
+  if(stypes.length&&stypes.indexOf(p.stype)<0)return false;
+  if(locks.length&&locks.indexOf(p.lock)<0)return false;
+  if(fires.length&&fires.indexOf(p.fire)<0)return false;
+  if(caps.length&&p.cap>0){var c=p.cap;if(!caps.some(function(v){if(v==='cap-1-2')return c<=2;if(v==='cap-3-5')return c>=3&&c<=5;if(v==='cap-6-12')return c>=6&&c<=12;if(v==='cap-13-24')return c>=13&&c<=24;if(v==='cap-25p')return c>=25;return false;}))return false;}
+  return true;
+}
+function getActiveFilterState(){
+  var state={};
+  document.querySelectorAll('.filter-body[data-group] input[type=checkbox]:checked').forEach(function(cb){
+    var group=cb.closest('[data-group]').dataset.group;
+    if(!state[group])state[group]=[];
+    state[group].push(cb.value);
+  });
+  return state;
+}
+function updateFilterAvailability(){
+  var priceMin=parseFloat(document.getElementById('price-min').value)||0;
+  var priceMax=parseFloat(document.getElementById('price-max').value)||Infinity;
+  var activeState=getActiveFilterState();
+  document.querySelectorAll('.filter-body[data-group] input[type=checkbox]').forEach(function(cb){
+    if(cb.checked){cb.closest('.fopt').classList.remove('fopt-disabled');return;}
+    var group=cb.closest('[data-group]').dataset.group;
+    var testState={};
+    Object.keys(activeState).forEach(function(g){testState[g]=activeState[g].slice();});
+    if(!testState[group])testState[group]=[];
+    testState[group]=testState[group].concat([cb.value]);
+    var count=ALL_PRODUCTS.filter(function(p){return productMatchesState(p,testState,priceMin,priceMax);}).length;
+    cb.closest('.fopt').classList.toggle('fopt-disabled',count===0);
+  });
 }
 function liveSearch(v) {
   var ns=document.getElementById('nav-srch');
@@ -478,7 +519,7 @@ function _kitToast(msg){var t=document.getElementById('_ia_kt');if(!t){t=documen
 function _kitBadge(){try{var n=_kitLoad().length;var el=document.getElementById('nav-kit-count');if(el){el.textContent=n;el.style.display=n>0?'inline-flex':'none';}}catch(e){}}
 function saveItem(id){var p=(typeof ALL_PRODUCTS!=='undefined'?ALL_PRODUCTS:PRODUCTS).find(function(x){return x.id===id;});if(!p)return;var kit=_kitLoad(),pid=String(p.id);if(kit.some(function(i){return i.productId===pid;})){_kitToast('\u2714 Already in your kit');return;}if(kit.length>=_IA_KIT_MAX){_kitToast('Kit full \u2014 max '+_IA_KIT_MAX+' items');return;}var low=p.sellers&&p.sellers.length?p.sellers.reduce(function(a,b){return a.price<=b.price?a:b;}):{price:p.price||0,name:'Retailer',url:''};kit.push({uid:Date.now().toString(36)+Math.random().toString(36).substr(2,9),productId:pid,productName:p.name,brand:p.brand||'',sub:p.sub||'',img:p.img||'',price:low.price,retailer:low.name,label:'Gun Safes',cat:'gun-safes',badge:p.badge||'',sellers:(p.sellers||[]).map(function(s){return{name:s.name,price:s.price,ship:s.ship||0,stock:s.stock||'in',url:s.url||''};})});_kitSave(kit);_kitBadge();_kitToast('\u2714 '+p.name+' added to kit');}
 function renderSuggested(){var pool=PRODUCTS.filter(function(p){return p.badge==='best';}).slice(0,6);document.getElementById('sugg-grid').innerHTML=pool.map(function(p){var low=getLowestPrice(p);return '<div class="sugg-card" onclick="viewProduct('+p.id+')">'+'<div class="sugg-brand">'+p.brand+'</div><div class="sugg-name">'+p.name+'</div><div class="sugg-price">$'+low.toFixed(2)+'</div><div class="sugg-reason">'+p.stype+' \u2022 '+p.cap+' gun'+(p.cap>1?'s':'')+'</div></div>';}).join('');}
-filteredProducts=ALL_PRODUCTS.slice();sortAndRender();renderSuggested();loadEuroOptic().then(function(){return loadImpactGuns();});
+filteredProducts=ALL_PRODUCTS.slice();sortAndRender();updateFilterAvailability();renderSuggested();loadEuroOptic().then(function(){return loadImpactGuns();});
 </script>
 <script src="/js/search-autocomplete.js"></script>
 </body>
