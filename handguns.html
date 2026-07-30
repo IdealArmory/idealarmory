@@ -742,9 +742,8 @@ function updateFilterAvailability(){
     if(cb.checked){cb.closest('.fopt').classList.remove('fopt-disabled');return;}
     var group=cb.closest('[data-group]').dataset.group;
     var testState={};
-    Object.keys(activeState).forEach(function(g){testState[g]=activeState[g].slice();});
-    if(!testState[group])testState[group]=[];
-    testState[group]=testState[group].concat([cb.value]);
+    Object.keys(activeState).forEach(function(g){if(g!==group)testState[g]=activeState[g].slice();});
+    testState[group]=[cb.value];
     var count=ALL_PRODUCTS.filter(function(p){return productMatchesState(p,testState,priceMin,priceMax);}).length;
     cb.closest('.fopt').classList.toggle('fopt-disabled',count===0);
   });
