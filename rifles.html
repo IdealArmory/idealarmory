@@ -316,9 +316,11 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
     <div class="filter-sec">
       <div class="filter-sec-hd" onclick="toggleSec(this)"><span>Platform</span><span class="ftog open">&#8964;</span></div>
       <div class="filter-body" data-group="platform">
-        <div class="fopt"><input type="checkbox" value="AK" onchange="filterProducts()"><label>AK Platform</label></div>
+        <div class="fopt"><input type="checkbox" value="AK-Pattern" onchange="filterProducts()"><label>AK Platform</label></div>
         <div class="fopt"><input type="checkbox" value="AR-15" onchange="filterProducts()"><label>AR-15 Platform</label></div>
+        <div class="fopt"><input type="checkbox" value="Bullpup" onchange="filterProducts()"><label>Bullpup</label></div>
         <div class="fopt"><input type="checkbox" value="Hunting" onchange="filterProducts()"><label>Hunting / Traditional</label></div>
+        <div class="fopt"><input type="checkbox" value="PCC" onchange="filterProducts()"><label>PCC / Pistol Caliber Carbine</label></div>
         <div class="fopt"><input type="checkbox" value="Precision" onchange="filterProducts()"><label>Precision / Target</label></div>
         <div class="fopt"><input type="checkbox" value="Rimfire" onchange="filterProducts()"><label>Rimfire / Training</label></div>
       </div>
@@ -586,7 +588,7 @@ var CALIBER_KEYS={
   '7.62x39':['7.62x39'],
   '.338 Lapua':['338 lapua','338 lm'],
   '6mm ARC':['6mm arc'],
-  '9mm':['9mm']
+  '9mm':[' 9mm','/9mm']
 };
 function _caliberMatch(p,cal){var s=(p.name+' '+(p.sub||'')+' '+(p.caliber||'')).toLowerCase();var keys=CALIBER_KEYS[cal]||[cal.toLowerCase()];return keys.some(function(k){return s.indexOf(k)>=0;});}
 
@@ -598,7 +600,7 @@ function filterProducts(){
   document.querySelectorAll('.filter-body input[type=checkbox]:checked').forEach(function(cb){checks[cb.value]=true;});
   var calibers=Object.keys(checks).filter(function(v){return ['.223','5.56','.308/7.62','.300 BLK','6.5 Creedmoor','6.5 PRC','.270 Win','.30-06','.243 Win','7mm-08','7mm PRC','.300 Win Mag','.350 Legend','.450 Bushmaster','.45-70','.44 Mag','.357 Mag','.38 Spl','.22-250','.22 WMR','.22 LR','7.62x39','.338 Lapua','6mm ARC','9mm'].indexOf(v)>=0;});
   var actions=Object.keys(checks).filter(function(v){return ['Semi-Auto','Bolt-Action','Lever-Action','Single Shot','Pump-Action'].indexOf(v)>=0;});
-  var platforms=Object.keys(checks).filter(function(v){return ['AR-15','AK','Precision','Hunting','Rimfire'].indexOf(v)>=0;});
+  var platforms=Object.keys(checks).filter(function(v){return ['AR-15','AK-Pattern','Bullpup','PCC','Precision','Hunting','Rimfire'].indexOf(v)>=0;});
   var brands=Object.keys(checks).filter(function(v){return ['Aero Precision','Daniel Defense','PSA','Ruger','Savage','Winchester','Remington','CMMG','Smith & Wesson','Sig Sauer','Springfield Armory','IWI','Colt','Henry','Bergara','Steyr','Tikka','Christensen Arms','Barrett','LWRC','FN America','Mossberg','Benelli','Browning','CVA','CZ','Diamondback','Fierce','Heritage','HK','Howa','Kel-Tec','Marlin','Mauser','Rossi','Traditions','Weatherby','Zastava'].indexOf(v)>=0;});
   var barrels=Object.keys(checks).filter(function(v){return ['barrel-u16','barrel-16-18','barrel-18-20','barrel-20-24','barrel-o24'].indexOf(v)>=0;});
   var feats=Object.keys(checks).filter(function(v){return ['optic-ready','threaded','folding','free-float'].indexOf(v)>=0;});
