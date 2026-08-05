@@ -1515,6 +1515,15 @@ function findEmailKey(obj,email){
 }
 
 /* ══════════════════════════════════════════════
+   AUTH — CREDENTIALS
+   Get these from: supabase.com → your project → Settings → API
+   SUPABASE_URL   = Project URL   (https://xxxx.supabase.co)
+   SUPABASE_ANON_KEY = anon/public key (safe to expose in frontend)
+══════════════════════════════════════════════ */
+const SUPABASE_URL      = '';   // ← paste your Project URL here
+const SUPABASE_ANON_KEY = '';   // ← paste your anon/public key here
+
+/* ══════════════════════════════════════════════
    SUPABASE CLIENT + AUTH STATE
    sb = the Supabase JS client instance.
    onAuthStateChange fires for every auth event:
@@ -1522,14 +1531,15 @@ function findEmailKey(obj,email){
      SIGNED_IN       — fresh login OR email-link verified
      SIGNED_OUT      — explicit sign-out
 ══════════════════════════════════════════════ */
-const { createClient: _sbCreate } = window.supabase || {};
-const sb = _sbCreate
-  ? _sbCreate(SUPABASE_URL, SUPABASE_ANON_KEY)
-  : null;
+// sb is initialised inside _initSupabase() so that the deferred
+// Supabase script has finished loading by the time createClient() runs.
+let sb = null;
 
 // If Supabase library loaded (deferred), init after DOM ready
 function _initSupabase(){
-  if(!sb){ console.error('[Auth] Supabase client not ready — check script tag'); return; }
+  const { createClient: _sbCreate } = window.supabase || {};
+  sb = _sbCreate ? _sbCreate(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+  if(!sb){ console.error('[Auth] Supabase client not ready — add SUPABASE_URL and SUPABASE_ANON_KEY constants'); return; }
   sb.auth.onAuthStateChange(async (event, session) => {
     if((event==='INITIAL_SESSION'||event==='SIGNED_IN') && session?.user){
       const u=session.user;
@@ -1641,9 +1651,10 @@ async function doSignUp(){
   if(pass.length<8){ showToast('Password must be at least 8 characters.'); return; }
   const btn=document.querySelector('#auth-form-wrap .btn-p');
   if(btn){ btn.textContent='Creating Account…'; btn.disabled=true; }
-  // reCAPTCHA verification
+  // reCAPTCHA verification — 6s timeout prevents hang on mobile
   try {
-    const rcToken=await grecaptcha.enterprise.execute('6LfmAIQsAAAAAKa0wtP56CPLObXiKGpqeP5DNV6P',{action:'signup'});
+    const timeout=new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),6000));
+    const rcToken=await Promise.race([grecaptcha.enterprise.execute('6LfmAIQsAAAAAKa0wtP56CPLObXiKGpqeP5DNV6P',{action:'signup'}),timeout]);
     const rcRes=await fetch('https://recaptcha-verify.idealarmory.workers.dev/',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:rcToken,action:'signup'})});
     const rcData=await rcRes.json();
     if(!rcData.success){ if(btn){btn.textContent='Create Free Account';btn.disabled=false;} showToast('Security check failed. Please try again.'); return; }
@@ -1919,7 +1930,14 @@ function closeOverlay(id){
 document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{
   if(e.target===o){o.classList.remove('open');if(!document.querySelector('.overlay.open'))document.body.style.overflow='';}
 }));
-function showToast(m){}
+function showToast(m,dur=4000){
+  const t=document.getElementById('toast');
+  if(!t)return;
+  t.textContent=m;
+  t.classList.add('show');
+  clearTimeout(t._tid);
+  t._tid=setTimeout(()=>t.classList.remove('show'),dur);
+}
 function goTo(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});}
 function hcThumb(el,src){document.getElementById('hc-main-photo').src=src;document.querySelectorAll('.hc-thumb').forEach(function(t){t.classList.remove('active');});el.classList.add('active');}
 function slugify(s){return(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');}
