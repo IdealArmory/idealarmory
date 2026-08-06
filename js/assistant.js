@@ -1,311 +1,282 @@
 (function () {
-  if (window.__iaAssistant) return;
-  window.__iaAssistant = true;
+  if (window.__iaAsst) return;
+  window.__iaAsst = true;
 
-  /* ── Styles ───────────────────────────────────────────────── */
-  var css = `
-#ia-assistant { position:fixed; bottom:20px; right:20px; z-index:9999; font-family:'Inter',sans-serif; }
+  /* ── Styles ─────────────────────────────────────────────────────────────── */
+  var css = document.createElement('style');
+  css.textContent = `
+    #ia-asst-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 20px;
+      z-index: 9000;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: #c49a2a;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(0,0,0,.28);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .15s, box-shadow .15s;
+    }
+    #ia-asst-btn:hover { transform: scale(1.07); box-shadow: 0 6px 20px rgba(0,0,0,.32); }
+    #ia-asst-btn svg { width: 26px; height: 26px; fill: #1b2a3b; }
 
-#ia-chat-btn {
-  width:56px; height:56px; border-radius:50%; background:#1b2a3b; border:none; cursor:pointer;
-  box-shadow:0 4px 16px rgba(0,0,0,.28); display:flex; align-items:center; justify-content:center;
-  transition:background .18s, transform .15s;
-}
-#ia-chat-btn:hover { background:#c49a2a; transform:scale(1.07); }
-#ia-chat-btn svg { width:26px; height:26px; }
+    #ia-asst-panel {
+      position: fixed;
+      bottom: 92px;
+      right: 20px;
+      z-index: 9001;
+      width: 360px;
+      height: 520px;
+      background: #fff;
+      border: 1px solid #ddd;
+      box-shadow: 0 8px 32px rgba(0,0,0,.18);
+      display: flex;
+      flex-direction: column;
+      border-radius: 4px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(12px);
+      transition: opacity .2s, transform .2s;
+    }
+    #ia-asst-panel.open {
+      opacity: 1;
+      pointer-events: all;
+      transform: translateY(0);
+    }
+    .ia-head {
+      background: #1b2a3b;
+      color: #fff;
+      padding: 13px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: 4px 4px 0 0;
+      flex-shrink: 0;
+    }
+    .ia-head-left { display: flex; align-items: center; gap: 10px; }
+    .ia-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: #c49a2a; display: flex; align-items: center;
+      justify-content: center; font-weight: 700; font-size: 13px;
+      color: #1b2a3b; font-family: 'Inter', sans-serif; flex-shrink: 0;
+    }
+    .ia-head-title { font-weight: 700; font-size: 14px; font-family: 'Inter', sans-serif; line-height: 1.3; }
+    .ia-head-sub { font-size: 11px; opacity: .65; font-family: 'Inter', sans-serif; }
+    .ia-close-btn {
+      background: none; border: none; color: #fff; font-size: 18px;
+      cursor: pointer; opacity: .7; padding: 4px; line-height: 1;
+    }
+    .ia-close-btn:hover { opacity: 1; }
 
-#ia-chat-panel {
-  position:absolute; bottom:68px; right:0;
-  width:340px; max-height:520px;
-  background:#fff; border:1.5px solid #e3e0d8;
-  box-shadow:0 8px 32px rgba(0,0,0,.18);
-  display:flex; flex-direction:column;
-  opacity:0; pointer-events:none;
-  transform:translateY(12px) scale(.97);
-  transition:opacity .2s, transform .2s;
-  border-radius:3px;
-}
-#ia-chat-panel.ia-open { opacity:1; pointer-events:all; transform:translateY(0) scale(1); }
+    .ia-msgs {
+      flex: 1; overflow-y: auto; padding: 14px 13px;
+      display: flex; flex-direction: column; gap: 10px; scroll-behavior: smooth;
+    }
+    .ia-msg {
+      max-width: 86%; padding: 10px 13px;
+      font-size: 13.5px; line-height: 1.55;
+      font-family: 'Inter', sans-serif; border-radius: 3px; word-break: break-word;
+    }
+    .ia-msg-assistant { background: #f4f4f2; color: #1b2a3b; align-self: flex-start; }
+    .ia-msg-user { background: #1b2a3b; color: #fff; align-self: flex-end; }
+    .ia-msg a { color: #c49a2a; text-decoration: underline; }
+    .ia-msg ul { margin: 6px 0 4px 16px; padding: 0; }
+    .ia-msg li { margin-bottom: 3px; }
+    .ia-msg strong { font-weight: 700; }
 
-.ia-head {
-  background:#1b2a3b; color:#fff; padding:14px 16px;
-  display:flex; align-items:center; gap:10px;
-  border-radius:3px 3px 0 0;
-}
-.ia-head-avatar {
-  width:32px; height:32px; background:#c49a2a; border-radius:50%;
-  display:flex; align-items:center; justify-content:center; flex-shrink:0;
-  font-size:16px; font-weight:700; color:#1b2a3b;
-}
-.ia-head-info { flex:1; }
-.ia-head-name { font-size:14px; font-weight:700; line-height:1.2; }
-.ia-head-status { font-size:11px; color:#c49a2a; }
-.ia-close-btn {
-  background:none; border:none; color:#fff; cursor:pointer;
-  font-size:18px; line-height:1; padding:2px 4px; opacity:.7;
-  transition:opacity .15s;
-}
-.ia-close-btn:hover { opacity:1; }
+    .ia-typing {
+      display: flex; align-items: center; gap: 5px;
+      padding: 12px 14px; align-self: flex-start;
+      background: #f4f4f2; border-radius: 3px;
+    }
+    .ia-typing span {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #aaa; animation: ia-dot .9s infinite;
+    }
+    .ia-typing span:nth-child(2) { animation-delay: .15s; }
+    .ia-typing span:nth-child(3) { animation-delay: .3s; }
+    @keyframes ia-dot {
+      0%, 60%, 100% { transform: translateY(0); opacity: .6; }
+      30% { transform: translateY(-5px); opacity: 1; }
+    }
 
-.ia-messages {
-  flex:1; overflow-y:auto; padding:14px 12px;
-  display:flex; flex-direction:column; gap:10px;
-  scroll-behavior:smooth;
-}
-.ia-messages::-webkit-scrollbar { width:4px; }
-.ia-messages::-webkit-scrollbar-thumb { background:#d0cdc6; border-radius:2px; }
+    .ia-input-row {
+      display: flex; align-items: center;
+      border-top: 1px solid #e8e8e4; padding: 10px 12px; gap: 8px; flex-shrink: 0;
+    }
+    #ia-asst-input {
+      flex: 1; border: 1.5px solid #ddd; padding: 9px 12px;
+      font-size: 16px; font-family: 'Inter', sans-serif; outline: none;
+      border-radius: 3px; color: #1b2a3b; background: #fafaf8;
+    }
+    #ia-asst-input:focus { border-color: #1b2a3b; }
+    #ia-asst-input::placeholder { color: #bbb; }
+    #ia-send-btn {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: #c49a2a; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: background .15s;
+    }
+    #ia-send-btn:hover { background: #b8891f; }
+    #ia-send-btn:disabled { background: #ddd; cursor: default; }
+    #ia-send-btn svg { width: 16px; height: 16px; fill: #1b2a3b; }
 
-.ia-msg { display:flex; gap:8px; align-items:flex-end; }
-.ia-msg.ia-user { flex-direction:row-reverse; }
+    @media (max-width: 768px) {
+      #ia-asst-btn {
+        bottom: calc(58px + env(safe-area-inset-bottom, 0px) + 14px);
+        right: 14px;
+      }
+      #ia-asst-panel {
+        right: 0; left: 0; bottom: calc(58px + env(safe-area-inset-bottom, 0px));
+        width: 100%; height: 70vh;
+        border-radius: 4px 4px 0 0;
+        border-left: none; border-right: none; border-bottom: none;
+      }
+    }
+    @media (max-width: 480px) { #ia-asst-panel { height: 75vh; } }
+  `;
+  document.head.appendChild(css);
 
-.ia-bubble {
-  max-width:80%; padding:9px 12px; font-size:13px; line-height:1.55;
-  border-radius:14px; word-break:break-word;
-}
-.ia-msg.ia-bot  .ia-bubble { background:#f2f1ee; color:#1b2a3b; border-bottom-left-radius:4px; }
-.ia-msg.ia-user .ia-bubble { background:#1b2a3b; color:#fff;    border-bottom-right-radius:4px; }
-.ia-msg.ia-user .ia-bubble a { color:#c49a2a; }
-.ia-msg.ia-bot  .ia-bubble a { color:#1b2a3b; text-decoration:underline; font-weight:600; }
-.ia-bubble strong { font-weight:700; }
-.ia-bubble ul { margin:6px 0 2px 16px; padding:0; }
-.ia-bubble li { margin-bottom:3px; }
-.ia-bubble p { margin:0 0 6px; }
-.ia-bubble p:last-child { margin-bottom:0; }
-
-.ia-avatar-sm {
-  width:24px; height:24px; border-radius:50%;
-  background:#1b2a3b; display:flex; align-items:center; justify-content:center;
-  font-size:11px; font-weight:700; color:#c49a2a; flex-shrink:0;
-}
-
-.ia-typing { display:flex; align-items:center; gap:4px; padding:10px 12px; }
-.ia-dot { width:7px; height:7px; border-radius:50%; background:#b0ada6; animation:ia-bounce .9s infinite; }
-.ia-dot:nth-child(2) { animation-delay:.15s; }
-.ia-dot:nth-child(3) { animation-delay:.3s; }
-@keyframes ia-bounce { 0%,60%,100% { transform:translateY(0); } 30% { transform:translateY(-5px); } }
-
-.ia-input-row {
-  display:flex; gap:8px; padding:10px 12px;
-  border-top:1.5px solid #ebe8e0;
-  background:#faf9f7; border-radius:0 0 3px 3px;
-}
-#ia-input {
-  flex:1; border:1.5px solid #d4d0c8; padding:9px 12px;
-  font-family:'Inter',sans-serif; font-size:13px; outline:none;
-  border-radius:3px; color:#1b2a3b; background:#fff;
-  transition:border-color .15s;
-}
-#ia-input:focus { border-color:#1b2a3b; }
-#ia-input::placeholder { color:#a09d96; }
-#ia-send-btn {
-  background:#1b2a3b; color:#fff; border:none; cursor:pointer;
-  padding:9px 14px; font-size:13px; font-weight:600;
-  font-family:'Inter',sans-serif; border-radius:3px;
-  transition:background .15s;
-  display:flex; align-items:center; gap:5px;
-}
-#ia-send-btn:hover { background:#c49a2a; }
-#ia-send-btn:disabled { background:#a09d96; cursor:not-allowed; }
-
-.ia-badge {
-  position:absolute; top:-4px; right:-4px;
-  width:14px; height:14px; background:#c49a2a; border-radius:50%;
-  display:none; animation:ia-pulse 2s infinite;
-}
-@keyframes ia-pulse { 0%,100% { transform:scale(1); } 50% { transform:scale(1.2); } }
-
-@media (max-width:480px) {
-  #ia-assistant { bottom:74px; right:12px; }
-  #ia-chat-panel { width:calc(100vw - 24px); right:-12px; max-height:420px; }
-}
-`;
-
-  var styleEl = document.createElement('style');
-  styleEl.textContent = css;
-  document.head.appendChild(styleEl);
-
-  /* ── HTML ─────────────────────────────────────────────────── */
-  var wrap = document.createElement('div');
-  wrap.id = 'ia-assistant';
-  wrap.innerHTML = `
-<div id="ia-chat-panel">
-  <div class="ia-head">
-    <div class="ia-head-avatar">IA</div>
-    <div class="ia-head-info">
-      <div class="ia-head-name">Ideal Armory Assistant</div>
-      <div class="ia-head-status">&#x25CF; Online</div>
-    </div>
-    <button class="ia-close-btn" id="ia-close-btn" title="Close">&#x2715;</button>
-  </div>
-  <div class="ia-messages" id="ia-msgs"></div>
-  <div class="ia-input-row">
-    <input id="ia-input" type="text" placeholder="Ask me anything..." autocomplete="off" maxlength="500">
-    <button id="ia-send-btn">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-        <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+  /* ── HTML ───────────────────────────────────────────────────────────────── */
+  var root = document.createElement('div');
+  root.innerHTML = `
+    <button id="ia-asst-btn" aria-label="Open shopping assistant">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.52 3.66 1.42 5.17L2 22l4.83-1.42A9.96 9.96 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18a7.96 7.96 0 01-4.07-1.12l-.29-.17-3 .88.88-2.9-.19-.3A7.96 7.96 0 014 12c0-4.418 3.582-8 8-8s8 3.582 8 8-3.582 8-8 8zm4.4-5.8c-.24-.12-1.42-.7-1.64-.78-.22-.08-.38-.12-.54.12-.16.24-.62.78-.76.94-.14.16-.28.18-.52.06-.24-.12-1.01-.37-1.93-1.18-.71-.64-1.19-1.42-1.33-1.66-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.48-.4-.42-.54-.43h-.46c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.7 2.6 4.12 3.64.58.25 1.03.4 1.38.51.58.18 1.11.16 1.53.1.47-.07 1.42-.58 1.62-1.14.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.46-.28z"/>
       </svg>
     </button>
-  </div>
-</div>
+    <div id="ia-asst-panel">
+      <div class="ia-head">
+        <div class="ia-head-left">
+          <div class="ia-avatar">IA</div>
+          <div>
+            <div class="ia-head-title">Ideal Armory Assistant</div>
+            <div class="ia-head-sub">Firearm advisor &bull; Ask me anything</div>
+          </div>
+        </div>
+        <button class="ia-close-btn" aria-label="Close">&#10005;</button>
+      </div>
+      <div class="ia-msgs" id="ia-msgs"></div>
+      <div class="ia-input-row">
+        <input type="text" id="ia-asst-input" placeholder="Ask me anything..." autocomplete="off">
+        <button id="ia-send-btn" aria-label="Send">
+          <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(root);
 
-<button id="ia-chat-btn" title="Ask our assistant">
-  <span class="ia-badge" id="ia-badge"></span>
-  <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8">
-    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-  </svg>
-</button>`;
-
-  document.body.appendChild(wrap);
-
-  /* ── State ────────────────────────────────────────────────── */
-  var history = [];
-  var isOpen = false;
-  var isWaiting = false;
-
-  var panel   = document.getElementById('ia-chat-panel');
+  /* ── Wire up events ─────────────────────────────────────────────────────── */
+  var panel   = document.getElementById('ia-asst-panel');
   var msgs    = document.getElementById('ia-msgs');
-  var input   = document.getElementById('ia-input');
+  var inp     = document.getElementById('ia-asst-input');
   var sendBtn = document.getElementById('ia-send-btn');
-  var badge   = document.getElementById('ia-badge');
 
-  /* ── Markdown parser (links, bold, bullets, line breaks) ──── */
-  function parseMarkdown(text) {
-    // Escape HTML
-    var s = text
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
+  document.getElementById('ia-asst-btn').addEventListener('click', function () { window.iaAsst.toggle(); });
+  panel.querySelector('.ia-close-btn').addEventListener('click', function () { window.iaAsst.toggle(); });
+  inp.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); window.iaAsst.send(); }
+  });
+  sendBtn.addEventListener('click', function () { window.iaAsst.send(); });
 
-    // Links [text](url)
-    s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, function (_, t, u) {
-      var isInternal = u.startsWith('/') || u.includes('idealarmory.com');
-      return '<a href="' + u + '"' + (isInternal ? '' : ' target="_blank" rel="noopener"') + '>' + t + '</a>';
-    });
+  /* ── Assistant controller ───────────────────────────────────────────────── */
+  window.iaAsst = {
+    isOpen:  false,
+    history: [],
+    loading: false,
 
-    // Bold **text**
-    s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-
-    // Bullet lines
-    var lines = s.split('\n');
-    var out = [];
-    var inList = false;
-    lines.forEach(function (line) {
-      var trimmed = line.trimStart();
-      if (/^[-•]\s+/.test(trimmed)) {
-        if (!inList) { out.push('<ul>'); inList = true; }
-        out.push('<li>' + trimmed.replace(/^[-•]\s+/, '') + '</li>');
-      } else {
-        if (inList) { out.push('</ul>'); inList = false; }
-        if (trimmed === '') {
-          out.push('<br>');
-        } else {
-          out.push('<p>' + line + '</p>');
-        }
+    toggle: function () {
+      this.isOpen = !this.isOpen;
+      panel.classList.toggle('open', this.isOpen);
+      if (this.isOpen) {
+        if (this.history.length === 0) this._greet();
+        setTimeout(function () { inp.focus(); }, 250);
       }
-    });
-    if (inList) out.push('</ul>');
+    },
 
-    // Collapse consecutive <br>
-    return out.join('').replace(/(<br>){2,}/g, '<br>');
-  }
+    _greet: function () {
+      this._bubble('assistant',
+        "Hi! I’m the Ideal Armory assistant — here to help you find exactly what you’re looking for.\n\nAre you shopping for a **firearm**, **optic**, **holster**, **ammo**, or something else today?");
+    },
 
-  /* ── Render a message bubble ──────────────────────────────── */
-  function addMessage(role, text) {
-    var isBot = role === 'assistant';
-    var row = document.createElement('div');
-    row.className = 'ia-msg ' + (isBot ? 'ia-bot' : 'ia-user');
+    _bubble: function (role, text) {
+      var div = document.createElement('div');
+      div.className = 'ia-msg ia-msg-' + role;
+      div.innerHTML = this._md(text);
+      msgs.appendChild(div);
+      msgs.scrollTop = msgs.scrollHeight;
+    },
 
-    if (isBot) {
-      row.innerHTML = '<div class="ia-avatar-sm">IA</div><div class="ia-bubble">' + parseMarkdown(text) + '</div>';
-    } else {
-      row.innerHTML = '<div class="ia-bubble">' + parseMarkdown(text) + '</div>';
-    }
+    _md: function (raw) {
+      // Escape HTML
+      var t = raw.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      // Bold
+      t = t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      // Links [label](url)
+      t = t.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, '<a href="$2">$1</a>');
+      // Bullets — must come before line-break conversion
+      t = t.replace(/^[-•] (.+)$/gm, '<li>$1</li>');
+      t = t.replace(/(<li>.*?<\/li>\n?)+/g, '<ul>$&</ul>');
+      // Line breaks
+      t = t.replace(/\n/g, '<br>');
+      return t;
+    },
 
-    msgs.appendChild(row);
-    msgs.scrollTop = msgs.scrollHeight;
-  }
+    _showTyping: function () {
+      var d = document.createElement('div');
+      d.id = 'ia-typing';
+      d.className = 'ia-typing';
+      d.innerHTML = '<span></span><span></span><span></span>';
+      msgs.appendChild(d);
+      msgs.scrollTop = msgs.scrollHeight;
+    },
 
-  /* ── Typing indicator ─────────────────────────────────────── */
-  function showTyping() {
-    var row = document.createElement('div');
-    row.className = 'ia-msg ia-bot';
-    row.id = 'ia-typing-row';
-    row.innerHTML = '<div class="ia-avatar-sm">IA</div><div class="ia-bubble ia-typing"><div class="ia-dot"></div><div class="ia-dot"></div><div class="ia-dot"></div></div>';
-    msgs.appendChild(row);
-    msgs.scrollTop = msgs.scrollHeight;
-  }
-  function hideTyping() {
-    var row = document.getElementById('ia-typing-row');
-    if (row) row.remove();
-  }
+    _hideTyping: function () {
+      var t = document.getElementById('ia-typing');
+      if (t) t.remove();
+    },
 
-  /* ── Send a message ───────────────────────────────────────── */
-  function sendMessage(text) {
-    text = (text || input.value).trim();
-    if (!text || isWaiting) return;
+    send: function () {
+      if (this.loading) return;
+      var text = inp.value.trim();
+      if (!text) return;
+      inp.value = '';
 
-    input.value = '';
-    addMessage('user', text);
-    history.push({ role: 'user', content: text });
+      this._bubble('user', text);
+      this.history.push({ role: 'user', content: text });
 
-    isWaiting = true;
-    sendBtn.disabled = true;
-    showTyping();
+      this.loading = true;
+      sendBtn.disabled = true;
+      this._showTyping();
 
-    fetch('/api/assistant', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: history }),
-    })
-      .then(function (r) { return r.json(); })
-      .then(function (data) {
-        hideTyping();
-        var reply = data.reply || "Sorry, I'm having trouble right now. Please try again.";
-        history.push({ role: 'assistant', content: reply });
-        addMessage('assistant', reply);
+      var self = this;
+      fetch('/api/assistant', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: self.history.slice(-20) }),
       })
-      .catch(function () {
-        hideTyping();
-        addMessage('assistant', "I'm having trouble connecting. Please try again in a moment.");
-      })
-      .finally(function () {
-        isWaiting = false;
-        sendBtn.disabled = false;
-        input.focus();
-      });
-  }
-
-  /* ── Open / close ─────────────────────────────────────────── */
-  function openChat() {
-    isOpen = true;
-    panel.classList.add('ia-open');
-    badge.style.display = 'none';
-    input.focus();
-    if (history.length === 0) {
-      var greeting = "Hi! I'm the Ideal Armory Assistant. I can help you find the perfect firearm or accessory.\n\nWhat are you looking for today? Feel free to describe your situation — whether it's your first rifle, a home defense setup, or anything in between.";
-      history.push({ role: 'assistant', content: greeting });
-      addMessage('assistant', greeting);
-    }
-  }
-
-  function closeChat() {
-    isOpen = false;
-    panel.classList.remove('ia-open');
-  }
-
-  /* ── Event listeners ──────────────────────────────────────── */
-  document.getElementById('ia-chat-btn').addEventListener('click', function () {
-    isOpen ? closeChat() : openChat();
-  });
-  document.getElementById('ia-close-btn').addEventListener('click', closeChat);
-
-  sendBtn.addEventListener('click', function () { sendMessage(); });
-  input.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-  });
-
-  /* ── Show badge after 8s to nudge visitors ────────────────── */
-  setTimeout(function () {
-    if (!isOpen) badge.style.display = 'block';
-  }, 8000);
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          self._hideTyping();
+          var reply = data.reply || "I’m having trouble connecting. Please try again in a moment.";
+          self._bubble('assistant', reply);
+          self.history.push({ role: 'assistant', content: reply });
+        })
+        .catch(function () {
+          self._hideTyping();
+          self._bubble('assistant', "I’m having trouble connecting. Please try again in a moment.");
+        })
+        .finally(function () {
+          self.loading = false;
+          sendBtn.disabled = false;
+          inp.focus();
+        });
+    },
+  };
 })();
