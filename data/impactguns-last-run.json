@@ -1,12 +1,12 @@
 {
-  "lastRun": "2026-08-22T09:15:31.909Z",
-  "productCount": 4826,
-  "rawCount": 5321,
-  "htmlPriced": 3006,
-  "apiEnriched": 2315,
+  "lastRun": "2026-08-23T09:09:47.489Z",
+  "productCount": 4259,
+  "rawCount": 4733,
+  "htmlPriced": 2868,
+  "apiEnriched": 1865,
   "staticUpdated": 0,
   "categories": {
-    "handguns": 600,
+    "handguns": 343,
     "rifles": 1000,
     "shotguns": 300,
     "ammunition": 291,
