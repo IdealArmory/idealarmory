@@ -1,0 +1,39 @@
+name: Refresh Guns.com Catalog
+
+on:
+  schedule:
+    - cron: '0 10 * * *'   # Daily at 10:00 UTC (1 hr after CYA Supply)
+  workflow_dispatch:        # Manual trigger from GitHub Actions tab
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  fetch-catalog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Fetch Guns.com catalog
+        env:
+          GUNSCOM_FEED_URL: ${{ secrets.GUNSCOM_FEED_URL }}
+        run: node .github/scripts/fetch-gunscom.js
+
+      - name: Commit and push updated catalog
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name  "github-actions[bot]"
+          git add data/gunscom-*.json
+          git diff --staged --quiet || git commit -m "Auto-update Guns.com catalog [$(date -u '+%Y-%m-%d %H:%M UTC')]"
+          git pull --rebase origin ${{ github.ref_name }}
+          git push origin ${{ github.ref_name }}

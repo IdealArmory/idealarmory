@@ -9,6 +9,7 @@ on:
       - "Refresh Impact Guns Catalog"
       - "Refresh CYA Supply Co. Catalog"
       - "Refresh Lucky Gunner Catalog"
+      - "Refresh Guns.com Catalog"
     types: [completed]
   # Allow manual rebuild from the Actions tab
   workflow_dispatch:

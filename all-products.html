@@ -684,6 +684,10 @@ var IG_FILES = [
   'holsters','magazines','cleaning','gun-safes'
 ];
 var CYA_FILES = ['holsters'];  // expands automatically as fetch-cyasupply.js adds more categories
+var GC_FILES = [
+  'handguns','rifles','shotguns','ammunition','optics',
+  'holsters','magazines','ar-parts','cleaning'
+];
 
 async function loadAllEuroOptic() {
   document.getElementById('result-count').innerHTML = 'Loading products...';
@@ -837,6 +841,58 @@ async function loadAllImpactGuns() {
   }
 }
 
+async function loadAllGunscom() {
+  try {
+    var results = await Promise.all(
+      GC_FILES.map(function(cat) {
+        return fetch('/data/gunscom-'+cat+'.json')
+          .then(function(r){ return r.ok ? r.json() : []; })
+          .catch(function(){ return []; });
+      })
+    );
+    var upcMap = {};
+    ALL_PRODUCTS.forEach(function(p) {
+      if (p.upc) upcMap[p.upc] = p;
+    });
+    results.forEach(function(items, i) {
+      var cat = GC_FILES[i];
+      items.forEach(function(p) {
+        if (!p.price || p.price <= 0 || !p.img) return;
+        if (p.upc && upcMap[p.upc]) {
+          var existing = upcMap[p.upc];
+          if (!existing.sellers.some(function(s){ return s.name === 'Guns.com'; })) {
+            existing.sellers.push({name:'Guns.com', price:p.price, stock:p.inStock?'in':'out', url:p.url});
+            existing.sellers.sort(function(a,b){ return a.price - b.price; });
+          }
+        } else {
+          var newProd = {
+            id: p.id,
+            upc: p.upc || '',
+            brand: p.brand || '',
+            name: p.name,
+            sub: '',
+            img: p.img || '',
+            price: p.price,
+            orig: p.orig || p.price,
+            inStock: p.inStock,
+            stars: 0,
+            reviews: 0,
+            badge: '',
+            src: 'gunscom',
+            category: cat,
+            sellers: [{name:'Guns.com', price:p.price, stock:p.inStock?'in':'out', url:p.url}]
+          };
+          ALL_PRODUCTS.push(newProd);
+          if (p.upc) upcMap[p.upc] = newProd;
+        }
+      });
+    });
+    filterProducts();
+  } catch(e) {
+    console.warn('Guns.com load failed:', e.message);
+  }
+}
+
 async function loadAllCyaSupply() {
   try {
     var results = await Promise.all(
@@ -947,7 +1003,7 @@ function renderGrid() {
     var idStr = typeof p.id === 'string' ? "'"+p.id+"'" : p.id;
     var low = getLowestPrice(p);
     var img = p.img ? '<img src="'+p.img+'" alt="'+p.name+'" loading="lazy">' : '<span class="img-ph">Image from retailer feed</span>';
-    var href = p.src==='eurooptic' ? '/product?src=eurooptic&id='+p.id.replace('eo_','')+'&cat='+(p.category||'') : p.src==='bereli' ? '/product?src=bereli&id='+encodeURIComponent(p.id.replace('bereli_',''))+'&cat='+(p.category||'') : p.src==='impactguns' ? '/product?src=impactguns&id='+encodeURIComponent(p.id.replace('ig_',''))+'&cat='+(p.category||'') : p.src==='cyasupply' ? '/product?src=cyasupply&id='+encodeURIComponent(p.id.replace('cya_',''))+'&cat='+(p.category||'holsters') : p.src==='luckygunner' ? '/product?src=luckygunner&id='+encodeURIComponent(p.id.replace('lg_',''))+'&cat=ammunition' : '/product?p='+slugify(p.name);
+    var href = p.src==='eurooptic' ? '/product?src=eurooptic&id='+p.id.replace('eo_','')+'&cat='+(p.category||'') : p.src==='bereli' ? '/product?src=bereli&id='+encodeURIComponent(p.id.replace('bereli_',''))+'&cat='+(p.category||'') : p.src==='impactguns' ? '/product?src=impactguns&id='+encodeURIComponent(p.id.replace('ig_',''))+'&cat='+(p.category||'') : p.src==='cyasupply' ? '/product?src=cyasupply&id='+encodeURIComponent(p.id.replace('cya_',''))+'&cat='+(p.category||'holsters') : p.src==='luckygunner' ? '/product?src=luckygunner&id='+encodeURIComponent(p.id.replace('lg_',''))+'&cat=ammunition' : p.src==='gunscom' ? '/product?src=gunscom&id='+encodeURIComponent(p.id.replace('gc_',''))+'&cat='+(p.category||'') : '/product?p='+slugify(p.name);
     var catTag = p.category ? '<span class="cat-tag">'+p.category.replace(/-/g,' ')+'</span>' : '';
     return '<div class="prod-card" onclick="viewProduct('+idStr+')">'
       +(p.badge==='best'?'<span class="badge-best">Best Seller</span>':'')
@@ -1490,6 +1546,18 @@ function viewProduct(id) {
     window.location.href = '/product?src=impactguns&id=' + encodeURIComponent(igId) + '&cat=' + igCat;
     return;
   }
+  if (typeof id === 'string' && id.indexOf('gc_') === 0) {
+    var gcId = id.slice(3);
+    var gcP = ALL_PRODUCTS.find(function(x){return x.id===id;});
+    if (gcP) {
+      var gcpd = Object.assign({}, gcP);
+      if (!gcpd.imgs || !gcpd.imgs.length) gcpd.imgs = gcpd.img ? [gcpd.img] : [];
+      try{sessionStorage.setItem('ia_pv',JSON.stringify(gcpd));}catch(e){}
+    }
+    var gcCat = gcP ? (gcP.category||'') : '';
+    window.location.href = '/product?src=gunscom&id=' + encodeURIComponent(gcId) + '&cat=' + gcCat;
+    return;
+  }
   if (typeof id === 'string' && id.indexOf('cya_') === 0) {
     var cyaId = id.slice(4);
     var cyaP = ALL_PRODUCTS.find(function(x){return x.id===id;});
@@ -1543,7 +1611,7 @@ function saveItem(id){
     if (ms) ms.value = q;
   }
 })();
-loadAllEuroOptic().then(function(){ return loadAllBereli(); }).then(function(){ return loadAllImpactGuns(); }).then(function(){ return loadAllCyaSupply(); }).then(function(){ return loadAllLuckyGunner(); });
+loadAllEuroOptic().then(function(){ return loadAllBereli(); }).then(function(){ return loadAllImpactGuns(); }).then(function(){ return loadAllCyaSupply(); }).then(function(){ return loadAllLuckyGunner(); }).then(function(){ return loadAllGunscom(); });
 </script>
 <script src="/js/search-autocomplete.js"></script>
 </body>

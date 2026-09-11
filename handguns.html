@@ -476,6 +476,7 @@ const PRODUCTS = [
 var EO_PRODUCTS = [];
 var BERELI_PRODUCTS=[];
 var IG_PRODUCTS=[];
+var GC_PRODUCTS=[];
 var ALL_PRODUCTS = PRODUCTS.slice();
 var PAGE_SIZE = 48;
 var visibleCount = PAGE_SIZE;
@@ -533,10 +534,13 @@ function adaptBereliProduct(b){
   var capacity=0;var cm=n.match(/(\d+)\+1/);if(cm)capacity=parseInt(cm[1])+1;
   return{id:b.id,upc:b.upc||'',brand:b.brand,name:b.name,sub:b.caliber||'',img:b.img,price:b.price,orig:b.price,inStock:b.inStock,stars:0,reviews:0,badge:'',src:'bereli',action:action,frameSize:frameSize,safety:safety,opticReady:opticReady,barrelIn:barrelIn,capacity:capacity,caliber:b.caliber||'',sellers:[{name:'Bereli',price:b.price,stock:b.inStock?'in':'out',url:b.url}]};
 }
-async function loadBereli(){try{var res=await fetch('/data/bereli-handguns.json');if(!res.ok)return;var items=await res.json();items=items.filter(function(b){if(!b.price||b.price<300)return false;if(!b.img)return false;return true;});var upcMap={};ALL_PRODUCTS.forEach(function(p){if(p.upc)upcMap[p.upc]=p;});items.forEach(function(b){if(b.upc&&upcMap[b.upc]){var ep=upcMap[b.upc];if(!ep.sellers.some(function(s){return s.name==='Bereli';})){ep.sellers.push({name:'Bereli',price:b.price,stock:b.inStock?'in':'out',url:b.url});ep.sellers.sort(function(a,b){return a.price-b.price;});}}else{BERELI_PRODUCTS.push(adaptBereliProduct(b));}});ALL_PRODUCTS=PRODUCTS.concat(EO_PRODUCTS).concat(BERELI_PRODUCTS).concat(IG_PRODUCTS);filterProducts();}catch(e){console.warn('Bereli load failed:',e.message);}}
+async function loadBereli(){try{var res=await fetch('/data/bereli-handguns.json');if(!res.ok)return;var items=await res.json();items=items.filter(function(b){if(!b.price||b.price<300)return false;if(!b.img)return false;return true;});var upcMap={};ALL_PRODUCTS.forEach(function(p){if(p.upc)upcMap[p.upc]=p;});items.forEach(function(b){if(b.upc&&upcMap[b.upc]){var ep=upcMap[b.upc];if(!ep.sellers.some(function(s){return s.name==='Bereli';})){ep.sellers.push({name:'Bereli',price:b.price,stock:b.inStock?'in':'out',url:b.url});ep.sellers.sort(function(a,b){return a.price-b.price;});}}else{BERELI_PRODUCTS.push(adaptBereliProduct(b));}});ALL_PRODUCTS=PRODUCTS.concat(EO_PRODUCTS).concat(BERELI_PRODUCTS).concat(IG_PRODUCTS).concat(GC_PRODUCTS);filterProducts();}catch(e){console.warn('Bereli load failed:',e.message);}}
 
 function adaptImpactGunsProduct(p){var n=p.name.toLowerCase();var action='Striker-Fired';if(/revolver/.test(n))action='Revolver';else if(/\bda\/sa\b|double[\-\s]action/.test(n))action='DA/SA';else if(/single[\-\s]action/.test(n))action='Single Action';var frameSize='Full-Size';if(/sub[\-\s]?compact|micro/.test(n))frameSize='Sub-Compact';else if(/compact/.test(n))frameSize='Compact';var safety='';if(/manual[\-\s]safety/.test(n))safety='Manual Safety';else if(/no[\-\s]manual|without[\-\s]safety/.test(n))safety='No Manual Safety';var opticReady=/optic[\-\s]ready|\bmos\b|\brmr\b|optic[\-\s]cut/.test(n);var barrelIn=0;var bm=n.match(/(\d+(?:\.\d+)?)["\u201d]?\s*(?:inch|in\b)/);if(bm)barrelIn=parseFloat(bm[1]);var capacity=0;var cm=n.match(/(\d+)\+1/);if(cm)capacity=parseInt(cm[1])+1;return{id:p.id,upc:p.upc||'',brand:p.brand||'',name:p.name,sub:'',img:p.img||'',price:p.price,orig:p.orig||p.price,inStock:p.inStock,stars:0,reviews:0,badge:'',src:'impactguns',action:action,frameSize:frameSize,safety:safety,opticReady:opticReady,barrelIn:barrelIn,capacity:capacity,sellers:[{name:'Impact Guns',price:p.price,stock:p.inStock?'in':'out',url:p.url}]};}
-async function loadImpactGuns(){try{var res=await fetch('/data/impactguns-handguns.json');if(!res.ok)return;var items=await res.json();items=items.filter(function(p){return p.price>0&&p.img;});var upcMap={};ALL_PRODUCTS.forEach(function(p){if(p.upc)upcMap[p.upc]=p;});items.forEach(function(p){if(p.upc&&upcMap[p.upc]){var ep=upcMap[p.upc];if(!ep.sellers.some(function(s){return s.name==='Impact Guns';})){ep.sellers.push({name:'Impact Guns',price:p.price,stock:p.inStock?'in':'out',url:p.url});ep.sellers.sort(function(a,b){return a.price-b.price;});}}else{var np=adaptImpactGunsProduct(p);IG_PRODUCTS.push(np);if(p.upc)upcMap[p.upc]=np;}});ALL_PRODUCTS=PRODUCTS.concat(EO_PRODUCTS).concat(BERELI_PRODUCTS).concat(IG_PRODUCTS);filterProducts();}catch(e){console.warn('Impact Guns load failed:',e.message);}}
+async function loadImpactGuns(){try{var res=await fetch('/data/impactguns-handguns.json');if(!res.ok)return;var items=await res.json();items=items.filter(function(p){return p.price>0&&p.img;});var upcMap={};ALL_PRODUCTS.forEach(function(p){if(p.upc)upcMap[p.upc]=p;});items.forEach(function(p){if(p.upc&&upcMap[p.upc]){var ep=upcMap[p.upc];if(!ep.sellers.some(function(s){return s.name==='Impact Guns';})){ep.sellers.push({name:'Impact Guns',price:p.price,stock:p.inStock?'in':'out',url:p.url});ep.sellers.sort(function(a,b){return a.price-b.price;});}}else{var np=adaptImpactGunsProduct(p);IG_PRODUCTS.push(np);if(p.upc)upcMap[p.upc]=np;}});ALL_PRODUCTS=PRODUCTS.concat(EO_PRODUCTS).concat(BERELI_PRODUCTS).concat(IG_PRODUCTS).concat(GC_PRODUCTS);filterProducts();}catch(e){console.warn('Impact Guns load failed:',e.message);}}
+
+function adaptGunscomProduct(p){var n=p.name.toLowerCase();var action='Striker-Fired';if(/revolver/.test(n))action='Revolver';else if(/\bda\/sa\b|double[\-\s]action/.test(n))action='DA/SA';else if(/single[\-\s]action/.test(n))action='Single Action';var frameSize='Full-Size';if(/sub[\-\s]?compact|micro/.test(n))frameSize='Sub-Compact';else if(/compact/.test(n))frameSize='Compact';var safety='';if(/manual[\-\s]safety/.test(n))safety='Manual Safety';else if(/no[\-\s]manual|without[\-\s]safety/.test(n))safety='No Manual Safety';var opticReady=/optic[\-\s]ready|\bmos\b|\brmr\b|optic[\-\s]cut/.test(n);var barrelIn=0;var bm=n.match(/(\d+(?:\.\d+)?)["\u201d]?\s*(?:inch|in\b)/);if(bm)barrelIn=parseFloat(bm[1]);var capacity=0;var cm=n.match(/(\d+)\+1/);if(cm)capacity=parseInt(cm[1])+1;return{id:p.id,upc:p.upc||'',brand:p.brand||'',name:p.name,sub:'',img:p.img||'',price:p.price,orig:p.orig||p.price,inStock:p.inStock,stars:0,reviews:0,badge:'',src:'gunscom',action:action,frameSize:frameSize,safety:safety,opticReady:opticReady,barrelIn:barrelIn,capacity:capacity,sellers:[{name:'Guns.com',price:p.price,stock:p.inStock?'in':'out',url:p.url}]};}
+async function loadGunscom(){try{var res=await fetch('/data/gunscom-handguns.json');if(!res.ok)return;var items=await res.json();items=items.filter(function(p){return p.price>0&&p.img;});var upcMap={};ALL_PRODUCTS.forEach(function(p){if(p.upc)upcMap[p.upc]=p;});items.forEach(function(p){if(p.upc&&upcMap[p.upc]){var ep=upcMap[p.upc];if(!ep.sellers.some(function(s){return s.name==='Guns.com';})){ep.sellers.push({name:'Guns.com',price:p.price,stock:p.inStock?'in':'out',url:p.url});ep.sellers.sort(function(a,b){return a.price-b.price;});}}else{var np=adaptGunscomProduct(p);GC_PRODUCTS.push(np);if(p.upc)upcMap[p.upc]=np;}});ALL_PRODUCTS=PRODUCTS.concat(EO_PRODUCTS).concat(BERELI_PRODUCTS).concat(IG_PRODUCTS).concat(GC_PRODUCTS);filterProducts();}catch(e){console.warn('Guns.com load failed:',e.message);}}
 
 async function loadEuroOptic() {
   try {
@@ -560,7 +564,7 @@ async function loadEuroOptic() {
         EO_PRODUCTS.push(adaptEoProduct(eo)); newCards++;
       }
     });
-    ALL_PRODUCTS = PRODUCTS.concat(EO_PRODUCTS).concat(BERELI_PRODUCTS);
+    ALL_PRODUCTS = PRODUCTS.concat(EO_PRODUCTS).concat(BERELI_PRODUCTS).concat(IG_PRODUCTS).concat(GC_PRODUCTS);
     filterProducts();
   } catch(e) { console.warn('EuroOptic load failed:', e.message); }
 }
@@ -589,7 +593,7 @@ function renderGrid() {
     var idStr = typeof p.id === 'string' ? "'"+p.id+"'" : p.id;
     var low = getLowestPrice(p);
     var img = p.img ? '<img src="'+p.img+'" alt="'+p.name+'" loading="lazy">' : '<span class="img-ph">Image from retailer feed</span>';
-    var href = p.src==='eurooptic' ? '/product?src=eurooptic&id='+p.id.replace('eo_','')+'&cat=handguns' : p.src==='bereli' ? '/product?src=bereli&id='+encodeURIComponent(p.id.replace('bereli_',''))+'&cat=handguns' : p.src==='impactguns' ? '/product?src=impactguns&id='+encodeURIComponent(p.id.replace('ig_',''))+'&cat=handguns' : '/product?p='+slugify(p.name);
+    var href = p.src==='eurooptic' ? '/product?src=eurooptic&id='+p.id.replace('eo_','')+'&cat=handguns' : p.src==='bereli' ? '/product?src=bereli&id='+encodeURIComponent(p.id.replace('bereli_',''))+'&cat=handguns' : p.src==='impactguns' ? '/product?src=impactguns&id='+encodeURIComponent(p.id.replace('ig_',''))+'&cat=handguns' : p.src==='gunscom' ? '/product?src=gunscom&id='+encodeURIComponent(p.id.replace('gc_',''))+'&cat=handguns' : '/product?p='+slugify(p.name);
     return '<div class="prod-card" onclick="viewProduct('+idStr+')">'
       +(p.badge==='best'?'<span class="badge-best">Best Seller</span>':'')
       
@@ -834,6 +838,7 @@ function viewProduct(id) {
   if (p.src==='eurooptic') { window.location.href='/product?src=eurooptic&id='+encodeURIComponent(String(p.id).replace('eo_',''))+'&cat=handguns'; }
   else if (p.src==='bereli') { window.location.href='/product?src=bereli&id='+encodeURIComponent(String(p.id).replace('bereli_',''))+'&cat=handguns'; }
   else if (p.src==='impactguns') { window.location.href='/product?src=impactguns&id='+encodeURIComponent(String(p.id).replace('ig_',''))+'&cat=handguns'; }
+  else if (p.src==='gunscom') { window.location.href='/product?src=gunscom&id='+encodeURIComponent(String(p.id).replace('gc_',''))+'&cat=handguns'; }
   else if (p.src==='luckygunner') { window.location.href='/product?src=luckygunner&id='+encodeURIComponent(String(p.id).replace('lg_',''))+'&cat=handguns'; }
   else { window.location.href='/product?p='+slugify(p.name); }
 }
@@ -880,7 +885,7 @@ filteredProducts = [...PRODUCTS];
 sortAndRender();
 updateFilterAvailability();
 renderSuggested();
-loadEuroOptic().then(function(){return loadBereli();}).then(function(){return loadImpactGuns();});
+loadEuroOptic().then(function(){return loadBereli();}).then(function(){return loadImpactGuns();}).then(function(){return loadGunscom();});
 </script>
 <script src="/js/search-autocomplete.js"></script>
 </body>

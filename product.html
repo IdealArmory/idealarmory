@@ -1781,9 +1781,10 @@ function doSearch(){
           if (!cached.sellers || cached.sellers.length < 2) {
             Promise.all([
               fetch('/data/bereli-' + eoCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; }),
-              fetch('/data/impactguns-' + eoCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; })
+              fetch('/data/impactguns-' + eoCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; }),
+              fetch('/data/gunscom-' + eoCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; })
             ]).then(function(enrichResults){
-              var beItems = enrichResults[0], igItems = enrichResults[1];
+              var beItems = enrichResults[0], igItems = enrichResults[1], gcItems = enrichResults[2];
               if (cached.upc) {
                 var beMatch = beItems.find(function(x){ return x.upc && x.upc === cached.upc; });
                 if (beMatch && !cached.sellers.some(function(s){ return s.name === 'Bereli'; })) {
@@ -1792,6 +1793,10 @@ function doSearch(){
                 var igMatch = igItems.find(function(x){ return x.upc && x.upc === cached.upc; });
                 if (igMatch && !cached.sellers.some(function(s){ return s.name === 'Impact Guns'; })) {
                   cached.sellers.push({name:'Impact Guns', price:igMatch.price, stock:igMatch.inStock?'in':'out', url:igMatch.url});
+                }
+                var gcMatch = gcItems.find(function(x){ return x.upc && x.upc === cached.upc; });
+                if (gcMatch && !cached.sellers.some(function(s){ return s.name === 'Guns.com'; })) {
+                  cached.sellers.push({name:'Guns.com', price:gcMatch.price, stock:gcMatch.inStock?'in':'out', url:gcMatch.url});
                 }
                 cached.sellers.sort(function(a,b){ return a.price - b.price; });
               }
@@ -1805,20 +1810,21 @@ function doSearch(){
         }
       }
     } catch(e){}
-    // Fallback: fetch EO, Bereli, and Impact Guns JSON in parallel
+    // Fallback: fetch EO, Bereli, Impact Guns, and Guns.com JSON in parallel
     Promise.all([
       fetch('/data/eurooptic-' + eoCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; }),
       fetch('/data/bereli-' + eoCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; }),
-      fetch('/data/impactguns-' + eoCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; })
+      fetch('/data/impactguns-' + eoCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; }),
+      fetch('/data/gunscom-' + eoCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; })
     ]).then(function(results){
-      var eoItems = results[0], beItems = results[1], igItems = results[2];
+      var eoItems = results[0], beItems = results[1], igItems = results[2], gcItems = results[3];
       var item = eoItems.find(function(x){ return String(x.id) === String(eoId); });
       if (item) {
         var pd = Object.assign({}, item);
         if (!pd.imgs || !pd.imgs.length) pd.imgs = pd.img ? [pd.img] : [];
         if (pd.sub === undefined) pd.sub = pd.caliber || '';
         pd.sellers = pd.sellers || [{name:'EuroOptic', price:pd.price, stock:pd.inStock?'in':'out', url:pd.url}];
-        // Cross-reference Bereli and Impact Guns by UPC
+        // Cross-reference Bereli, Impact Guns, and Guns.com by UPC
         if (pd.upc) {
           var beMatch = beItems.find(function(x){ return x.upc && x.upc === pd.upc; });
           if (beMatch && !pd.sellers.some(function(s){ return s.name === 'Bereli'; })) {
@@ -1827,6 +1833,10 @@ function doSearch(){
           var igMatch = igItems.find(function(x){ return x.upc && x.upc === pd.upc; });
           if (igMatch && !pd.sellers.some(function(s){ return s.name === 'Impact Guns'; })) {
             pd.sellers.push({name:'Impact Guns', price:igMatch.price, stock:igMatch.inStock?'in':'out', url:igMatch.url});
+          }
+          var gcMatch = gcItems.find(function(x){ return x.upc && x.upc === pd.upc; });
+          if (gcMatch && !pd.sellers.some(function(s){ return s.name === 'Guns.com'; })) {
+            pd.sellers.push({name:'Guns.com', price:gcMatch.price, stock:gcMatch.inStock?'in':'out', url:gcMatch.url});
           }
           pd.sellers.sort(function(a,b){ return a.price - b.price; });
         }
@@ -1850,9 +1860,10 @@ function doSearch(){
           if (!cached.sellers || cached.sellers.length < 2) {
             Promise.all([
               fetch('/data/eurooptic-' + beCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; }),
-              fetch('/data/impactguns-' + beCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; })
+              fetch('/data/impactguns-' + beCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; }),
+              fetch('/data/gunscom-' + beCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; })
             ]).then(function(enrichResults){
-              var eoItems = enrichResults[0], igItems = enrichResults[1];
+              var eoItems = enrichResults[0], igItems = enrichResults[1], gcItems = enrichResults[2];
               if (cached.upc) {
                 var eoMatch = eoItems.find(function(x){ return x.upc && x.upc === cached.upc; });
                 if (eoMatch && !cached.sellers.some(function(s){ return s.name === 'EuroOptic'; })) {
@@ -1861,6 +1872,10 @@ function doSearch(){
                 var igMatch = igItems.find(function(x){ return x.upc && x.upc === cached.upc; });
                 if (igMatch && !cached.sellers.some(function(s){ return s.name === 'Impact Guns'; })) {
                   cached.sellers.push({name:'Impact Guns', price:igMatch.price, stock:igMatch.inStock?'in':'out', url:igMatch.url});
+                }
+                var gcMatch = gcItems.find(function(x){ return x.upc && x.upc === cached.upc; });
+                if (gcMatch && !cached.sellers.some(function(s){ return s.name === 'Guns.com'; })) {
+                  cached.sellers.push({name:'Guns.com', price:gcMatch.price, stock:gcMatch.inStock?'in':'out', url:gcMatch.url});
                 }
                 cached.sellers.sort(function(a,b){ return a.price - b.price; });
               }
@@ -1877,9 +1892,10 @@ function doSearch(){
     Promise.all([
       fetch('/data/bereli-' + beCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; }),
       fetch('/data/eurooptic-' + beCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; }),
-      fetch('/data/impactguns-' + beCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; })
+      fetch('/data/impactguns-' + beCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; }),
+      fetch('/data/gunscom-' + beCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; })
     ]).then(function(results){
-      var beItems = results[0], eoItems = results[1], igItems = results[2];
+      var beItems = results[0], eoItems = results[1], igItems = results[2], gcItems = results[3];
       var item = beItems.find(function(x){
         return String(x.id || '').replace(/^bereli_/, '') === String(beId);
       });
@@ -1895,6 +1911,10 @@ function doSearch(){
           var igMatch = igItems.find(function(x){ return x.upc && x.upc === pd.upc; });
           if (igMatch && !pd.sellers.some(function(s){ return s.name === 'Impact Guns'; })) {
             pd.sellers.push({name:'Impact Guns', price:igMatch.price, stock:igMatch.inStock?'in':'out', url:igMatch.url});
+          }
+          var gcMatch = gcItems.find(function(x){ return x.upc && x.upc === pd.upc; });
+          if (gcMatch && !pd.sellers.some(function(s){ return s.name === 'Guns.com'; })) {
+            pd.sellers.push({name:'Guns.com', price:gcMatch.price, stock:gcMatch.inStock?'in':'out', url:gcMatch.url});
           }
           pd.sellers.sort(function(a,b){ return a.price - b.price; });
         }
@@ -1947,9 +1967,10 @@ function doSearch(){
           if (!cached.sellers || cached.sellers.length < 2) {
             Promise.all([
               fetch('/data/bereli-' + igCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; }),
-              fetch('/data/eurooptic-' + igCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; })
+              fetch('/data/eurooptic-' + igCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; }),
+              fetch('/data/gunscom-' + igCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; })
             ]).then(function(enrichResults){
-              var beItems = enrichResults[0], eoItems = enrichResults[1];
+              var beItems = enrichResults[0], eoItems = enrichResults[1], gcItems = enrichResults[2];
               if (cached.upc) {
                 var beMatch = beItems.find(function(x){ return x.upc && x.upc === cached.upc; });
                 if (beMatch && !cached.sellers.some(function(s){ return s.name === 'Bereli'; })) {
@@ -1958,6 +1979,10 @@ function doSearch(){
                 var eoMatch = eoItems.find(function(x){ return x.upc && x.upc === cached.upc; });
                 if (eoMatch && !cached.sellers.some(function(s){ return s.name === 'EuroOptic'; })) {
                   cached.sellers.push({name:'EuroOptic', price:eoMatch.price, stock:eoMatch.inStock?'in':'out', url:eoMatch.url});
+                }
+                var gcMatch = gcItems.find(function(x){ return x.upc && x.upc === cached.upc; });
+                if (gcMatch && !cached.sellers.some(function(s){ return s.name === 'Guns.com'; })) {
+                  cached.sellers.push({name:'Guns.com', price:gcMatch.price, stock:gcMatch.inStock?'in':'out', url:gcMatch.url});
                 }
                 cached.sellers.sort(function(a,b){ return a.price - b.price; });
               }
@@ -1974,9 +1999,10 @@ function doSearch(){
     Promise.all([
       fetch('/data/impactguns-' + igCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; }),
       fetch('/data/bereli-' + igCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; }),
-      fetch('/data/eurooptic-' + igCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; })
+      fetch('/data/eurooptic-' + igCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; }),
+      fetch('/data/gunscom-' + igCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; })
     ]).then(function(results){
-      var igItems = results[0], beItems = results[1], eoItems = results[2];
+      var igItems = results[0], beItems = results[1], eoItems = results[2], gcItems = results[3];
       var item = igItems.find(function(x){
         return String(x.id || '').replace(/^ig_/, '') === String(igId);
       });
@@ -1992,6 +2018,10 @@ function doSearch(){
           var eoMatch = eoItems.find(function(x){ return x.upc && x.upc === pd.upc; });
           if (eoMatch && !pd.sellers.some(function(s){ return s.name === 'EuroOptic'; })) {
             pd.sellers.push({name:'EuroOptic', price:eoMatch.price, stock:eoMatch.inStock?'in':'out', url:eoMatch.url});
+          }
+          var gcMatch = gcItems.find(function(x){ return x.upc && x.upc === pd.upc; });
+          if (gcMatch && !pd.sellers.some(function(s){ return s.name === 'Guns.com'; })) {
+            pd.sellers.push({name:'Guns.com', price:gcMatch.price, stock:gcMatch.inStock?'in':'out', url:gcMatch.url});
           }
           pd.sellers.sort(function(a,b){ return a.price - b.price; });
         }
@@ -2031,6 +2061,84 @@ function doSearch(){
         } else { renderNotFound(); }
       })
       .catch(function(){ renderNotFound(); });
+    return;
+  }
+
+  // 0f. Guns.com product — routed via ?src=gunscom&id=xxx&cat=CATEGORY
+  if (sp.get('src') === 'gunscom') {
+    var gcId = String(sp.get('id') || '').replace(/^gc_/, '');
+    var gcCat = sp.get('cat') || 'handguns';
+    try {
+      var raw = sessionStorage.getItem('ia_pv');
+      if (raw) {
+        var cached = JSON.parse(raw);
+        var cachedRawId = String(cached.id || '').replace(/^gc_/, '');
+        if (cachedRawId === gcId) {
+          if (!cached.sellers || cached.sellers.length < 2) {
+            Promise.all([
+              fetch('/data/bereli-' + gcCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; }),
+              fetch('/data/eurooptic-' + gcCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; }),
+              fetch('/data/impactguns-' + gcCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; })
+            ]).then(function(enrichResults){
+              var beItems = enrichResults[0], eoItems = enrichResults[1], igItems = enrichResults[2];
+              if (cached.upc) {
+                var beMatch = beItems.find(function(x){ return x.upc && x.upc === cached.upc; });
+                if (beMatch && !cached.sellers.some(function(s){ return s.name === 'Bereli'; })) {
+                  cached.sellers.push({name:'Bereli', price:beMatch.price, stock:beMatch.inStock?'in':'out', url:beMatch.url});
+                }
+                var eoMatch = eoItems.find(function(x){ return x.upc && x.upc === cached.upc; });
+                if (eoMatch && !cached.sellers.some(function(s){ return s.name === 'EuroOptic'; })) {
+                  cached.sellers.push({name:'EuroOptic', price:eoMatch.price, stock:eoMatch.inStock?'in':'out', url:eoMatch.url});
+                }
+                var igMatch = igItems.find(function(x){ return x.upc && x.upc === cached.upc; });
+                if (igMatch && !cached.sellers.some(function(s){ return s.name === 'Impact Guns'; })) {
+                  cached.sellers.push({name:'Impact Guns', price:igMatch.price, stock:igMatch.inStock?'in':'out', url:igMatch.url});
+                }
+                cached.sellers.sort(function(a,b){ return a.price - b.price; });
+              }
+              try{ sessionStorage.setItem('ia_pv', JSON.stringify(cached)); }catch(e2){}
+              renderProduct(cached);
+            });
+          } else {
+            renderProduct(cached);
+          }
+          return;
+        }
+      }
+    } catch(e){}
+    Promise.all([
+      fetch('/data/gunscom-' + gcCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; }),
+      fetch('/data/bereli-' + gcCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; }),
+      fetch('/data/eurooptic-' + gcCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; }),
+      fetch('/data/impactguns-' + gcCat + '.json').then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; })
+    ]).then(function(results){
+      var gcItems = results[0], beItems = results[1], eoItems = results[2], igItems = results[3];
+      var item = gcItems.find(function(x){
+        return String(x.id || '').replace(/^gc_/, '') === String(gcId);
+      });
+      if (item) {
+        var pd = Object.assign({}, item);
+        if (!pd.imgs || !pd.imgs.length) pd.imgs = pd.img ? [pd.img] : [];
+        pd.sellers = pd.sellers || [{name:'Guns.com', price:pd.price, stock:pd.inStock?'in':'out', url:pd.url}];
+        if (pd.upc) {
+          var beMatch = beItems.find(function(x){ return x.upc && x.upc === pd.upc; });
+          if (beMatch && !pd.sellers.some(function(s){ return s.name === 'Bereli'; })) {
+            pd.sellers.push({name:'Bereli', price:beMatch.price, stock:beMatch.inStock?'in':'out', url:beMatch.url});
+          }
+          var eoMatch = eoItems.find(function(x){ return x.upc && x.upc === pd.upc; });
+          if (eoMatch && !pd.sellers.some(function(s){ return s.name === 'EuroOptic'; })) {
+            pd.sellers.push({name:'EuroOptic', price:eoMatch.price, stock:eoMatch.inStock?'in':'out', url:eoMatch.url});
+          }
+          var igMatch = igItems.find(function(x){ return x.upc && x.upc === pd.upc; });
+          if (igMatch && !pd.sellers.some(function(s){ return s.name === 'Impact Guns'; })) {
+            pd.sellers.push({name:'Impact Guns', price:igMatch.price, stock:igMatch.inStock?'in':'out', url:igMatch.url});
+          }
+          pd.sellers.sort(function(a,b){ return a.price - b.price; });
+        }
+        try{ sessionStorage.setItem('ia_pv', JSON.stringify(pd)); }catch(e){}
+        renderProduct(pd);
+      } else { renderNotFound(); }
+    }).catch(function(){ renderNotFound(); });
     return;
   }
 

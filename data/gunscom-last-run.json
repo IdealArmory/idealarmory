@@ -1,0 +1,29 @@
+{
+  "lastRun": "2026-09-11T00:00:00.000Z",
+  "productCount": 2993,
+  "rawCount": 30063,
+  "categories": {
+    "handguns": 700,
+    "holsters": 150,
+    "ammunition": 300,
+    "rifles": 900,
+    "optics": 200,
+    "ar-parts": 78,
+    "shotguns": 400,
+    "magazines": 250,
+    "cleaning": 15
+  },
+  "files": [
+    "gunscom-handguns.json",
+    "gunscom-holsters.json",
+    "gunscom-ammunition.json",
+    "gunscom-rifles.json",
+    "gunscom-optics.json",
+    "gunscom-ar-parts.json",
+    "gunscom-shotguns.json",
+    "gunscom-magazines.json",
+    "gunscom-cleaning.json"
+  ],
+  "status": "success",
+  "note": "generated locally for frontend integration testing"
+}

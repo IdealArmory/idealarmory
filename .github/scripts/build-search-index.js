@@ -47,6 +47,16 @@ const FEEDS = [
   { src:'cyasupply',   idPfx:'cya_',     cat:'cleaning',   file:'cyasupply-cleaning.json'   },
   // Lucky Gunner
   { src:'luckygunner', idPfx:'lg_',      cat:'ammunition', file:'luckygunner-ammunition.json' },
+  // Guns.com
+  { src:'gunscom',     idPfx:'gc_',      cat:'handguns',   file:'gunscom-handguns.json'   },
+  { src:'gunscom',     idPfx:'gc_',      cat:'rifles',     file:'gunscom-rifles.json'     },
+  { src:'gunscom',     idPfx:'gc_',      cat:'shotguns',   file:'gunscom-shotguns.json'   },
+  { src:'gunscom',     idPfx:'gc_',      cat:'ammunition', file:'gunscom-ammunition.json' },
+  { src:'gunscom',     idPfx:'gc_',      cat:'magazines',  file:'gunscom-magazines.json'  },
+  { src:'gunscom',     idPfx:'gc_',      cat:'holsters',   file:'gunscom-holsters.json'   },
+  { src:'gunscom',     idPfx:'gc_',      cat:'optics',     file:'gunscom-optics.json'     },
+  { src:'gunscom',     idPfx:'gc_',      cat:'ar-parts',   file:'gunscom-ar-parts.json'   },
+  { src:'gunscom',     idPfx:'gc_',      cat:'cleaning',   file:'gunscom-cleaning.json'   },
 ];
 
 // ── Minimum price guard — skip obviously bogus / freebie entries ──────────────
@@ -186,7 +196,7 @@ function build() {
   });
 
   // 3. Sort: static/manual first, then by source, then by category, then price asc
-  const SRC_ORDER = { static:0, manual:0, eurooptic:1, bereli:2, impactguns:3, cyasupply:4, luckygunner:5 };
+  const SRC_ORDER = { static:0, manual:0, eurooptic:1, bereli:2, impactguns:3, cyasupply:4, luckygunner:5, gunscom:6 };
   index.sort((a, b) => {
     const so = (SRC_ORDER[a.src]||9) - (SRC_ORDER[b.src]||9);
     if (so !== 0) return so;
