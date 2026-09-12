@@ -62,8 +62,8 @@ const PRICE_CEILINGS = {
 
 // ── Max products per category ─────────────────────────────────────────────────
 const CAT_CAPS = {
-  'handguns':   500,
-  'rifles':     800,  // priority brands fill first (price asc), then non-priority fill
+  'handguns':   800,
+  'rifles':     1100,  // priority brands fill first (price asc), then non-priority fill
   'optics':     600,
   'ammunition': 400,
   'holsters':   200,
@@ -78,6 +78,61 @@ function isMajorBrand(brand, category) {
   if (!b) return false;
   const list = BRAND_WHITELIST[category] || [];
   return list.some(kw => b.includes(kw));
+}
+
+// ── Price-banded cap sampling for firearm categories ────────────────────────────
+// Plain "cheapest priority-brand first" can fill an entire cap from the bottom
+// sliver of the price range if there's a glut of cheap listings. Sampling evenly
+// across price bands (by rank, not just taking the cheapest N) spreads the
+// catalog across the range people actually shop in.
+const PRICE_BANDS = {
+  handguns: [[300, 450], [450, 700], [700, 1200], [1200, Infinity]],
+  rifles:   [[300, 500], [500, 900], [900, 1500], [1500, Infinity]],
+};
+
+function spreadSample(sortedList, k) {
+  const n = sortedList.length;
+  if (n <= k || k <= 0) return sortedList.slice();
+  if (k === 1) return [sortedList[0]];
+  const step = (n - 1) / (k - 1);
+  const seen = new Set();
+  const result = [];
+  for (let i = 0; i < k; i++) {
+    const idx = Math.round(i * step);
+    if (seen.has(idx)) continue;
+    seen.add(idx);
+    result.push(sortedList[idx]);
+  }
+  return result;
+}
+
+function bandedCap(products, cap, bands, priorityBrands) {
+  const isPriority = p => priorityBrands.some(br => (p.brand || '').toLowerCase().includes(br));
+  const perBand = Math.ceil(cap / bands.length);
+  let remaining = cap;
+  const result = [];
+  const used = new Set();
+
+  for (const [lo, hi] of bands) {
+    const bandItems = products.filter(p => p.price >= lo && p.price < hi);
+    const pri  = bandItems.filter(isPriority).sort((a, b) => a.price - b.price);
+    const rest = bandItems.filter(p => !isPriority(p)).sort((a, b) => a.price - b.price);
+    const take = Math.min(perBand, remaining);
+    const chosen = pri.length >= take ? spreadSample(pri, take) : pri.concat(spreadSample(rest, take - pri.length));
+    chosen.forEach(p => used.add(p));
+    result.push(...chosen);
+    remaining -= chosen.length;
+  }
+
+  if (remaining > 0) {
+    const unused = products.filter(p => !used.has(p)).sort((a, b) => {
+      const ap = isPriority(a), bp = isPriority(b);
+      if (ap !== bp) return ap ? -1 : 1;
+      return a.price - b.price;
+    });
+    result.push(...unused.slice(0, remaining));
+  }
+  return result;
 }
 
 function mapCategory(cat, name) {
@@ -542,14 +597,16 @@ async function main() {
     byCategory[p.category].push(p);
   });
 
-  // Priority brands for rifles: popular hunting/sporting manufacturers that people
-  // actually search for and buy. These are sorted price-ASCENDING (most affordable
-  // first) so a $499 Ruger American ranks above a $2,800 custom build.
-  // Ultra-premium ($3,000+) are already excluded by PRICE_CEILINGS above.
+  // Priority brands: popular manufacturers that people actually search for and buy.
+  // These are sorted price-ASCENDING (most affordable first) so a $499 Ruger American
+  // ranks above a $2,800 custom build. Ultra-premium items are already excluded by
+  // PRICE_CEILINGS above.
   const PRIORITY_BRANDS = {
     rifles: ['ruger','tikka','weatherby','cva','browning','remington','winchester',
              'bergara','cz','savage','mossberg','henry','howa','rossi','traditions',
-             'christensen','fn','sig sauer','springfield','daniel defense']
+             'christensen','fn','sig sauer','springfield','daniel defense'],
+    handguns: ['glock','sig sauer','smith & wesson','ruger','springfield','taurus',
+               'beretta','canik','walther','cz']
   };
 
   // Apply per-category caps:
@@ -560,7 +617,12 @@ async function main() {
     if (!cap || byCategory[cat].length <= cap) continue;
 
     const priorityBrands = PRIORITY_BRANDS[cat] || [];
-    if (priorityBrands.length) {
+    const bands = PRICE_BANDS[cat];
+    if (bands && priorityBrands.length) {
+      const before = byCategory[cat].length;
+      byCategory[cat] = bandedCap(byCategory[cat], cap, bands, priorityBrands).sort((a, b) => a.price - b.price);
+      console.log(`  [cap:banded] ${cat}: ${before} → ${byCategory[cat].length}`);
+    } else if (priorityBrands.length) {
       const isPriority = p => priorityBrands.some(br => (p.brand || '').toLowerCase().includes(br));
       const priority = byCategory[cat].filter(isPriority).sort((a, b) => a.price - b.price);  // asc
       const rest     = byCategory[cat].filter(p => !isPriority(p)).sort((a, b) => a.price - b.price); // asc

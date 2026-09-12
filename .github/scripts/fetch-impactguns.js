@@ -39,7 +39,7 @@ const CATEGORIES = [
 
 // ── Per-category product caps ─────────────────────────────────────────────────
 const CAT_CAPS = {
-  'handguns':   600, 'rifles': 1000, 'shotguns': 300,
+  'handguns':   900, 'rifles': 1300, 'shotguns': 450,
   'ammunition': 800, 'optics': 500,  'holsters': 300,
   'magazines':  300, 'cleaning': 150, 'gun-safes': 200,
 };
@@ -55,12 +55,15 @@ const PRIORITY_BRANDS = {
   rifles: ['ruger','tikka','weatherby','cva','browning','remington','winchester',
            'bergara','cz','savage','mossberg','henry','howa','rossi','traditions',
            'christensen','fn america','sig sauer','springfield','daniel defense',
-           'barrett','lwrc','steyr','kel-tec']
+           'barrett','lwrc','steyr','kel-tec'],
+  handguns: ['glock','sig sauer','smith & wesson','ruger','springfield','taurus',
+             'beretta','canik','walther','cz'],
+  shotguns: ['mossberg','remington','winchester','benelli','beretta','browning','savage']
 };
 
 // ── Price floors ──────────────────────────────────────────────────────────────
 const PRICE_FLOORS = {
-  'handguns': 150, 'rifles': 250, 'shotguns': 150,
+  'handguns': 300, 'rifles': 300, 'shotguns': 300,
   'ammunition': 5, 'optics': 30,  'holsters': 15,
   'magazines': 8,  'cleaning': 5, 'gun-safes': 80,
 };
@@ -440,6 +443,61 @@ function isRelevant(raw, ourCat) {
   return true;
 }
 
+// ── Price-banded cap sampling for firearm categories ────────────────────────────
+// Plain "priority-brand first, listing order" can still let a glut of cheap
+// listings dominate a category. Sampling evenly across price bands (by rank,
+// not just the cheapest end) spreads the catalog across the range people shop in.
+const PRICE_BANDS = {
+  handguns: [[300, 450], [450, 700], [700, 1200], [1200, Infinity]],
+  rifles:   [[300, 500], [500, 900], [900, 1500], [1500, Infinity]],
+  shotguns: [[300, 450], [450, 700], [700, 1200], [1200, Infinity]],
+};
+
+function spreadSample(sortedList, k) {
+  const n = sortedList.length;
+  if (n <= k || k <= 0) return sortedList.slice();
+  if (k === 1) return [sortedList[0]];
+  const step = (n - 1) / (k - 1);
+  const seen = new Set();
+  const result = [];
+  for (let i = 0; i < k; i++) {
+    const idx = Math.round(i * step);
+    if (seen.has(idx)) continue;
+    seen.add(idx);
+    result.push(sortedList[idx]);
+  }
+  return result;
+}
+
+function bandedCap(products, cap, bands, priorityBrands) {
+  const isPriority = p => priorityBrands.some(br => (p.brand || p.name || '').toLowerCase().includes(br));
+  const perBand = Math.ceil(cap / bands.length);
+  let remaining = cap;
+  const result = [];
+  const used = new Set();
+
+  for (const [lo, hi] of bands) {
+    const bandItems = products.filter(p => p.price >= lo && p.price < hi);
+    const pri  = bandItems.filter(isPriority).sort((a, b) => a.price - b.price);
+    const rest = bandItems.filter(p => !isPriority(p)).sort((a, b) => a.price - b.price);
+    const take = Math.min(perBand, remaining);
+    const chosen = pri.length >= take ? spreadSample(pri, take) : pri.concat(spreadSample(rest, take - pri.length));
+    chosen.forEach(p => used.add(p));
+    result.push(...chosen);
+    remaining -= chosen.length;
+  }
+
+  if (remaining > 0) {
+    const unused = products.filter(p => !used.has(p)).sort((a, b) => {
+      const ap = isPriority(a), bp = isPriority(b);
+      if (ap !== bp) return ap ? -1 : 1;
+      return a.price - b.price;
+    });
+    result.push(...unused.slice(0, remaining));
+  }
+  return result;
+}
+
 // ── Phase 4: Update static product prices from live IG data ──────────────────
 // Reads data/static-products.json, finds entries that have an Impact Guns seller
 // URL, matches them to the live scrape by UPC or numeric product ID embedded in
@@ -600,20 +658,33 @@ async function main() {
 
   for (const [cat, products] of Object.entries(byCategory)) {
     if (products.length === 0) continue;
-    // Sort: in-stock first, then priority brands before others, then preserve listing order.
-    // Priority brands ensure popular hunting/sporting manufacturers (Tikka, Ruger, etc.)
-    // aren't pushed out by Impact Guns' "featured" listing when the cap is applied.
     const prioBrands = PRIORITY_BRANDS[cat] || [];
-    const isPrio = p => prioBrands.some(br => (p.brand || p.name || '').toLowerCase().includes(br));
-    products.sort((a, b) => {
-      if (a.inStock !== b.inStock) return a.inStock ? -1 : 1;
-      const ap = isPrio(a), bp = isPrio(b);
-      if (ap !== bp) return ap ? -1 : 1;
-      return 0;
-    });
-    const cap   = CAT_CAPS[cat];
-    const final = cap && products.length > cap ? products.slice(0, cap) : products;
-    if (cap && products.length > cap) console.log(`  [cap] ${cat}: ${products.length} → ${cap}`);
+    const cap = CAT_CAPS[cat];
+    const bands = PRICE_BANDS[cat];
+
+    let final;
+    if (cap && products.length > cap && bands && prioBrands.length) {
+      // Firearm categories: prefer in-stock, but sample evenly across price bands
+      // instead of pure listing order — otherwise a glut of cheap listings can
+      // still crowd out the $500-1500+ range even with priority brands preferred.
+      const inStock = products.filter(p => p.inStock);
+      const pool = inStock.length >= cap ? inStock : products;
+      final = bandedCap(pool, cap, bands, prioBrands).sort((a, b) => a.price - b.price);
+      console.log(`  [cap:banded] ${cat}: ${products.length} → ${final.length}`);
+    } else {
+      // Sort: in-stock first, then priority brands before others, then preserve listing order.
+      // Priority brands ensure popular hunting/sporting manufacturers (Tikka, Ruger, etc.)
+      // aren't pushed out by Impact Guns' "featured" listing when the cap is applied.
+      const isPrio = p => prioBrands.some(br => (p.brand || p.name || '').toLowerCase().includes(br));
+      products.sort((a, b) => {
+        if (a.inStock !== b.inStock) return a.inStock ? -1 : 1;
+        const ap = isPrio(a), bp = isPrio(b);
+        if (ap !== bp) return ap ? -1 : 1;
+        return 0;
+      });
+      final = cap && products.length > cap ? products.slice(0, cap) : products;
+      if (cap && products.length > cap) console.log(`  [cap] ${cat}: ${products.length} → ${cap}`);
+    }
 
     catCounts[cat] = final.length;
     const fname    = `impactguns-${cat}.json`;

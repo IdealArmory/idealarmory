@@ -78,8 +78,8 @@ const PRICE_FLOORS = {
 
 // ── Per-category product caps ─────────────────────────────────────────────────
 const CAT_CAPS = {
-  'handguns':   500,
-  'rifles':     500,
+  'handguns':   700,
+  'rifles':     700,
   'optics':     500,
   'ammunition': 800,
   'ar-parts':   400,
@@ -321,6 +321,61 @@ function isRelevant(p) {
   return true;
 }
 
+// ── Price-banded cap sampling for firearm categories ────────────────────────────
+// Plain "cheapest priority-brand first" can fill an entire cap from the bottom
+// sliver of the price range if there's a glut of cheap listings. Sampling evenly
+// across price bands (by rank, not just the cheapest end) spreads the catalog
+// across the range people actually shop in.
+const PRICE_BANDS = {
+  handguns: [[300, 450], [450, 700], [700, 1200], [1200, Infinity]],
+  rifles:   [[300, 500], [500, 900], [900, 1500], [1500, Infinity]],
+};
+
+function spreadSample(sortedList, k) {
+  const n = sortedList.length;
+  if (n <= k || k <= 0) return sortedList.slice();
+  if (k === 1) return [sortedList[0]];
+  const step = (n - 1) / (k - 1);
+  const seen = new Set();
+  const result = [];
+  for (let i = 0; i < k; i++) {
+    const idx = Math.round(i * step);
+    if (seen.has(idx)) continue;
+    seen.add(idx);
+    result.push(sortedList[idx]);
+  }
+  return result;
+}
+
+function bandedCap(products, cap, bands, priorityBrands) {
+  const isPriority = p => priorityBrands.some(br => (p.brand || '').toLowerCase().includes(br));
+  const perBand = Math.ceil(cap / bands.length);
+  let remaining = cap;
+  const result = [];
+  const used = new Set();
+
+  for (const [lo, hi] of bands) {
+    const bandItems = products.filter(p => p.price >= lo && p.price < hi);
+    const pri  = bandItems.filter(isPriority).sort((a, b) => a.price - b.price);
+    const rest = bandItems.filter(p => !isPriority(p)).sort((a, b) => a.price - b.price);
+    const take = Math.min(perBand, remaining);
+    const chosen = pri.length >= take ? spreadSample(pri, take) : pri.concat(spreadSample(rest, take - pri.length));
+    chosen.forEach(p => used.add(p));
+    result.push(...chosen);
+    remaining -= chosen.length;
+  }
+
+  if (remaining > 0) {
+    const unused = products.filter(p => !used.has(p)).sort((a, b) => {
+      const ap = isPriority(a), bp = isPriority(b);
+      if (ap !== bp) return ap ? -1 : 1;
+      return a.price - b.price;
+    });
+    result.push(...unused.slice(0, remaining));
+  }
+  return result;
+}
+
 // ── Product transformer ───────────────────────────────────────────────────────
 function transformProduct(p) {
   const category = mapCategory(p.type, p.title, p.caliber);
@@ -404,22 +459,30 @@ async function main() {
 
   const filesWritten = [];
   for (const [cat, products] of Object.entries(byCategory)) {
-    // Priority brands first (price asc), then fill remaining slots with others (price asc).
-    // This ensures popular hunting/sporting brands survive the cap regardless of listing order.
     const prioBrands = PRIORITY_BRANDS[cat] || [];
-    if (prioBrands.length) {
-      const isPrio   = p => prioBrands.some(br => (p.brand || '').toLowerCase().includes(br));
-      const priority = products.filter(isPrio).sort((a, b) => a.price - b.price);
-      const rest     = products.filter(p => !isPrio(p)).sort((a, b) => a.price - b.price);
-      products.length = 0;
-      products.push(...priority, ...rest);
+    const cap = CAT_CAPS[cat];
+    const bands = PRICE_BANDS[cat];
+    let final;
+
+    if (cap && products.length > cap && bands && prioBrands.length) {
+      final = bandedCap(products, cap, bands, prioBrands).sort((a, b) => a.price - b.price);
+      console.log(`  [cap:banded] ${cat}: ${products.length} → ${final.length}`);
     } else {
-      products.sort((a, b) => b.price - a.price);
-    }
-    const cap   = CAT_CAPS[cat];
-    const final = cap && products.length > cap ? products.slice(0, cap) : products;
-    if (cap && products.length > cap) {
-      console.log(`  [cap] ${cat}: ${products.length} → ${cap}`);
+      // Priority brands first (price asc), then fill remaining slots with others (price asc).
+      // This ensures popular hunting/sporting brands survive the cap regardless of listing order.
+      if (prioBrands.length) {
+        const isPrio   = p => prioBrands.some(br => (p.brand || '').toLowerCase().includes(br));
+        const priority = products.filter(isPrio).sort((a, b) => a.price - b.price);
+        const rest     = products.filter(p => !isPrio(p)).sort((a, b) => a.price - b.price);
+        products.length = 0;
+        products.push(...priority, ...rest);
+      } else {
+        products.sort((a, b) => b.price - a.price);
+      }
+      final = cap && products.length > cap ? products.slice(0, cap) : products;
+      if (cap && products.length > cap) {
+        console.log(`  [cap] ${cat}: ${products.length} → ${cap}`);
+      }
     }
     const fname = `bereli-${cat}.json`;
     fs.writeFileSync(path.join(dataDir, fname), JSON.stringify(final));

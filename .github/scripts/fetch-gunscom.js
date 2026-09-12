@@ -53,8 +53,11 @@ const DEPT_MAP = {
 };
 
 // ── Popular price ranges — what people actually buy, not top-end/collector items ──
+// Firearm floors raised to $300: Guns.com's used-marketplace inventory below that
+// point is dominated by budget trade-ins that were filling the entire per-category
+// cap on their own, crowding out the $300-$2000+ range people actually shop in.
 const PRICE_FLOORS = {
-  handguns: 150, rifles: 200, shotguns: 150, ammunition: 10,
+  handguns: 300, rifles: 300, shotguns: 300, ammunition: 10,
   magazines: 10, holsters: 10, optics: 30, 'ar-parts': 20, cleaning: 5,
 };
 const PRICE_CEILINGS = {
@@ -94,9 +97,72 @@ function isMajorBrand(brand, cat) {
 }
 
 const CAT_CAPS = {
-  handguns: 700, rifles: 900, shotguns: 400, ammunition: 300,
+  handguns: 1000, rifles: 1200, shotguns: 600, ammunition: 300,
   magazines: 250, holsters: 150, optics: 200, 'ar-parts': 100, cleaning: 60,
 };
+
+// ── Price bands for firearm categories ─────────────────────────────────────────
+// A live used-gun marketplace has a huge glut of near-identical cheap listings —
+// plain "cheapest priority-brand first" fills the ENTIRE cap from the bottom
+// sliver of the price range (e.g. all 1000 handgun slots landing under $250)
+// before ever reaching a normal $500-$1000 duty/carry gun. Splitting into bands
+// and sampling evenly across each band's price range (not just its cheapest end)
+// is what actually distributes the catalog across what people shop across.
+const PRICE_BANDS = {
+  handguns: [[300, 450], [450, 700], [700, 1200], [1200, Infinity]],
+  rifles:   [[300, 500], [500, 900], [900, 1500], [1500, Infinity]],
+  shotguns: [[300, 450], [450, 700], [700, 1200], [1200, Infinity]],
+};
+
+// Evenly-spaced sampling by price rank — spans the full width of `sortedList`
+// instead of clustering at its cheap end. Assumes sortedList is price-ascending.
+function spreadSample(sortedList, k) {
+  const n = sortedList.length;
+  if (n <= k || k <= 0) return sortedList.slice();
+  if (k === 1) return [sortedList[0]];
+  const step = (n - 1) / (k - 1);
+  const seen = new Set();
+  const result = [];
+  for (let i = 0; i < k; i++) {
+    const idx = Math.round(i * step);
+    if (seen.has(idx)) continue;
+    seen.add(idx);
+    result.push(sortedList[idx]);
+  }
+  return result;
+}
+
+// Fills `cap` slots by taking an even price-spread sample from each band in turn
+// (priority brands preferred within a band), then backfills any leftover slots
+// from whatever wasn't used — so a thin band never wastes the overall cap.
+function bandedCap(products, cap, bands, priorityBrands) {
+  const isPriority = p => priorityBrands.some(br => (p.brand || '').toLowerCase().includes(br));
+  const perBand = Math.ceil(cap / bands.length);
+  let remaining = cap;
+  const result = [];
+  const used = new Set();
+
+  for (const [lo, hi] of bands) {
+    const bandItems = products.filter(p => p.price >= lo && p.price < hi);
+    const pri  = bandItems.filter(isPriority).sort((a, b) => a.price - b.price);
+    const rest = bandItems.filter(p => !isPriority(p)).sort((a, b) => a.price - b.price);
+    const take = Math.min(perBand, remaining);
+    const chosen = pri.length >= take ? spreadSample(pri, take) : pri.concat(spreadSample(rest, take - pri.length));
+    chosen.forEach(p => used.add(p));
+    result.push(...chosen);
+    remaining -= chosen.length;
+  }
+
+  if (remaining > 0) {
+    const unused = products.filter(p => !used.has(p)).sort((a, b) => {
+      const ap = isPriority(a), bp = isPriority(b);
+      if (ap !== bp) return ap ? -1 : 1;
+      return a.price - b.price;
+    });
+    result.push(...unused.slice(0, remaining));
+  }
+  return result;
+}
 
 function mapCategory(department) {
   return DEPT_MAP[(department || '').trim().toLowerCase()] || null;
@@ -249,8 +315,9 @@ async function main() {
     process.exit(0);
   }
 
-  // Apply per-category caps: priority (well-known, popular) brands fill first,
-  // both groups sorted cheapest-first — same approach as fetch-eurooptic.js.
+  // Apply per-category caps. Firearm categories (handguns/rifles/shotguns) use the
+  // banded price-spread sampler so the catalog covers the range people actually
+  // shop across; everything else keeps the simpler priority-then-cheapest fill.
   for (const cat of Object.keys(byCategory)) {
     const cap = CAT_CAPS[cat];
     if (!cap || byCategory[cat].length <= cap) {
@@ -258,7 +325,12 @@ async function main() {
       continue;
     }
     const priorityBrands = PRIORITY_BRANDS[cat] || [];
-    if (priorityBrands.length) {
+    const bands = PRICE_BANDS[cat];
+    if (bands && priorityBrands.length) {
+      const before = byCategory[cat].length;
+      byCategory[cat] = bandedCap(byCategory[cat], cap, bands, priorityBrands).sort((a, b) => a.price - b.price);
+      console.log(`  [cap:banded] ${cat}: ${before} → ${byCategory[cat].length}`);
+    } else if (priorityBrands.length) {
       const isPriority = p => priorityBrands.some(br => (p.brand || '').toLowerCase().includes(br));
       const priority = byCategory[cat].filter(isPriority).sort((a, b) => a.price - b.price);
       const rest     = byCategory[cat].filter(p => !isPriority(p)).sort((a, b) => a.price - b.price);
