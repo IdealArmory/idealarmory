@@ -3,12 +3,20 @@
 // no pagination). Writes data/gunscom-<category>.json + data/gunscom-last-run.json.
 //
 // IMPORTANT — this feed is NOT RFC4180-quoted: the "Long Description" column
-// frequently contains raw, unescaped newlines (blank-line paragraph breaks) with
-// no surrounding quotes. A naive line-by-line TSV split breaks on those. Instead
-// we split the whole file on '\t' and reassemble rows using the known, fixed
-// column count (22) — only the LAST column of each row is ever merged with the
-// FIRST column of the next row around an embedded '\n', so that's the only place
-// we need to resolve the real row boundary. See parseFeed() below.
+// frequently contains raw, unescaped newlines (blank-line paragraphs) AND,
+// for listings with pasted spec tables, literal embedded TAB characters.
+// Both make naive line/tab splitting unreliable — a fixed-column-count
+// reassembly (only resyncing at the last column) still shatters on rows with
+// extra embedded tabs, since the column *count* reaches the boundary early.
+//
+// Instead we anchor on real record starts: every record begins with its SKU
+// followed by an identical Manufacturer Id (`\n<digits>\t<digits>\t`, both
+// numbers equal — confirmed by inspecting real feed pulls, never a false
+// positive). Splitting the file on that pattern gives exact record boundaries
+// regardless of what's embedded inside the description. Within a record, if
+// splitting on '\t' yields more than 22 fields (extra tabs from a spec table),
+// the surplus is folded back into the Long Description field — the only field
+// we don't otherwise use. See parseFeed() below.
 //
 // Buy Link is already a complete AvantLink click-tracking URL — no affiliate
 // params need to be appended (unlike the CYA Supply / Impact Guns scrapers).
@@ -25,13 +33,7 @@ if (!FEED_URL) {
   process.exit(1);
 }
 
-const NUM_COLS = 22;
-const HEADERS = [
-  'SKU','Manufacturer Id','Brand Name','Product Name','Long Description',
-  'Department','Category','SubCategory','Thumb URL','Image URL','Buy Link','Keywords',
-  'Retail Price','Sale Price','Brand Page Link','Brand Logo Image','Product Page View Tracking',
-  'UPC','Promotion','Shipping Price','MAP','Product Content Widget'
-];
+const NUM_COLS = 22; // SKU..Product Content Widget — header is read from the file itself
 
 // ── Category mapping (Department is a clean, controlled field in this feed) ───
 // Silencers / Silencer Accessories excluded: NFA-regulated items (ATF Form 4 +
@@ -91,46 +93,59 @@ function isMajorBrand(brand, cat) {
   return list.some(kw => b.includes(kw));
 }
 
+const CAT_CAPS = {
+  handguns: 700, rifles: 900, shotguns: 400, ammunition: 300,
+  magazines: 250, holsters: 150, optics: 200, 'ar-parts': 100, cleaning: 60,
+};
+
 function mapCategory(department) {
   return DEPT_MAP[(department || '').trim().toLowerCase()] || null;
 }
 
 // ── Feed parser ─────────────────────────────────────────────────────────────
+// Anchors on `\n<digits>\t<digits>\t` where both numbers match (SKU === Manufacturer
+// Id at the start of every real record) to find true record boundaries, then
+// tolerates any number of extra embedded tabs within a record by folding the
+// surplus back into the Long Description field.
+const RECORD_START = /\n(\d+)\t\1\t/g;
+
 function parseFeed(text) {
-  const chunks = text.split('\t');
-  const rows = [];
-  let fields = [];
-
-  for (let i = 0; i < chunks.length; i++) {
-    const chunk = chunks[i];
-    if (fields.length < NUM_COLS - 1) {
-      fields.push(chunk);
-      continue;
-    }
-    // This chunk = last field of the current row + '\n' + first field of the next row.
-    const nl = chunk.indexOf('\n');
-    if (nl === -1) {
-      // End of file — no next row to bleed into.
-      fields.push(chunk.replace(/\r$/, ''));
-      rows.push(fields);
-      fields = [];
-      continue;
-    }
-    fields.push(chunk.slice(0, nl).replace(/\r$/, ''));
-    rows.push(fields);
-    fields = [chunk.slice(nl + 1)];
+  const boundaries = [];
+  let m;
+  RECORD_START.lastIndex = 0;
+  while ((m = RECORD_START.exec(text)) !== null) {
+    boundaries.push(m.index + 1); // position right after the '\n'
   }
-  if (fields.length && fields.some(f => f.trim())) rows.push(fields);
+  if (!boundaries.length) return [];
 
-  if (!rows.length) return [];
-  const header = rows[0];
-  return rows.slice(1)
-    .filter(r => r.length === NUM_COLS)
-    .map(r => {
-      const obj = {};
-      header.forEach((h, i) => { obj[h] = r[i] || ''; });
-      return obj;
-    });
+  const header = text.slice(0, boundaries[0]).replace(/\r?\n$/, '').split('\t');
+  const records = [];
+
+  for (let i = 0; i < boundaries.length; i++) {
+    const start = boundaries[i];
+    const end = i + 1 < boundaries.length ? boundaries[i + 1] : text.length;
+    const fields = text.slice(start, end).replace(/\r?\n$/, '').split('\t');
+
+    let row;
+    if (fields.length === NUM_COLS) {
+      row = fields;
+    } else if (fields.length > NUM_COLS) {
+      // Extra tabs (e.g. a pasted spec table) landed inside Long Description —
+      // fold everything between the first 4 and the last 17 fields back together.
+      const first4 = fields.slice(0, 4);
+      const tail17 = fields.slice(-17);
+      const desc = fields.slice(4, fields.length - 17).join('\t');
+      row = [...first4, desc, ...tail17];
+    } else {
+      continue; // shorter than expected — truncated/corrupt record, drop it
+    }
+
+    const obj = {};
+    header.forEach((h, idx) => { obj[h] = row[idx] || ''; });
+    records.push(obj);
+  }
+
+  return records;
 }
 
 function isRelevant(item, cat) {
