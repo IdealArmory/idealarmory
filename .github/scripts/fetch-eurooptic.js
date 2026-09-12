@@ -91,8 +91,9 @@ const PRICE_BANDS = {
 };
 
 function spreadSample(sortedList, k) {
+  if (k <= 0) return [];
   const n = sortedList.length;
-  if (n <= k || k <= 0) return sortedList.slice();
+  if (n <= k) return sortedList.slice();
   if (k === 1) return [sortedList[0]];
   const step = (n - 1) / (k - 1);
   const seen = new Set();
@@ -133,6 +134,32 @@ function bandedCap(products, cap, bands, priorityBrands) {
     result.push(...unused.slice(0, remaining));
   }
   return result;
+}
+
+// UPCs already carried by the other three retailer feeds for this category — read
+// straight from their committed data/ files. Used to guarantee genuine cross-retailer
+// matches survive the cap instead of being at the mercy of price-band sampling.
+function loadSiblingUpcs(dataDir, cat) {
+  const upcs = new Set();
+  for (const src of ['bereli', 'impactguns', 'gunscom']) {
+    try {
+      const items = JSON.parse(fs.readFileSync(path.join(dataDir, `${src}-${cat}.json`), 'utf8'));
+      items.forEach(p => { if (p.upc) upcs.add(p.upc); });
+    } catch (e) { /* file may not exist for this retailer/category — fine */ }
+  }
+  return upcs;
+}
+
+// Guarantees every item whose UPC also appears at Bereli/Impact Guns/Guns.com
+// survives the cap — a cross-retailer match is itself strong evidence of a
+// genuinely popular product, not just an artifact of price-band sampling.
+function bandedCapWithCrossMatch(products, cap, bands, priorityBrands, siblingUpcs) {
+  const isCross = p => p.upc && siblingUpcs.has(p.upc);
+  const cross = products.filter(isCross);
+  const rest  = products.filter(p => !isCross(p));
+  const crossChosen = cross.length <= cap ? cross : bandedCap(cross, cap, bands, priorityBrands);
+  const filled = bandedCap(rest, cap - crossChosen.length, bands, priorityBrands);
+  return crossChosen.concat(filled);
 }
 
 function mapCategory(cat, name) {
@@ -620,8 +647,10 @@ async function main() {
     const bands = PRICE_BANDS[cat];
     if (bands && priorityBrands.length) {
       const before = byCategory[cat].length;
-      byCategory[cat] = bandedCap(byCategory[cat], cap, bands, priorityBrands).sort((a, b) => a.price - b.price);
-      console.log(`  [cap:banded] ${cat}: ${before} → ${byCategory[cat].length}`);
+      const siblingUpcs = loadSiblingUpcs(dataDir, cat);
+      const crossCount = byCategory[cat].filter(p => p.upc && siblingUpcs.has(p.upc)).length;
+      byCategory[cat] = bandedCapWithCrossMatch(byCategory[cat], cap, bands, priorityBrands, siblingUpcs).sort((a, b) => a.price - b.price);
+      console.log(`  [cap:banded+crossmatch] ${cat}: ${before} → ${byCategory[cat].length} (${Math.min(crossCount, cap)} cross-retailer matches guaranteed)`);
     } else if (priorityBrands.length) {
       const isPriority = p => priorityBrands.some(br => (p.brand || '').toLowerCase().includes(br));
       const priority = byCategory[cat].filter(isPriority).sort((a, b) => a.price - b.price);  // asc
