@@ -637,24 +637,29 @@ async function main() {
   }
 
   const filesWritten = [];
+  const finalCatCounts = {};
   for (const [cat, products] of Object.entries(byCategory)) {
     const fname = `eurooptic-${cat}.json`;
     fs.writeFileSync(path.join(dataDir, fname), JSON.stringify(products));
     const kb = Math.round(fs.statSync(path.join(dataDir, fname)).size / 1024);
     console.log(`  ${fname}: ${products.length} products (${kb} KB)`);
     filesWritten.push(fname);
+    finalCatCounts[cat] = products.length;
   }
 
+  // productCount/categories reflect what was actually written (post-cap) — catCounts
+  // above is the pre-cap "matched filters" total, logged separately for reference.
+  const productCount = Object.values(finalCatCounts).reduce((n, c) => n + c, 0);
   fs.writeFileSync(path.join(dataDir, 'eurooptic-last-run.json'), JSON.stringify({
     lastRun: new Date().toISOString(),
-    productCount: allProducts.length,
+    productCount,
     rawCount: rawItems.length,
-    categories: catCounts,
+    categories: finalCatCounts,
     files: filesWritten,
     status: 'success'
   }));
 
-  console.log(`\nSUCCESS: ${allProducts.length} relevant products written across ${filesWritten.length} category files.`);
+  console.log(`\nSUCCESS: ${productCount} products written across ${filesWritten.length} category files (${allProducts.length} matched filters before per-category caps).`);
 }
 
 main().catch(err => {

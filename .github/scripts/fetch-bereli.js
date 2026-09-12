@@ -458,6 +458,7 @@ async function main() {
   });
 
   const filesWritten = [];
+  const finalCatCounts = {};
   for (const [cat, products] of Object.entries(byCategory)) {
     const prioBrands = PRIORITY_BRANDS[cat] || [];
     const cap = CAT_CAPS[cat];
@@ -489,16 +490,19 @@ async function main() {
     const kb = Math.round(fs.statSync(path.join(dataDir, fname)).size / 1024);
     console.log(`  Wrote ${fname}: ${final.length} products (${kb} KB)`);
     filesWritten.push(fname);
+    finalCatCounts[cat] = final.length;
   }
 
-  // Write last-run metadata
+  // productCount/categories reflect what was actually written (post-cap) — catCounts
+  // above is the pre-cap "matched filters" total, logged separately for reference.
+  const productCount = Object.values(finalCatCounts).reduce((n, c) => n + c, 0);
   fs.writeFileSync(
     path.join(dataDir, 'bereli-last-run.json'),
     JSON.stringify({
       lastRun:      new Date().toISOString(),
-      productCount: allProducts.length,
+      productCount,
       rawCount:     rawItems.length,
-      categories:   catCounts,
+      categories:   finalCatCounts,
       files:        filesWritten,
       status:       'success',
     }, null, 2)
@@ -506,7 +510,7 @@ async function main() {
 
   console.log(`\n========================================`);
   console.log(` SUCCESS`);
-  console.log(` ${allProducts.length} products across ${filesWritten.length} categories`);
+  console.log(` ${productCount} products across ${filesWritten.length} categories (${allProducts.length} matched filters before per-category caps)`);
   console.log(`========================================`);
 }
 

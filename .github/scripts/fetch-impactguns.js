@@ -698,11 +698,14 @@ async function main() {
   console.log('\nPhase 4: Updating static product prices from live data...');
   const staticUpdates = updateStaticPrices(allProducts);
 
+  // productCount reflects what was actually written (post-cap) — totalRelevant is
+  // the pre-cap "matched filters" total, logged separately for reference.
+  const productCount = Object.values(catCounts).reduce((n, c) => n + c, 0);
   fs.writeFileSync(
     path.join(dataDir, 'impactguns-last-run.json'),
     JSON.stringify({
       lastRun:        new Date().toISOString(),
-      productCount:   totalRelevant,
+      productCount,
       rawCount:       allProducts.length,
       htmlPriced:     htmlPricedTotal,
       apiEnriched:    allProducts.filter(p => !p.htmlPriceFound && p.price > 0).length,
@@ -714,7 +717,7 @@ async function main() {
   );
 
   console.log(`\n========================================`);
-  console.log(` SUCCESS — ${totalRelevant} products across ${filesWritten.length} categories`);
+  console.log(` SUCCESS — ${productCount} products across ${filesWritten.length} categories (${totalRelevant} matched filters before per-category caps)`);
   if (staticUpdates > 0) console.log(` Static prices updated: ${staticUpdates}`);
   console.log(`========================================`);
 }
