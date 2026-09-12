@@ -1095,7 +1095,9 @@ var _CAT_INTENT_MAP = {
 };
 
 function _parseQuery(q) {
-  var tokens = q.toLowerCase().trim().split(/\s+/).filter(function(t){ return t.length >= 2; });
+  // Keep single-char tokens (e.g. the "X" in "Shield X") — dropping them let
+  // unrelated products (matching only "Shield") outrank the actual model.
+  var tokens = q.toLowerCase().trim().split(/\s+/).filter(function(t){ return t.length >= 1; });
   var categoryHint = null, subjectTokens = [];
   tokens.forEach(function(t) {
     if (_CAT_INTENT_MAP[t]) { categoryHint = _CAT_INTENT_MAP[t]; }
@@ -1123,7 +1125,6 @@ function _productMatchesQuery(p, parsed) {
    Signals: best-seller badge, review count (log scale), star rating,
    number of sellers, and whether the product is curated (non-EO). */
 var _FIREARM_CATS = ['handguns','rifles','shotguns'];
-var _ACCESSORY_CATS = ['ammunition','magazines','optics','ar-parts'];
 function _popularityScore(p) {
   var score = 0;
   if (p.badge === 'best') score += 40;
@@ -1134,33 +1135,44 @@ function _popularityScore(p) {
   return score;
 }
 
-/* Search relevance: brand match is primary, popularity is secondary.
-   For brand-only queries (“Glock”), firearms rank above accessories.
-   For category-intent queries (“Glock holster”), category match is rewarded. */
+/* Search relevance: full-phrase brand/name match is primary, then firearm
+   category and price (higher first), popularity is a minor tiebreaker.
+   Matching against the whole query phrase (not just its first word) avoids
+   e.g. "Black Hills" ammo outranking a "...Black Hills" rifle on a search
+   for "black hills" just because it matched the word "black" alone.
+   For brand/general queries ("Glock", "Shield X"), firearms rank above
+   accessories, and — within comparably relevant results — pricier items
+   (mostly firearms) rank above cheaper ones (mostly ammo/accessories),
+   since that's what most searchers are actually looking for here.
+   For category-intent queries ("Glock holster"), category match is rewarded
+   instead, since the user has already told us what type of product they want. */
 function _searchScore(p, parsed) {
   var brand = (p.brand || '').toLowerCase();
   var name  = (p.name  || '').toLowerCase();
   var cat   = p.category || '';
+  var price = getLowestPrice(p);
   var score = _popularityScore(p) * 0.4;
-  // Use subject tokens (non-category words) for brand/name matching
-  var matchTokens = parsed.subjectTokens.length > 0 ? parsed.subjectTokens : parsed.tokens;
-  if (matchTokens.length > 0) {
-    var subj = matchTokens[0]; // primary subject word
-    if (brand === subj)                 score += 100;
-    else if (brand.indexOf(subj) === 0) score +=  80;
-    else if (brand.indexOf(subj) >= 0)  score +=  55;
-    if (name.indexOf(subj) === 0)       score +=  40;
-    else if (name.indexOf(subj) >= 0)   score +=  20;
+  // Phrase match: use the full multi-word subject (not just its first word)
+  var phrase = (parsed.subjectTokens.length > 0 ? parsed.subjectTokens : parsed.tokens).join(' ');
+  if (phrase) {
+    if (brand === phrase)                 score += 100;
+    else if (brand.indexOf(phrase) === 0) score +=  85;
+    else if (brand.indexOf(phrase) >= 0)  score +=  70;
+    else if (name.indexOf(phrase) === 0)  score +=  60;
+    else if (name.indexOf(phrase) >= 0)   score +=  45;
   }
   // Category priority
   if (parsed.categoryHint) {
     // Category-intent search: products in the target category get a big boost
     if (cat === parsed.categoryHint) score += 30;
   } else {
-    // Brand/general search: show firearms before accessories (“Glock” → pistols first)
-    if (_FIREARM_CATS.indexOf(cat) >= 0)        score += 25;
-    else if (_ACCESSORY_CATS.indexOf(cat) >= 0) score +=  8;
+    // Brand/general search: show firearms before accessories ("Glock" → pistols first)
+    if (_FIREARM_CATS.indexOf(cat) >= 0) score += 70;
   }
+  // Price signal — log-scaled and capped so a single expensive outlier can't
+  // hijack the top spot on a weak match; among genuinely relevant results it
+  // reliably separates firearms from ammo/accessories at typical price points.
+  score += Math.min(Math.log(price + 1) * 8, 50);
   return score;
 }
 
