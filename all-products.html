@@ -1439,8 +1439,17 @@ function filterProducts() {
     sortAndRender();
   }
   renderActiveFilters();
-  updateFilterAvailability();
+  // updateFilterAvailability() re-filters ALL_PRODUCTS once per checkbox (dozens
+  // of them) to gray out options that would return zero results — on this page's
+  // full catalog that's ~1-2M comparisons and took 3.6s+ synchronously, blocking
+  // the results grid (and the search box's own input repaint) from updating.
+  // Deferring it lets the browser paint the fast part (search/filter results,
+  // ~25ms) immediately; the checkbox availability state catches up right after
+  // instead of freezing every keystroke.
+  clearTimeout(_updateFilterAvailabilityTimer);
+  _updateFilterAvailabilityTimer = setTimeout(updateFilterAvailability, 0);
 }
+var _updateFilterAvailabilityTimer = null;
 
 function liveSearch(v) {
   var ns = document.getElementById('nav-srch');
