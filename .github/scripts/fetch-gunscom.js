@@ -283,16 +283,17 @@ async function main() {
     catCounts[cat] = products.length;
   }
 
+  const productCount = Object.values(catCounts).reduce((n, c) => n + c, 0);
   fs.writeFileSync(path.join(dataDir, 'gunscom-last-run.json'), JSON.stringify({
     lastRun: new Date().toISOString(),
-    productCount: totalRelevant,
+    productCount, // post-cap count actually written to disk (totalRelevant is pre-cap)
     rawCount: rawItems.length,
     categories: catCounts,
     files: filesWritten,
     status: 'success'
   }));
 
-  console.log(`\nSUCCESS: ${totalRelevant} relevant products written across ${filesWritten.length} category files.`);
+  console.log(`\nSUCCESS: ${productCount} products written across ${filesWritten.length} category files (${totalRelevant} matched brand/price filters before per-category caps).`);
 }
 
 main().catch(err => {
