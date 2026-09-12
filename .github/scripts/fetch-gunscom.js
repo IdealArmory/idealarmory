@@ -97,7 +97,7 @@ function isMajorBrand(brand, cat) {
 }
 
 const CAT_CAPS = {
-  handguns: 1000, rifles: 1200, shotguns: 600, ammunition: 300,
+  handguns: 1000, rifles: 1500, shotguns: 600, ammunition: 300,
   magazines: 250, holsters: 150, optics: 200, 'ar-parts': 100, cleaning: 60,
 };
 
