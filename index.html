@@ -331,14 +331,6 @@ nav{background:var(--navy-deep);position:sticky;top:0;z-index:200;box-shadow:0 2
 .s-price.best{color:var(--stock-green)}
 .pc-more{font-size:11px;color:var(--navy);font-weight:600;margin-top:5px;background:none;border:none;font-family:'Inter',sans-serif;cursor:pointer;padding:0;letter-spacing:.2px}
 .pc-more:hover{color:var(--red)}
-.pc-history{padding:6px 14px 0;border-top:1px solid var(--gray-100)}
-.pc-history-lbl{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gray-400);margin-bottom:4px}
-.sparkline{display:flex;align-items:flex-end;gap:2px;height:28px}
-.spark-bar{flex:1;background:var(--navy-pale);border-radius:1px 1px 0 0;min-width:3px}
-.spark-bar.spark-hi{background:#fee2e2}
-.spark-bar.spark-lo{background:var(--stock-green-bg)}
-.spark-bar.spark-cur{background:var(--navy)}
-.pc-history-range{display:flex;justify-content:space-between;font-size:9px;color:var(--gray-400);margin-top:2px;padding-bottom:6px}
 .pc-stock-row{display:flex;align-items:center;padding:4px 14px 8px;font-size:10px;border-top:1px solid var(--gray-100)}
 .pc-stock-in{color:var(--stock-green);font-weight:700}
 .pc-stock-low{color:#92400e;font-weight:700}
@@ -384,13 +376,11 @@ nav{background:var(--navy-deep);position:sticky;top:0;z-index:200;box-shadow:0 2
 .deal-pct{background:var(--red);color:var(--white);font-size:9px;font-weight:700;padding:2px 6px;letter-spacing:.5px}
 .deal-via{font-size:11px;color:var(--gray-400)}
 .deal-via strong{color:var(--stock-green);font-weight:600}
-.deal-timer{font-size:11px;color:var(--gray-400);display:flex;align-items:center;gap:4px;margin-top:4px}
 .deal-actions{margin-top:10px;padding-top:10px;border-top:1px solid var(--gray-50)}
 .deal-kit-btn{width:100%;background:var(--navy);color:var(--white);border:none;padding:9px 12px;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.5px;text-transform:uppercase;transition:background .15s}
 .deal-kit-btn:hover{background:var(--navy-mid)}
 .hc-kit-btn{display:block;width:100%;margin-top:14px;background:var(--navy);color:var(--white);border:none;padding:11px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.5px;text-transform:uppercase;transition:background .15s}
 .hc-kit-btn:hover{background:var(--navy-mid)}
-.deal-tv{font-weight:700;color:var(--red);font-variant-numeric:tabular-nums}
 
 /* ── PRODUCT DETAIL MODAL ─────────────────── */
 .pd-top{display:flex;gap:20px;margin-bottom:20px;flex-wrap:wrap}
@@ -1286,139 +1276,68 @@ const CATS=[
   {icon:'&#9675;',name:'Gun Safes',count:'1,400+'},
 ];
 // Sellers sorted ascending (lowest first). All products flagged badge:'best' = best sellers shown by default.
-const PRODUCTS=[
-  // === HANDGUNS ===
-  {id:1,brand:'Beretta',name:'APX A1 Tactical 9mm',sub:'9mm \u00b7 21+1 \u00b7 4.8\u2033 Barrel \u00b7 Optic Ready \u00b7 OD Green',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/570865/images/535927/BRJAXA1F921TAC_1_HR__71404.1700068806.380.380.jpg?c=2',stars:4.7,reviews:312,badge:'best',cat:'handgun',rs:['CA','CO','CT','HI','IL','MD','MA','NJ','NY','VT','WA'],sellers:[{name:'Bereli',price:479.00,ship:0,stock:'in',url:'https://bereli.com/beretta-apx-a1-tactical-9mm-4-8-barrel-21-round-optic-ready-od-green-pistol/?aff=10388'}]},
-  {id:2,brand:'Daniel Defense',name:'H9 Pistol',sub:'9mm \u00b7 4.28\u2033 Barrel \u00b7 15+1 \u00b7 RDS Ready',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629464/images/575386/Daniel-Defense-H9-Package-Deal__13011.1755277956.380.380.jpg?c=2',stars:4.8,reviews:127,badge:'',cat:'handgun',rs:['CA','CO','CT','HI','IL','MD','MA','NJ','NY','VT','WA'],sellers:[{name:'Bereli',price:799.00,ship:0,stock:'in',url:'https://bereli.com/daniel-defense-h9-pistol-4-28-barrel-5-15rd-magazines-rds-optic-plate/?aff=10388'}]},
-  {id:3,brand:'Beretta',name:'92X Performance Competition',sub:'9mm \u00b7 4.9\u2033 Barrel \u00b7 15+1 \u00b7 Single/Double Action',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/631516/images/578486/148604__66326.1772556492.380.380.png?c=2',stars:4.9,reviews:88,badge:'',cat:'handgun',rs:['CA','CO','CT','HI','IL','MD','MA','NJ','NY','VT','WA'],sellers:[{name:'Bereli',price:999.00,ship:0,stock:'in',url:'https://bereli.com/j92xpco21/?aff=10388'}]},
-  {id:4,brand:'Smith & Wesson',name:'Bodyguard 2.0 .380',sub:'.380 ACP \u00b7 6+1 \u00b7 2.75\u2033 Barrel \u00b7 Optic Ready',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632194/images/572572/236046__37602.1748531032.380.380.jpg?c=2',stars:4.5,reviews:204,badge:'best',cat:'handgun',rs:['CA','MD','MA','HI'],sellers:[{name:'Bereli',price:424.99,ship:0,stock:'in',url:'https://bereli.com/14439/?aff=10388'}]},
-  {id:5,brand:'Springfield Armory',name:'Echelon 9mm',sub:'9mm \u00b7 17+1 \u00b7 4.5\u2033 Barrel \u00b7 Optic Ready',img:'https://cdn11.bigcommerce.com/s-yqqkx/images/stencil/760x760/products/631418/568628/225303__05440.1741299289.jpg?c=2',stars:4.7,reviews:356,badge:'best',cat:'handgun',rs:['CA','CO','CT','HI','IL','MD','MA','NJ','NY','VT','WA'],sellers:[{name:'Bereli',price:519.00,ship:0,stock:'in',url:'https://bereli.com/springfield-firstline-echelon-9mm-luger-17-1-4-50/?aff=10388'}]},
-  {id:6,brand:'Springfield Armory',name:'1911 Ronin 10mm',sub:'10mm Auto \u00b7 8+1 \u00b7 5\u2033 Barrel \u00b7 Night Sights',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/510297/images/507353/SPX9121L_1_HR__56845.1700231839.380.380.jpg?c=2',stars:4.8,reviews:142,badge:'',cat:'handgun',rs:['CA','MD','MA','HI'],sellers:[{name:'Bereli',price:703.00,ship:0,stock:'in',url:'https://bereli.com/springfield-armory-firstline-1911-ronin-10mm-5-pistol/?aff=10388'}]},
-  {id:7,brand:'H&K',name:'CC9 9mm Compact',sub:'9mm \u00b7 3.86\u2033 Barrel \u00b7 10+1 \u00b7 Safety Included',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/631844/images/570801/232334__53096.1745858255.380.380.jpg?c=2',stars:4.6,reviews:93,badge:'',cat:'handgun',rs:['CA','MD','MA','HI'],sellers:[{name:'Bereli',price:745.00,ship:0,stock:'in',url:'https://bereli.com/81001131/?aff=10388'}]},
-  {id:8,brand:'Sig Sauer',name:'P320 M18 Coyote',sub:'9mm \u00b7 3.9\u2033 Barrel \u00b7 17+1 \u00b7 SIGLITE Night Sights',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/479393/images/487038/SG320CA-9-M18-MS_1_HR__81768.1650810223.380.380.jpg?c=2',stars:4.9,reviews:621,badge:'best',cat:'handgun',rs:['CA','CO','CT','HI','IL','MD','MA','NJ','NY','VT','WA'],sellers:[{name:'Bereli',price:599.00,ship:0,stock:'in',url:'https://bereli.com/sig-sauer-p320-m18-9mm-3-9-barrel-coyote-tan-pistol-3-magazines/?aff=10388'}]},
-  {id:9,brand:'Walther',name:'PDP Full Size 9mm',sub:'9mm \u00b7 18+1 \u00b7 4.5\u2033 Barrel \u00b7 Optic Ready',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/448479/images/467671/WA2842475_1_HR__28900.1623788912.380.380.jpg?c=2',stars:4.8,reviews:487,badge:'',cat:'handgun',rs:['CA','CO','CT','HI','IL','MD','MA','NJ','NY','VT','WA'],sellers:[{name:'Bereli',price:599.00,ship:0,stock:'in',url:'https://bereli.com/walther-pdp-optics-ready-9mm-18-round-capacity-4-5-barrel-pistol/?aff=10388'}]},
-  {id:10,brand:'Sig Sauer',name:'P320 M17 9mm',sub:'9mm \u00b7 4.7\u2033 Barrel \u00b7 17+1 \u00b7 Manual Safety',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/479394/images/487041/SG320F-9-M17-MS_1_HR__65355.1700069755.380.380.jpg?c=2',stars:4.8,reviews:534,badge:'',cat:'handgun',rs:['CA','CO','CT','HI','IL','MD','MA','NJ','NY','VT','WA'],sellers:[{name:'Bereli',price:625.00,ship:0,stock:'in',url:'https://bereli.com/sig-sauer-p320-m17-9mm-4-7-barrel-siglite-night-sights-manual-safety/?aff=10388'}]},
-  // === RIFLES ===
-  {id:11,brand:'IWI',name:'Tavor X95 16" Bullpup',sub:'5.56 NATO \u00b7 30+1 \u00b7 16\u2033 Barrel \u00b7 Bullpup',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/478552/images/491964/fa_x16_main-e1576526186892__80812.1665674062.380.380.png?c=2',stars:4.9,reviews:328,badge:'best',cat:'rifle',rs:['CA','CT','HI','IL','MD','MA','NJ','NY','WA','DC'],sellers:[{name:'Bereli',price:1749.99,ship:0,stock:'in',url:'https://bereli.com/shooting/firearms/rifles/iwi-tavor-x95-16-5-56-nato-rifle/?aff=10388'}]},
-  {id:12,brand:'Daniel Defense',name:'DDM4 V7 w/ Geissele Trigger',sub:'5.56 NATO \u00b7 16\u2033 \u00b7 30+1 \u00b7 Geissele Trigger',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/507840/images/554205/_d_d_ddm4_v7_gis_1__16549.1763151339.380.380.jpg?c=2',stars:4.9,reviews:184,badge:'best',cat:'rifle',rs:['CA','CT','HI','IL','MD','MA','NJ','NY','WA','DC'],sellers:[{name:'Bereli',price:1599.00,ship:0,stock:'in',url:'https://bereli.com/daniel-defense-ddm4-v7-5-56-ar-15-black-custom-16-rifle-with-geissele-trigger/?aff=10388'}]},
-  {id:13,brand:'IWI',name:'Tavor 7 .308 Blemished',sub:'.308 Win \u00b7 16.5\u2033 \u00b7 20+1 \u00b7 Bullpup',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632714/images/575140/242912__22516.1753388856.380.380.jpg?c=2',stars:4.7,reviews:96,badge:'',cat:'rifle',rs:['CA','CT','HI','IL','MD','MA','NJ','NY','WA','DC'],sellers:[{name:'Bereli',price:1599.00,ship:0,stock:'low',url:'https://bereli.com/t7-blem/?aff=10388'}]},
-  {id:14,brand:'Springfield Armory',name:'Hellion 16" Bullpup',sub:'5.56 NATO \u00b7 30+1 \u00b7 16\u2033 \u00b7 Ambidextrous Bullpup',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629960/images/560198/204318__53616.1723059620.380.380.jpg?c=2',stars:4.7,reviews:211,badge:'',cat:'rifle',rs:['CA','CT','HI','IL','MD','MA','NJ','NY','WA','DC'],sellers:[{name:'Bereli',price:1649.00,ship:0,stock:'in',url:'https://bereli.com/hl916556-fl/?aff=10388'}]},
-  {id:15,brand:'IWI',name:'Galil ACE Gen II 5.45x39mm',sub:'5.45x39mm \u00b7 16\u2033 \u00b7 30+1 \u00b7 Side-Folding Stock',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/633216/images/577813/254247__22340.1768423618.380.380.jpg?c=2',stars:4.8,reviews:72,badge:'',cat:'rifle',rs:['CA','CT','HI','IL','MD','MA','NJ','NY','WA','DC'],sellers:[{name:'Bereli',price:1199.00,ship:0,stock:'in',url:'https://bereli.com/gar71/?aff=10388'}]},
-  {id:16,brand:'Springfield Armory',name:'Saint Victor AR-15 5.56',sub:'5.56 NATO \u00b7 16\u2033 \u00b7 30+1 \u00b7 B5 Stock',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/495686/images/562521/208395__38182.1734010615.380.380.jpg?c=2',stars:4.7,reviews:445,badge:'best',cat:'rifle',rs:['CA','CT','HI','IL','MD','MA','NJ','NY','WA','DC'],sellers:[{name:'Bereli',price:889.00,ship:0,stock:'in',url:'https://bereli.com/springfield-firstline-saint-victor-ar-15-rifle-b5-5-56-black/?aff=10388'}]},
-  {id:17,brand:'Steyr',name:'Scout .308 Bolt Action',sub:'.308 Win \u00b7 19\u2033 Threaded \u00b7 10+1 \u00b7 Detachable Mag',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/482786/images/536911/Screenshot_2023-07-26_at_10.00.26_PM__37835.1690423516.380.380.png?c=2',stars:4.8,reviews:63,badge:'',cat:'rifle',rs:[],sellers:[{name:'Bereli',price:1550.00,ship:0,stock:'in',url:'https://bereli.com/steyr-arms-scout-bolt-action-rifle-308-winchester-19-threaded-barrel/?aff=10388'}]},
-  {id:18,brand:'Springfield Armory',name:'Saint Victor PCC 9mm',sub:'9mm \u00b7 16\u2033 \u00b7 33+1 \u00b7 Pistol Caliber Carbine',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629499/images/557784/197005__81572.1706719120.380.380.jpg?c=2',stars:4.6,reviews:138,badge:'',cat:'rifle',rs:['CA','CT','HI','IL','MD','MA','NJ','NY','WA','DC'],sellers:[{name:'Bereli',price:999.00,ship:0,stock:'in',url:'https://bereli.com/stv91609b-fl/?aff=10388'}]},
-  {id:19,brand:'Colt',name:'CR6920 M4 Carbine 5.56',sub:'5.56 NATO \u00b7 16.1\u2033 \u00b7 30+1 \u00b7 M4 Carbine',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/404175/images/424980/LE6920-2__81114.1589919374.380.380.jpg?c=2',stars:4.8,reviews:267,badge:'',cat:'rifle',rs:['CA','CT','HI','IL','MD','MA','NJ','NY','WA','DC'],sellers:[{name:'Bereli',price:1087.00,ship:0,stock:'in',url:'https://bereli.com/colt-cr6920-m4-carbine-5-56-nato-ar-15-rifle/?aff=10388'}]},
-  {id:20,brand:'Sig Sauer',name:'M400 SDI 5.56 Rifle',sub:'5.56 NATO \u00b7 16\u2033 \u00b7 30+1 \u00b7 Free-Float MLOK',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/490497/images/497744/m400-xseries-sdi-3__92819.1700230343.380.380.jpg?c=2',stars:4.7,reviews:109,badge:'',cat:'rifle',rs:['CA','CT','HI','IL','MD','MA','NJ','NY','WA','DC'],sellers:[{name:'Bereli',price:1175.00,ship:0,stock:'in',url:'https://bereli.com/sig-sauer-m400-x-series-sdi-5-56-nato-16-30rd-rifle-rm400-sdi-16b-p/?aff=10388'}]},
-  // === SHOTGUNS ===
-  {id:21,brand:'Beretta',name:'A300 Ultima Patrol 12ga',sub:'12 Gauge \u00b7 19.1\u2033 \u00b7 7+1 \u00b7 Semi-Auto Tactical',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/497971/images/565098/BERETTA-A300__04884.1677166675__78170.1745965955.380.380.jpg?c=2',stars:4.8,reviews:156,badge:'best',cat:'shotgun',rs:['DC'],sellers:[{name:'Bereli',price:825.00,ship:0,stock:'in',url:'https://bereli.com/beretta-a300-ultima-patrol-12-gauge-19-1-barrel-7-round-mag-tube-shotgun/?aff=10388'}]},
-  {id:22,brand:'Beretta',name:'1301 Tactical Mod 2',sub:'12 Gauge \u00b7 18.5\u2033 \u00b7 7+1 \u00b7 Semi-Auto LE',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629742/images/558881/202530__73459.1715000970.380.380.jpg?c=2',stars:4.9,reviews:98,badge:'',cat:'shotgun',rs:['DC'],sellers:[{name:'Bereli',price:1629.00,ship:0,stock:'in',url:'https://bereli.com/j131m2tt18le/?aff=10388'}]},
-  {id:23,brand:'IWI',name:'Tavor TS12 Bullpup Shotgun',sub:'12 Gauge \u00b7 18.5\u2033 \u00b7 15+1 \u00b7 Bullpup Tri-Tube',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/402404/images/513529/Screenshot_2023-03-14_at_3.10.39_PM__65787.1678821071.380.380.png?c=2',stars:4.7,reviews:144,badge:'best',cat:'shotgun',rs:['DC'],sellers:[{name:'Bereli',price:1288.99,ship:0,stock:'in',url:'https://bereli.com/iwi-tavor-ts12-bullpup-shotgun/?aff=10388'}]},
-  {id:24,brand:'JTS',name:'M12AR Semi-Auto 12ga',sub:'12 Gauge \u00b7 18.5\u2033 \u00b7 5+1 \u00b7 AR-Style Semi-Auto',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/580720/images/539671/JTSM12AR_1_HR__63855.1701803068.380.380.jpg?c=2',stars:4.4,reviews:187,badge:'',cat:'shotgun',rs:['DC'],sellers:[{name:'Bereli',price:349.99,ship:0,stock:'in',url:'https://bereli.com/jts-m12ar-12ga-5rd-18-5-semi-auto-shotgun-black/?aff=10388'}]},
-  {id:25,brand:'Benelli',name:'M4 Tactical 18.5"',sub:'12 Gauge \u00b7 18.5\u2033 \u00b7 5+1 \u00b7 ARGO Gas System',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629678/images/558591/198282__69968.1712234984.380.380.jpg?c=2',stars:5.0,reviews:312,badge:'best',cat:'shotgun',rs:['DC'],sellers:[{name:'Bereli',price:1875.00,ship:0,stock:'in',url:'https://bereli.com/11710/?aff=10388'}]},
-  {id:26,brand:'Benelli',name:'Nova Tactical 12ga',sub:'12 Gauge \u00b7 18.5\u2033 \u00b7 4+1 \u00b7 Pump Action',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/631422/images/568658/225621__49002.1741626260.380.380.png?c=2',stars:4.6,reviews:234,badge:'',cat:'shotgun',rs:['DC'],sellers:[{name:'Bereli',price:749.00,ship:0,stock:'in',url:'https://bereli.com/21501/?aff=10388'}]},
-  {id:27,brand:'Benelli',name:'M4 EXT 7rd Telescoping',sub:'12 Gauge \u00b7 18.5\u2033 \u00b7 7+1 \u00b7 Telescoping Stock',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/633105/images/577216/250316__41877.1762792856.380.380.png?c=2',stars:4.9,reviews:67,badge:'',cat:'shotgun',rs:['DC'],sellers:[{name:'Bereli',price:2299.00,ship:0,stock:'in',url:'https://bereli.com/1178/?aff=10388'}]},
-  {id:28,brand:'Mossberg',name:'590 Shockwave 12ga',sub:'12 Gauge \u00b7 14.375\u2033 \u00b7 6+1 \u00b7 Non-NFA Shotgun',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/483420/images/490276/MS50639_3_HR__03756.1700232864.380.380.jpg?c=2',stars:4.6,reviews:528,badge:'best',cat:'shotgun',rs:['DC'],sellers:[{name:'Bereli',price:415.00,ship:0,stock:'in',url:'https://bereli.com/mossberg-590-shockwave-12-gauge-18-5-barrel-3-chamber-black-6rd-shotgun/?aff=10388'}]},
-  {id:29,brand:'Benelli',name:'M4 Tactical Pistol Grip 12ga',sub:'12 Gauge \u00b7 18.5\u2033 \u00b7 5+1 \u00b7 Black Pistol Grip',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629679/images/558584/198284__41231.1712234862.380.380.jpg?c=2',stars:4.9,reviews:174,badge:'',cat:'shotgun',rs:['DC'],sellers:[{name:'Bereli',price:1749.99,ship:0,stock:'in',url:'https://bereli.com/11713/?aff=10388'}]},
-  {id:30,brand:'Benelli',name:'SuperNova Tactical 12ga',sub:'12 Gauge \u00b7 18.5\u2033 \u00b7 4+1 \u00b7 ComforTech Stock',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632116/images/572203/233937__90939.1746207601.380.380.jpg?c=2',stars:4.7,reviews:145,badge:'',cat:'shotgun',rs:['DC'],sellers:[{name:'Bereli',price:725.00,ship:0,stock:'in',url:'https://bereli.com/20151/?aff=10388'}]},
-  // === AMMUNITION ===
-  {id:31,brand:'CCI',name:'Blazer Brass 9mm 50rd',sub:'9mm Luger \u00b7 115gr FMJ \u00b7 50 Round Box',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/473842/images/479279/5200__07166.1636063819.380.380.jpg?c=2',stars:4.8,reviews:4200,badge:'best',cat:'ammo',rs:[],sellers:[{name:'Bereli',price:21.99,ship:0,stock:'in',url:'https://bereli.com/cci-5200-blazer-brass-9mm-luger-115-gr-full-metal-jacket/?aff=10388'}]},
-  {id:32,brand:'Winchester',name:'M193 5.56 NATO 20rd',sub:'5.56 NATO \u00b7 55gr FMJ \u00b7 20 Round Box',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/631173/images/567325/221929__15628.1739972978.380.380.png?c=2',stars:4.7,reviews:1840,badge:'best',cat:'ammo',rs:[],sellers:[{name:'Bereli',price:24.99,ship:0,stock:'in',url:'https://bereli.com/wm193k-v/?aff=10388'}]},
-  {id:33,brand:'Winchester',name:'Super Suppressed .300 BLK 20rd',sub:'.300 BLK \u00b7 200gr Subsonic \u00b7 Suppressor Optimized',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632693/images/575081/238695__82788.1753190996.380.380.png?c=2',stars:4.6,reviews:312,badge:'',cat:'ammo',rs:[],sellers:[{name:'Bereli',price:24.00,ship:0,stock:'in',url:'https://bereli.com/sup300blk/?aff=10388'}]},
-  {id:34,brand:'Federal',name:'HST .45 ACP 20rd LE',sub:'.45 ACP \u00b7 230gr HST JHP \u00b7 Law Enforcement Grade',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/608322/images/558047/230_Grain_HST_Jacketed_Hollow_Point-Federal_Law_Enforcement_45_ACP_AUTO_Ammo-3548__43106.1708355134.380.380.jpg?c=2',stars:4.9,reviews:2670,badge:'best',cat:'ammo',rs:[],sellers:[{name:'Bereli',price:31.00,ship:0,stock:'in',url:'https://bereli.com/federal-law-enforcement-45-acp-auto-ammo-230-grain-hst-jacketed-hollow-point/?aff=10388'}]},
-  {id:35,brand:'Winchester',name:'Ranger .40 S&W 20rd',sub:'.40 S&W \u00b7 165gr Ranger HP \u00b7 Duty Ammo',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/494931/images/510877/Screenshot_2023-03-01_at_10.33.42_AM__97471.1677684848.380.380.png?c=2',stars:4.7,reviews:198,badge:'',cat:'ammo',rs:[],sellers:[{name:'Bereli',price:40.00,ship:0,stock:'in',url:'https://bereli.com/winchester-40-s-w-ammo-165-grain-ranger-series-hollow-point/?aff=10388'}]},
-  {id:36,brand:'Federal',name:'LE 12ga 00 Buck 5rd',sub:'12 Gauge \u00b7 2.75\u2033 \u00b7 9-Pellet 00 Buckshot \u00b7 LE Grade',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/631419/images/568639/224978__64006.1741359402.380.380.jpg?c=2',stars:4.8,reviews:876,badge:'best',cat:'ammo',rs:[],sellers:[{name:'Bereli',price:14.99,ship:0,stock:'in',url:'https://bereli.com/le13200/?aff=10388'}]},
-  {id:37,brand:'Winchester',name:'Defender 12ga 00 Buck 10rd',sub:'12 Gauge \u00b7 2.75\u2033 \u00b7 9-Pellet 00 Buckshot \u00b7 10rd Box',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/631042/images/566583/222044__27235.1739468304.380.380.jpg?c=2',stars:4.7,reviews:567,badge:'',cat:'ammo',rs:[],sellers:[{name:'Bereli',price:22.99,ship:0,stock:'in',url:'https://bereli.com/winchester-defender-copper-12-gauge-2-75-9-pellets-00-buckshot/?aff=10388'}]},
-  {id:38,brand:'Winchester',name:'Super-X .22 LR 100rd',sub:'.22 LR \u00b7 40gr CPHP \u00b7 High Velocity \u00b7 100rd Box',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/630751/images/565207/216260__44726.1737494105.380.380.jpg?c=2',stars:4.6,reviews:3120,badge:'',cat:'ammo',rs:[],sellers:[{name:'Bereli',price:18.99,ship:0,stock:'in',url:'https://bereli.com/winchester-super-x-22lr-40-grain-super-speed-round-nose-copper-plated-ammunition/?aff=10388'}]},
-  {id:39,brand:'Federal',name:'Champion .22 LR 325rd',sub:'.22 LR \u00b7 36gr LHP \u00b7 325 Round Value Pack',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/571929/images/536283/36_Grain_Lead_Hollow_Point-Federal_Champion_Training_22_Long_Rifle_Ammo-112993__79103.1689948309.380.380.jpg?c=2',stars:4.7,reviews:5430,badge:'best',cat:'ammo',rs:[],sellers:[{name:'Bereli',price:29.99,ship:0,stock:'in',url:'https://bereli.com/federal-champion-training-22-long-rifle-ammo-36-grain-lead-hollow-point/?aff=10388'}]},
-  {id:40,brand:'Browning',name:'X-Point .380 ACP 20rd',sub:'.380 ACP \u00b7 95gr JHP \u00b7 Performance Defense',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629781/images/559161/202564__78481.1716240287.380.380.jpg?c=2',stars:4.5,reviews:234,badge:'',cat:'ammo',rs:[],sellers:[{name:'Bereli',price:29.99,ship:0,stock:'in',url:'https://bereli.com/b191703802/?aff=10388'}]},
-  // === OPTICS ===
-  {id:41,brand:'Sig Sauer',name:'ROMEO5 Gen II Red Dot',sub:'1x20mm \u00b7 2 MOA \u00b7 MOTAC \u00b7 CR2032',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629920/images/559970/203955__14848.1721751774.380.380.jpg?c=2',stars:4.8,reviews:3240,badge:'best',cat:'optic',rs:[],sellers:[{name:'Bereli',price:124.99,ship:0,stock:'in',url:'https://bereli.com/sig-romeo5-gen-ii/?aff=10388'}]},
-  {id:42,brand:'Sig Sauer',name:'ROMEO5 + Juliet3 Combo',sub:'1-3x Combo \u00b7 Red Dot + Magnifier Bundle',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629933/images/560067/204053__20153.1722268289.380.380.jpg?c=2',stars:4.8,reviews:412,badge:'best',cat:'optic',rs:[],sellers:[{name:'Bereli',price:265.00,ship:0,stock:'in',url:'https://bereli.com/sorj5101/?aff=10388'}]},
-  {id:43,brand:'Sig Sauer',name:'Romeo MSR Gen II Red Dot',sub:'1x20mm \u00b7 2 MOA \u00b7 Waterproof \u00b7 AR-Optimized',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629754/images/559086/202676__38798.1715888884.380.380.jpg?c=2',stars:4.6,reviews:876,badge:'',cat:'optic',rs:[],sellers:[{name:'Bereli',price:105.00,ship:0,stock:'in',url:'https://bereli.com/sormsr/?aff=10388'}]},
-  {id:44,brand:'Magpul',name:'MBUS Flip-Up Backup Sights',sub:'AR-15 \u00b7 Front & Rear Set \u00b7 Polymer \u00b7 Black',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629609/images/558281/_MAG248__98032.1710521883.380.380.jpg?c=2',stars:4.7,reviews:2140,badge:'best',cat:'optic',rs:[],sellers:[{name:'Bereli',price:39.99,ship:0,stock:'in',url:'https://bereli.com/mag248/?aff=10388'}]},
-  {id:45,brand:'Riton Optics',name:'3 Primal 4-16x44 Scope',sub:'4-16x44mm \u00b7 SFP \u00b7 BDC Reticle \u00b7 Lifetime Warranty',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/633117/images/577277/250531__28698.1762970134.380.380.jpg?c=2',stars:4.6,reviews:198,badge:'',cat:'optic',rs:[],sellers:[{name:'Bereli',price:149.00,ship:0,stock:'in',url:'https://bereli.com/3p416as23/?aff=10388'}]},
-  {id:46,brand:'Vortex',name:'AMG UH-1 Gen II Holographic',sub:'1x \u00b7 65 MOA Circle + 1 MOA Dot \u00b7 NV Compatible',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/633145/images/577412/251211__18722.1764101852.380.380.jpg?c=2',stars:4.9,reviews:534,badge:'best',cat:'optic',rs:[],sellers:[{name:'Bereli',price:599.00,ship:0,stock:'in',url:'https://bereli.com/amg-hs02-parent/?aff=10388'}]},
-  {id:47,brand:'EOTech',name:'G45 5x Magnifier',sub:'5x Magnification \u00b7 Flip-to-Side \u00b7 STS Mount',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/631296/images/568101/223953__66504.1740674797.380.380.jpg?c=2',stars:4.8,reviews:312,badge:'',cat:'optic',rs:[],sellers:[{name:'Bereli',price:669.00,ship:0,stock:'in',url:'https://bereli.com/g45/?aff=10388'}]},
-  {id:48,brand:'EOTech',name:'EXPS3-2 Holographic Sight',sub:'1x \u00b7 65 MOA Ring + 2 Dot \u00b7 NV Compatible \u00b7 QD',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629605/images/558184/197825__99925.1709308384.380.380.jpg?c=2',stars:4.9,reviews:678,badge:'best',cat:'optic',rs:[],sellers:[{name:'Bereli',price:815.00,ship:0,stock:'in',url:'https://bereli.com/exps3-2/?aff=10388'}]},
-  {id:49,brand:'Trijicon',name:'RMR HD 3.25 MOA Red Dot',sub:'3.25 MOA Dot \u00b7 Adjustable LED \u00b7 Ruggedized',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/631445/images/575131/240073__29102.1753292135.380.380.jpg?c=2',stars:4.9,reviews:421,badge:'',cat:'optic',rs:[],sellers:[{name:'Bereli',price:774.00,ship:0,stock:'in',url:'https://bereli.com/rmhd2-c-3200002/?aff=10388'}]},
-  {id:50,brand:'Sig Sauer',name:'ROMEO-X Enclosed Red Dot',sub:'1x30mm \u00b7 3 MOA Dot \u00b7 Enclosed Emitter \u00b7 MOTAC',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632921/images/576098/244414__29160.1756932367.380.380.jpg?c=2',stars:4.7,reviews:187,badge:'',cat:'optic',rs:[],sellers:[{name:'Bereli',price:449.99,ship:0,stock:'in',url:'https://bereli.com/sorx1400/?aff=10388'}]},
-  // === HOLSTERS ===
-  {id:51,brand:'Blackhawk',name:'T-Series L2D Glock 17/19',sub:'Glock 17/19/22/23/31 \u00b7 RH \u00b7 Level 2 Duty',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/439537/images/452364/apifbuiht__70463.1638491442.380.380.jpg?c=2',stars:4.7,reviews:423,badge:'best',cat:'holster',rs:[],sellers:[{name:'Bereli',price:79.95,ship:0,stock:'in',url:'https://bereli.com/blackhawk-t-series-holster-l2d-glock-right-17-19-22-23-31-32-45-47-44n100bkr/?aff=10388'}]},
-  {id:52,brand:'Blackhawk',name:'T-Series L3D Glock + TRL',sub:'Glock 17/19/22 + TRL-1/2 \u00b7 RH \u00b7 Level 3',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/439534/images/452352/apiwjyawa__43625.1638491392.380.380.jpg?c=2',stars:4.8,reviews:187,badge:'',cat:'holster',rs:[],sellers:[{name:'Bereli',price:95.00,ship:0,stock:'in',url:'https://bereli.com/blackhawk-t-series-holster-l3d-lb-glock-rh-17-19-22-31-45-w-trl-1-2-44n600bwr/?aff=10388'}]},
-  {id:53,brand:'Blackhawk',name:'SERPA CQC Glock 19/23/32',sub:'Glock 19/23/32 \u00b7 RH \u00b7 Belt + Paddle Mount',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/445592/images/466939/apirn1x1u__12755.1638491307.380.380.jpg?c=2',stars:4.5,reviews:1876,badge:'best',cat:'holster',rs:[],sellers:[{name:'Bereli',price:29.95,ship:0,stock:'in',url:'https://bereli.com/blackhawk-serpa-cqc-holster-w-belt-loop-paddle-glock-19-23-32-410502ct-r/?aff=10388'}]},
-  {id:54,brand:'Blackhawk',name:'Stache IWB Sig P365',sub:'Sig P365 \u00b7 IWB \u00b7 Premium Kit \u00b7 Black',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/475799/images/480206/apifs8t7d__95333.1638491432.380.380.jpg?c=2',stars:4.6,reviews:312,badge:'',cat:'holster',rs:[],sellers:[{name:'Bereli',price:39.95,ship:0,stock:'in',url:'https://bereli.com/blackhawk-stache-iwb-holster-premium-kit-for-sig-sauer-p365-416170bk/?aff=10388'}]},
-  {id:55,brand:'Blackhawk',name:'A.R.C. IWB Glock 17 Urban Gray',sub:'Glock 17/22/31 \u00b7 IWB \u00b7 Urban Gray \u00b7 Appendix',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/452520/images/475716/apitzifqx__31371.1638491338.380.380.jpg?c=2',stars:4.4,reviews:234,badge:'',cat:'holster',rs:[],sellers:[{name:'Bereli',price:19.95,ship:0,stock:'in',url:'https://bereli.com/blackhawk-a-r-c-iwb-holster-urban-gray-glock-17-22-31-417500ug/?aff=10388'}]},
-  {id:56,brand:'Blackhawk',name:'T-Series L3D Sig P320/M17/M18',sub:'Sig P320/M17/M18 + TRL-1/2 \u00b7 RH \u00b7 Level 3',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/445621/images/466991/api5ydqs7__30816.1638491309.380.380.jpg?c=2',stars:4.8,reviews:143,badge:'',cat:'holster',rs:[],sellers:[{name:'Bereli',price:99.00,ship:0,stock:'in',url:'https://bereli.com/blachawk-t-series-l3d-lb-holster-sig-p320-p250-m17-18-w-tlr-1-2-rh-44n661bwr/?aff=10388'}]},
-  {id:57,brand:"Uncle Mike's",name:"CCW OWB Glock 17/19",sub:'Glock 17/19/22/23 \u00b7 OWB \u00b7 RH \u00b7 Nylon',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/475700/images/480097/ccw__54533.1637277967.380.380.jpg?c=2',stars:4.2,reviews:654,badge:'',cat:'holster',rs:[],sellers:[{name:'Bereli',price:29.95,ship:0,stock:'in',url:'https://bereli.com/uncle-mikes-54ccw00bgr-ccw-owb-holster-for-glock-17-19-22-23-rh/?aff=10388'}]},
-  {id:58,brand:'Blackhawk',name:'T-Series L2C Glock 43/43X',sub:'Glock 43/43X \u00b7 RH \u00b7 Level 2 Compact',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/439535/images/452351/apirmnoco__44847.1638491445.380.380.jpg?c=2',stars:4.7,reviews:198,badge:'',cat:'holster',rs:[],sellers:[{name:'Bereli',price:44.95,ship:0,stock:'in',url:'https://bereli.com/blackhawk-t-series-holster-l2c-glock-rh-43-43x-kahr-pm9-pm40-410768bkr/?aff=10388'}]},
-  {id:59,brand:'Blackhawk',name:'Stache IWB S&W M&P Shield',sub:'S&W M&P Shield 9/.40 \u00b7 IWB Premium Kit',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/475685/images/480071/apiedpadm__07451.1638491417.380.380.jpg?c=2',stars:4.6,reviews:276,badge:'',cat:'holster',rs:[],sellers:[{name:'Bereli',price:44.95,ship:0,stock:'in',url:'https://bereli.com/blackhawk-416163bk-stache-iwb-holster-premium-kit-for-s-w-m-p-shield-9-40/?aff=10388'}]},
-  {id:60,brand:"Uncle Mike's",name:'Sidekick Hip Holster',sub:'Medium-Large Frame \u00b7 5-6.5\u2033 Barrel \u00b7 RH',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/441443/images/456723/sams__76074.1613083766.380.380.jpg?c=2',stars:4.1,reviews:321,badge:'',cat:'holster',rs:[],sellers:[{name:'Bereli',price:12.95,ship:0,stock:'in',url:'https://bereli.com/uncle-mikes-sidekick-hip-holster-5-6-5-barrel-med-large-right-hand-81031/?aff=10388'}]},
-  // === AR PARTS ===
-  {id:61,brand:'Ballistic Advantage',name:'9" .300 BLK Barrel',sub:'.300 BLK \u00b7 9\u2033 \u00b7 Carbine Length \u00b7 Modern Series',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632964/images/576546/9in_300_blk_modern__28182.1757107396.380.380.jpg?c=2',stars:4.7,reviews:312,badge:'best',cat:'accessory',rs:[],sellers:[{name:'Bereli',price:64.00,ship:0,stock:'in',url:'https://bereli.com/BABL300004M/?aff=10388'}]},
-  {id:62,brand:'Ballistic Advantage',name:'13.7" 5.56 Gov Profile Barrel',sub:'5.56 NATO \u00b7 13.7\u2033 \u00b7 Government Profile \u00b7 Modern Series',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632981/images/576580/elj_5224__89537.1757107405.380.380.jpg?c=2',stars:4.8,reviews:187,badge:'',cat:'accessory',rs:[],sellers:[{name:'Bereli',price:68.00,ship:0,stock:'in',url:'https://bereli.com/BABL556033M/?aff=10388'}]},
-  {id:63,brand:'Ballistic Advantage',name:'8.3" 9mm Straight Barrel',sub:'9mm \u00b7 8.3\u2033 \u00b7 Glock Compatible \u00b7 Modern Series',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632979/images/576576/elj_4652__86258.1757107404.380.380.jpg?c=2',stars:4.6,reviews:143,badge:'',cat:'accessory',rs:[],sellers:[{name:'Bereli',price:46.00,ship:0,stock:'in',url:'https://bereli.com/BABL9MM018M/?aff=10388'}]},
-  {id:64,brand:'Radian Weapons',name:'Talon Ambi Safety Selector',sub:'AR-15 \u00b7 Ambidextrous \u00b7 45/90\u00b0 \u00b7 Anodized',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629846/images/559534/203397__22910.1719261455.380.380.jpg?c=2',stars:4.9,reviews:876,badge:'best',cat:'accessory',rs:[],sellers:[{name:'Bereli',price:64.95,ship:0,stock:'in',url:'https://bereli.com/r0018/?aff=10388'}]},
-  {id:65,brand:'Radian Weapons',name:'Raptor CH + Talon Safety Combo',sub:'AR-15 \u00b7 Ambi CH + Safety \u00b7 Bundle',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629845/images/559533/203391__51603.1719260263.380.380.jpg?c=2',stars:4.9,reviews:234,badge:'',cat:'accessory',rs:[],sellers:[{name:'Bereli',price:144.95,ship:0,stock:'in',url:'https://bereli.com/r0275/?aff=10388'}]},
-  {id:66,brand:'Radian Weapons',name:'Raptor SD Ambi Vented CH',sub:'AR-15 \u00b7 Ambidextrous \u00b7 Suppressor-Ready \u00b7 Vented',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629843/images/559525/203388__07422.1719259677.380.380.jpg?c=2',stars:4.8,reviews:312,badge:'',cat:'accessory',rs:[],sellers:[{name:'Bereli',price:134.95,ship:0,stock:'in',url:'https://bereli.com/r0006/?aff=10388'}]},
-  {id:67,brand:'Ballistic Advantage',name:'Glock 19 FDE Threaded Barrel',sub:'9mm \u00b7 Glock 19 Gen3-5 \u00b7 Threaded \u00b7 FDE',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632949/images/576516/bapsg195t1f-1__62287.1757107380.380.380.jpg?c=2',stars:4.7,reviews:198,badge:'',cat:'accessory',rs:[],sellers:[{name:'Bereli',price:66.00,ship:0,stock:'in',url:'https://bereli.com/BAPSG195T1F/?aff=10388'}]},
-  {id:68,brand:'Rugged',name:'R3 Flash Mitigation System',sub:'AR-15 \u00b7 1/2x28 \u00b7 Suppressor Compatible',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/630883/images/565858/219977__47919.1738277153.380.380.jpg?c=2',stars:4.6,reviews:156,badge:'',cat:'accessory',rs:[],sellers:[{name:'Bereli',price:72.99,ship:0,stock:'in',url:'https://bereli.com/fh001/?aff=10388'}]},
-  {id:69,brand:'Aero Precision',name:'.308 BREACH Ambi CH',sub:'.308/LR-308 \u00b7 Ambidextrous \u00b7 Black Anodized',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632908/images/576054/apra700330c-ar10-ch-ano-small-blk-odg-1_2__04532.1756909118.380.380.jpg?c=2',stars:4.8,reviews:423,badge:'',cat:'accessory',rs:[],sellers:[{name:'Bereli',price:77.35,ship:0,stock:'in',url:'https://bereli.com/APRA700330C/?aff=10388'}]},
-  {id:70,brand:'Grip Pod',name:'Vertical Forward Grip Bipod',sub:'AR-15 \u00b7 Vertical Grip + Bipod \u00b7 Polymer',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/483105/images/490075/793573782908__72016__94540.1661291357.380.380.jpg?c=2',stars:4.4,reviews:1240,badge:'',cat:'accessory',rs:[],sellers:[{name:'Bereli',price:99.99,ship:0,stock:'in',url:'https://bereli.com/grip-pod-systems-vertical-forward-grip-bi-pod/?aff=10388'}]},
-  // === MAGAZINES ===
-  {id:71,brand:'Steyr',name:'A2 MF 9mm Magazine',sub:'Steyr A2 MF \u00b7 9mm \u00b7 17rd Factory',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/582318/images/575324/Steyr__33210.1755020700.380.380.gif?c=2',stars:4.5,reviews:87,badge:'',cat:'magazine',rs:[],sellers:[{name:'Bereli',price:20.00,ship:0,stock:'in',url:'https://bereli.com/steyr-a2-mf-9mm-luger-magazine/?aff=10388'}]},
-  {id:72,brand:'Glock',name:'Glock 17/34 9mm 33rd Factory',sub:'9mm \u00b7 33rd \u00b7 Glock 17/19/26/34 \u00b7 OEM',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/480973/images/575326/Screenshot_2025-08-12_at_1.47.15PM__74721.1755020879.380.380.png?c=2',stars:4.9,reviews:2340,badge:'best',cat:'magazine',rs:['CA','CO','CT','HI','IL','MD','MA','NJ','NY','VT','WA','DC'],sellers:[{name:'Bereli',price:35.99,ship:0,stock:'in',url:'https://bereli.com/shooting/gun-magazines/glock-17-19-26-34-9mm-33-round-factory-magazine/?aff=10388'}]},
-  {id:73,brand:'Magpul',name:'PMAG GEN M3 5.56 30rd',sub:'AR-15 \u00b7 .223/5.56 \u00b7 30rd \u00b7 Window \u00b7 MCT',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629614/images/575336/Screenshot_2025-08-12_at_2.32.01PM__68355.1755023916.380.380.png?c=2',stars:4.9,reviews:8760,badge:'best',cat:'magazine',rs:['CA','CO','CT','HI','IL','MD','MA','NJ','NY','VT','WA','DC'],sellers:[{name:'Bereli',price:20.00,ship:0,stock:'in',url:'https://bereli.com/mag556-mct/?aff=10388'}]},
-  {id:74,brand:'Magpul',name:'PMAG Gen M3 5.56 40rd',sub:'AR-15 \u00b7 .223/5.56 \u00b7 40rd \u00b7 Extended',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/480711/images/575338/Screenshot_2025-08-12_at_3.55.40PM__93674.1755028577.380.380.png?c=2',stars:4.8,reviews:1234,badge:'',cat:'magazine',rs:['CA','CO','CT','HI','IL','MD','MA','NJ','NY','VT','WA','DC'],sellers:[{name:'Bereli',price:25.00,ship:0,stock:'in',url:'https://bereli.com/mag233-blk/?aff=10388'}]},
-  {id:75,brand:'Magpul',name:'PMAG20 Gen M3 .308 20rd',sub:'.308 Win/7.62x51 \u00b7 20rd \u00b7 SR-25/AR-10',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/482262/images/575334/Screenshot_2025-08-12_at_2.23.54PM__93135.1755023110.380.380.png?c=2',stars:4.8,reviews:876,badge:'',cat:'magazine',rs:['CA','CO','CT','HI','IL','MD','MA','NJ','NY','VT','WA','DC'],sellers:[{name:'Bereli',price:22.99,ship:0,stock:'in',url:'https://bereli.com/shooting/gun-magazines/magpul-pmag20-rifle-magazine-7-62x51-nato-308-win-20-round/?aff=10388'}]},
-  {id:76,brand:'Sig Sauer',name:'P365-XMACRO 9mm 17rd',sub:'Sig P365-XMACRO \u00b7 9mm \u00b7 17rd Factory',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629858/images/575321/Screenshot_2025-08-12_at_1.39.32PM__81720.1755020395.380.380.png?c=2',stars:4.7,reviews:312,badge:'',cat:'magazine',rs:['CA','CO','CT','HI','IL','MD','MA','NJ','NY','VT','WA','DC'],sellers:[{name:'Bereli',price:55.00,ship:0,stock:'in',url:'https://bereli.com/8901206/?aff=10388'}]},
-  {id:77,brand:'Sig Sauer',name:'P365 9mm 12rd Coyote',sub:'Sig P365 \u00b7 9mm \u00b7 12rd \u00b7 Coyote Tan',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/479663/images/487286/image-full-18719-99b20a0f1f2e085199787d377be340ce__22827.1651761773.380.380.jpg?c=2',stars:4.8,reviews:543,badge:'',cat:'magazine',rs:['CA','CO','CT','HI','IL','MD','MA','NJ','NY','VT','WA','DC'],sellers:[{name:'Bereli',price:45.00,ship:0,stock:'in',url:'https://bereli.com/shooting/gun-magazines/sig-sauer-p365-9mm-magazine-12rds-coyote-tan/?aff=10388'}]},
-  {id:78,brand:'Sig Sauer',name:'P320 9mm 17rd Coyote',sub:'Sig P320/M17/M18 \u00b7 9mm \u00b7 17rd \u00b7 Coyote',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/481595/images/575348/Screenshot_2025-08-12_at_6.27.34PM__63777.1755037679.380.380.png?c=2',stars:4.8,reviews:421,badge:'',cat:'magazine',rs:['CA','CO','CT','HI','IL','MD','MA','NJ','NY','VT','WA','DC'],sellers:[{name:'Bereli',price:44.99,ship:0,stock:'in',url:'https://bereli.com/shooting/sig-sauer-magazine-p320-m17-m18-9mm-17rd-coyote/?aff=10388'}]},
-  {id:79,brand:'Springfield Armory',name:'KUNA 9mm 30rd Magazine',sub:'Springfield KUNA \u00b7 9mm \u00b7 30rd',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632207/images/572624/237805__42074.1749137156.380.380.jpg?c=2',stars:4.6,reviews:234,badge:'',cat:'magazine',rs:['CA','CO','CT','HI','IL','MD','MA','NJ','NY','VT','WA','DC'],sellers:[{name:'Bereli',price:29.00,ship:0,stock:'in',url:'https://bereli.com/kn6030/?aff=10388'}]},
-  {id:80,brand:'Springfield Armory',name:'Hellcat 9mm 15rd Magazine',sub:'Springfield Hellcat \u00b7 9mm \u00b7 15rd Extended',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/630677/images/564866/216816__19572.1736886232.380.380.jpg?c=2',stars:4.7,reviews:312,badge:'',cat:'magazine',rs:['CA','CO','CT','HI','IL','MD','MA','NJ','NY','VT','WA','DC'],sellers:[{name:'Bereli',price:36.50,ship:0,stock:'in',url:'https://bereli.com/hcp5915/?aff=10388'}]},
-  // === ACCESSORIES ===
-  {id:81,brand:'Streamlight',name:'ProTac Rail Mount 2 625 Lumen',sub:'625 Lumens \u00b7 Rail Mount \u00b7 Long Gun Light',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/630677/images/564866/216816__19572.1736886232.380.380.jpg?c=2',stars:4.8,reviews:1876,badge:'best',cat:'accessory',rs:[],sellers:[{name:'Bereli',price:129.99,ship:0,stock:'in',url:'https://bereli.com/88059/?aff=10388'}]},
-  {id:82,brand:'Blackhawk',name:'Sportster TraverseTrack Bipod 6-9"',sub:'6\u2033-9\u2033 Notched Legs \u00b7 TraverseTrack Rail',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629850/images/559542/193559__39343.1719334957.380.380.jpg?c=2',stars:4.4,reviews:234,badge:'',cat:'accessory',rs:[],sellers:[{name:'Bereli',price:25.00,ship:0,stock:'in',url:'https://bereli.com/71bp09bk/?aff=10388'}]},
-  {id:83,brand:'Blackhawk',name:'Pivot Bipod 13.5-23"',sub:'13.5\u2033-23\u2033 Adjustable \u00b7 Rail Mount \u00b7 Pivot',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629851/images/559543/192042__84232.1719334964.380.380.jpg?c=2',stars:4.4,reviews:178,badge:'',cat:'accessory',rs:[],sellers:[{name:'Bereli',price:25.00,ship:0,stock:'in',url:'https://bereli.com/71bp07bk/?aff=10388'}]},
-  {id:84,brand:'Blackhawk',name:'Sportster Adjustable Bipod 6-9"',sub:'6\u2033-9\u2033 \u00b7 Swivel Stud Mount \u00b7 45\u00b0 Cant',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629848/images/559540/196187__06293.1719334930.380.380.jpg?c=2',stars:4.5,reviews:312,badge:'',cat:'accessory',rs:[],sellers:[{name:'Bereli',price:25.00,ship:0,stock:'in',url:'https://bereli.com/71bp03bk/?aff=10388'}]},
-  {id:85,brand:'Blackhawk',name:'Traverse Track Bipod 13.5-23"',sub:'13.5\u2033-23\u2033 \u00b7 TraverseTrack Rail \u00b7 Black',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629849/images/559541/191864__67993.1719334946.380.380.jpg?c=2',stars:4.3,reviews:156,badge:'',cat:'accessory',rs:[],sellers:[{name:'Bereli',price:25.00,ship:0,stock:'in',url:'https://bereli.com/71bp11bk/?aff=10388'}]},
-  {id:86,brand:'DURAMAG',name:'Speed 30rd M81 5.56 Special Edition',sub:'.223/5.56 \u00b7 30rd \u00b7 M81 Woodland \u00b7 Special Edition',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/630416/images/563114/209845__57250.1734642089.380.380.jpg?c=2',stars:4.6,reviews:87,badge:'',cat:'accessory',rs:[],sellers:[{name:'Bereli',price:32.99,ship:0,stock:'in',url:'https://bereli.com/302300m81178cpd/?aff=10388'}]},
-  {id:87,brand:'Blackhawk',name:'Urban Carry Fanny Pack Holster',sub:'Concealed Carry \u00b7 Fanny Pack \u00b7 Universal',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/632470/images/573913/218015__02070.1752585151.380.380.jpg?c=2',stars:4.3,reviews:187,badge:'',cat:'accessory',rs:[],sellers:[{name:'Bereli',price:46.99,ship:0,stock:'in',url:'https://bereli.com/60wf05bk/?aff=10388'}]},
-  {id:88,brand:'Blackhawk',name:'CQD Mark II Weapons Catch',sub:'Sling Attachment \u00b7 QD \u00b7 AR-15/M4',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/475691/images/480081/apifyvzbb__31204.1638491404.380.380.jpg?c=2',stars:4.5,reviews:234,badge:'',cat:'accessory',rs:[],sellers:[{name:'Bereli',price:29.95,ship:0,stock:'in',url:'https://bereli.com/blackhawk-cqd-mark-ii-and-mark-ii-weapons-catch-71cqd2bk/?aff=10388'}]},
-  {id:89,brand:'Radian Weapons',name:'AFTERBURNER + RAMJET Sig P365 Combo',sub:'Sig P365 \u00b7 Comp + Barrel Combo \u00b7 Black',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/630041/images/560761/204837__31867.1726601975.380.380.jpg?c=2',stars:4.7,reviews:98,badge:'',cat:'accessory',rs:[],sellers:[{name:'Bereli',price:389.95,ship:0,stock:'in',url:'https://bereli.com/h0024/?aff=10388'}]},
-  {id:90,brand:'Ballistic Advantage',name:'5.5" 9mm Pistol Barrel',sub:'9mm \u00b7 5.5\u2033 \u00b7 Glock Compatible \u00b7 Modern Series',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/554049/images/529343/61P2FWoNOTL._AC_SL1500___62409.1685644135.380.380.jpg?c=2',stars:4.6,reviews:143,badge:'',cat:'accessory',rs:[],sellers:[{name:'Bereli',price:42.00,ship:0,stock:'in',url:'https://bereli.com/BABL9MM001M/?aff=10388'}]},
-  // === GUN SAFES ===
-  {id:91,brand:'Hornady',name:'SnapSafe Gun Keypad Vault',sub:'Keypad \u00b7 Quick Access \u00b7 Handgun \u00b7 Steel',stars:4.3,reviews:876,badge:'',cat:'safe',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/554049/images/529343/61P2FWoNOTL._AC_SL1500___62409.1685644135.380.380.jpg?c=2',rs:[],sellers:[{name:'Bereli',price:62.99,ship:0,stock:'in',url:'https://bereli.com/hornady-snapsafe-gun-keypad-vault-keypad-handgun-vault-safe-for-pistols-and-valuables-4-6-keypad-entry-with-backup-keys/?aff=10388'}]},
-  {id:92,brand:'Vaultek',name:'Series 20 Biometric Smart Safe',sub:'Biometric + Bluetooth \u00b7 Backlit Keypad \u00b7 Black',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/630472/images/564139/212024__97157.1736282468.380.380.jpg?c=2',stars:4.7,reviews:1243,badge:'best',cat:'safe',rs:[],sellers:[{name:'Bereli',price:319.49,ship:0,stock:'in',url:'https://bereli.com/vs20i-bk/?aff=10388'}]},
-  {id:93,brand:'Vaultek',name:'LifePod 2.0 Biometric Safe',sub:'Biometric \u00b7 Waterproof \u00b7 Portable \u00b7 Black',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/630666/images/564776/212849__64399.1736801436.380.380.jpg?c=2',stars:4.6,reviews:567,badge:'',cat:'safe',rs:[],sellers:[{name:'Bereli',price:212.99,ship:0,stock:'in',url:'https://bereli.com/blp20-bk/?aff=10388'}]},
-  {id:94,brand:'Vaultek',name:'LifePod 1.0 Electronic Safe',sub:'Electronic Keypad \u00b7 Portable \u00b7 Lightweight',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/630611/images/564380/212527__87498.1736437162.380.380.jpg?c=2',stars:4.5,reviews:432,badge:'',cat:'safe',rs:[],sellers:[{name:'Bereli',price:117.14,ship:0,stock:'in',url:'https://bereli.com/vlp10-bk/?aff=10388'}]},
-  {id:95,brand:'Vaultek',name:'Barikade Series 1 Non-Biometric',sub:'Electronic Keypad \u00b7 Single Handgun \u00b7 Black',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/630562/images/564080/211995__52324.1736263774.380.380.jpg?c=2',stars:4.5,reviews:312,badge:'',cat:'safe',rs:[],sellers:[{name:'Bereli',price:121.41,ship:0,stock:'in',url:'https://bereli.com/bkd1d-sb/?aff=10388'}]},
-  {id:96,brand:'Vaultek',name:'LifePod 2.0 Waterproof Lock Case',sub:'Waterproof \u00b7 TSA Approved \u00b7 Travel Safe',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/630654/images/564680/212690__54751.1736800075.380.380.jpg?c=2',stars:4.6,reviews:287,badge:'',cat:'safe',rs:[],sellers:[{name:'Bereli',price:170.39,ship:0,stock:'in',url:'https://bereli.com/vlp20-bk/?aff=10388'}]},
-  {id:97,brand:'Vaultek',name:'Essential Series 20 Compact Safe',sub:'Electronic \u00b7 Compact \u00b7 1-2 Handguns',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/630568/images/564124/212005__13833.1736281652.380.380.jpg?c=2',stars:4.5,reviews:234,badge:'',cat:'safe',rs:[],sellers:[{name:'Bereli',price:202.34,ship:0,stock:'in',url:'https://bereli.com/ve20-bk/?aff=10388'}]},
-  {id:98,brand:'Vaultek',name:'Barikade Series 2 Biometric Safe',sub:'Biometric + Keypad \u00b7 Single Handgun \u00b7 Black',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/630567/images/564116/212073__78057.1736281510.380.380.jpg?c=2',stars:4.6,reviews:198,badge:'',cat:'safe',rs:[],sellers:[{name:'Bereli',price:212.99,ship:0,stock:'in',url:'https://bereli.com/bkd2b-sb/?aff=10388'}]},
-  {id:99,brand:'Vaultek',name:'DS2i Bluetooth Smart Station',sub:'Bluetooth \u00b7 Biometric \u00b7 Dual-Layer Storage',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/630606/images/564351/212164__66180.1736436383.380.380.jpg?c=2',stars:4.7,reviews:312,badge:'best',cat:'safe',rs:[],sellers:[{name:'Bereli',price:425.99,ship:0,stock:'in',url:'https://bereli.com/ds2i-bk/?aff=10388'}]},
-  {id:100,brand:'Vaultek',name:'Essential Series PRO VE Auto-Lid',sub:'Auto-Opening Lid \u00b7 Backlit Keypad \u00b7 Black',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/630573/images/564165/212089__93685.1736284203.380.380.png?c=2',stars:4.7,reviews:267,badge:'',cat:'safe',rs:[],sellers:[{name:'Bereli',price:319.49,ship:0,stock:'in',url:'https://bereli.com/pro-ve-bk/?aff=10388'}]},
-  // === BOLT-ACTION HUNTING RIFLES ===
-  {id:107,brand:'Ruger',name:'American Rifle Gen II 6.5 Creedmoor',sub:'6.5 Creedmoor \u00b7 22\u2033 \u00b7 3+1 \u00b7 AccuTrigger \u00b7 Black Synthetic',img:'https://www.ruger.com/products/americanRifle/images/26988.jpg',stars:4.8,reviews:1240,badge:'best',cat:'rifle',rs:[],sellers:[{name:'Bereli',price:449.99,ship:0,stock:'in',url:'https://bereli.com/ruger-american-rifle-gen-ii-65-creedmoor-22-black/?aff=10388'}]},
-  {id:108,brand:'Ruger',name:'American Rifle Gen II .30-06 Springfield',sub:'.30-06 Sprg \u00b7 22\u2033 \u00b7 3+1 \u00b7 AccuTrigger \u00b7 Black Synthetic',img:'https://www.ruger.com/products/americanRifle/images/26990.jpg',stars:4.7,reviews:867,badge:'best',cat:'rifle',rs:[],sellers:[{name:'Bereli',price:429.99,ship:0,stock:'in',url:'https://bereli.com/ruger-american-rifle-gen-ii-30-06-springfield-22/?aff=10388'}]},
-  {id:109,brand:'Tikka',name:'T3x Lite .308 Win',sub:'.308 Win \u00b7 22.4\u2033 \u00b7 3+1 \u00b7 Lightweight Synthetic \u00b7 Cold Hammer Forged',img:'https://www.tikka.fi/sites/default/files/styles/product_image/public/t3x_lite_black.jpg',stars:4.9,reviews:2130,badge:'best',cat:'rifle',rs:[],sellers:[{name:'Bereli',price:699.99,ship:0,stock:'in',url:'https://bereli.com/tikka-t3x-lite-308-win-22/?aff=10388'}]},
-  {id:110,brand:'Savage',name:'Axis II .270 Win',sub:'.270 Win \u00b7 22\u2033 \u00b7 4+1 \u00b7 AccuTrigger \u00b7 Matte Black Synthetic',img:'https://www.savagearms.com/sites/default/files/2023-01/57256.jpg',stars:4.6,reviews:1450,badge:'best',cat:'rifle',rs:[],sellers:[{name:'Bereli',price:399.99,ship:0,stock:'in',url:'https://bereli.com/savage-axis-ii-270-win-22-barrel-bolt-action/?aff=10388'}]},
-  {id:111,brand:'Browning',name:'X-Bolt Hunter 6.5 Creedmoor',sub:'6.5 Creedmoor \u00b7 22\u2033 \u00b7 4+1 \u00b7 Gloss Walnut \u00b7 Inflex Recoil Pad',img:'https://www.browning.com/content/dam/browning/products/rifles/x-bolt/x-bolt-hunter/035208282.jpg',stars:4.8,reviews:934,badge:'best',cat:'rifle',rs:[],sellers:[{name:'Bereli',price:899.99,ship:0,stock:'in',url:'https://bereli.com/browning-x-bolt-hunter-65-creedmoor-22-bolt-action-rifle/?aff=10388'}]},
-  {id:112,brand:'Weatherby',name:'Vanguard S2 .308 Win',sub:'.308 Win \u00b7 24\u2033 \u00b7 5+1 \u00b7 Sub-MOA Guaranteed \u00b7 Synthetic',img:'https://www.weatherby.com/media/catalog/product/v/r/vr308nr4o.jpg',stars:4.7,reviews:678,badge:'best',cat:'rifle',rs:[],sellers:[{name:'Bereli',price:599.99,ship:0,stock:'in',url:'https://bereli.com/weatherby-vanguard-s2-308-win-24-barrel-bolt-action/?aff=10388'}]},
-];
-const DEALS=[
-  {id:101,brand:'Beretta',name:'APX A1 Tactical 9mm',sub:'9mm \u00b7 21+1 \u00b7 Optic Ready \u00b7 OD Green',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/570865/images/535927/BRJAXA1F921TAC_1_HR__71404.1700068806.380.380.jpg?c=2',
-   sellers:[{n:'Bereli',p:479.00,url:'https://bereli.com/beretta-apx-a1-tactical-9mm-4-8-barrel-21-round-optic-ready-od-green-pistol/?aff=10388'}],orig:599,pct:20,timer:'08:14:32',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/570865/images/535927/BRJAXA1F921TAC_1_HR__71404.1700068806.380.380.jpg?c=2'},
-  {id:102,brand:'Sig Sauer',name:'ROMEO5 Gen II Red Dot',sub:'1x20mm \u00b7 2 MOA \u00b7 MOTAC \u00b7 CR2032',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629920/images/559970/203955__14848.1721751774.380.380.jpg?c=2',
-   sellers:[{n:'Bereli',p:124.99,url:'https://bereli.com/sig-romeo5-gen-ii/?aff=10388'}],orig:169,pct:26,timer:'04:02:18',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629920/images/559970/203955__14848.1721751774.380.380.jpg?c=2'},
-  {id:103,brand:'IWI',name:'Tavor TS12 Bullpup Shotgun',sub:'12 Gauge \u00b7 15+1 \u00b7 Bullpup Tri-Tube',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/402404/images/513529/Screenshot_2023-03-14_at_3.10.39_PM__65787.1678821071.380.380.png?c=2',
-   sellers:[{n:'Bereli',p:1288.99,url:'https://bereli.com/iwi-tavor-ts12-bullpup-shotgun/?aff=10388'}],orig:1499,pct:14,timer:'12:00:00',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/402404/images/513529/Screenshot_2023-03-14_at_3.10.39_PM__65787.1678821071.380.380.png?c=2'},
-  {id:104,brand:'CCI',name:'Blazer Brass 9mm 50rd',sub:'9mm Luger \u00b7 115gr FMJ \u00b7 50 Round Box',
-   sellers:[{n:'Bereli',p:21.99,url:'https://bereli.com/5200/?aff=10388'}],orig:29.99,pct:27,timer:'06:45:00',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/473842/images/479279/5200__07166.1636063819.380.380.jpg?c=2'},
-  {id:105,brand:'Vaultek',name:'Series 20 Biometric Smart Safe',sub:'Biometric + Bluetooth \u00b7 Quick Access \u00b7 Black',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/630472/images/564139/212024__97157.1736282468.380.380.jpg?c=2',
-   sellers:[{n:'Bereli',p:319.49,url:'https://bereli.com/vs20i-bk/?aff=10388'}],orig:399,pct:20,timer:'10:30:00',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/630472/images/564139/212024__97157.1736282468.380.380.jpg?c=2'},
-  {id:106,brand:'Magpul',name:'MBUS Flip-Up Backup Sights',sub:'AR-15 \u00b7 Front & Rear Set \u00b7 Polymer \u00b7 Black',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629609/images/558281/_MAG248__98032.1710521883.380.380.jpg?c=2',
-   sellers:[{n:'Bereli',p:39.99,url:'https://bereli.com/mag248/?aff=10388'}],orig:54.95,pct:27,timer:'03:10:00',img:'https://cdn11.bigcommerce.com/s-yqqkx/products/629609/images/558281/_MAG248__98032.1710521883.380.380.jpg?c=2'},
-];
+// Best Sellers pool and Hot Deals are loaded live from data/best-sellers.json
+// and data/deal-of-the-day.json (both built by .github/scripts/build-best-sellers.js
+// and build-deals.js from real retailer data, rebuilt after every retailer
+// refresh). Replaces static hardcoded arrays that had single frozen prices,
+// no real cross-retailer data, and fabricated review counts that were never
+// even rendered anywhere.
+let PRODUCTS = [];
+let DEALS = [];
+
+// deal-of-the-day.json entries are shaped for the DOTD hero card (single
+// seller, no id). Reshape the top N into the same {id, cat, sellers[]} shape
+// PRODUCTS uses so the existing modal/kit-adder code works on both.
+const DEAL_CAT_MAP = { handguns:'handgun', rifles:'rifle', shotguns:'shotgun' };
+function _shapeDeals(rawDeals, count) {
+  return rawDeals.slice(0, count).map(function(d, i) {
+    return {
+      id: 900000 + i,
+      brand: d.brand, name: d.name, sub: d.sub || '', img: d.img,
+      cat: DEAL_CAT_MAP[d.category] || d.category,
+      orig: d.orig,
+      sellers: [{ name: d.via, price: d.price, stock: 'in', url: d.url }],
+    };
+  });
+}
+
+async function _loadHomeData() {
+  var bestSellers = [], rawDeals = [];
+  try {
+    var r = await fetch('/data/best-sellers.json');
+    if (r.ok) bestSellers = await r.json();
+  } catch (e) { console.warn('best-sellers load failed:', e.message); }
+  try {
+    var r2 = await fetch('/data/deal-of-the-day.json');
+    if (r2.ok) rawDeals = await r2.json();
+  } catch (e) { console.warn('deal-of-the-day load failed:', e.message); }
+
+  PRODUCTS = bestSellers;
+  DEALS = _shapeDeals(rawDeals, 12);
+
+  cItems = _buildDailyBest();
+  buildCarousel();
+
+  var _dg = document.getElementById('deals-grid');
+  if (_dg) _dg.innerHTML = DEALS.map(function(d) {
+    var low = d.sellers[0];
+    var pct = d.orig > low.price ? Math.round((d.orig - low.price) / d.orig * 100) : 0;
+    return '<div class="deal-card" onclick="openProdModal(' + d.id + ')">' +
+      '<div class="deal-img">' + (d.img ? '<img src="' + d.img + '" alt="' + d.name + '" loading="lazy" style="max-width:90%;max-height:90%;object-fit:contain">' : '<span class="deal-img-placeholder">' + d.brand + '</span>') + '</div>' +
+      '<div class="deal-body">' +
+        '<div class="deal-tag">' + pct + '% Off — Verified Price</div>' +
+        '<a class="deal-name" href="/product?p=' + slugify(d.name) + '" onclick="event.stopPropagation()">' + d.name + '</a>' +
+        '<div class="deal-sub">' + d.brand + ' · ' + (d.sub || '') + '</div>' +
+        '<div class="deal-pr">' +
+          '<span class="deal-price">$' + low.price.toFixed(2) + '</span>' +
+          '<span class="deal-orig">$' + d.orig.toFixed(2) + '</span>' +
+          '<span class="deal-pct">-' + pct + '%</span>' +
+        '</div>' +
+        '<div class="deal-via">Via: <strong>' + low.name + '</strong></div>' +
+        '<div class="deal-actions"><button class="deal-kit-btn" data-id="' + d.id + '" onclick="event.stopPropagation();addToKit(' + d.id + ')">+ Add to Kit</button></div>' +
+      '</div></div>';
+  }).join('');
+}
 // FFL data is now served live from Supabase — see searchFFL() below
 
 /* ══════════════════════════════════════════════
@@ -1894,7 +1813,7 @@ function detectBundles(){
         slotLabel: item.label,
         productName: item.productName,
         price: sel.price,
-        ship: sel.ship || 0
+        ship: sel.ship
       });
     });
   });
@@ -1910,7 +1829,7 @@ function detectBundles(){
   alert.classList.add('show');
   list.innerHTML = bundles.slice(0,3).map(([retailer,items]) => {
     const total = items.reduce((s,i) => s+i.price, 0);
-    const hasFreeShip = items.some(i => i.ship === 0);
+    const hasFreeShip = items.some(i => typeof i.ship==='number' && i.ship === 0);
     return `
       <div class="bundle-row">
         <div>
@@ -2185,28 +2104,12 @@ function sellerRowsInline(sellers,limit=3){
     <div class="pc-s-row">
       <span class="s-dot ${dotClass(s.stock)}"></span>
       <span class="s-name">${s.name}</span>
-      <span class="s-ship ${s.ship===0?'free':''}">${s.ship===0?'Free Ship':'+$'+s.ship.toFixed(2)}</span>
       <span class="s-price ${i===0?'best':''}">$${s.price.toFixed(2)}</span>
     </div>`).join('');
-}
-function genSparkData(lo,hi){
-  var r=hi-lo,pts=[],cur=lo*1.1;
-  for(var i=0;i<8;i++){cur=Math.max(lo*.98,Math.min(hi*1.05,cur+(Math.random()-.42)*r*.18));pts.push(Math.round(cur*100)/100);}
-  pts.push(lo);return pts;
-}
-function sparklineHTML(pts){
-  var mn=Math.min.apply(null,pts),mx=Math.max.apply(null,pts),r=mx-mn||1;
-  return pts.map(function(v,i){
-    var h=Math.round(4+((v-mn)/r)*22);
-    var cls=i===pts.length-1?'spark-cur':(v===mx?'spark-hi':(v===mn?'spark-lo':''));
-    return '<div class="spark-bar '+cls+'" style="height:'+h+'px"></div>';
-  }).join('');
 }
 function prodCardHTML(p){
   var low=p.sellers[0].price,high=p.sellers[p.sellers.length-1].price;
   var pct=high>low?Math.round((1-low/high)*100):0;
-  var sparkPts=genSparkData(low,high);
-  var sMin=Math.min.apply(null,sparkPts),sMax=Math.max.apply(null,sparkPts);
   var inStk=p.sellers.filter(function(s){return s.stock==='in';}).length;
   var hasLow=p.sellers.some(function(s){return s.stock==='low';});
   var stockHTML=inStk>0?'<span class="pc-stock-in">&#10003; In Stock ('+inStk+')</span>':(hasLow?'<span class="pc-stock-low">&#9888; Low Stock</span>':'<span class="pc-stock-out">&#10007; Out of Stock</span>');
@@ -2224,7 +2127,6 @@ function prodCardHTML(p){
       '<div class="pc-sellers-wrap"><div class="pc-sellers-hd">'+p.sellers.length+' Sellers &mdash; Lowest First</div>'+sellerRowsInline(p.sellers,3)+(p.sellers.length>3?'<button class="pc-more" onclick="event.stopPropagation();openProdModal('+p.id+')">+'+(p.sellers.length-3)+' more</button>':'')+
       '</div>'+
     '</div>'+
-    '<div class="pc-history"><div class="pc-history-lbl">30-Day Price Trend</div><div class="sparkline">'+sparklineHTML(sparkPts)+'</div><div class="pc-history-range"><span>Low: $'+sMin.toFixed(2)+'</span><span>High: $'+sMax.toFixed(2)+'</span></div></div>'+
     '<div class="pc-stock-row">'+stockHTML+'</div>'+
     '<div class="pc-foot"><button class="btn-kit" onclick="event.stopPropagation();addToKit('+p.id+')">+ Add to Kit</button><button class="btn-det" onclick="event.stopPropagation();openProdModal('+p.id+')">All Sellers</button></div>'+
   '</div>';
@@ -2234,8 +2136,9 @@ function prodCardHTML(p){
    PRODUCT DETAIL MODAL
 ══════════════════════════════════════════════ */
 function openProdModal(id){
-  const p=PRODUCTS.find(x=>x.id===id);if(!p)return;
+  const p=PRODUCTS.find(x=>x.id===id)||DEALS.find(x=>x.id===id);if(!p)return;
   const low=p.sellers[0];
+  const hasDiscount=p.orig&&p.orig>low.price;
   document.getElementById('prod-modal-body').innerHTML=`
     <button class="modal-close" onclick="closeOverlay('prod-modal')">&#10005;</button>
     <div class="pd-top">
@@ -2243,89 +2146,28 @@ function openProdModal(id){
       <div class="pd-info">
         <div class="pd-brand">${p.brand}</div>
         <a class="pd-name" href="/product?p=${slugify(p.name)}" style="text-decoration:none;color:inherit;display:block;cursor:pointer" onclick="(function(){var pd=Object.assign({},p);pd.imgs=pd.img?[pd.img]:[];try{sessionStorage.setItem('ia_pv',JSON.stringify(pd));}catch(e){}})();">${p.name}</a>
-        <div class="pd-sub">${p.sub}</div>
-        <div class="pd-low-price">$${low.price.toFixed(2)}</div>
-        <div class="pd-from-label">Lowest price · ${low.name} · ${low.ship===0?'Free Shipping':'$'+low.ship.toFixed(2)+' shipping'}</div>
+        <div class="pd-sub">${p.sub||''}</div>
+        <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px">
+          <div class="pd-low-price">$${low.price.toFixed(2)}</div>
+          ${hasDiscount?'<div style="font-size:13px;color:var(--gray-400);text-decoration:line-through">$'+p.orig.toFixed(2)+'</div><div style="font-size:12px;font-weight:700;color:var(--red)">'+Math.round((p.orig-low.price)/p.orig*100)+'% OFF</div>':''}
+        </div>
+        <div class="pd-from-label">Lowest price · ${low.name}</div>
         <button class="btn-kit-lg" onclick="addToKit(${p.id});closeOverlay('prod-modal')">+ Add to My Kit</button>
       </div>
     </div>
-    <div class="sellers-title">${p.sellers.length} Retailers — Sorted by Lowest Price</div>
+    <div class="sellers-title">${p.sellers.length} Retailer${p.sellers.length>1?'s':''} — Sorted by Lowest Price</div>
     ${p.sellers.map((s,i)=>`
       <div class="seller-row ${i===0?'best':''}">
         <div class="s-rank">${i+1}</div>
         <div class="s-retailer">${s.name}${i===0?' <span class="best-tag">BEST PRICE</span>':''}</div>
-        <div class="s-ship-lbl ${s.ship===0?'free':''}">${s.ship===0?'FREE Shipping':'$'+s.ship.toFixed(2)+' shipping'}</div>
         <span class="s-stock-badge ${stockClass(s.stock)}">${stockLabel(s.stock)}</span>
         <div class="s-price-lbl">$${s.price.toFixed(2)}</div>
         <a class="goto-btn" href="${s.url||'#'}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Go to Retailer</a>
       </div>`).join('')}
-    <div style="margin:16px 0 8px">
-      <div class="sellers-title">30-Day Price History</div>
-      <div style="background:var(--gray-50);border:1px solid var(--gray-100);border-radius:4px;padding:10px 12px;margin-top:8px">
-        <canvas id="modal-chart" height="60" style="width:100%;display:block"></canvas>
-        <div id="modal-chart-lbl" style="display:flex;justify-content:space-between;font-size:9px;color:var(--gray-400);margin-top:3px"></div>
-        <div id="modal-chart-stats" style="display:flex;gap:16px;margin-top:6px;font-size:11px;font-weight:700"></div>
-      </div>
-    </div>
     <div class="pd-disclaimer">Ideal Armory does not sell this product. Click "Go to Retailer" to purchase directly from the listed seller. Prices are aggregated and may change. All purchases subject to retailer terms and applicable law.</div>`;
   openOverlay('prod-modal');
-  setTimeout(function(){
-    var lo=p.sellers[0].price,hi=p.sellers[p.sellers.length-1].price;
-    var pts=genSparkData(lo,hi);
-    var months=['Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Now'];
-    var c=document.getElementById('modal-chart');
-    if(!c)return;
-    var ctx=c.getContext('2d');
-    c.width=c.parentElement.offsetWidth-24||280;
-    var W=c.width,H=60,mn=Math.min.apply(null,pts),mx=Math.max.apply(null,pts),rng=mx-mn||1;
-    ctx.clearRect(0,0,W,H);
-    [0.25,0.5,0.75].forEach(function(f){var y=H-4-(f*(H-8));ctx.strokeStyle='#e6e4e0';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();});
-    ctx.strokeStyle='#1b2a3b';ctx.lineWidth=2;ctx.beginPath();
-    pts.forEach(function(v,i){var x=(i/(pts.length-1))*(W-4)+2;var y=H-4-((v-mn)/rng)*(H-12);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
-    ctx.stroke();
-    var lx=W-2,ly=H-4-((pts[pts.length-1]-mn)/rng)*(H-12);
-    ctx.lineTo(lx,H-4);ctx.lineTo(2,H-4);ctx.closePath();ctx.fillStyle='rgba(27,42,59,.07)';ctx.fill();
-    ctx.beginPath();ctx.arc(lx,ly,5,0,Math.PI*2);ctx.fillStyle='#d4a82e';ctx.fill();
-    var lbl=document.getElementById('modal-chart-lbl');
-    if(lbl)lbl.innerHTML=months.slice(0,pts.length).map(function(m){return '<span>'+m+'</span>';}).join('');
-    var stats=document.getElementById('modal-chart-stats');
-    if(stats)stats.innerHTML='<span style="color:var(--stock-green)">Low: $'+mn.toFixed(2)+'</span><span style="color:#b91c1c">High: $'+mx.toFixed(2)+'</span><span style="color:var(--navy)">Now: $'+lo.toFixed(2)+'</span>';
-  },80);
 }
 
-function openDealModal(id){
-  const d=DEALS.find(x=>x.id===id);if(!d)return;
-  const low=d.sellers[0];
-  document.getElementById('prod-modal-body').innerHTML=`
-    <button class="modal-close" onclick="closeOverlay('prod-modal')">&#10005;</button>
-    <div class="pd-top">
-      <div class="pd-img">${p.img ? '<img src="'+p.img+'" alt="'+p.name+'" style="max-width:90%;max-height:90%;object-fit:contain">' : '<span>'+p.brand+'</span>'}</div>
-      <div class="pd-info">
-        <div class="pd-brand">${d.brand}</div>
-        <a class="pd-name" href="/product?p=${slugify(d.name)}" style="text-decoration:none;color:inherit;display:block;cursor:pointer" onclick="(function(){var pd=Object.assign({},d);pd.imgs=pd.img?[pd.img]:[];try{sessionStorage.setItem('ia_pv',JSON.stringify(pd));}catch(e){}})();">${d.name}</a>
-        <div class="pd-sub">${d.sub}</div>
-        <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px">
-          <div class="pd-low-price">$${low.p.toFixed(2)}</div>
-          <div style="font-size:13px;color:var(--gray-400);text-decoration:line-through">$${d.orig}</div>
-          <div style="font-size:12px;font-weight:700;color:var(--red)">${Math.round((d.orig-d.sellers[0].p)/d.orig*100)}% OFF</div>
-        </div>
-        <div class="pd-from-label">Lowest price · ${low.n} · ${low.url?'<a href="'+low.url+'" target="_blank" rel="noopener" style="color:var(--navy)">Go to retailer</a>':'Ships direct'}</div>
-        <button class="btn-kit-lg" onclick="addDealToKit(${d.id});closeOverlay('prod-modal')">+ Add to My Kit</button>
-      </div>
-    </div>
-    <div class="sellers-title">${d.sellers.length} Retailer${d.sellers.length>1?'s':''} — Sorted by Lowest Price</div>
-    ${d.sellers.map((s,i)=>`
-      <div class="seller-row ${i===0?'best':''}">
-        <div class="s-rank">${i+1}</div>
-        <div class="s-retailer">${s.n}${i===0?' <span class="best-tag">BEST PRICE</span>':''}</div>
-        <div class="s-ship-lbl free">FREE Shipping</div>
-        <span class="s-stock-badge in">In Stock</span>
-        <div class="s-price-lbl">$${s.p.toFixed(2)}</div>
-        <a class="goto-btn" href="${s.url||'#'}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Go to Retailer</a>
-      </div>`).join('')}
-    <div class="pd-disclaimer">Ideal Armory does not sell this product. Click "Go to Retailer" to purchase directly from the listed seller. Prices are aggregated and may change.</div>`;
-  openOverlay('prod-modal');
-}
 
 /* ══════════════════════════════════════════════
    DAILY BEST SELLERS ROTATION
@@ -2407,36 +2249,6 @@ function updDots(){
 }
 
 /* ══════════════════════════════════════════════
-   DEALS
-══════════════════════════════════════════════ */
-var _dg=document.getElementById('deals-grid');if(_dg)_dg.innerHTML=DEALS.map(d=>`
-  <div class="deal-card" onclick="openDealModal(${d.id})">
-    <div class="deal-img">${d.img?'<img src="'+d.img+'" alt="'+d.name+'" loading="lazy" style="max-width:90%;max-height:90%;object-fit:contain">':'<span class="deal-img-placeholder">'+d.brand+'</span>'}</div>
-    <div class="deal-body">
-      <div class="deal-tag">Limited-Time Deal · ${Math.round((d.orig-d.sellers[0].p)/d.orig*100)}% Off</div>
-      <a class="deal-name" href="/product?p=${slugify(d.name)}" onclick="event.stopPropagation()">${d.name}</a>
-      <div class="deal-sub">${d.brand} · ${d.sub}</div>
-      <div class="deal-pr">
-        <span class="deal-price">$${d.sellers[0].p.toFixed(2)}</span>
-        <span class="deal-orig">$${d.orig}</span>
-        <span class="deal-pct">-${Math.round((d.orig-d.sellers[0].p)/d.orig*100)}%</span>
-      </div>
-      <div class="deal-via">Lowest: <strong>${d.sellers[0].n}</strong> · ${d.sellers.length} seller${d.sellers.length>1?'s':''}</div>
-      <div class="deal-timer">Ends in: <span class="deal-tv" data-time="${d.timer}">${d.timer}</span></div>
-      <div class="deal-actions">
-        <button class="deal-kit-btn" data-id="${d.id}" onclick="event.stopPropagation();addDealToKit(this.dataset.id)">+ Add to Kit</button>
-      </div>
-    </div>
-  </div>`).join('');
-setInterval(()=>{
-  document.querySelectorAll('[data-time]').forEach(el=>{
-    let[h,m,s]=el.textContent.split(':').map(Number);
-    s--;if(s<0){s=59;m--;}if(m<0){m=59;h--;}if(h<0){h=m=s=0;}
-    el.textContent=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-  });
-},1000);
-
-/* ══════════════════════════════════════════════
    KIT BUILDER — FLEXIBLE / OPEN-ENDED
    No slot limits. Any product, any quantity,
    any combination. Max 20 items to prevent abuse.
@@ -2462,11 +2274,11 @@ function buildKit(){
 
   // Build item cards — all seller prices shown inline
   grid.innerHTML = kitData.map((item, i) => {
-    var sellers = item.sellers || [{name:item.retailer,price:item.price,ship:0,stock:'in'}];
+    var sellers = item.sellers || [{name:item.retailer,price:item.price,stock:'in'}];
     var bestPrice = sellers[0].price;
     var rows = sellers.map(function(s, si){
       var isBest = si === 0;
-      var shipTxt = (s.ship === 0) ? 'Free Ship' : '+$'+s.ship.toFixed(2);
+      var shipTxt = typeof s.ship === 'number' ? (s.ship === 0 ? 'Free Ship' : '+$'+s.ship.toFixed(2)) : '';
       // URL fallback: use stored url, or look up from PRODUCTS
       var url = s.url;
       if(!url){
@@ -2513,17 +2325,17 @@ function buildKit(){
   if(!currentUser && kitData.length > 0) saveGuestKit();
 }
 
+const CAT_LABELS = {
+  handgun:'Handgun', rifle:'Rifle', shotgun:'Shotgun', holster:'Holster',
+  optic:'Optic / Sight', ammo:'Ammunition', accessory:'Accessory'
+};
 function addToKit(id){
-  const p = PRODUCTS.find(x => x.id === id);
+  const p = PRODUCTS.find(x => x.id === id) || DEALS.find(x => x.id === id);
   if(!p) return;
   if(kitData.length >= KIT_MAX){
     showToast('Your kit is full (max ' + KIT_MAX + ' items). Remove something to add more.');
     return;
   }
-  const CAT_LABELS = {
-    handgun:'Handgun', rifle:'Rifle', shotgun:'Shotgun',
-    optic:'Optic / Sight', ammo:'Ammunition', accessory:'Accessory'
-  };
   const item = {
     uid: Date.now() + Math.random(),
     productId: p.id,
@@ -2535,29 +2347,11 @@ function addToKit(id){
     label: CAT_LABELS[p.cat] || 'Item',
     price: p.sellers[0].price,
     retailer: p.sellers[0].name,
-    sellers: p.sellers.map(function(s){return {name:s.name,price:s.price,ship:s.ship,stock:s.stock,url:s.url};})
+    sellers: p.sellers.map(function(s){return {name:s.name,price:s.price,stock:s.stock,url:s.url};})
   };
   kitData.push(item);
   buildKit();
   showToast(p.name + ' added to your kit.');
-  goTo('kit-sec');
-}
-
-function addDealToKit(dealId){
-  var d=DEALS.find(function(x){return x.id==dealId;});
-  if(!d){showToast('Item not found.');return;}
-  if(kitData.length>=KIT_MAX){showToast('Kit full.');return;}
-  var labels={handgun:'Handgun',rifle:'Rifle',shotgun:'Shotgun',optic:'Optic / Sight',ammo:'Ammunition',accessory:'Accessory'};
-  kitData.push({
-    uid:Date.now()+Math.random(),
-    productId:d.id,productName:d.name,
-    brand:d.brand||'',sub:d.sub||'',img:d.img||'',
-    cat:d.cat,label:labels[d.cat]||'Item',
-    price:d.sellers[0].p,retailer:d.sellers[0].n,
-    sellers:d.sellers.map(function(s){return {name:s.n,price:s.p,ship:0,stock:'in',url:s.url};})
-  });
-  buildKit();
-  showToast(d.name+' added to your kit.');
   goTo('kit-sec');
 }
 function removeKitItem(index){
@@ -2608,7 +2402,7 @@ function exportKit(){
           productName: item.productName,
           productId: item.productId,
           price: sel.price,
-          ship: sel.ship || 0,
+          ship: sel.ship,
           isBestPrice: sel.price === bestPrice,
           url: sel.url || ''
         });
@@ -2639,7 +2433,7 @@ function exportKit(){
   if(topRetailer && topRetailer[1].length >= 2){
     const [rName, rItems] = topRetailer;
     const rTotal = rItems.reduce((s,i)=>s+i.price,0);
-    const hasFreeShip = rItems.some(i=>i.ship===0);
+    const hasFreeShip = rItems.some(i=>typeof i.ship==='number'&&i.ship===0);
     html += `
     <div class="bundle-alert show" style="margin-bottom:16px">
       <div class="bundle-title">Best Bundle Opportunity</div>
@@ -2681,7 +2475,7 @@ function exportKit(){
         <div class="shop-item-row">
           <div class="shop-item-slot">${item.slotLabel}</div>
           <div class="shop-item-name">${item.productName}</div>
-          <div class="shop-item-ship ${item.ship===0?'free':''}">${item.ship===0?'Free Ship':'+$'+item.ship.toFixed(2)}</div>
+          <div class="shop-item-ship ${item.ship===0?'free':''}">${typeof item.ship==='number'?(item.ship===0?'Free Ship':'+$'+item.ship.toFixed(2)):''}</div>
           <div class="shop-item-price">$${item.price.toFixed(2)}</div>
           <button class="shop-go-btn" onclick="openRetailerPage('${item.url}','${retailer}','${item.productName.replace(/'/g,"\\'")}')">Go to Retailer &#8594;</button>
         </div>`).join('')}
@@ -2864,8 +2658,7 @@ async function submitNewsletter(){
 // Default carousel shows daily-rotating best sellers
 // Wrap in DOMContentLoaded to guarantee all elements exist before JS touches them
 function _initPage(){
-  cItems=_buildDailyBest();
-  buildCarousel();
+  _loadHomeData();
   buildKit();
   // FFL grid starts empty — user must enter a ZIP and click Search Dealers
   var fflZipEl=document.getElementById('ffl-zip');
