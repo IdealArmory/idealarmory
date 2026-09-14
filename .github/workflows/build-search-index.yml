@@ -38,11 +38,14 @@ jobs:
       - name: Build search index
         run: node .github/scripts/build-search-index.js
 
+      - name: Build deal-of-the-day pool
+        run: node .github/scripts/build-deals.js
+
       - name: Commit and push updated index
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name  "github-actions[bot]"
-          git add data/search-index.json
-          git diff --staged --quiet || git commit -m "Auto-rebuild search index [$(date -u '+%Y-%m-%d %H:%M UTC')]"
+          git add data/search-index.json data/deal-of-the-day.json
+          git diff --staged --quiet || git commit -m "Auto-rebuild search index + deal-of-the-day [$(date -u '+%Y-%m-%d %H:%M UTC')]"
           git pull --rebase origin main
           git push origin main
