@@ -1475,6 +1475,11 @@ function _initSupabase(){
   sb = _sbCreate ? _sbCreate(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
   if(!sb){ console.error('[Auth] Supabase client not ready — add SUPABASE_URL and SUPABASE_ANON_KEY constants'); return; }
   sb.auth.onAuthStateChange(async (event, session) => {
+    if(event==='PASSWORD_RECOVERY'){
+      // User clicked the reset link in their email — show the new-password form
+      openResetPasswordForm();
+      return;
+    }
     if((event==='INITIAL_SESSION'||event==='SIGNED_IN') && session?.user){
       const u=session.user;
       currentUser={email:u.email,name:u.email.split('@')[0],id:u.id};
@@ -1533,6 +1538,13 @@ function authForm(tab){
       <div class="auth-divider">or</div>
       <button class="auth-guest-btn" onclick="continueAsGuest()">Continue as Guest (Kit saved 30 days)</button>
       <p class="auth-note">Your guest kit will be transferred to your account when you sign in.</p>
+      <button class="resend-toggle" onclick="toggleForgotPanel()">Forgot your password?</button>
+      <div class="resend-panel" id="forgot-panel">
+        <p>Enter your email address and we'll send you a link to reset your password.</p>
+        <input type="email" id="forgot-email" placeholder="Your email address" autocomplete="email" style="font-size:16px">
+        <button class="btn-p" style="width:100%;font-size:13px;padding:11px" onclick="handleForgotPassword()">Send Reset Link</button>
+        <div id="forgot-msg"></div>
+      </div>
       <button class="resend-toggle" onclick="toggleResendPanel()">Didn't receive your activation email?</button>
       <div class="resend-panel" id="resend-panel">
         <p>Enter the email address you registered with and we'll resend your activation link.</p>
@@ -1649,6 +1661,83 @@ async function handleResendRequest(){
   const btn=document.querySelector('#resend-panel .btn-p');
   await doResend(email,btn);
 }
+function toggleForgotPanel(){
+  const panel=document.getElementById('forgot-panel');
+  if(!panel) return;
+  panel.classList.toggle('open');
+  // Pre-fill email from the sign-in field if available
+  if(panel.classList.contains('open')){
+    const signinEmail=normaliseEmail(document.getElementById('auth-email')?.value);
+    const forgotInput=document.getElementById('forgot-email');
+    if(forgotInput && signinEmail) forgotInput.value=signinEmail;
+  }
+}
+async function handleForgotPassword(){
+  if(!sb){ showToast('Auth service unavailable. Please refresh.'); return; }
+  const email=normaliseEmail(document.getElementById('forgot-email')?.value);
+  if(!email){ showToast('Please enter your email address.'); return; }
+  const btn=document.querySelector('#forgot-panel .btn-p');
+  const msg=document.getElementById('forgot-msg');
+  if(btn){ btn.textContent='Sending…'; btn.disabled=true; }
+  const {error}=await sb.auth.resetPasswordForEmail(email,{
+    redirectTo:'https://idealarmory.com'
+  });
+  if(error){
+    if(btn){ btn.textContent='Send Reset Link'; btn.disabled=false; }
+    if(msg) msg.innerHTML=`<p style="color:var(--red);font-size:12px;margin-top:8px">${error.message}</p>`;
+  } else {
+    if(btn){ btn.textContent='Email Sent ✓'; btn.disabled=true; }
+    if(msg) msg.innerHTML=`<p style="color:#2a7a3b;font-size:12px;margin-top:8px;line-height:1.5">
+      If an account exists for <strong>${email}</strong>, a reset link has been sent.<br>
+      Check your inbox and follow the link to set a new password.</p>`;
+  }
+}
+/* ── RESET PASSWORD FORM (landing after email link) ──────────── */
+function openResetPasswordForm(){
+  const c=document.getElementById('auth-content');
+  c.innerHTML=`
+    <div class="modal-title" style="margin-bottom:20px">Set New Password</div>
+    <div id="auth-form-wrap">
+      <div class="auth-form">
+        <p style="font-size:13px;color:var(--gray-500);margin-bottom:14px;line-height:1.5">
+          Choose a new password for your account.
+        </p>
+        <input type="password" id="reset-pass-new" placeholder="New password (min. 8 characters)" autocomplete="new-password">
+        <input type="password" id="reset-pass-confirm" placeholder="Confirm new password" autocomplete="new-password">
+        <button class="btn-p" style="width:100%" onclick="doResetPassword()">Set New Password</button>
+        <div id="reset-msg"></div>
+      </div>
+    </div>`;
+  openOverlay('account-modal');
+}
+async function doResetPassword(){
+  if(!sb){ showToast('Auth service unavailable. Please refresh.'); return; }
+  const np=document.getElementById('reset-pass-new')?.value;
+  const cp=document.getElementById('reset-pass-confirm')?.value;
+  const msg=document.getElementById('reset-msg');
+  if(!np||!cp){ showToast('Please fill in both password fields.'); return; }
+  if(np!==cp){
+    if(msg) msg.innerHTML=`<p style="color:var(--red);font-size:12px;margin-top:8px">Passwords do not match.</p>`;
+    return;
+  }
+  if(np.length<8){
+    if(msg) msg.innerHTML=`<p style="color:var(--red);font-size:12px;margin-top:8px">Password must be at least 8 characters.</p>`;
+    return;
+  }
+  const btn=document.querySelector('#auth-form-wrap .btn-p');
+  if(btn){ btn.textContent='Saving…'; btn.disabled=true; }
+  const {error}=await sb.auth.updateUser({password:np});
+  if(error){
+    if(btn){ btn.textContent='Set New Password'; btn.disabled=false; }
+    if(msg) msg.innerHTML=`<p style="color:var(--red);font-size:12px;margin-top:8px">${error.message}</p>`;
+  } else {
+    if(msg) msg.innerHTML=`<p style="color:#2a7a3b;font-size:12px;margin-top:8px">Password updated successfully!</p>`;
+    if(btn){ btn.textContent='Password Updated ✓'; btn.disabled=true; }
+    setTimeout(()=>closeOverlay('account-modal'),1800);
+    showToast('Password updated. You are now signed in.');
+  }
+}
+
 function continueAsGuest(){
   closeOverlay('account-modal');
   saveGuestKit();
