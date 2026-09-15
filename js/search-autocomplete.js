@@ -31,15 +31,39 @@
 
   var FIREARM_CATS = ['handguns','rifles','shotguns'];
 
+  /* ── Single-char word-boundary check ─────────────────────────────────────
+     A 1-char token like "x" (from "x bolt") must appear as a standalone
+     word — preceded by start-of-string or [\s\-] and followed by [\s\-]
+     or end-of-string.  This prevents "x" from matching "a[x]is" or "16[x]".
+     ──────────────────────────────────────────────────────────────────────── */
+  function tokenAtBoundary(t, haystack) {
+    var i = haystack.indexOf(t);
+    while (i >= 0) {
+      var before = (i === 0)                     || (/[\s\-]/).test(haystack[i - 1]);
+      var after  = (i === haystack.length - 1)   || (/[\s\-]/).test(haystack[i + 1]);
+      if (before && after) return true;
+      i = haystack.indexOf(t, i + 1);
+    }
+    return false;
+  }
+
   /* ── Query parser ── */
   function parseQuery(q) {
-    var tokens = q.toLowerCase().trim().split(/\s+/).filter(function(t){ return t.length >= 1; });
+    var raw = q.toLowerCase().trim().split(/\s+/);
+    // Tokens >= 2 chars: normal substring match later
+    var tokens = raw.filter(function(t){ return t.length >= 2; });
+    // Single-char tokens (e.g. "x" in "x bolt"): word-boundary match later
+    var shortTokens = raw.filter(function(t){ return t.length === 1; });
+    // Phrase: join with hyphen so "x bolt" → "x-bolt" for a quick compound check
+    var phrase = raw.length >= 2 ? raw.join('-') : null;
+
     var categoryHint = null, subjectTokens = [];
     tokens.forEach(function(t) {
       if (CAT_INTENT[t]) { categoryHint = CAT_INTENT[t]; }
       else { subjectTokens.push(t); }
     });
-    return { tokens: tokens, categoryHint: categoryHint, subjectTokens: subjectTokens };
+    return { tokens: tokens, shortTokens: shortTokens, categoryHint: categoryHint,
+             subjectTokens: subjectTokens, phrase: phrase };
   }
 
   /* ── Utilities ── */
@@ -98,15 +122,25 @@
         .filter(Boolean).join(' ').toLowerCase();
       var cat = p.category || '';
 
+      // Phrase hit: "x bolt" → "x-bolt" found verbatim (sufficient on its own).
+      var phraseHit = !!(parsed.phrase && (
+        haystack.indexOf(parsed.phrase) >= 0 ||
+        haystack.indexOf(parsed.phrase.replace(/-/g, ' ')) >= 0
+      ));
+      // Token hit: every >=2-char token is a substring of the haystack.
+      var tokenHit = parsed.tokens.every(function(t){ return haystack.indexOf(t) >= 0; });
+      // Short hit: every 1-char token appears at a word boundary (not inside a word).
+      var shortHit = parsed.shortTokens.every(function(t){ return tokenAtBoundary(t, haystack); });
+
       if (parsed.categoryHint) {
-        // Category-intent: must be in the hinted category
         if (cat !== parsed.categoryHint) continue;
-        // …AND all subject tokens must be in the haystack
-        if (parsed.subjectTokens.length > 0 &&
-            !parsed.subjectTokens.every(function(t){ return haystack.indexOf(t) >= 0; })) continue;
+        if (parsed.subjectTokens.length > 0 || parsed.shortTokens.length > 0) {
+          var subj2Hit = parsed.subjectTokens.every(function(t){ return haystack.indexOf(t) >= 0; });
+          if (!phraseHit && !(subj2Hit && shortHit)) continue;
+        }
       } else {
-        // General: every token must appear somewhere in the haystack
-        if (!parsed.tokens.every(function(t){ return haystack.indexOf(t) >= 0; })) continue;
+        // Must be a phrase match OR (all regular tokens + all short tokens match)
+        if (!phraseHit && !(tokenHit && shortHit)) continue;
       }
       matched.push(p);
       if (matched.length >= lim * 4) break; // collect 4× then sort down
