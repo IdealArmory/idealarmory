@@ -26,15 +26,16 @@ const USER_AGENT     = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/53
 
 // ── Category map ──────────────────────────────────────────────────────────────
 const CATEGORIES = [
-  { slug: 'handguns',      ourCat: 'handguns'   },
-  { slug: 'rifles',        ourCat: 'rifles'     },
-  { slug: 'shotguns',      ourCat: 'shotguns'   },
-  { slug: 'ammo',          ourCat: 'ammunition' },
-  { slug: 'optics-sights', ourCat: 'optics'     },
-  { slug: 'holsters',      ourCat: 'holsters'   },
-  { slug: 'magazines',     ourCat: 'magazines'  },
-  { slug: 'gun-cleaning',  ourCat: 'cleaning'   },
-  { slug: 'safes-storage', ourCat: 'gun-safes'  },
+  { slug: 'handguns',            ourCat: 'handguns'   },
+  { slug: 'rifles',              ourCat: 'rifles'     },
+  { slug: 'bolt-action-rifles',  ourCat: 'rifles'     }, // subcategory — seenIds deduplicates with parent
+  { slug: 'shotguns',            ourCat: 'shotguns'   },
+  { slug: 'ammo',                ourCat: 'ammunition' },
+  { slug: 'optics-sights',       ourCat: 'optics'     },
+  { slug: 'holsters',            ourCat: 'holsters'   },
+  { slug: 'magazines',           ourCat: 'magazines'  },
+  { slug: 'gun-cleaning',        ourCat: 'cleaning'   },
+  { slug: 'safes-storage',       ourCat: 'gun-safes'  },
 ];
 
 // ── Per-category product caps ─────────────────────────────────────────────────

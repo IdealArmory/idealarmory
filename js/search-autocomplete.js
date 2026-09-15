@@ -33,7 +33,7 @@
 
   /* ── Query parser ── */
   function parseQuery(q) {
-    var tokens = q.toLowerCase().trim().split(/\s+/).filter(function(t){ return t.length >= 2; });
+    var tokens = q.toLowerCase().trim().split(/\s+/).filter(function(t){ return t.length >= 1; });
     var categoryHint = null, subjectTokens = [];
     tokens.forEach(function(t) {
       if (CAT_INTENT[t]) { categoryHint = CAT_INTENT[t]; }
