@@ -331,6 +331,33 @@ const PRICE_BANDS = {
   rifles:   [[300, 500], [500, 900], [900, 1500], [1500, Infinity]],
 };
 
+// Max variants of the same model family per category.
+const MODEL_VARIANT_CAPS = {
+  handguns: 5, rifles: 5,
+};
+
+function modelKey(p) {
+  const brand = (p.brand || '').toLowerCase().replace(/[^a-z0-9]/g, ' ').replace(/\s+/g, ' ').trim();
+  const nameWords = (p.name || '').toLowerCase().replace(/[^a-z0-9]/g, ' ').replace(/\s+/g, ' ').trim().split(' ').slice(0, 4).join(' ');
+  return brand + '|' + nameWords;
+}
+
+function deduplicateByModel(products, variantCap) {
+  if (!variantCap || variantCap <= 0) return products;
+  const groups = new Map();
+  for (const p of products) {
+    const key = modelKey(p);
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(p);
+  }
+  const result = [];
+  for (const [, group] of groups) {
+    const sorted = group.sort((a, b) => a.price - b.price);
+    result.push(...spreadSample(sorted, variantCap));
+  }
+  return result;
+}
+
 function spreadSample(sortedList, k) {
   if (k <= 0) return [];
   const n = sortedList.length;
@@ -394,10 +421,13 @@ function loadSiblingUpcs(dataDir, cat) {
 // Guarantees every item whose UPC also appears at EuroOptic/Impact Guns/Guns.com
 // survives the cap — a cross-retailer match is itself strong evidence of a
 // genuinely popular product, not just an artifact of price-band sampling.
-function bandedCapWithCrossMatch(products, cap, bands, priorityBrands, siblingUpcs) {
+// Applies model-variant deduplication first so a single model family can't flood
+// the pool before cross-match and band sampling run.
+function bandedCapWithCrossMatch(products, cap, bands, priorityBrands, siblingUpcs, variantCap) {
+  const deduped = variantCap ? deduplicateByModel(products, variantCap) : products;
   const isCross = p => p.upc && siblingUpcs.has(p.upc);
-  const cross = products.filter(isCross);
-  const rest  = products.filter(p => !isCross(p));
+  const cross = deduped.filter(isCross);
+  const rest  = deduped.filter(p => !isCross(p));
   const crossChosen = cross.length <= cap ? cross : bandedCap(cross, cap, bands, priorityBrands);
   const filled = bandedCap(rest, cap - crossChosen.length, bands, priorityBrands);
   return crossChosen.concat(filled);
@@ -495,7 +525,7 @@ async function main() {
     if (cap && products.length > cap && bands && prioBrands.length) {
       const siblingUpcs = loadSiblingUpcs(dataDir, cat);
       const crossCount = products.filter(p => p.upc && siblingUpcs.has(p.upc)).length;
-      final = bandedCapWithCrossMatch(products, cap, bands, prioBrands, siblingUpcs).sort((a, b) => a.price - b.price);
+      final = bandedCapWithCrossMatch(products, cap, bands, prioBrands, siblingUpcs, MODEL_VARIANT_CAPS[cat]).sort((a, b) => a.price - b.price);
       console.log(`  [cap:banded+crossmatch] ${cat}: ${products.length} → ${final.length} (${Math.min(crossCount, cap)} cross-retailer matches guaranteed)`);
     } else {
       // Priority brands first (price asc), then fill remaining slots with others (price asc).
