@@ -1094,31 +1094,60 @@ var _CAT_INTENT_MAP = {
   'cleaning':'cleaning','cleaner':'cleaning','solvent':'cleaning'
 };
 
+// Single-char word-boundary check: "x" in "x bolt" must appear as a standalone
+// word (preceded/followed by space, hyphen, or string edge) — not buried inside
+// "axis" or a thread-spec like "M13X.75".
+function _tokenAtBoundary(t, haystack) {
+  var i = haystack.indexOf(t);
+  while (i >= 0) {
+    var before = (i === 0)                   || (/[\s\-]/).test(haystack[i - 1]);
+    var after  = (i === haystack.length - 1) || (/[\s\-]/).test(haystack[i + 1]);
+    if (before && after) return true;
+    i = haystack.indexOf(t, i + 1);
+  }
+  return false;
+}
+
 function _parseQuery(q) {
-  // Keep single-char tokens (e.g. the "X" in "Shield X") — dropping them let
-  // unrelated products (matching only "Shield") outrank the actual model.
-  var tokens = q.toLowerCase().trim().split(/\s+/).filter(function(t){ return t.length >= 1; });
+  var raw = q.toLowerCase().trim().split(/\s+/);
+  // Tokens >= 2 chars use normal substring matching.
+  var tokens = raw.filter(function(t){ return t.length >= 2; });
+  // Single-char tokens (e.g. "x" in "x bolt") require word-boundary matching.
+  var shortTokens = raw.filter(function(t){ return t.length === 1; });
+  // Phrase: "x bolt" → "x-bolt" for fast compound-name lookup.
+  var phrase = raw.length >= 2 ? raw.join('-') : null;
   var categoryHint = null, subjectTokens = [];
   tokens.forEach(function(t) {
     if (_CAT_INTENT_MAP[t]) { categoryHint = _CAT_INTENT_MAP[t]; }
     else { subjectTokens.push(t); }
   });
-  return { raw: q, tokens: tokens, categoryHint: categoryHint, subjectTokens: subjectTokens };
+  return { raw: q, tokens: tokens, shortTokens: shortTokens,
+           categoryHint: categoryHint, subjectTokens: subjectTokens, phrase: phrase };
 }
 
 function _productMatchesQuery(p, parsed) {
   var haystack = [p.name, p.brand, p.sub, p.caliber, p.carry, p.category]
     .filter(Boolean).join(' ').toLowerCase();
+
+  // Phrase hit: "x-bolt" found verbatim — sufficient on its own.
+  var phraseHit = !!(parsed.phrase && (
+    haystack.indexOf(parsed.phrase) >= 0 ||
+    haystack.indexOf(parsed.phrase.replace(/-/g, ' ')) >= 0
+  ));
+  // Token hit: every >=2-char token is a substring.
+  var tokenHit = parsed.tokens.every(function(t){ return haystack.indexOf(t) >= 0; });
+  // Short hit: every 1-char token appears at a word boundary.
+  var shortHit = parsed.shortTokens.every(function(t){ return _tokenAtBoundary(t, haystack); });
+
   if (parsed.categoryHint) {
-    // Category-specific search: product must be in that category
     if ((p.category || '') !== parsed.categoryHint) return false;
-    // …AND all non-category tokens must appear somewhere in the product text
-    return parsed.subjectTokens.length === 0 ||
-           parsed.subjectTokens.every(function(t){ return haystack.indexOf(t) >= 0; });
+    if (parsed.subjectTokens.length === 0 && parsed.shortTokens.length === 0) return true;
+    var subjHit = parsed.subjectTokens.every(function(t){ return haystack.indexOf(t) >= 0; });
+    return phraseHit || (subjHit && shortHit);
   }
-  // General search: every token must appear somewhere in the product text (any order)
-  return parsed.tokens.length === 0 ||
-         parsed.tokens.every(function(t){ return haystack.indexOf(t) >= 0; });
+  // General: phrase match OR (all regular tokens + all short tokens match)
+  if (parsed.tokens.length === 0 && parsed.shortTokens.length === 0) return true;
+  return phraseHit || (tokenHit && shortHit);
 }
 
 /* Popularity score â€” used for default sort and as secondary signal in search.
