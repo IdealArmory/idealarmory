@@ -1326,7 +1326,7 @@ async function _loadHomeData() {
       '<div class="deal-img">' + (d.img ? '<img src="' + d.img + '" alt="' + d.name + '" loading="lazy" style="max-width:90%;max-height:90%;object-fit:contain">' : '<span class="deal-img-placeholder">' + d.brand + '</span>') + '</div>' +
       '<div class="deal-body">' +
         '<div class="deal-tag">' + pct + '% Off — Verified Price</div>' +
-        '<a class="deal-name" href="/product?p=' + slugify(d.name) + '" onclick="event.stopPropagation()">' + d.name + '</a>' +
+        '<a class="deal-name" href="/product?p=' + slugify(d.name) + '" onclick="event.stopPropagation();storeProdData(' + d.id + ')">' + d.name + '</a>' +
         '<div class="deal-sub">' + d.brand + ' · ' + (d.sub || '') + '</div>' +
         '<div class="deal-pr">' +
           '<span class="deal-price">$' + low.price.toFixed(2) + '</span>' +
@@ -2209,7 +2209,7 @@ function prodCardHTML(p){
     trustHTML+
     '<div class="pc-body">'+
       '<div class="pc-brand">'+p.brand+'</div>'+
-      '<a class="pc-name" href="/product?p='+slugify(p.name)+'" onclick="event.stopPropagation()">'+p.name+'</a>'+
+      '<a class="pc-name" href="/product?p='+slugify(p.name)+'" onclick="event.stopPropagation();storeProdData('+p.id+')">'+p.name+'</a>'+
       '<div class="pc-sub">'+p.sub+'</div>'+
       '<div class="pc-price-row"><span class="pc-from-lbl">From</span><span class="pc-low">$'+low.toFixed(2)+'</span>'+(high>low?'<span class="pc-high">$'+high.toFixed(2)+'</span>':'')+
       '</div>'+
@@ -2224,8 +2224,18 @@ function prodCardHTML(p){
 /* ══════════════════════════════════════════════
    PRODUCT DETAIL MODAL
 ══════════════════════════════════════════════ */
+
+// Store the product in sessionStorage before navigating to /product so the
+// product page can load it without a search-index lookup (best-sellers and
+// deal-of-the-day items are not in ALL_PRODUCTS on product.html).
+function storeProdData(id) {
+  var p = PRODUCTS.find(function(x){ return x.id === id; }) || DEALS.find(function(x){ return x.id === id; });
+  if (p) { try { sessionStorage.setItem('ia_pv', JSON.stringify(p)); } catch(e) {} }
+}
+
 function openProdModal(id){
   const p=PRODUCTS.find(x=>x.id===id)||DEALS.find(x=>x.id===id);if(!p)return;
+  storeProdData(id);
   const low=p.sellers[0];
   const hasDiscount=p.orig&&p.orig>low.price;
   document.getElementById('prod-modal-body').innerHTML=`
