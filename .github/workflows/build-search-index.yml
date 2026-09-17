@@ -52,3 +52,9 @@ jobs:
           git diff --staged --quiet || git commit -m "Auto-rebuild search index + deal-of-the-day + best-sellers [$(date -u '+%Y-%m-%d %H:%M UTC')]"
           git pull --rebase origin main
           git push origin main
+
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
