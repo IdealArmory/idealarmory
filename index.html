@@ -835,7 +835,30 @@ footer{background:var(--navy-deep);border-top:1px solid rgba(255,255,255,.06)}
 .newsletter-form button:hover{background:var(--navy-mid)}
 .newsletter-note{font-size:11px;color:var(--gray-400);margin-top:8px;letter-spacing:.2px}
 @media(max-width:768px){.newsletter-inner{flex-direction:column;align-items:flex-start}.newsletter-form{width:100%}}
-</style>
+
+/* === logo-override === */
+.nav-logo,a.nav-logo{display:flex!important;align-items:center!important;flex-direction:row!important;line-height:1}
+img.nav-logo-icon{flex-shrink:0!important;display:block!important;margin-right:10px!important;margin-left:0!important}
+.nav-logo-divider{display:block!important;border-left:1.5px solid var(--gold)!important;height:34px!important;margin:0 10px!important;flex-shrink:0!important;align-self:center!important;background:transparent!important;width:0!important}
+.nav-logo svg{display:none!important}
+.nav-logo span{color:var(--white)!important}
+.nav-logo .nav-wm,.nav-wm{color:var(--white)!important}
+.nav-logo .nav-wm span,.nav-wm span{color:var(--white)!important}
+.nav-logo-divider+.nav-wm{margin-left:0!important}
+.foot-logo{display:flex!important;align-items:center!important;flex-direction:row!important}
+img.foot-logo-icon{flex-shrink:0!important;display:block!important;margin-right:9px!important;margin-left:0!important}
+.foot-logo-divider{display:block!important;border-left:1.5px solid var(--gold)!important;height:30px!important;margin:0 9px!important;flex-shrink:0!important;align-self:center!important;background:transparent!important;width:0!important}
+.foot-logo svg{display:none!important}
+.foot-logo .fwm,.fwm,.foot-logo .foot-wm,.foot-wm{color:#fff!important}
+.foot-logo .foot-wm span,.foot-wm span,.foot-logo .fwm span,.fwm span{color:#fff!important}
+.foot-logo span{color:#fff!important}
+@media(max-width:768px){
+  img.nav-logo-icon{width:28px!important;height:28px!important;margin-right:8px!important}
+  .nav-logo-divider{height:28px!important;margin:0 8px!important}
+  img.foot-logo-icon{width:26px!important;height:26px!important;margin-right:7px!important}
+  .foot-logo-divider{height:26px!important;margin:0 7px!important}
+}
+/* === /logo-override === */</style>
 <script src="https://www.google.com/recaptcha/enterprise.js?render=6LfmAIQsAAAAAKa0wtP56CPLObXiKGpqeP5DNV6P" async defer></script>
 </head>
 <body>
@@ -1205,7 +1228,7 @@ footer{background:var(--navy-deep);border-top:1px solid rgba(255,255,255,.06)}
 <footer>
   <div class="foot-grid">
     <div>
-      <span class="foot-logo"><svg width="30" height="30" viewBox="0 0 66 66" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="33" cy="33" r="29" fill="#ffffff" stroke="#1b2a3b" stroke-width="2"/><path d="M33 6 L37 21 L33 17 L29 21 Z" fill="#d4a82e"/><path d="M33 60 L37 45 L33 49 L29 45 Z" fill="#1b2a3b"/><path d="M60 33 L45 29 L49 33 L45 37 Z" fill="#1b2a3b"/><path d="M6 33 L21 29 L17 33 L21 37 Z" fill="#1b2a3b"/><circle cx="33" cy="33" r="6" fill="#1b2a3b"/><circle cx="33" cy="33" r="3" fill="#d4a82e"/></svg><span class="foot-wm">Ideal <span>Armory</span></span></span>
+      <span class="foot-logo"><img src="nav-icon.png" width="30" height="30" alt="" aria-hidden="true" class="foot-logo-icon"><span class="foot-logo-divider"></span><span class="fwm">Ideal Armory</span></span>
       <p class="foot-p">Ideal Armory is a firearm price discovery platform. We do not sell firearms or accessories. All purchases are made directly with licensed retailers. Prices are aggregated and may vary.</p>
     </div>
     <div class="foot-col"><h4>Discover</h4><ul><li><a href="/handguns">Handguns</a></li><li><a href="/rifles">Rifles</a></li><li><a href="/shotguns">Shotguns</a></li><li><a href="/ammunition">Ammunition</a></li><li><a href="/optics">Optics</a></li><li><a href="/holsters">Holsters</a></li><li><a href="/magazines">Magazines</a></li><li><a href="/ar-parts">AR Parts</a></li><li><a href="/cleaning">Cleaning</a></li><li><a href="/gun-safes">Gun Safes</a></li></ul></div>

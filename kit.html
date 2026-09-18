@@ -204,7 +204,30 @@ footer{background:var(--navy-deep);color:rgba(255,255,255,.6);padding:40px 24px 
 .ia-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--navy);color:#fff;padding:12px 22px;border-radius:3px;font-size:13px;font-weight:600;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;z-index:9999;white-space:nowrap}
 .ia-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 @media(max-width:768px){.kit-alert-inner{flex-direction:column;align-items:flex-start}.kit-alert-form{width:100%}}
-</style>
+
+/* === logo-override === */
+.nav-logo,a.nav-logo{display:flex!important;align-items:center!important;flex-direction:row!important;line-height:1}
+img.nav-logo-icon{flex-shrink:0!important;display:block!important;margin-right:10px!important;margin-left:0!important}
+.nav-logo-divider{display:block!important;border-left:1.5px solid var(--gold)!important;height:34px!important;margin:0 10px!important;flex-shrink:0!important;align-self:center!important;background:transparent!important;width:0!important}
+.nav-logo svg{display:none!important}
+.nav-logo span{color:var(--white)!important}
+.nav-logo .nav-wm,.nav-wm{color:var(--white)!important}
+.nav-logo .nav-wm span,.nav-wm span{color:var(--white)!important}
+.nav-logo-divider+.nav-wm{margin-left:0!important}
+.foot-logo{display:flex!important;align-items:center!important;flex-direction:row!important}
+img.foot-logo-icon{flex-shrink:0!important;display:block!important;margin-right:9px!important;margin-left:0!important}
+.foot-logo-divider{display:block!important;border-left:1.5px solid var(--gold)!important;height:30px!important;margin:0 9px!important;flex-shrink:0!important;align-self:center!important;background:transparent!important;width:0!important}
+.foot-logo svg{display:none!important}
+.foot-logo .fwm,.fwm,.foot-logo .foot-wm,.foot-wm{color:#fff!important}
+.foot-logo .foot-wm span,.foot-wm span,.foot-logo .fwm span,.fwm span{color:#fff!important}
+.foot-logo span{color:#fff!important}
+@media(max-width:768px){
+  img.nav-logo-icon{width:28px!important;height:28px!important;margin-right:8px!important}
+  .nav-logo-divider{height:28px!important;margin:0 8px!important}
+  img.foot-logo-icon{width:26px!important;height:26px!important;margin-right:7px!important}
+  .foot-logo-divider{height:26px!important;margin:0 7px!important}
+}
+/* === /logo-override === */</style>
 </head>
 <body>
 
@@ -323,7 +346,7 @@ footer{background:var(--navy-deep);color:rgba(255,255,255,.6);padding:40px 24px 
 <footer>
   <div class="foot-grid">
     <div>
-      <div class="foot-logo"><svg width="28" height="28" viewBox="0 0 66 66" fill="none"><circle cx="33" cy="33" r="29" fill="#fff" stroke="#1b2a3b" stroke-width="2"/><path d="M33 6 L37 21 L33 17 L29 21 Z" fill="#c49a2a"/><rect x="18" y="24" width="30" height="5" rx="1" fill="#1b2a3b"/><rect x="18" y="33" width="30" height="5" rx="1" fill="#1b2a3b"/><rect x="18" y="42" width="30" height="5" rx="1" fill="#1b2a3b"/></svg> Ideal <span>Armory</span></div>
+      <div class="foot-logo"><img src="nav-icon.png" width="30" height="30" alt="" aria-hidden="true" class="foot-logo-icon"><span class="foot-logo-divider"></span><span class="fwm">Ideal Armory</span></div>
       <p class="foot-p">Ideal Armory is a firearm price discovery platform. We do not sell firearms. All purchases made directly with licensed retailers.</p>
     </div>
     <div class="foot-col"><h4>Categories</h4><ul>
