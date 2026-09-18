@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -72,8 +72,8 @@ nav.site-nav{background:var(--navy-deep);position:sticky;top:0;z-index:200}
 .nav-top{display:flex;align-items:center;padding:0 24px;height:58px;gap:16px}
 a.nav-logo{display:flex;align-items:center;font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--white);letter-spacing:-.5px;white-space:nowrap;text-decoration:none;line-height:1;flex-shrink:0}
 a.nav-logo .nav-wm{color:var(--white);line-height:1}
-a.nav-logo .nav-wm span{color:var(--gold-light)}
-a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
+a.nav-logo .nav-wm span{color:var(--white)}
+a.nav-logo img.nav-logo-icon{flex-shrink:0;display:block}.nav-logo-divider{display:block;width:1px;height:22px;background:var(--gold);margin:0 10px;flex-shrink:0}
 .nav-search{flex:1;max-width:400px;margin:0 12px;position:relative;display:flex;align-items:center}
 .nav-search svg{width:14px;height:14px;stroke:rgba(255,255,255,.4);fill:none;position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;z-index:1}
 .nav-search input{width:100%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:var(--white);padding:7px 12px 7px 34px;font-family:'Inter',sans-serif;font-size:13px;outline:none}
@@ -288,8 +288,8 @@ footer{background:var(--navy-deep);color:rgba(255,255,255,.5);padding:36px 24px 
       <span class="ham-line"></span>
     </button>
     <a class="nav-logo" href="/">
-      <svg width="34" height="34" viewBox="0 0 66 66" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="33" cy="33" r="29" fill="#ffffff" stroke="#1b2a3b" stroke-width="2"/><path d="M33 6 L37 21 L33 17 L29 21 Z" fill="#d4a82e"/><path d="M33 60 L37 45 L33 49 L29 45 Z" fill="#1b2a3b"/><path d="M60 33 L45 29 L49 33 L45 37 Z" fill="#1b2a3b"/><path d="M6 33 L21 29 L17 33 L21 37 Z" fill="#1b2a3b"/><circle cx="33" cy="33" r="6" fill="#1b2a3b"/><circle cx="33" cy="33" r="3" fill="#d4a82e"/></svg>
-      <span class="nav-wm">Ideal <span>Armory</span></span>
+      <img src="nav-icon.png" width="34" height="34" alt="" aria-hidden="true" class="nav-logo-icon"><span class="nav-logo-divider"></span>
+      <span class="nav-wm">Ideal Armory</span>
     </a>
     <div class="nav-search">
       <svg viewBox="0 0 16 16"><circle cx="6.5" cy="6.5" r="5" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke-width="1.5" stroke-linecap="square"/></svg>

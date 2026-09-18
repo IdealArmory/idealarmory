@@ -126,8 +126,8 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--off-white);color:
 footer{background:var(--navy-deep);color:rgba(255,255,255,.75);font-size:13px;margin-top:auto}
 .foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;padding:48px 40px 32px;max-width:1200px;margin:0 auto}
 .foot-logo{display:flex;align-items:center;font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--white);margin-bottom:10px}
-.foot-logo .fwm span{color:var(--gold-light)}
-.foot-logo svg{flex-shrink:0;margin-right:8px}
+.foot-logo .fwm span{color:var(--white)}
+.foot-logo img.foot-logo-icon{flex-shrink:0;display:block}.foot-logo-divider{display:block;width:1px;height:20px;background:var(--gold);margin:0 9px;flex-shrink:0}
 .foot-p{color:rgba(255,255,255,.55);line-height:1.65;font-size:12px;margin-top:6px}
 .foot-col h4{color:var(--gold-light);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px}
 .foot-col ul{list-style:none}
@@ -147,8 +147,8 @@ nav.site-nav{background:var(--navy-deep);position:sticky;top:0;z-index:200;box-s
 .nav-top{display:flex;align-items:center;max-width:1360px;margin:0 auto;padding:0 24px;height:58px;gap:18px}
 a.nav-logo{display:flex;align-items:center;gap:0;font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--white);letter-spacing:-.5px;white-space:nowrap;flex-shrink:0;cursor:pointer;line-height:1;text-decoration:none}
 a.nav-logo .nav-wm{color:var(--white);line-height:1}
-a.nav-logo .nav-wm span{color:var(--gold-light)}
-a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
+a.nav-logo .nav-wm span{color:var(--white)}
+a.nav-logo img.nav-logo-icon{flex-shrink:0;display:block}.nav-logo-divider{display:block;width:1px;height:22px;background:var(--gold);margin:0 10px;flex-shrink:0}
 .nav-search{flex:1;position:relative;max-width:520px;display:flex;align-items:center}
 .nav-search input{flex:1;min-width:0;height:34px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.14);border-right:none;color:var(--white);padding:0 14px 0 38px;font-family:'Inter',sans-serif;font-size:13px;outline:none;transition:background .2s,border-color .2s}
 .nav-search input::placeholder{color:rgba(255,255,255,.35)}
@@ -191,7 +191,7 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
   .nav-search{display:none}
   .nav-top{height:52px;padding:0 14px;gap:10px}
   a.nav-logo{font-size:19px}
-  a.nav-logo svg{width:28px;height:28px;margin-right:6px}
+  a.nav-logo img.nav-logo-icon{width:28px;height:28px}
   .nav-cat{padding:12px 14px;font-size:12px}
 }
 .fopt-disabled{display:none}
@@ -228,8 +228,8 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
       <span class="ham-line"></span>
     </button>
     <a class="nav-logo" href="/">
-      <svg width="34" height="34" viewBox="0 0 66 66" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="33" cy="33" r="29" fill="#ffffff" stroke="#1b2a3b" stroke-width="2"/><path d="M33 6 L37 21 L33 17 L29 21 Z" fill="#d4a82e"/><path d="M33 60 L37 45 L33 49 L29 45 Z" fill="#1b2a3b"/><path d="M60 33 L45 29 L49 33 L45 37 Z" fill="#1b2a3b"/><path d="M6 33 L21 29 L17 33 L21 37 Z" fill="#1b2a3b"/><circle cx="33" cy="33" r="6" fill="#1b2a3b"/><circle cx="33" cy="33" r="3" fill="#d4a82e"/></svg>
-      <span class="nav-wm">Ideal <span>Armory</span></span>
+      <img src="nav-icon.png" width="34" height="34" alt="" aria-hidden="true" class="nav-logo-icon"><span class="nav-logo-divider"></span>
+      <span class="nav-wm">Ideal Armory</span>
     </a>
     <div class="nav-search">
       <svg viewBox="0 0 16 16"><circle cx="6.5" cy="6.5" r="5" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke-width="1.5" stroke-linecap="square"/></svg>
@@ -631,7 +631,7 @@ a.nav-logo svg{flex-shrink:0;margin-right:8px;display:block}
 <footer>
   <div class="foot-grid">
     <div>
-      <span class="foot-logo"><svg width="30" height="30" viewBox="0 0 66 66" fill="none"><circle cx="33" cy="33" r="29" fill="#fff" stroke="#1b2a3b" stroke-width="2"/><path d="M33 6 L37 21 L33 17 L29 21 Z" fill="#d4a82e"/><path d="M33 60 L37 45 L33 49 L29 45 Z" fill="#1b2a3b"/><path d="M60 33 L45 29 L49 33 L45 37 Z" fill="#1b2a3b"/><path d="M6 33 L21 29 L17 33 L21 37 Z" fill="#1b2a3b"/><circle cx="33" cy="33" r="6" fill="#1b2a3b"/><circle cx="33" cy="33" r="3" fill="#d4a82e"/></svg><span class="fwm">Ideal <span>Armory</span></span></span>
+      <span class="foot-logo"><img src="nav-icon.png" width="30" height="30" alt="" aria-hidden="true" class="foot-logo-icon"><span class="foot-logo-divider"></span><span class="fwm">Ideal Armory</span></span>
       <p class="foot-p">Ideal Armory is a firearm price discovery platform. We do not sell firearms. All purchases made directly with licensed retailers.</p>
     </div>
     <div class="foot-col"><h4>Categories</h4><ul>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -25,7 +25,7 @@ nav{background:var(--navy-deep);z-index:100}
 .nav-top{display:flex;align-items:center;padding:0 24px;height:58px}
 a.nav-logo{display:flex;align-items:center;font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--white);letter-spacing:-.5px;white-space:nowrap;cursor:pointer;text-decoration:none}
 a.nav-logo .nav-wm{color:var(--white)}
-a.nav-logo .nav-wm span{color:var(--gold-light)}
+a.nav-logo .nav-wm span{color:var(--white)}
 a.nav-logo svg{flex-shrink:0;margin-right:8px}
 .nav-back{margin-left:auto;color:rgba(255,255,255,.65);font-size:13px;text-decoration:none;font-weight:500;transition:color .15s}
 .nav-back:hover{color:var(--gold-light)}
@@ -49,7 +49,7 @@ footer{background:var(--navy-deep);color:rgba(255,255,255,.75);font-size:13px;ma
 .foot-logo{display:flex;align-items:center;font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--white);margin-bottom:10px}
 .foot-logo .foot-wm{color:var(--white)}
 .foot-logo .foot-wm span{color:var(--gold-light)}
-.foot-logo svg{flex-shrink:0;margin-right:8px}
+.foot-logo img.foot-logo-icon{flex-shrink:0;display:block}.foot-logo-divider{display:block;width:1px;height:20px;background:var(--gold);margin:0 9px;flex-shrink:0}
 .foot-p{color:rgba(255,255,255,.55);line-height:1.65;font-size:12px;margin-top:6px}
 .foot-col h4{color:var(--gold-light);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px}
 .foot-col ul{list-style:none}
@@ -60,7 +60,7 @@ footer{background:var(--navy-deep);color:rgba(255,255,255,.75);font-size:13px;ma
 .foot-bottom p{font-size:11px;color:rgba(255,255,255,.35);line-height:1.6}
 .foot-badges{display:flex;gap:8px;flex-wrap:wrap}
 .fbadge{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);padding:3px 10px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.5)}
-@media(max-width:768px){.foot-grid{grid-template-columns:1fr 1fr;gap:28px;padding:36px 24px 24px}.page-wrap{padding:36px 16px 56px}.page-title{font-size:28px}.policy-body{padding:24px 20px}.nav-top{padding:0 16px}a.nav-logo{font-size:19px}a.nav-logo svg{width:28px;height:28px;margin-right:6px}}
+@media(max-width:768px){.foot-grid{grid-template-columns:1fr 1fr;gap:28px;padding:36px 24px 24px}.page-wrap{padding:36px 16px 56px}.page-title{font-size:28px}.policy-body{padding:24px 20px}.nav-top{padding:0 16px}a.nav-logo{font-size:19px}a.nav-logo img.nav-logo-icon{width:28px;height:28px}}
 @media(max-width:480px){.foot-grid{grid-template-columns:1fr;gap:24px}}
 </style>
 </head>
@@ -68,8 +68,8 @@ footer{background:var(--navy-deep);color:rgba(255,255,255,.75);font-size:13px;ma
 <nav>
   <div class="nav-top">
     <a class="nav-logo" href="/">
-      <svg width="34" height="34" viewBox="0 0 66 66" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="33" cy="33" r="29" fill="#ffffff" stroke="#1b2a3b" stroke-width="2"/><path d="M33 6 L37 21 L33 17 L29 21 Z" fill="#d4a82e"/><path d="M33 60 L37 45 L33 49 L29 45 Z" fill="#1b2a3b"/><path d="M60 33 L45 29 L49 33 L45 37 Z" fill="#1b2a3b"/><path d="M6 33 L21 29 L17 33 L21 37 Z" fill="#1b2a3b"/><circle cx="33" cy="33" r="6" fill="#1b2a3b"/><circle cx="33" cy="33" r="3" fill="#d4a82e"/></svg>
-      <span class="nav-wm">Ideal <span>Armory</span></span>
+      <img src="nav-icon.png" width="34" height="34" alt="" aria-hidden="true" class="nav-logo-icon"><span class="nav-logo-divider"></span>
+      <span class="nav-wm">Ideal Armory</span>
     </a>
     <a class="nav-back" href="/">&larr; Back to Home</a>
   </div>
