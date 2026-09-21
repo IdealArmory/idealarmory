@@ -1,63 +1,60 @@
+'use strict';
+
 // build-sitemap.js
-// Rewrites sitemap.xml with:
-//   1. <lastmod> dates on every existing static URL (today's date)
-//   2. Top product URLs from data/best-sellers.json (priority 0.6, changefreq daily)
+// Rewrites sitemap.xml with up-to-date <lastmod> on static pages
+// and <url> entries for every product page in /products/.
 //
 // Run: node .github/scripts/build-sitemap.js
-// Called automatically by the Build Search Index workflow.
-
-'use strict';
+// Called by the Build Search Index workflow after product pages are generated.
 
 const fs   = require('fs');
 const path = require('path');
 
 const ROOT        = path.join(__dirname, '../..');
-const SITEMAP_IN  = path.join(ROOT, 'sitemap.xml');
-const SELLERS_IN  = path.join(ROOT, 'data/best-sellers.json');
-const MAX_PRODUCTS = 100; // top N best-sellers to include
+const PRODUCTS_DIR = path.join(ROOT, 'products');
+const SITEMAP_OUT  = path.join(ROOT, 'sitemap.xml');
+const today        = new Date().toISOString().slice(0, 10);
 
-const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+// Static pages
+const STATIC = [
+  { loc: 'https://idealarmory.com/',              priority: '1.0', freq: 'daily'   },
+  { loc: 'https://idealarmory.com/handguns',      priority: '0.9', freq: 'daily'   },
+  { loc: 'https://idealarmory.com/rifles',        priority: '0.9', freq: 'daily'   },
+  { loc: 'https://idealarmory.com/shotguns',      priority: '0.9', freq: 'daily'   },
+  { loc: 'https://idealarmory.com/ammunition',    priority: '0.9', freq: 'daily'   },
+  { loc: 'https://idealarmory.com/optics',        priority: '0.9', freq: 'daily'   },
+  { loc: 'https://idealarmory.com/holsters',      priority: '0.8', freq: 'weekly'  },
+  { loc: 'https://idealarmory.com/magazines',     priority: '0.8', freq: 'weekly'  },
+  { loc: 'https://idealarmory.com/ar-parts',      priority: '0.8', freq: 'weekly'  },
+  { loc: 'https://idealarmory.com/cleaning',      priority: '0.7', freq: 'weekly'  },
+  { loc: 'https://idealarmory.com/gun-safes',     priority: '0.7', freq: 'weekly'  },
+  { loc: 'https://idealarmory.com/kit',           priority: '0.6', freq: 'weekly'  },
+  { loc: 'https://idealarmory.com/ffl-finder',    priority: '0.6', freq: 'monthly' },
+  { loc: 'https://idealarmory.com/about',         priority: '0.5', freq: 'monthly' },
+  { loc: 'https://idealarmory.com/privacy',       priority: '0.3', freq: 'monthly' },
+  { loc: 'https://idealarmory.com/terms',         priority: '0.3', freq: 'monthly' },
+];
 
-function slugify(s) {
-  return (s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+// Collect all product slugs
+const slugs = fs.existsSync(PRODUCTS_DIR)
+  ? fs.readdirSync(PRODUCTS_DIR)
+      .filter(f => f.endsWith('.html'))
+      .map(f => f.slice(0, -5))
+      .sort()
+  : [];
+
+// Build XML
+const lines = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'];
+
+for (const p of STATIC) {
+  lines.push(`  <url><loc>${p.loc}</loc><lastmod>${today}</lastmod><changefreq>${p.freq}</changefreq><priority>${p.priority}</priority></url>`);
 }
 
-// 1. Read and patch the static sitemap — inject <lastmod> on every <url> entry.
-let xml = fs.readFileSync(SITEMAP_IN, 'utf8');
-
-// Remove any existing <lastmod> tags so we don't double-insert.
-xml = xml.replace(/<lastmod>[^<]*<\/lastmod>\s*/g, '');
-
-// Insert <lastmod>TODAY</lastmod> after each <loc>...</loc>.
-xml = xml.replace(/(<loc>[^<]+<\/loc>)/g, `$1<lastmod>${today}</lastmod>`);
-
-// 2. Read best-sellers and build product URL entries.
-let productEntries = '';
-try {
-  const sellers = JSON.parse(fs.readFileSync(SELLERS_IN, 'utf8'));
-  const seen    = new Set();
-  let   count   = 0;
-
-  for (const item of sellers) {
-    if (count >= MAX_PRODUCTS) break;
-    const slug = slugify(item.name);
-    if (!slug || seen.has(slug)) continue;
-    seen.add(slug);
-
-    productEntries +=
-      `  <url><loc>https://idealarmory.com/product?p=${slug}</loc>` +
-      `<lastmod>${today}</lastmod>` +
-      `<priority>0.6</priority><changefreq>daily</changefreq></url>\n`;
-    count++;
-  }
-
-  console.log(`  Added ${count} product URLs to sitemap`);
-} catch (e) {
-  console.warn(`  Could not load best-sellers.json: ${e.message} — skipping product URLs`);
+for (const slug of slugs) {
+  lines.push(`  <url><loc>https://idealarmory.com/products/${slug}</loc><lastmod>${today}</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>`);
 }
 
-// 3. Splice product entries before the closing </urlset>.
-xml = xml.replace('</urlset>', productEntries + '</urlset>');
+lines.push('</urlset>');
 
-fs.writeFileSync(SITEMAP_IN, xml, 'utf8');
-console.log(`  Wrote sitemap.xml with lastmod=${today} on all entries`);
+fs.writeFileSync(SITEMAP_OUT, lines.join('\n') + '\n', 'utf8');
+console.log(`  Wrote sitemap.xml: ${STATIC.length} static + ${slugs.length} product URLs = ${STATIC.length + slugs.length} total`);
